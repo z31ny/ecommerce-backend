@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Freezy Bite — Offers</title>
+  <link rel="stylesheet" href="./styles/home.css">
+</head>
+<body>
+  <div class="masthead">
+    <header class="site-header container site-header--nav">
+      <div class="header-left">
+        <a href="tel:+201090196133" class="tb-phone" aria-label="Call us">
+          <img src="./assets/icons/phone.svg" alt="call" class="tb-icon">
+        </a>
+        <img src="./assets/icons/flag-eg.svg" alt="EG" class="tb-flag">
+      </div>
+      <div class="brand-nav">
+        <a class="logo" href="./home.html" aria-label="Freezy Bite home">
+          <img src="./assets/icons/logo.svg" alt="Freezy Bite">
+        </a>
+        <nav class="nav">
+          <a href="./contact.html">Contact Us</a>
+          <a href="./about.html">About Us</a>
+          <a href="./home.html">Home</a>
+          <a href="./fruits.html">Fruits</a>
+          <a href="./candy.html">Candy</a>
+          <a href="./offers.html" aria-current="page">Offers</a>
+        </nav>
+      </div>
+      <div class="header-actions">
+        <button class="icon-btn profile-trigger" aria-label="Open profile">
+          <img src="./assets/icons/profile.svg" alt="Profile icon">
+        </button>
+        <button class="icon-btn cart-open" aria-label="Open cart">
+          <img src="./assets/icons/cart.svg" alt="Cart">
+        </button>
+        <button class="icon-btn burger" aria-label="Menu" aria-expanded="false">
+          <img src="./assets/icons/menu.svg" alt="menu">
+        </button>
+      </div>
+    </header>
+  </div>
+
+  <main>
+    <section class="container" style="margin-top:22px">
+      <header class="section-header">
+        <h2>Special Offers</h2>
+        <p>Crunchy deals that won’t last long — grab your favorites now.</p>
+      </header>
+    </section>
+
+    <section class="offers container">
+      <div class="offers-grid">
+        <article class="offer-card" data-sku="snickers-pack">
+          <div class="offer-badge">-20%</div>
+          <div class="offer-media"><img src="assets/home-page-img/must-have/must have 3.png" alt="Snickers Pack"></div>
+          <h4 class="offer-title">Snickers Pack</h4>
+          <div class="offer-prices"><span class="offer-old">175 EGP</span><span class="offer-new">140 EGP</span></div>
+          <button class="btn btn-primary add-to-cart" data-sku="snickers-pack"><img class="btn-icon" src="./assets/icons/cart.svg" alt=""> Add to Cart</button>
+        </article>
+        <article class="offer-card" data-sku="mango-250">
+          <div class="offer-badge">-15%</div>
+          <div class="offer-media"><img src="assets/home-page-img/must-have/must have1.png" alt="Mango 250g"></div>
+          <h4 class="offer-title">Mango 250g</h4>
+          <div class="offer-prices"><span class="offer-old">140 EGP</span><span class="offer-new">120 EGP</span></div>
+          <button class="btn btn-primary add-to-cart" data-sku="mango-250"><img class="btn-icon" src="./assets/icons/cart.svg" alt=""> Add to Cart</button>
+        </article>
+        <article class="offer-card" data-sku="banana-250">
+          <div class="offer-badge">-10%</div>
+          <div class="offer-media"><img src="assets/home-page-img/must-have/must have4.png" alt="Banana 250g"></div>
+          <h4 class="offer-title">Banana 250g</h4>
+          <div class="offer-prices"><span class="offer-old">120 EGP</span><span class="offer-new">110 EGP</span></div>
+          <button class="btn btn-primary add-to-cart" data-sku="banana-250"><img class="btn-icon" src="./assets/icons/cart.svg" alt=""> Add to Cart</button>
+        </article>
+        <article class="offer-card" data-sku="marshmallow-pack">
+          <div class="offer-badge">-10%</div>
+          <div class="offer-media"><img src="assets/home-page-img/must-have/must have2.png" alt="Marshmallow Pack"></div>
+          <h4 class="offer-title">Marshmallow Pack</h4>
+          <div class="offer-prices"><span class="offer-old">100 EGP</span><span class="offer-new">90 EGP</span></div>
+          <button class="btn btn-primary add-to-cart" data-sku="marshmallow-pack"><img class="btn-icon" src="./assets/icons/cart.svg" alt=""> Add to Cart</button>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <!-- Cart Drawer -->
+  <aside class="cart" aria-hidden="true">
+    <div class="cart-backdrop" data-cart-close></div>
+    <div class="cart-panel" role="dialog" aria-modal="true" aria-labelledby="cart-title">
+      <header class="cart-header">
+        <h3 id="cart-title">Your Cart</h3>
+        <button class="icon-btn" data-cart-close aria-label="Close">
+          <img src="./assets/icons/close.svg" alt="close">
+        </button>
+      </header>
+      <div class="cart-body">
+        <ul class="cart-list"></ul>
+        <div class="cart-empty" hidden>Cart is empty</div>
+      </div>
+      <footer class="cart-footer">
+        <div class="cart-total">Total items: <span class="cart-count">0</span></div>
+        <a class="btn btn-primary go-checkout" href="checkout.html">Checkout</a>
+      </footer>
+    </div>
+  </aside>
+
+  <div class="toast" role="status" aria-live="polite"></div>
+
+  <!-- Auth Modal -->
+  <div class="modal" id="auth-modal" aria-hidden="true">
+    <div class="modal-backdrop" data-close></div>
+    <div class="modal-dialog" role="dialog" aria-modal="true" aria-labelledby="auth-title">
+      <button class="icon-btn modal-close" aria-label="Close" data-close>
+        <img src="./assets/icons/close.svg" alt="close">
+      </button>
+      <h3 id="auth-title">Welcome</h3>
+      <p class="sub">Log in, create an account, or continue as a guest.</p>
+      <div class="tabs">
+        <button class="tab is-active" data-tab="login">Log in</button>
+        <button class="tab" data-tab="register">Register</button>
+      </div>
+      <div class="tab-panels">
+        <form class="panel is-active" data-panel="login">
+          <label>Email<input type="email" required placeholder="you@example.com"></label>
+          <label>Password<input type="password" required placeholder="••••••••"></label>
+          <button class="btn btn-primary" type="submit">Log in</button>
+        </form>
+        <form class="panel" data-panel="register">
+          <label>Name<input type="text" required placeholder="Your name"></label>
+          <label>Email<input type="email" required placeholder="you@example.com"></label>
+          <label>Password<input type="password" required placeholder="Create password"></label>
+          <button class="btn btn-primary" type="submit">Create account</button>
+        </form>
+      </div>
+      <div class="or">or</div>
+      <div class="social">
+        <button class="social-btn social-google">
+          <img src="./assets/icons/google.svg" alt="Google"> Continue with Google
+        </button>
+        <button class="social-btn social-facebook">
+          <img src="./assets/icons/facebook.svg" onerror="this.onerror=null;this.src='./assets/icons/facebook-white.svg';" alt="Facebook"> Continue with Facebook
+        </button>
+        <button class="social-btn continue-guest">
+          <img src="./assets/icons/profile.svg" alt="Guest"> Continue as Guest
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    <div class="footer-top container">
+      <h3 class="footer-quote">“Fruit, candy, fun — freeze‑dried and fabulous!”</h3>
+      <form class="newsletter-form" autocomplete="on">
+        <label class="nl-label">Email</label>
+        <input class="nl-input" type="email" name="email" placeholder="you@example.com" required>
+        <button class="btn btn-primary nl-btn" type="submit">Get sweet updates!</button>
+      </form>
+    </div>
+
+    <div class="footer-columns container">
+      <div class="footer-left">
+        <h4 class="footer-heading">Follow our snack journey</h4>
+        <div class="footer-social">
+          <a class="social-badge" href="https://www.tiktok.com/@freezybittes?_r=1&_t=ZS-910WaIKhLCZ" target="_blank" rel="noopener noreferrer" aria-label="TikTok"><img src="./assets/icons/tiktok-white.svg" alt="tiktok"></a>
+          <a class="social-badge" href="https://www.facebook.com/share/1R9jBHHhas/?mibextid=wwXIfr" target="_blank" rel="noopener noreferrer" aria-label="Facebook"><img src="./assets/icons/facebook-white.svg" alt="facebook"></a>
+          <a class="social-badge" href="https://www.instagram.com/freezy_bites_?igsh=M2lsYThtaWtucG1q" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><img src="./assets/icons/instagram-white.svg" alt="instagram"></a>
+        </div>
+        <div class="footer-contact">
+          <div class="fc-row"><img src="./assets/icons/phone-white.svg" alt="phone"><span>+20 10 90196133</span></div>
+          <div class="fc-row"><img src="./assets/icons/mail.svg" alt="mail"><span>Freezybite1@gmail.com</span></div>
+        </div>
+      </div>
+
+      <nav class="footer-links">
+        <a href="./home.html#home">Home</a>
+        <a href="./home.html#shop">Shop</a>
+        <a href="./about.html">About Us</a>
+        <a href="./home.html#why">Why Freeze–Dried?</a>
+        <a href="./contact.html">Contact</a>
+        <a href="./home.html#faq">FAQ</a>
+      </nav>
+    </div>
+
+    <div class="footer-bottom container">
+      <ul class="policy-list">
+        <li><a href="#refund">Refund policy</a></li>
+        <li><a href="#terms">Terms & Condition</a></li>
+        <li><a href="#privacy">Privacy Policy</a></li>
+        <li><a href="#shipping">Shipping Info</a></li>
+      </ul>
+      <p class="copyright">© 2025 Freezy Bite · All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script src="./scripts/home.js" defer></script>
+</body>
+</html>
+
+

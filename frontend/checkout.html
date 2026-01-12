@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Freezy Bite — Checkout</title>
+  <link rel="stylesheet" href="./styles/home.css">
+  <link rel="stylesheet" href="./styles/checkout.css">
+    <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
+    <script>
+      // Initialize EmailJS (fill in your public key below)
+      try { emailjs && emailjs.init('YOUR_PUBLIC_KEY'); } catch (e) {}
+    </script>
+</head>
+<body>
+  <div class="masthead">
+    <div class="topbar">
+      <div class="topbar-inner container">
+        <div class="topbar-left">
+          <a href="tel:01093961545" class="tb-phone" aria-label="Call us">
+            <img src="./assets/icons/phone.svg" alt="call" class="tb-icon">
+          </a>
+          <img src="./assets/icons/flag-eg.svg" alt="EG" class="tb-flag">
+        </div>
+        <div class="topbar-right">
+          <a class="icon-btn" href="./home.html#cart" aria-label="Cart">
+            <img src="./assets/icons/cart.svg" alt="Cart">
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <header class="site-header container site-header--nav">
+      <div class="header-left">
+        <a href="tel:01093961545" class="tb-phone" aria-label="Call us">
+          <img src="./assets/icons/phone.svg" alt="call" class="tb-icon">
+        </a>
+        <img src="./assets/icons/flag-eg.svg" alt="EG" class="tb-flag">
+      </div>
+      <div class="brand-nav">
+        <a class="logo" href="./home.html" aria-label="Freezy Bite home">
+          <img src="./assets/icons/logo.svg" alt="Freezy Bite">
+        </a>
+        <nav class="nav">
+          <a href="./home.html#contact">Contact Us</a>
+          <a href="./home.html#about">About Us</a>
+          <a href="./home.html#home">Home</a>
+          <a href="./home.html#fruits">Fruits</a>
+          <a href="./home.html#candy">Candy</a>
+        </nav>
+      </div>
+      <div class="header-actions"></div>
+    </header>
+  </div>
+
+  <main class="container">
+    <header class="section-header" style="margin-top:10px">
+      <h2>Checkout</h2>
+      <p>Review your items and share your details — same sweet theme, same vibe.</p>
+    </header>
+
+    <section class="co-wrap">
+      <div class="co-card">
+        <h3 class="co-title">Order Summary</h3>
+        <ul class="co-list"></ul>
+        <div class="co-empty" hidden>Your cart is empty.</div>
+        <div class="co-total">Total items: <span class="co-count">0</span></div>
+        <div class="co-breakdown">
+          <div class="row"><span>Subtotal</span><strong class="co-subtotal">0 EGP</strong></div>
+          <div class="row"><span>Delivery</span><strong class="co-delivery">0 EGP</strong></div>
+          <div class="row grand"><span>Total Cash (COD)</span><strong class="co-grand">0 EGP</strong></div>
+        </div>
+      </div>
+
+      <div class="co-card">
+        <h3 class="co-title">Customer Details</h3>
+        <form class="co-form">
+          <label>Full name<input name="name" type="text" required></label>
+          <label>Email<input name="email" type="email" required placeholder="you@example.com"></label>
+          <label>Phone<input name="phone" type="tel" required pattern="^01[0-25][0-9]{8}$" placeholder="Eg. 01012345678"></label>
+          <label>Governorate
+            <select name="governorate" required>
+              <option value="">Choose…</option>
+              <option>Cairo</option>
+              <option>Giza</option>
+              <option>Alexandria</option>
+              <option>Sharqia</option>
+              <option>Qalyubia</option>
+              <option>Gharbia</option>
+              <option>Monufia</option>
+              <option>Ismailia</option>
+              <option>Damietta</option>
+              <option>Other</option>
+            </select>
+          </label>
+          <label>City / Area<input name="city" type="text" required></label>
+          <label>Address<textarea name="address" rows="3" required></textarea></label>
+
+          <fieldset class="co-ship">
+            <legend>Delivery (Egypt)</legend>
+            <label><input type="radio" name="ship" data-fee="50" value="Cairo/Giza" checked> Cairo / Giza — 1–2 days · 50 EGP</label>
+            <label><input type="radio" name="ship" data-fee="60" value="Alexandria"> Alexandria — 2–3 days · 60 EGP</label>
+            <label><input type="radio" name="ship" data-fee="70" value="Other"> Other governorates — 2–5 days · 70 EGP</label>
+          </fieldset>
+
+          <fieldset class="co-pay">
+            <legend>Payment</legend>
+            <label><input type="radio" name="pay" checked disabled> Cash on Delivery (COD)</label>
+          </fieldset>
+          <button type="submit" class="btn btn-primary">Place order</button>
+        </form>
+        <p class="co-note">Payment method: Cash on Delivery. To confirm your order faster, send a small deposit via InstaPay to <strong>01093961545</strong> — our team will contact you to confirm.</p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-top container">
+      <h3 class="footer-quote">“Fruit, candy, fun — freeze‑dried and fabulous!”</h3>
+      <form class="newsletter-form" autocomplete="on">
+        <label class="nl-label">Email</label>
+        <input class="nl-input" type="email" name="email" placeholder="you@example.com" required>
+        <button class="btn btn-primary nl-btn" type="submit">Get sweet updates!</button>
+      </form>
+    </div>
+
+    <div class="footer-columns container">
+      <div class="footer-left">
+        <h4 class="footer-heading">Follow our snack journey</h4>
+        <div class="footer-social">
+          <a class="social-badge" href="https://www.tiktok.com/@freezybittes?_r=1&_t=ZS-910WaIKhLCZ" target="_blank" rel="noopener noreferrer" aria-label="TikTok"><img src="./assets/icons/tiktok-white.svg" alt="tiktok"></a>
+          <a class="social-badge" href="https://www.facebook.com/share/1R9jBHHhas/?mibextid=wwXIfr" target="_blank" rel="noopener noreferrer" aria-label="Facebook"><img src="./assets/icons/facebook-white.svg" alt="facebook"></a>
+          <a class="social-badge" href="https://www.instagram.com/freezy_bites_?igsh=M2lsYThtaWtucG1q" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><img src="./assets/icons/instagram-white.svg" alt="instagram"></a>
+        </div>
+        <div class="footer-contact">
+          <div class="fc-row"><img src="./assets/icons/phone-white.svg" alt="phone"><span>01141120008</span></div>
+          <div class="fc-row"><img src="./assets/icons/mail.svg" alt="mail"><span>Freezybite1@gmail.com</span></div>
+        </div>
+      </div>
+
+      <nav class="footer-links">
+        <a href="./home.html#home">Home</a>
+        <a href="./home.html#shop">Shop</a>
+        <a href="./home.html#about">About Us</a>
+        <a href="./home.html#why">Why Freeze–Dried?</a>
+        <a href="./home.html#contact">Contact</a>
+        <a href="./home.html#faq">FAQ</a>
+      </nav>
+    </div>
+
+    <div class="footer-bottom container">
+      <ul class="policy-list">
+        <li><a href="#refund">Refund policy</a></li>
+        <li><a href="#terms">Terms & Condition</a></li>
+        <li><a href="#privacy">Privacy Policy</a></li>
+        <li><a href="#shipping">Shipping Info</a></li>
+      </ul>
+      <p class="copyright">© 2025 Freezy Bite · All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script src="./scripts/api.js"></script>
+  <script src="./scripts/checkout.js" defer></script>
+</body>
+</html>
+
+
