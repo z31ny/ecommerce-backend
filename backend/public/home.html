@@ -621,16 +621,28 @@
       <div class="tab-panels">
         <form class="panel is-active" data-panel="login" id="login-form">
           <label>Email<input type="email" id="login-email" required placeholder="you@example.com"></label>
-          <label>Password<input type="password" id="login-password" required placeholder="••••••••"></label>
+          <label>Password
+            <div class="password-field">
+              <input type="password" id="login-password" required placeholder="••••••••">
+              <button type="button" class="eye-btn" data-target="login-password" aria-label="Show password">👁</button>
+            </div>
+          </label>
           <div class="auth-error" id="login-error"></div>
           <button class="btn btn-primary" type="submit">Log in</button>
         </form>
         <form class="panel" data-panel="register" id="register-form">
           <label>Name<input type="text" id="register-name" required placeholder="Your name"></label>
           <label>Email<input type="email" id="register-email" required placeholder="you@example.com"></label>
-          <label>Password<input type="password" id="register-password" required placeholder="Create password"></label>
+          <label>Password
+            <div class="password-field">
+              <input type="password" id="register-password" required placeholder="Create password">
+              <button type="button" class="eye-btn" data-target="register-password"
+                aria-label="Show password">👁</button>
+            </div>
+          </label>
           <div class="password-requirements">
             <div class="req" id="req-length"><span class="check">✗</span> At least 8 characters</div>
+            <div class="req" id="req-upper"><span class="check">✗</span> At least 1 uppercase letter</div>
             <div class="req" id="req-number"><span class="check">✗</span> At least 1 number</div>
             <div class="req" id="req-symbol"><span class="check">✗</span> At least 1 symbol (!@#$%^&*)</div>
           </div>

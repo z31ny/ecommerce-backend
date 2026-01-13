@@ -179,6 +179,7 @@
   // Real authentication with password validation
   var registerPassword = doc.getElementById('register-password');
   var reqLength = doc.getElementById('req-length');
+  var reqUpper = doc.getElementById('req-upper');
   var reqNumber = doc.getElementById('req-number');
   var reqSymbol = doc.getElementById('req-symbol');
   var registerSubmit = doc.getElementById('register-submit');
@@ -187,14 +188,20 @@
     if (!registerPassword) return false;
     var pwd = registerPassword.value;
     var hasLength = pwd.length >= 8;
+    var hasUpper = /[A-Z]/.test(pwd);
     var hasNumber = /\d/.test(pwd);
-    var hasSymbol = /[!@#$%^&*(),.?":{}|<>_\-+=\[\]\\\/~`]/.test(pwd);
+    var hasSymbol = /[!@#$%^&*(),.?":{}\|<>_\-+=\[\]\\\/~`]/.test(pwd);
 
     // Update UI
     if (reqLength) {
       reqLength.classList.toggle('valid', hasLength);
       reqLength.classList.toggle('invalid', !hasLength);
       reqLength.querySelector('.check').textContent = hasLength ? '✓' : '✗';
+    }
+    if (reqUpper) {
+      reqUpper.classList.toggle('valid', hasUpper);
+      reqUpper.classList.toggle('invalid', !hasUpper);
+      reqUpper.querySelector('.check').textContent = hasUpper ? '✓' : '✗';
     }
     if (reqNumber) {
       reqNumber.classList.toggle('valid', hasNumber);
@@ -207,7 +214,7 @@
       reqSymbol.querySelector('.check').textContent = hasSymbol ? '✓' : '✗';
     }
 
-    var allValid = hasLength && hasNumber && hasSymbol;
+    var allValid = hasLength && hasUpper && hasNumber && hasSymbol;
     if (registerSubmit) {
       registerSubmit.disabled = !allValid;
     }
@@ -217,6 +224,22 @@
   if (registerPassword) {
     registerPassword.addEventListener('input', validatePassword);
   }
+
+  // Eye button for password visibility (hold to show)
+  Array.prototype.slice.call(doc.querySelectorAll('.eye-btn')).forEach(function (btn) {
+    var targetId = btn.getAttribute('data-target');
+    var input = doc.getElementById(targetId);
+    if (!input) return;
+
+    // Mouse hold
+    btn.addEventListener('mousedown', function () { input.type = 'text'; });
+    btn.addEventListener('mouseup', function () { input.type = 'password'; });
+    btn.addEventListener('mouseleave', function () { input.type = 'password'; });
+
+    // Touch hold
+    btn.addEventListener('touchstart', function (e) { e.preventDefault(); input.type = 'text'; });
+    btn.addEventListener('touchend', function () { input.type = 'password'; });
+  });
 
   // Login form handler
   var loginForm = doc.getElementById('login-form');
