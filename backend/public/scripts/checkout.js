@@ -296,24 +296,16 @@
   }
 
   function fallbackToEmail(name, email, phone, gov, city, address, cart, items) {
-    var subtotal = 0;
-    items.forEach(function (sku) { subtotal += getPrice(sku) * cart[sku]; });
-    var delivery = getDeliveryFee();
-    var grand = subtotal + delivery;
+    // Generate a local order ID (timestamp-based)
+    var localOrderId = 'FB' + Date.now().toString(36).toUpperCase();
 
-    var lines = items.map(function (sku) {
-      var price = getPrice(sku);
-      return sku.replace(/-/g, ' ') + ' x ' + cart[sku] + ' = ' + (price * cart[sku]) + ' EGP';
-    }).join('\n');
-
-    var msg = 'Thank you ' + name + '!\n\nYour order summary:\n' + lines + '\n\nSubtotal: ' + subtotal + ' EGP\nDelivery: ' + delivery + ' EGP\nTotal (COD): ' + grand + ' EGP\n\nAddress: ' + address + ', ' + city + ', ' + gov + '\nPhone: ' + phone + '\n\nPlease send your InstaPay deposit to 01093961545. Our team will contact you to confirm.\n';
-
-    // Open mail client as fallback
-    var mailto = 'mailto:' + encodeURIComponent(email) + '?subject=' + encodeURIComponent('Your Freezy Bite receipt') + '&body=' + encodeURIComponent(msg);
-    window.location.href = mailto;
+    // Send confirmation email (will be skipped if no API key)
+    sendConfirmationEmail(localOrderId, name, email, items, cart, gov, city, address);
 
     clearCart();
-    alert('Thanks! Your order was placed. A receipt has been opened in your email client.');
+
+    // Redirect to success page
+    showSuccess(localOrderId, name, email);
   }
 
   // Newsletter mimic (footer)
