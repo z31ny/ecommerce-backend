@@ -1,0 +1,237 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Order Confirmed — Freezy Bite</title>
+    <link rel="stylesheet" href="./styles/home.css">
+    <style>
+        body {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        main {
+            flex: 1;
+            display: grid;
+            place-items: center;
+            padding: 40px 20px;
+        }
+
+        .success-card {
+            background: #fff;
+            border-radius: 24px;
+            box-shadow: 0 18px 40px rgba(0, 0, 0, .1);
+            padding: 40px;
+            text-align: center;
+            max-width: 500px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .success-icon {
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(135deg, var(--pink) 0%, var(--footer) 100%);
+            border-radius: 50%;
+            display: grid;
+            place-items: center;
+            margin: 0 auto 20px;
+            animation: pop 0.6s ease;
+        }
+
+        .success-icon svg {
+            width: 50px;
+            height: 50px;
+            stroke: #fff;
+        }
+
+        .success-title {
+            color: var(--accent);
+            font-size: clamp(24px, 5vw, 32px);
+            margin: 0 0 10px;
+        }
+
+        .success-msg {
+            color: var(--text);
+            margin: 0 0 20px;
+        }
+
+        .order-id {
+            background: var(--bg);
+            border: 2px dashed var(--pink-3);
+            border-radius: 12px;
+            padding: 16px;
+            margin: 20px 0;
+            font-size: 18px;
+            color: var(--accent);
+        }
+
+        .order-id strong {
+            display: block;
+            font-size: 24px;
+            margin-top: 4px;
+        }
+
+        .btn-home {
+            background: var(--berry);
+            color: #fff;
+            border: none;
+            border-radius: 999px;
+            padding: 14px 32px;
+            font-size: 16px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            margin-top: 10px;
+        }
+
+        .btn-home:hover {
+            filter: brightness(1.1);
+        }
+
+        /* Confetti animation */
+        .confetti {
+            position: fixed;
+            top: -10px;
+            width: 10px;
+            height: 10px;
+            animation: fall linear forwards;
+        }
+
+        @keyframes fall {
+            to {
+                transform: translateY(110vh) rotate(720deg);
+            }
+        }
+
+        @keyframes pop {
+            0% {
+                transform: scale(0);
+            }
+
+            60% {
+                transform: scale(1.2);
+            }
+
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        /* Floating fruits */
+        .float-fruit {
+            position: absolute;
+            opacity: 0.15;
+            animation: floatUp 3s ease-in-out infinite;
+        }
+
+        .float-fruit:nth-child(1) {
+            left: 10%;
+            top: 20%;
+            animation-delay: 0s;
+        }
+
+        .float-fruit:nth-child(2) {
+            right: 10%;
+            top: 40%;
+            animation-delay: 0.5s;
+        }
+
+        .float-fruit:nth-child(3) {
+            left: 15%;
+            bottom: 20%;
+            animation-delay: 1s;
+        }
+
+        @keyframes floatUp {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-15px);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header class="masthead">
+        <div class="site-header container site-header--nav">
+            <div class="brand-nav">
+                <a class="logo" href="./home.html" aria-label="Freezy Bite home">
+                    <img src="./assets/icons/logo.svg" alt="Freezy Bite">
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <div class="success-card">
+            <img class="float-fruit" src="./assets/strawberry.png" alt="" width="60">
+            <img class="float-fruit" src="./assets/blueberry.png" alt="" width="50">
+            <img class="float-fruit" src="./assets/apple.png" alt="" width="55">
+
+            <div class="success-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+            </div>
+
+            <h1 class="success-title">Order Confirmed! 🎉</h1>
+            <p class="success-msg">Thank you, <strong id="customer-name">Customer</strong>! Your crunchy treats are on
+                their way.</p>
+
+            <div class="order-id">
+                Order Number
+                <strong id="order-number">#0000</strong>
+            </div>
+
+            <p class="success-msg">A confirmation email has been sent to<br><strong
+                    id="customer-email">email@example.com</strong></p>
+            <p style="color:var(--muted);font-size:14px;">Payment: Cash on Delivery<br>Our team will contact you soon!
+            </p>
+
+            <a href="./home.html" class="btn-home">Continue Shopping 🍓</a>
+        </div>
+    </main>
+
+    <script>
+        // Parse URL params
+        var params = new URLSearchParams(window.location.search);
+        var orderId = params.get('orderId') || '0000';
+        var name = params.get('name') || 'Customer';
+        var email = params.get('email') || '';
+
+        document.getElementById('customer-name').textContent = name.split(' ')[0];
+        document.getElementById('order-number').textContent = '#' + orderId;
+        document.getElementById('customer-email').textContent = email;
+
+        // Confetti effect
+        var colors = ['#f4c2ca', '#ec9fa9', '#c45360', '#6c2b47', '#ffe49e', '#8cd24a'];
+        for (var i = 0; i < 50; i++) {
+            var confetti = document.createElement('div');
+            confetti.className = 'confetti';
+            confetti.style.left = Math.random() * 100 + '%';
+            confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+            confetti.style.animationDuration = (Math.random() * 2 + 2) + 's';
+            confetti.style.animationDelay = Math.random() * 2 + 's';
+            confetti.style.borderRadius = Math.random() > 0.5 ? '50%' : '0';
+            document.body.appendChild(confetti);
+        }
+
+        // Redirect to home if accessed directly without params
+        if (!params.get('orderId')) {
+            setTimeout(function () {
+                window.location.href = './home.html';
+            }, 5000);
+        }
+    </script>
+</body>
+
+</html>

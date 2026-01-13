@@ -39,19 +39,35 @@
 
   // Fly animation to cart
   function flyToCart(element) {
-    var rect = element.getBoundingClientRect();
     var floatingCart = doc.getElementById('floating-cart');
     if (!floatingCart) return;
 
-    var clone = element.cloneNode(true);
-    clone.className = 'fly-to-cart';
-    clone.style.left = rect.left + 'px';
-    clone.style.top = rect.top + 'px';
-    clone.style.width = rect.width + 'px';
-    clone.style.height = rect.height + 'px';
+    // Find product image near the button
+    var parent = element.closest('.offer-card, .mh-card, .inside-card, .mood-card, article');
+    var img = parent ? parent.querySelector('img') : null;
+    if (!img) img = element; // fallback to button
+
+    var rect = img.getBoundingClientRect();
+    var cartRect = floatingCart.getBoundingClientRect();
+
+    // Create small clone
+    var clone = document.createElement('div');
+    clone.style.cssText = 'position:fixed;z-index:2000;width:50px;height:50px;border-radius:50%;background:var(--berry);display:grid;place-items:center;pointer-events:none;';
+    clone.innerHTML = '<img src="./assets/icons/cart.svg" style="width:24px;height:24px;filter:brightness(10);">';
+    clone.style.left = (rect.left + rect.width / 2 - 25) + 'px';
+    clone.style.top = (rect.top + rect.height / 2 - 25) + 'px';
+    clone.style.transition = 'all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
     doc.body.appendChild(clone);
 
-    setTimeout(function () { clone.remove(); }, 600);
+    // Trigger animation
+    setTimeout(function () {
+      clone.style.left = (cartRect.left + cartRect.width / 2 - 25) + 'px';
+      clone.style.top = (cartRect.top + cartRect.height / 2 - 25) + 'px';
+      clone.style.transform = 'scale(0.3)';
+      clone.style.opacity = '0';
+    }, 10);
+
+    setTimeout(function () { clone.remove(); }, 550);
   }
 
   function addToCart(sku, qty, triggerElement) {
