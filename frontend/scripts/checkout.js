@@ -10,7 +10,7 @@
   // Fetch products from API to get IDs and prices
   function fetchProducts() {
     if (productsCache) return Promise.resolve(productsCache);
-    return fetch('http://localhost:3000/api/products?limit=100')
+    return fetch('/api/products?limit=100')
       .then(function (r) { return r.json(); })
       .then(function (data) {
         productsCache = data;
@@ -24,25 +24,63 @@
 
   // Basic price list (EGP) - fallback if API unavailable
   var PRICE_EGP = {
+    // Home page products
     'mango-250': 120,
     'marshmallow-pack': 90,
     'snickers-pack': 140,
     'banana-250': 110,
     'strawberries-250': 130,
+    'marshmallows-pack': 90,
     'blueberries-250': 150,
+    // Mood products
     'sweet': 120,
     'bold': 120,
     'cool': 120,
     'chill': 120,
     'mysterious': 130,
     'zesty': 130,
-    'chocolate-bar': 80,
-    'chocolate-brownie': 95,
-    'gummy-rainbow': 60,
-    'marshmallow-cup': 85,
-    'lollipop-pop': 45,
-    'ice-cream-cup': 90,
-    'nut-mix': 120
+    // Fruits page
+    'strawberry-fav': 130,
+    'peach-slices': 120,
+    'mango-bites': 150,
+    'pineapple-rings': 160,
+    'banana-chips': 110,
+    'coconut-crisp': 140,
+    'apple-slices': 120,
+    'pear-bites': 130,
+    'cranberry-pop': 135,
+    'figs': 140,
+    'pear-fall': 130,
+    'plum-dream': 145,
+    'rainbow-mix': 160,
+    'berry-bash': 155,
+    'citrus-party': 150,
+    'veggie-crunch': 140,
+    // Candy page
+    'swirl-lollipop': 200,
+    'choco-bar-crisp': 200,
+    'fruity-best-seller': 300,
+    'straw-van-choco': 150,
+    'fd-skittles': 150,
+    'fd-banana-mm': 200,
+    'fd-twirl-mm': 200,
+    'fd-sour-worms': 200,
+    'fd-gummies': 200,
+    'fd-rainbow-drops': 150,
+    'fd-fruit-rolls': 300,
+    'fd-cotton-taffy': 150,
+    'mars': 150,
+    'eclair-caramel': 200,
+    'lion-chocolate': 200,
+    'milky-way': 200,
+    'snickers': 150,
+    'caramel-giant-lollipop': 300,
+    'choco-cream-lollipop': 300,
+    'strawberry-giant-lollipop': 300,
+    'vanilla-giant-lollipop': 300,
+    'ice-cream-cubes': 400,
+    'mix-marshmallow-dip': 500,
+    'vanilla-pecan-shell': 400
   };
 
   // SKU to product ID mapping (populated from API)
