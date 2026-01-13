@@ -251,7 +251,8 @@
       if (typeof FreezybiteAPI !== 'undefined') {
         FreezybiteAPI.login(email, password)
           .then(function (result) {
-            showToast('Welcome back, ' + (result.user.name || result.user.email) + '!');
+            var firstName = (result.user.name || '').split(' ')[0] || result.user.email;
+            showToast('Welcome back, ' + firstName + '!');
             closeModal();
             updateAuthUI();
           })
@@ -283,7 +284,8 @@
       if (typeof FreezybiteAPI !== 'undefined') {
         FreezybiteAPI.signup(email, password, name)
           .then(function (result) {
-            showToast('Account created! Welcome, ' + (result.user.name || result.user.email) + '!');
+            var firstName = (result.user.name || '').split(' ')[0] || result.user.email;
+            showToast('Welcome, ' + firstName + '!');
             closeModal();
             updateAuthUI();
           })
@@ -299,12 +301,30 @@
   // Update UI based on auth state
   function updateAuthUI() {
     var triggers = Array.prototype.slice.call(doc.querySelectorAll('.profile-trigger'));
-    if (typeof FreezybiteAPI !== 'undefined' && FreezybiteAPI.isLoggedIn()) {
-      var user = FreezybiteAPI.getUser();
-      triggers.forEach(function (t) {
-        t.title = 'Logged in as ' + (user.name || user.email);
-      });
-    }
+    var isLoggedIn = typeof FreezybiteAPI !== 'undefined' && FreezybiteAPI.isLoggedIn();
+
+    triggers.forEach(function (t) {
+      // Remove old listeners by cloning
+      var newTrigger = t.cloneNode(true);
+      t.parentNode.replaceChild(newTrigger, t);
+
+      if (isLoggedIn) {
+        var user = FreezybiteAPI.getUser();
+        var firstName = (user.name || '').split(' ')[0] || user.email;
+        newTrigger.title = 'Logged in as ' + firstName;
+        newTrigger.addEventListener('click', function (e) {
+          e.preventDefault();
+          if (confirm('Logout, ' + firstName + '?')) {
+            FreezybiteAPI.logout();
+            showToast('Logged out!');
+            updateAuthUI();
+          }
+        });
+      } else {
+        newTrigger.title = 'Login or Register';
+        newTrigger.addEventListener('click', openModal);
+      }
+    });
   }
   updateAuthUI();
 
