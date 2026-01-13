@@ -225,20 +225,17 @@
     registerPassword.addEventListener('input', validatePassword);
   }
 
-  // Eye button for password visibility (hold to show)
+  // Eye button for password visibility (toggle)
   Array.prototype.slice.call(doc.querySelectorAll('.eye-btn')).forEach(function (btn) {
     var targetId = btn.getAttribute('data-target');
     var input = doc.getElementById(targetId);
     if (!input) return;
 
-    // Mouse hold
-    btn.addEventListener('mousedown', function () { input.type = 'text'; });
-    btn.addEventListener('mouseup', function () { input.type = 'password'; });
-    btn.addEventListener('mouseleave', function () { input.type = 'password'; });
-
-    // Touch hold
-    btn.addEventListener('touchstart', function (e) { e.preventDefault(); input.type = 'text'; });
-    btn.addEventListener('touchend', function () { input.type = 'password'; });
+    btn.addEventListener('click', function () {
+      var isHidden = input.type === 'password';
+      input.type = isHidden ? 'text' : 'password';
+      btn.textContent = isHidden ? '🙈' : '👁';
+    });
   });
 
   // Login form handler
