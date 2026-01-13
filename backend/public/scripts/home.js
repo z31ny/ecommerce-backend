@@ -25,12 +25,46 @@
     try { return JSON.parse(localStorage.getItem(STORAGE_CART) || '{}'); } catch (e) { return {}; }
   }
   function writeCart(cart) { localStorage.setItem(STORAGE_CART, JSON.stringify(cart)); }
-  function addToCart(sku, qty) {
+
+  // Update all cart badges
+  function updateCartBadges() {
+    var cart = readCart();
+    var total = Object.keys(cart).reduce(function (sum, sku) { return sum + cart[sku]; }, 0);
+    var badges = doc.querySelectorAll('.cart-badge');
+    badges.forEach(function (badge) {
+      badge.textContent = total;
+      badge.setAttribute('data-count', total);
+    });
+  }
+
+  // Fly animation to cart
+  function flyToCart(element) {
+    var rect = element.getBoundingClientRect();
+    var floatingCart = doc.getElementById('floating-cart');
+    if (!floatingCart) return;
+
+    var clone = element.cloneNode(true);
+    clone.className = 'fly-to-cart';
+    clone.style.left = rect.left + 'px';
+    clone.style.top = rect.top + 'px';
+    clone.style.width = rect.width + 'px';
+    clone.style.height = rect.height + 'px';
+    doc.body.appendChild(clone);
+
+    setTimeout(function () { clone.remove(); }, 600);
+  }
+
+  function addToCart(sku, qty, triggerElement) {
     var cart = readCart();
     cart[sku] = (cart[sku] || 0) + (qty || 1);
     writeCart(cart);
+    updateCartBadges();
+    if (triggerElement) flyToCart(triggerElement);
     showToast('Added to cart');
   }
+
+  // Initial badge update
+  updateCartBadges();
 
   // Toast
   var toast = doc.querySelector('.toast');
@@ -55,7 +89,7 @@
 
   // Add to cart buttons
   Array.prototype.slice.call(doc.querySelectorAll('.add-to-cart')).forEach(function (btn) {
-    btn.addEventListener('click', function () { addToCart(btn.dataset.sku || 'unknown', 1); });
+    btn.addEventListener('click', function () { addToCart(btn.dataset.sku || 'unknown', 1, btn); });
   });
 
   // Mood scroller arrows
@@ -300,33 +334,45 @@
 
   // Update UI based on auth state
   function updateAuthUI() {
-    var triggers = Array.prototype.slice.call(doc.querySelectorAll('.profile-trigger'));
     var isLoggedIn = typeof FreezybiteAPI !== 'undefined' && FreezybiteAPI.isLoggedIn();
+    var loggedInSection = doc.getElementById('logged-in-section');
+    var tabPanels = doc.querySelector('.tab-panels');
+    var tabs = doc.querySelector('.tabs');
+    var socialSection = doc.querySelector('.social');
+    var orDivider = doc.querySelector('.or');
+    var loggedInName = doc.getElementById('logged-in-name');
 
-    triggers.forEach(function (t) {
-      // Remove old listeners by cloning
-      var newTrigger = t.cloneNode(true);
-      t.parentNode.replaceChild(newTrigger, t);
+    if (isLoggedIn) {
+      var user = FreezybiteAPI.getUser();
+      var firstName = (user.name || '').split(' ')[0] || user.email;
+      if (loggedInName) loggedInName.textContent = firstName;
+      if (loggedInSection) loggedInSection.style.display = 'block';
+      if (tabPanels) tabPanels.style.display = 'none';
+      if (tabs) tabs.style.display = 'none';
+      if (socialSection) socialSection.style.display = 'none';
+      if (orDivider) orDivider.style.display = 'none';
+    } else {
+      if (loggedInSection) loggedInSection.style.display = 'none';
+      if (tabPanels) tabPanels.style.display = '';
+      if (tabs) tabs.style.display = '';
+      if (socialSection) socialSection.style.display = '';
+      if (orDivider) orDivider.style.display = '';
+    }
+  }
+  updateAuthUI();
 
-      if (isLoggedIn) {
-        var user = FreezybiteAPI.getUser();
-        var firstName = (user.name || '').split(' ')[0] || user.email;
-        newTrigger.title = 'Logged in as ' + firstName;
-        newTrigger.addEventListener('click', function (e) {
-          e.preventDefault();
-          if (confirm('Logout, ' + firstName + '?')) {
-            FreezybiteAPI.logout();
-            showToast('Logged out!');
-            updateAuthUI();
-          }
-        });
-      } else {
-        newTrigger.title = 'Login or Register';
-        newTrigger.addEventListener('click', openModal);
+  // Logout button handler
+  var logoutBtn = doc.getElementById('logout-btn');
+  if (logoutBtn) {
+    logoutBtn.addEventListener('click', function () {
+      if (typeof FreezybiteAPI !== 'undefined') {
+        FreezybiteAPI.logout();
+        showToast('Logged out!');
+        updateAuthUI();
+        closeModal();
       }
     });
   }
-  updateAuthUI();
 
   var googleBtn = doc.querySelector('.social-google');
   var fbBtn = doc.querySelector('.social-facebook');
@@ -335,6 +381,12 @@
 
   var guestBtn = doc.querySelector('.continue-guest');
   if (guestBtn) guestBtn.addEventListener('click', function () { showToast('Continuing as guest'); closeModal(); });
+
+  // Floating cart click handler
+  var floatingCart = doc.getElementById('floating-cart');
+  if (floatingCart) {
+    floatingCart.addEventListener('click', openCart);
+  }
 
   // Hero blueberry hover swap
   var berry = doc.querySelector('.hero-berry');

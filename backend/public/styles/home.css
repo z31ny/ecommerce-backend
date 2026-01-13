@@ -178,7 +178,106 @@ body {
   display: inline-grid;
   place-items: center;
   padding: 8px;
-  cursor: pointer
+  cursor: pointer;
+  position: relative;
+}
+
+/* Cart badge */
+.cart-badge {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  background: var(--accent);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  min-width: 18px;
+  height: 18px;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  padding: 0 4px;
+}
+
+.cart-badge:empty,
+.cart-badge[data-count="0"] {
+  display: none;
+}
+
+/* Floating cart button (sticky) */
+.floating-cart {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 999;
+  background: var(--berry);
+  border: none;
+  border-radius: 999px;
+  width: 56px;
+  height: 56px;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, .2);
+  transition: transform .2s ease;
+}
+
+.floating-cart:hover {
+  transform: scale(1.08);
+}
+
+.floating-cart img {
+  width: 26px;
+  height: 26px;
+  filter: brightness(10);
+}
+
+.floating-cart .cart-badge {
+  top: -2px;
+  right: -2px;
+  font-size: 12px;
+  min-width: 20px;
+  height: 20px;
+}
+
+/* Logged in section in modal */
+.logged-in-section {
+  text-align: center;
+  padding: 16px 0;
+}
+
+.logged-in-msg {
+  margin: 0 0 12px;
+  color: var(--text);
+}
+
+.logout-btn {
+  width: 100%;
+}
+
+/* Add to cart fly animation */
+@keyframes flyToCart {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+
+  50% {
+    transform: scale(0.5) translateY(-100px);
+    opacity: 0.7;
+  }
+
+  100% {
+    transform: scale(0) translateY(-200px) translateX(100px);
+    opacity: 0;
+  }
+}
+
+.fly-to-cart {
+  animation: flyToCart 0.6s ease-out forwards;
+  pointer-events: none;
+  position: fixed;
+  z-index: 2000;
 }
 
 .icon-btn img {

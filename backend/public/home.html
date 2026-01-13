@@ -56,8 +56,9 @@
         <button class="icon-btn profile-trigger" aria-label="Open profile">
           <img src="./assets/icons/profile.svg" alt="Profile icon">
         </button>
-        <button class="icon-btn cart-open" aria-label="Open cart">
+        <button class="icon-btn cart-open" id="cart-btn" aria-label="Open cart">
           <img src="./assets/icons/cart.svg" alt="Cart">
+          <span class="cart-badge" id="cart-badge">0</span>
         </button>
         <button class="icon-btn burger" aria-label="Menu" aria-expanded="false">
           <img src="./assets/icons/menu.svg" alt="menu">
@@ -605,6 +606,12 @@
 
   <div class="toast" role="status" aria-live="polite"></div>
 
+  <!-- Floating cart button (sticky) -->
+  <button class="floating-cart" id="floating-cart" aria-label="Open cart">
+    <img src="./assets/icons/cart.svg" alt="Cart">
+    <span class="cart-badge" id="floating-cart-badge">0</span>
+  </button>
+
   <!-- Auth Modal -->
   <div class="modal" id="auth-modal" aria-hidden="true">
     <div class="modal-backdrop" data-close></div>
@@ -664,6 +671,11 @@
         <button class="social-btn continue-guest">
           <img src="./assets/icons/profile.svg" alt="Guest"> Continue as Guest
         </button>
+      </div>
+      <!-- Logged in section (hidden by default, shown via JS) -->
+      <div class="logged-in-section" id="logged-in-section" style="display:none;">
+        <p class="logged-in-msg">Logged in as <strong id="logged-in-name"></strong></p>
+        <button class="btn btn-primary logout-btn" id="logout-btn">Logout</button>
       </div>
     </div>
   </div>
