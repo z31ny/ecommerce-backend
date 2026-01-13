@@ -4,7 +4,7 @@
  */
 
 var FreezybiteAPI = (function () {
-    var API_BASE = 'http://localhost:3000/api';
+    var API_BASE = 'https://freezybites.vercel.app/api';
     var authToken = null;
     var currentUser = null;
 

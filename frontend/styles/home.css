@@ -199,6 +199,22 @@ body{margin:0;background:var(--bg);color:var(--text);font:16px/1.5 'Bubblegum Sa
 .social-btn:hover{background:#fafafa}
 .social-btn img{width:22px;height:22px;object-fit:contain}
 
+/* Password requirements */
+.password-requirements{display:grid;gap:6px;margin:8px 0 4px}
+.req{display:flex;align-items:center;gap:8px;font-size:13px;color:#8a6a74}
+.req .check{font-weight:700;width:18px;text-align:center}
+.req.valid{color:#2e8b57}
+.req.valid .check{color:#2e8b57}
+.req.invalid{color:#c45360}
+.req.invalid .check{color:#c45360}
+
+/* Auth error message */
+.auth-error{color:#c45360;font-size:13px;min-height:18px;text-align:center}
+
+/* Disabled button */
+.btn:disabled{opacity:.5;cursor:not-allowed}
+
+
 /* Force Facebook icon to brand blue even if the source SVG is white */
 .social-btn.social-facebook{position:relative}
 .social-btn.social-facebook img{display:none}
