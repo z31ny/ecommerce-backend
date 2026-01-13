@@ -1,31 +1,38 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { Resend } from 'resend';
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+// Initialize Resend lazily to avoid build errors when API key is not set
+function getResend() {
+  const apiKey = process.env.RESEND_API_KEY;
+  if (!apiKey) {
+    return null;
+  }
+  return new Resend(apiKey);
+}
 
 export async function POST(request: NextRequest) {
-    try {
-        const body = await request.json();
-        const { orderId, customerName, customerEmail, items, subtotal, delivery, total, address } = body;
+  try {
+    const body = await request.json();
+    const { orderId, customerName, customerEmail, items, subtotal, delivery, total, address } = body;
 
-        if (!customerEmail || !orderId) {
-            return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
-        }
+    if (!customerEmail || !orderId) {
+      return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
+    }
 
-        const firstName = (customerName || 'Customer').split(' ')[0];
+    const firstName = (customerName || 'Customer').split(' ')[0];
 
-        // Build items HTML
-        const itemsHtml = items && items.length > 0
-            ? items.map((item: any) => `
+    // Build items HTML
+    const itemsHtml = items && items.length > 0
+      ? items.map((item: any) => `
         <tr>
           <td style="padding: 12px; border-bottom: 1px solid #f0e1e5;">${item.name || item.sku}</td>
           <td style="padding: 12px; border-bottom: 1px solid #f0e1e5; text-align: center;">${item.quantity}</td>
           <td style="padding: 12px; border-bottom: 1px solid #f0e1e5; text-align: right;">${item.price} EGP</td>
         </tr>
       `).join('')
-            : '<tr><td colspan="3" style="padding: 12px;">Order items will be confirmed</td></tr>';
+      : '<tr><td colspan="3" style="padding: 12px;">Order items will be confirmed</td></tr>';
 
-        const emailHtml = `
+    const emailHtml = `
     <!DOCTYPE html>
     <html>
     <head>
@@ -107,21 +114,27 @@ export async function POST(request: NextRequest) {
     </html>
     `;
 
-        const { data, error } = await resend.emails.send({
-            from: 'Freezy Bite <orders@resend.dev>',
-            to: [customerEmail],
-            subject: `Order Confirmed #${orderId} - Freezy Bite 🍓`,
-            html: emailHtml,
-        });
-
-        if (error) {
-            console.error('Resend error:', error);
-            return NextResponse.json({ error: 'Failed to send email' }, { status: 500 });
-        }
-
-        return NextResponse.json({ success: true, messageId: data?.id });
-    } catch (error) {
-        console.error('Email API error:', error);
-        return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+    const resend = getResend();
+    if (!resend) {
+      console.warn('Resend API key not configured, skipping email');
+      return NextResponse.json({ success: true, skipped: true, message: 'Email service not configured' });
     }
+
+    const { data, error } = await resend.emails.send({
+      from: 'Freezy Bite <orders@resend.dev>',
+      to: [customerEmail],
+      subject: `Order Confirmed #${orderId} - Freezy Bite 🍓`,
+      html: emailHtml,
+    });
+
+    if (error) {
+      console.error('Resend error:', error);
+      return NextResponse.json({ error: 'Failed to send email' }, { status: 500 });
+    }
+
+    return NextResponse.json({ success: true, messageId: data?.id });
+  } catch (error) {
+    console.error('Email API error:', error);
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+  }
 }
