@@ -94,46 +94,16 @@
     <section class="offers container" id="offers">
       <header class="section-header fade-up">
         <h2>Special Offers</h2>
-        <p>Limited-time sweet deals — crunch them before they’re gone!</p>
+        <p>Limited-time sweet deals — crunch them before they're gone!</p>
       </header>
-      <div class="offers-grid">
-        <article class="offer-card" data-sku="snickers-pack">
-          <div class="offer-badge">-20%</div>
-          <div class="offer-media"><img src="assets/home-page-img/must-have/must have 3.png" alt="Snickers Pack"></div>
-          <h4 class="offer-title">Snickers Pack</h4>
-          <div class="offer-prices"><span class="offer-old">175 EGP</span><span class="offer-new">140 EGP</span></div>
-          <button class="btn btn-primary add-to-cart" data-sku="snickers-pack"><img class="btn-icon"
-              src="./assets/icons/cart.svg" alt=""> Add to Cart</button>
-        </article>
-        <article class="offer-card" data-sku="mango-250">
-          <div class="offer-badge">-15%</div>
-          <div class="offer-media"><img src="assets/home-page-img/must-have/must have1.png"
-              alt="Freeze Dried Mango 250g"></div>
-          <h4 class="offer-title">Mango 250g</h4>
-          <div class="offer-prices"><span class="offer-old">140 EGP</span><span class="offer-new">120 EGP</span></div>
-          <button class="btn btn-primary add-to-cart" data-sku="mango-250"><img class="btn-icon"
-              src="./assets/icons/cart.svg" alt=""> Add to Cart</button>
-        </article>
-        <article class="offer-card" data-sku="banana-250">
-          <div class="offer-badge">-10%</div>
-          <div class="offer-media"><img src="assets/home-page-img/must-have/must have4.png"
-              alt="Freeze Dried Banana 250g"></div>
-          <h4 class="offer-title">Banana 250g</h4>
-          <div class="offer-prices"><span class="offer-old">120 EGP</span><span class="offer-new">110 EGP</span></div>
-          <button class="btn btn-primary add-to-cart" data-sku="banana-250"><img class="btn-icon"
-              src="./assets/icons/cart.svg" alt=""> Add to Cart</button>
-        </article>
-        <article class="offer-card" data-sku="marshmallow-pack">
-          <div class="offer-badge">-10%</div>
-          <div class="offer-media"><img src="assets/home-page-img/must-have/must have2.png" alt="Marshmallow Pack">
-          </div>
-          <h4 class="offer-title">Marshmallow Pack</h4>
-          <div class="offer-prices"><span class="offer-old">100 EGP</span><span class="offer-new">90 EGP</span></div>
-          <button class="btn btn-primary add-to-cart" data-sku="marshmallow-pack"><img class="btn-icon"
-              src="./assets/icons/cart.svg" alt=""> Add to Cart</button>
-        </article>
+      <div class="offers-grid" id="offers-grid">
+        <!-- Offers will be loaded dynamically from the API -->
+        <div class="loading-offers" style="grid-column: 1/-1; text-align: center; padding: 2rem; color: #888;">
+          Loading offers...
+        </div>
       </div>
     </section>
+
 
 
 

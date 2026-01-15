@@ -568,6 +568,58 @@
       window.location.href = 'checkout.html';
     });
   }
+
+  // ===== DYNAMIC OFFERS LOADING =====
+  // Load offers from API and render them
+  function loadOffers() {
+    var offersGrid = doc.getElementById('offers-grid');
+    if (!offersGrid) return;
+
+    fetch('/api/offers')
+      .then(function (res) { return res.json(); })
+      .then(function (offers) {
+        if (!offers || offers.length === 0) {
+          offersGrid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 2rem; color: #888;">No offers available at the moment.</div>';
+          return;
+        }
+
+        offersGrid.innerHTML = '';
+        offers.forEach(function (offer) {
+          var card = doc.createElement('article');
+          card.className = 'offer-card';
+          card.setAttribute('data-sku', offer.productSku);
+
+          card.innerHTML =
+            '<div class="offer-badge">-' + offer.discount + '%</div>' +
+            '<div class="offer-media"><img src="' + (offer.image || 'assets/placeholder.png') + '" alt="' + offer.name + '"></div>' +
+            '<h4 class="offer-title">' + offer.name + '</h4>' +
+            '<div class="offer-prices">' +
+            '<span class="offer-old">' + Math.round(offer.originalPrice) + ' EGP</span>' +
+            '<span class="offer-new">' + Math.round(offer.salePrice) + ' EGP</span>' +
+            '</div>' +
+            '<button class="btn btn-primary add-to-cart" data-sku="' + offer.productSku + '">' +
+            '<img class="btn-icon" src="./assets/icons/cart.svg" alt=""> Add to Cart' +
+            '</button>';
+
+          offersGrid.appendChild(card);
+        });
+
+        // Re-bind add-to-cart buttons for new offers
+        Array.prototype.slice.call(offersGrid.querySelectorAll('.add-to-cart')).forEach(function (btn) {
+          btn.addEventListener('click', function () {
+            addToCart(btn.dataset.sku || 'unknown', 1, btn);
+          });
+        });
+      })
+      .catch(function (err) {
+        console.error('Failed to load offers:', err);
+        offersGrid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 2rem; color: #888;">Failed to load offers.</div>';
+      });
+  }
+
+  // Load offers on page load
+  loadOffers();
+
 })();
 
 

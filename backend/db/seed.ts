@@ -1,5 +1,5 @@
 import { db } from './index';
-import { products, users, adminUsers, customers, employees } from './schema';
+import { products, users, adminUsers, customers, employees, offers } from './schema';
 import bcrypt from 'bcrypt';
 
 // Admin users for dashboard
@@ -27,7 +27,16 @@ const employeesData = [
     { name: 'Youssef Mahmoud', email: 'youssef@freezybite.com', phone: '+20 100 555 6666', position: 'Delivery Driver', department: 'Logistics', status: 'active' },
 ];
 
+// Initial offers
+const offersData = [
+    { productSku: 'snickers-pack', name: 'Snickers Pack', image: 'assets/home-page-img/must-have/must have 3.png', originalPrice: '175.00', salePrice: '140.00', discount: 20, category: 'Candy' },
+    { productSku: 'mango-250', name: 'Mango 250g', image: 'assets/home-page-img/must-have/must have1.png', originalPrice: '140.00', salePrice: '120.00', discount: 15, category: 'Fruits' },
+    { productSku: 'banana-250', name: 'Banana 250g', image: 'assets/home-page-img/must-have/must have4.png', originalPrice: '120.00', salePrice: '110.00', discount: 10, category: 'Fruits' },
+    { productSku: 'marshmallow-pack', name: 'Marshmallow Pack', image: 'assets/home-page-img/must-have/must have2.png', originalPrice: '100.00', salePrice: '90.00', discount: 10, category: 'Candy' },
+];
+
 // Products from Freezy Bites website
+
 const productData = [
     { sku: 'snickers-pack', name: 'Snickers Pack', price: '140.00', stock: 100, category: 'Candy', description: 'Freeze dried Snickers bites - 20% off' },
     { sku: 'mango-250', name: 'Mango 250g', price: '120.00', stock: 100, category: 'Fruits', description: 'Freeze dried mango slices, 250g pack' },
@@ -105,14 +114,26 @@ async function main() {
         if (result.length > 0) count++;
     }
 
+    // Offers
+    console.log('\nCreating offers...');
+    for (const offer of offersData) {
+        const result = await db.insert(offers).values({
+            ...offer,
+            isActive: true,
+        }).onConflictDoNothing().returning();
+        if (result.length > 0) console.log(`  ✅ ${offer.name} (-${offer.discount}%)`);
+    }
+
     console.log('\n🎉 Seeding complete!');
     console.log(`   Products: ${count}`);
+    console.log(`   Offers: ${offersData.length}`);
     console.log('\n📋 Dashboard Login:');
     console.log('   Super Admin: sarah@freezybite.com / admin123');
     console.log('   Admin: ahmed@freezybite.com / admin123');
     console.log('   Manager: mohamed@freezybite.com / manager123');
     console.log('   Staff: fatima@freezybite.com / staff123');
     process.exit(0);
+
 }
 
 main().catch((error) => {

@@ -56,6 +56,24 @@ export const messages = pgTable('messages', {
     createdAt: timestamp('created_at').defaultNow(),
 });
 
+// Offers Table (special offers/discounts)
+export const offers = pgTable('offers', {
+    id: serial('id').primaryKey(),
+    productSku: text('product_sku').notNull(),
+    name: text('name').notNull(),
+    image: text('image'),
+    originalPrice: decimal('original_price', { precision: 10, scale: 2 }).notNull(),
+    salePrice: decimal('sale_price', { precision: 10, scale: 2 }).notNull(),
+    discount: integer('discount').notNull(), // Percentage off
+    category: text('category'),
+    description: text('description'),
+    startDate: timestamp('start_date'),
+    endDate: timestamp('end_date'),
+    isActive: boolean('is_active').default(true),
+    createdAt: timestamp('created_at').defaultNow(),
+});
+
+
 // ===== CORE E-COMMERCE TABLES =====
 
 // 1. Products Table
