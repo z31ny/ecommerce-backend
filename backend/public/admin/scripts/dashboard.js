@@ -156,13 +156,13 @@ const orders = [
     { id: 'ORD-2023-089', customer: { name: 'John Smith', email: 'john@email.com', phone: '+20 109 396 1545' }, date: '2023-12-15', items: 5, product: 'Candy Mix', productId: 5, quantity: 5, amount: 78.00, status: 'delivered', paymentMethod: 'COD', depositStatus: 'paid', depositAmount: 30, stockDeducted: true },
     { id: 'ORD-2023-075', customer: { name: 'John Smith', email: 'john@email.com', phone: '+20 109 396 1545' }, date: '2023-11-22', items: 1, product: 'Dark Chocolate Bar', productId: 4, quantity: 1, amount: 25.99, status: 'delivered', paymentMethod: 'COD', depositStatus: 'paid', depositAmount: 10, stockDeducted: true },
     { id: 'ORD-2023-058', customer: { name: 'John Smith', email: 'john@email.com', phone: '+20 109 396 1545' }, date: '2023-10-30', items: 4, product: 'Tropical Mix', productId: 8, quantity: 4, amount: 62.50, status: 'delivered', paymentMethod: 'COD', depositStatus: 'paid', depositAmount: 25, stockDeducted: true },
-    
+
     // Emma Wilson Orders
     { id: 'ORD-2024-002', customer: { name: 'Emma Wilson', email: 'emma@email.com', phone: '+20 112 345 6789' }, date: '2024-01-13', items: 2, product: 'Chocolate Delight', productId: 3, quantity: 2, amount: 32.50, status: 'shipped', paymentMethod: 'COD', depositStatus: 'paid', depositAmount: 15, stockDeducted: true },
     { id: 'ORD-2023-098', customer: { name: 'Emma Wilson', email: 'emma@email.com', phone: '+20 112 345 6789' }, date: '2023-12-20', items: 3, product: 'Blueberry Blast', productId: 2, quantity: 3, amount: 45.00, status: 'delivered', paymentMethod: 'COD', depositStatus: 'paid', depositAmount: 20, stockDeducted: true },
     { id: 'ORD-2023-082', customer: { name: 'Emma Wilson', email: 'emma@email.com', phone: '+20 112 345 6789' }, date: '2023-11-28', items: 2, product: 'Ice Cream Sundae', productId: 7, quantity: 2, amount: 28.99, status: 'delivered', paymentMethod: 'COD', depositStatus: 'paid', depositAmount: 10, stockDeducted: true },
     { id: 'ORD-2023-065', customer: { name: 'Emma Wilson', email: 'emma@email.com', phone: '+20 112 345 6789' }, date: '2023-10-15', items: 4, product: 'Lollipop Pack', productId: 6, quantity: 4, amount: 55.50, status: 'delivered', paymentMethod: 'COD', depositStatus: 'paid', depositAmount: 20, stockDeducted: true },
-    
+
     // Michael Brown Orders
     { id: 'ORD-2024-003', customer: { name: 'Michael Brown', email: 'michael@email.com', phone: '+20 100 123 4567' }, date: '2024-01-12', items: 4, product: 'Tropical Mix', productId: 8, quantity: 4, amount: 28.75, status: 'processing', paymentMethod: 'COD', depositStatus: 'paid', depositAmount: 10, stockDeducted: true },
     { id: 'ORD-2023-105', customer: { name: 'Michael Brown', email: 'michael@email.com', phone: '+20 100 123 4567' }, date: '2023-12-30', items: 6, product: 'Winter Fruit Pack', productId: 10, quantity: 6, amount: 120.00, status: 'delivered', paymentMethod: 'COD', depositStatus: 'paid', depositAmount: 50, stockDeducted: true },
@@ -170,18 +170,18 @@ const orders = [
     { id: 'ORD-2023-078', customer: { name: 'Michael Brown', email: 'michael@email.com', phone: '+20 100 123 4567' }, date: '2023-11-25', items: 3, product: 'Nutty Chocolate', productId: 11, quantity: 3, amount: 48.99, status: 'delivered', paymentMethod: 'COD', depositStatus: 'paid', depositAmount: 20, stockDeducted: true },
     { id: 'ORD-2023-061', customer: { name: 'Michael Brown', email: 'michael@email.com', phone: '+20 100 123 4567' }, date: '2023-10-20', items: 5, product: 'Fall Fruit Selection', productId: 12, quantity: 5, amount: 89.00, status: 'delivered', paymentMethod: 'COD', depositStatus: 'paid', depositAmount: 35, stockDeducted: true },
     { id: 'ORD-2023-045', customer: { name: 'Michael Brown', email: 'michael@email.com', phone: '+20 100 123 4567' }, date: '2023-09-12', items: 2, product: 'Ice Cream Sundae', productId: 7, quantity: 2, amount: 18.50, status: 'delivered', paymentMethod: 'COD', depositStatus: 'paid', depositAmount: 8, stockDeducted: true },
-    
+
     // Sarah Davis Orders - pending order has stockDeducted: false
     { id: 'ORD-2024-004', customer: { name: 'Sarah Davis', email: 'sarah@email.com', phone: '+20 101 987 6543' }, date: '2024-01-12', items: 5, product: 'Candy Mix', productId: 5, quantity: 5, amount: 52.00, status: 'pending', paymentMethod: 'COD', depositStatus: 'pending', depositAmount: 0, stockDeducted: false },
     { id: 'ORD-2023-095', customer: { name: 'Sarah Davis', email: 'sarah@email.com', phone: '+20 101 987 6543' }, date: '2023-12-22', items: 3, product: 'Marshmallow Delight', productId: 9, quantity: 3, amount: 24.99, status: 'delivered', paymentMethod: 'COD', depositStatus: 'paid', depositAmount: 10, stockDeducted: true },
     { id: 'ORD-2023-080', customer: { name: 'Sarah Davis', email: 'sarah@email.com', phone: '+20 101 987 6543' }, date: '2023-11-30', items: 2, product: 'Lollipop Pack', productId: 6, quantity: 2, amount: 15.50, status: 'delivered', paymentMethod: 'COD', depositStatus: 'paid', depositAmount: 5, stockDeducted: true },
     { id: 'ORD-2023-068', customer: { name: 'Sarah Davis', email: 'sarah@email.com', phone: '+20 101 987 6543' }, date: '2023-10-28', items: 4, product: 'Chocolate Delight', productId: 3, quantity: 4, amount: 38.00, status: 'delivered', paymentMethod: 'COD', depositStatus: 'paid', depositAmount: 15, stockDeducted: true },
-    
+
     // James Miller Orders
     { id: 'ORD-2024-005', customer: { name: 'James Miller', email: 'james@email.com', phone: '+20 111 222 3333' }, date: '2024-01-11', items: 2, product: 'Tropical Mix', productId: 8, quantity: 2, amount: 38.90, status: 'delivered', paymentMethod: 'COD', depositStatus: 'paid', depositAmount: 15, stockDeducted: true },
     { id: 'ORD-2023-088', customer: { name: 'James Miller', email: 'james@email.com', phone: '+20 111 222 3333' }, date: '2023-12-10', items: 3, product: 'Strawberry Freeze', productId: 1, quantity: 3, amount: 42.00, status: 'delivered', paymentMethod: 'COD', depositStatus: 'paid', depositAmount: 18, stockDeducted: true },
     { id: 'ORD-2023-072', customer: { name: 'James Miller', email: 'james@email.com', phone: '+20 111 222 3333' }, date: '2023-11-18', items: 1, product: 'Winter Fruit Pack', productId: 10, quantity: 1, amount: 19.99, status: 'delivered', paymentMethod: 'COD', depositStatus: 'paid', depositAmount: 8, stockDeducted: true },
-    
+
     // Lisa Anderson Orders - cancelled has stockDeducted: false (restored)
     { id: 'ORD-2024-006', customer: { name: 'Lisa Anderson', email: 'lisa@email.com', phone: '+20 122 333 4444' }, date: '2024-01-11', items: 3, product: 'Dark Chocolate Bar', productId: 4, quantity: 3, amount: 67.50, status: 'cancelled', paymentMethod: 'COD', depositStatus: 'refunded', depositAmount: 25, stockDeducted: false },
     { id: 'ORD-2023-102', customer: { name: 'Lisa Anderson', email: 'lisa@email.com', phone: '+20 122 333 4444' }, date: '2023-12-29', items: 2, product: 'Dark Chocolate Bar', productId: 4, quantity: 2, amount: 45.00, status: 'delivered', paymentMethod: 'COD', depositStatus: 'paid', depositAmount: 18, stockDeducted: true },
@@ -191,25 +191,25 @@ const orders = [
     { id: 'ORD-2023-051', customer: { name: 'Lisa Anderson', email: 'lisa@email.com', phone: '+20 122 333 4444' }, date: '2023-09-25', items: 1, product: 'Chocolate Delight', productId: 3, quantity: 1, amount: 18.50, status: 'delivered', paymentMethod: 'COD', depositStatus: 'paid', depositAmount: 8, stockDeducted: true },
     { id: 'ORD-2023-038', customer: { name: 'Lisa Anderson', email: 'lisa@email.com', phone: '+20 122 333 4444' }, date: '2023-08-30', items: 3, product: 'Dark Chocolate Bar', productId: 4, quantity: 3, amount: 55.00, status: 'delivered', paymentMethod: 'COD', depositStatus: 'paid', depositAmount: 22, stockDeducted: true },
     { id: 'ORD-2023-025', customer: { name: 'Lisa Anderson', email: 'lisa@email.com', phone: '+20 122 333 4444' }, date: '2023-07-15', items: 2, product: 'Nutty Chocolate', productId: 11, quantity: 2, amount: 29.99, status: 'delivered', paymentMethod: 'COD', depositStatus: 'paid', depositAmount: 12, stockDeducted: true },
-    
+
     // David Taylor Orders
     { id: 'ORD-2024-007', customer: { name: 'David Taylor', email: 'david@email.com', phone: '+20 100 555 6666' }, date: '2024-01-10', items: 1, product: 'Ice Cream Sundae', productId: 7, quantity: 1, amount: 15.99, status: 'delivered', paymentMethod: 'COD', depositStatus: 'paid', depositAmount: 10, stockDeducted: true },
     { id: 'ORD-2023-099', customer: { name: 'David Taylor', email: 'david@email.com', phone: '+20 100 555 6666' }, date: '2023-12-24', items: 4, product: 'Marshmallow Delight', productId: 9, quantity: 4, amount: 65.00, status: 'delivered', paymentMethod: 'COD', depositStatus: 'paid', depositAmount: 25, stockDeducted: true },
     { id: 'ORD-2023-084', customer: { name: 'David Taylor', email: 'david@email.com', phone: '+20 100 555 6666' }, date: '2023-12-01', items: 2, product: 'Strawberry Freeze', productId: 1, quantity: 2, amount: 35.50, status: 'delivered', paymentMethod: 'COD', depositStatus: 'paid', depositAmount: 14, stockDeducted: true },
     { id: 'ORD-2023-069', customer: { name: 'David Taylor', email: 'david@email.com', phone: '+20 100 555 6666' }, date: '2023-10-25', items: 3, product: 'Blueberry Blast', productId: 2, quantity: 3, amount: 42.99, status: 'delivered', paymentMethod: 'COD', depositStatus: 'paid', depositAmount: 18, stockDeducted: true },
     { id: 'ORD-2023-054', customer: { name: 'David Taylor', email: 'david@email.com', phone: '+20 100 555 6666' }, date: '2023-09-18', items: 2, product: 'Tropical Mix', productId: 8, quantity: 2, amount: 28.00, status: 'delivered', paymentMethod: 'COD', depositStatus: 'paid', depositAmount: 12, stockDeducted: true },
-    
+
     // Jennifer White Orders
     { id: 'ORD-2024-008', customer: { name: 'Jennifer White', email: 'jennifer@email.com', phone: '+20 109 777 8888' }, date: '2024-01-10', items: 6, product: 'Fall Fruit Selection', productId: 12, quantity: 6, amount: 89.99, status: 'shipped', paymentMethod: 'COD', depositStatus: 'paid', depositAmount: 30, stockDeducted: true },
     { id: 'ORD-2023-096', customer: { name: 'Jennifer White', email: 'jennifer@email.com', phone: '+20 109 777 8888' }, date: '2023-12-23', items: 3, product: 'Tropical Mix', productId: 8, quantity: 3, amount: 55.00, status: 'delivered', paymentMethod: 'COD', depositStatus: 'paid', depositAmount: 22, stockDeducted: true },
     { id: 'ORD-2023-081', customer: { name: 'Jennifer White', email: 'jennifer@email.com', phone: '+20 109 777 8888' }, date: '2023-11-29', items: 4, product: 'Winter Fruit Pack', productId: 10, quantity: 4, amount: 48.50, status: 'delivered', paymentMethod: 'COD', depositStatus: 'paid', depositAmount: 20, stockDeducted: true },
     { id: 'ORD-2023-066', customer: { name: 'Jennifer White', email: 'jennifer@email.com', phone: '+20 109 777 8888' }, date: '2023-10-22', items: 2, product: 'Blueberry Blast', productId: 2, quantity: 2, amount: 32.00, status: 'delivered', paymentMethod: 'COD', depositStatus: 'paid', depositAmount: 12, stockDeducted: true },
-    
+
     // Robert Harris Orders - processing has stockDeducted: true
     { id: 'ORD-2024-009', customer: { name: 'Robert Harris', email: 'robert@email.com', phone: '+20 115 999 0000' }, date: '2024-01-09', items: 2, product: 'Candy Mix', productId: 5, quantity: 2, amount: 24.99, status: 'processing', paymentMethod: 'COD', depositStatus: 'pending', depositAmount: 0, stockDeducted: true },
     { id: 'ORD-2023-087', customer: { name: 'Robert Harris', email: 'robert@email.com', phone: '+20 115 999 0000' }, date: '2023-12-08', items: 3, product: 'Lollipop Pack', productId: 6, quantity: 3, amount: 28.50, status: 'delivered', paymentMethod: 'COD', depositStatus: 'paid', depositAmount: 12, stockDeducted: true },
     { id: 'ORD-2023-070', customer: { name: 'Robert Harris', email: 'robert@email.com', phone: '+20 115 999 0000' }, date: '2023-10-30', items: 2, product: 'Marshmallow Delight', productId: 9, quantity: 2, amount: 19.99, status: 'delivered', paymentMethod: 'COD', depositStatus: 'paid', depositAmount: 8, stockDeducted: true },
-    
+
     // Maria Garcia Orders - pending has stockDeducted: false
     { id: 'ORD-2024-010', customer: { name: 'Maria Garcia', email: 'maria@email.com', phone: '+20 106 111 2222' }, date: '2024-01-09', items: 4, product: 'Winter Fruit Pack', productId: 10, quantity: 4, amount: 56.80, status: 'pending', paymentMethod: 'COD', depositStatus: 'pending', depositAmount: 0, stockDeducted: false },
     { id: 'ORD-2023-093', customer: { name: 'Maria Garcia', email: 'maria@email.com', phone: '+20 106 111 2222' }, date: '2023-12-19', items: 2, product: 'Strawberry Freeze', productId: 1, quantity: 2, amount: 35.00, status: 'delivered', paymentMethod: 'COD', depositStatus: 'paid', depositAmount: 14, stockDeducted: true },
@@ -635,7 +635,7 @@ function handleImageError(img) {
     img.onerror = null;
     img.style.opacity = '0';
     img.style.position = 'absolute';
-    
+
     // Only add placeholder for product-image-wrapper elements
     const parent = img.parentElement;
     if (parent && parent.classList.contains('product-image-wrapper') && !parent.querySelector('.image-placeholder')) {
@@ -652,7 +652,7 @@ function handleImageError(img) {
 function toggleSidebar() {
     const sidebar = document.querySelector('.sidebar');
     const overlay = document.querySelector('.sidebar-overlay');
-    
+
     if (window.innerWidth <= 768) {
         sidebar.classList.toggle('active');
         if (overlay) overlay.classList.toggle('active');
@@ -665,7 +665,7 @@ function toggleSidebar() {
 function closeSidebar() {
     const sidebar = document.querySelector('.sidebar');
     const overlay = document.querySelector('.sidebar-overlay');
-    
+
     if (window.innerWidth <= 768) {
         sidebar.classList.remove('active');
         if (overlay) overlay.classList.remove('active');
@@ -676,7 +676,7 @@ function closeSidebar() {
 function setActiveNavItem() {
     const currentPage = window.location.pathname.split('/').pop() || 'index.html';
     const navItems = document.querySelectorAll('.nav-item');
-    
+
     navItems.forEach(item => {
         item.classList.remove('active');
         const href = item.getAttribute('href');
@@ -692,14 +692,14 @@ function setActiveNavItem() {
 function createRevenueChart(canvasId, period = 'week') {
     const ctx = document.getElementById(canvasId);
     if (!ctx) return;
-    
+
     const periodData = chartDataByPeriod[period] || chartDataByPeriod.week;
-    
+
     // Destroy existing chart if it exists
     if (revenueChartInstance) {
         revenueChartInstance.destroy();
     }
-    
+
     revenueChartInstance = new Chart(ctx, {
         type: 'line',
         data: {
@@ -733,7 +733,7 @@ function createRevenueChart(canvasId, period = 'week') {
                     padding: 12,
                     displayColors: false,
                     callbacks: {
-                        label: function(context) {
+                        label: function (context) {
                             return formatCurrency(context.parsed.y);
                         }
                     }
@@ -754,7 +754,7 @@ function createRevenueChart(canvasId, period = 'week') {
                     },
                     ticks: {
                         color: '#64748b',
-                        callback: function(value) {
+                        callback: function (value) {
                             if (value >= 1000) {
                                 return 'EGP ' + (value / 1000).toFixed(0) + 'K';
                             }
@@ -771,14 +771,14 @@ function createRevenueChart(canvasId, period = 'week') {
 function createCategoryChart(canvasId, period = 'week') {
     const ctx = document.getElementById(canvasId);
     if (!ctx) return;
-    
+
     const periodData = chartDataByPeriod[period] || chartDataByPeriod.week;
-    
+
     // Destroy existing chart if it exists
     if (categoryChartInstance) {
         categoryChartInstance.destroy();
     }
-    
+
     categoryChartInstance = new Chart(ctx, {
         type: 'doughnut',
         data: {
@@ -810,7 +810,7 @@ function createCategoryChart(canvasId, period = 'week') {
                     bodyColor: '#fff',
                     padding: 12,
                     callbacks: {
-                        label: function(context) {
+                        label: function (context) {
                             return context.label + ': ' + context.parsed + '%';
                         }
                     }
@@ -824,7 +824,7 @@ function createCategoryChart(canvasId, period = 'week') {
 function createSalesChart(canvasId) {
     const ctx = document.getElementById(canvasId);
     if (!ctx) return;
-    
+
     new Chart(ctx, {
         type: 'bar',
         data: {
@@ -852,7 +852,7 @@ function createSalesChart(canvasId) {
                     padding: 12,
                     displayColors: false,
                     callbacks: {
-                        label: function(context) {
+                        label: function (context) {
                             return formatCurrency(context.parsed.y);
                         }
                     }
@@ -873,7 +873,7 @@ function createSalesChart(canvasId) {
                     },
                     ticks: {
                         color: '#64748b',
-                        callback: function(value) {
+                        callback: function (value) {
                             return 'EGP ' + (value / 1000) + 'K';
                         }
                     }
@@ -887,7 +887,7 @@ function createSalesChart(canvasId) {
 function createCustomerGrowthChart(canvasId) {
     const ctx = document.getElementById(canvasId);
     if (!ctx) return;
-    
+
     new Chart(ctx, {
         type: 'line',
         data: {
@@ -921,7 +921,7 @@ function createCustomerGrowthChart(canvasId) {
                     padding: 12,
                     displayColors: false,
                     callbacks: {
-                        label: function(context) {
+                        label: function (context) {
                             return context.parsed.y + ' new customers';
                         }
                     }
@@ -953,7 +953,7 @@ function createCustomerGrowthChart(canvasId) {
 function createRevenueByCategoryChart(canvasId) {
     const ctx = document.getElementById(canvasId);
     if (!ctx) return;
-    
+
     new Chart(ctx, {
         type: 'bar',
         data: {
@@ -981,7 +981,7 @@ function createRevenueByCategoryChart(canvasId) {
                     padding: 12,
                     displayColors: false,
                     callbacks: {
-                        label: function(context) {
+                        label: function (context) {
                             return formatCurrency(context.parsed.x);
                         }
                     }
@@ -994,7 +994,7 @@ function createRevenueByCategoryChart(canvasId) {
                     },
                     ticks: {
                         color: '#64748b',
-                        callback: function(value) {
+                        callback: function (value) {
                             return 'EGP ' + (value / 1000) + 'K';
                         }
                     }
@@ -1018,9 +1018,9 @@ function createRevenueByCategoryChart(canvasId) {
 function renderRecentOrders(containerId) {
     const container = document.getElementById(containerId);
     if (!container) return;
-    
+
     const recentOrders = orders.slice(0, 5);
-    
+
     let html = `
         <table class="data-table">
             <thead>
@@ -1034,7 +1034,7 @@ function renderRecentOrders(containerId) {
             </thead>
             <tbody>
     `;
-    
+
     recentOrders.forEach(order => {
         html += `
             <tr>
@@ -1046,7 +1046,7 @@ function renderRecentOrders(containerId) {
             </tr>
         `;
     });
-    
+
     html += '</tbody></table>';
     container.innerHTML = html;
 }
@@ -1055,7 +1055,7 @@ function renderRecentOrders(containerId) {
 function renderTopProducts(containerId) {
     const container = document.getElementById(containerId);
     if (!container) return;
-    
+
     let html = '';
     topProducts.forEach(product => {
         html += `
@@ -1069,7 +1069,7 @@ function renderTopProducts(containerId) {
             </div>
         `;
     });
-    
+
     container.innerHTML = html;
 }
 
@@ -1077,18 +1077,18 @@ function renderTopProducts(containerId) {
 function renderProductsGrid(containerId, filterCategory = 'all', filterStatus = 'all', searchTerm = '') {
     const container = document.getElementById(containerId);
     if (!container) return;
-    
+
     let filteredProducts = products.filter(product => {
         const matchesCategory = filterCategory === 'all' || product.category.toLowerCase() === filterCategory.toLowerCase();
         const productStatus = product.stock === 0 ? 'out-of-stock' : (product.stock <= product.minStock ? 'low-stock' : 'active');
         const matchesStatus = filterStatus === 'all' || productStatus === filterStatus || product.status === filterStatus;
-        const matchesSearch = searchTerm === '' || 
+        const matchesSearch = searchTerm === '' ||
             product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
             product.sku.toLowerCase().includes(searchTerm.toLowerCase());
-        
+
         return matchesCategory && matchesStatus && matchesSearch;
     });
-    
+
     let html = '';
     filteredProducts.forEach(product => {
         const stockStatus = getStockStatus(product.stock, product.minStock);
@@ -1123,7 +1123,7 @@ function renderProductsGrid(containerId, filterCategory = 'all', filterStatus = 
             </div>
         `;
     });
-    
+
     container.innerHTML = html || '<div class="no-products"><i class="fas fa-box-open"></i><p>No products found</p></div>';
 }
 
@@ -1131,7 +1131,7 @@ function renderProductsGrid(containerId, filterCategory = 'all', filterStatus = 
 function renderOrdersTable(containerId) {
     const container = document.getElementById(containerId);
     if (!container) return;
-    
+
     let html = `
         <table class="data-table">
             <thead>
@@ -1148,7 +1148,7 @@ function renderOrdersTable(containerId) {
             </thead>
             <tbody>
     `;
-    
+
     orders.forEach(order => {
         html += `
             <tr>
@@ -1172,7 +1172,7 @@ function renderOrdersTable(containerId) {
             </tr>
         `;
     });
-    
+
     html += '</tbody></table>';
     container.innerHTML = html;
 }
@@ -1181,7 +1181,7 @@ function renderOrdersTable(containerId) {
 function renderCustomersTable(containerId) {
     const container = document.getElementById(containerId);
     if (!container) return;
-    
+
     let html = `
         <table class="data-table">
             <thead>
@@ -1197,7 +1197,7 @@ function renderCustomersTable(containerId) {
             </thead>
             <tbody>
     `;
-    
+
     customers.forEach(customer => {
         const avatarColor = getAvatarColor(customer.name);
         html += `
@@ -1223,7 +1223,7 @@ function renderCustomersTable(containerId) {
             </tr>
         `;
     });
-    
+
     html += '</tbody></table>';
     container.innerHTML = html;
 }
@@ -1232,7 +1232,7 @@ function renderCustomersTable(containerId) {
 function renderInventoryTable(containerId) {
     const container = document.getElementById(containerId);
     if (!container) return;
-    
+
     let html = `
         <table class="data-table">
             <thead>
@@ -1248,13 +1248,13 @@ function renderInventoryTable(containerId) {
             </thead>
             <tbody>
     `;
-    
+
     products.forEach(product => {
         const stockStatus = getStockStatus(product.stock, product.minStock);
         const statusLabel = stockStatus === 'low-stock' ? 'Low Stock' : (stockStatus === 'out-of-stock' ? 'Out of Stock' : 'In Stock');
         const initials = getInitials(product.name);
         const bgColor = getAvatarColor(product.name);
-        
+
         html += `
             <tr>
                 <td>
@@ -1283,7 +1283,7 @@ function renderInventoryTable(containerId) {
             </tr>
         `;
     });
-    
+
     html += '</tbody></table>';
     container.innerHTML = html;
 }
@@ -1311,7 +1311,7 @@ function closeModal(modalId) {
 // Close modal on click outside
 function setupModalCloseOnClickOutside() {
     document.querySelectorAll('.modal-overlay').forEach(overlay => {
-        overlay.addEventListener('click', function(e) {
+        overlay.addEventListener('click', function (e) {
             if (e.target === this) {
                 this.classList.remove('active');
                 document.body.style.overflow = '';
@@ -1326,7 +1326,7 @@ function setupModalCloseOnClickOutside() {
 function addProduct(formData) {
     // Get the highest ID and add 1
     const maxId = products.reduce((max, p) => Math.max(max, p.id), 0);
-    
+
     const newProduct = {
         id: maxId + 1,
         name: formData.get('productName'),
@@ -1339,12 +1339,12 @@ function addProduct(formData) {
         description: formData.get('productDescription'),
         image: 'https://via.placeholder.com/280x200/f1f5f9/64748b?text=New+Product'
     };
-    
+
     // Handle image if uploaded
     const imageInput = document.getElementById('addProductImage');
     if (imageInput && imageInput.files && imageInput.files[0]) {
         const reader = new FileReader();
-        reader.onload = function(e) {
+        reader.onload = function (e) {
             newProduct.image = e.target.result;
             products.push(newProduct);
             // Log employee activity
@@ -1387,7 +1387,7 @@ function resetAddProductForm() {
 function editProduct(productId) {
     const product = products.find(p => p.id === productId);
     if (!product) return;
-    
+
     // Fill the edit form with product data
     document.getElementById('editProductId').value = product.id;
     document.getElementById('editProductName').value = product.name;
@@ -1397,7 +1397,7 @@ function editProduct(productId) {
     document.getElementById('editProductStock').value = product.stock;
     document.getElementById('editProductMinStock').value = product.minStock;
     document.getElementById('editProductDescription').value = product.description || '';
-    
+
     // Set status
     const statusSelect = document.getElementById('editProductStatus');
     if (product.stock === 0) {
@@ -1405,14 +1405,14 @@ function editProduct(productId) {
     } else {
         statusSelect.value = product.status || 'active';
     }
-    
+
     // Set image preview
     const imagePreview = document.getElementById('editImagePreview');
     imagePreview.src = product.image || 'https://via.placeholder.com/200x150/f1f5f9/64748b?text=No+Image';
-    imagePreview.onerror = function() {
+    imagePreview.onerror = function () {
         this.src = 'https://via.placeholder.com/200x150/f1f5f9/64748b?text=No+Image';
     };
-    
+
     // Open the modal
     openModal('editProductModal');
 }
@@ -1420,15 +1420,15 @@ function editProduct(productId) {
 // Save edited product
 function saveEditedProduct(event) {
     event.preventDefault();
-    
+
     const productId = parseInt(document.getElementById('editProductId').value);
     const productIndex = products.findIndex(p => p.id === productId);
-    
+
     if (productIndex === -1) {
         showAlert('error', 'Product not found!');
         return;
     }
-    
+
     // Update product data
     products[productIndex].name = document.getElementById('editProductName').value;
     products[productIndex].sku = document.getElementById('editProductSku').value;
@@ -1438,20 +1438,20 @@ function saveEditedProduct(event) {
     products[productIndex].minStock = parseInt(document.getElementById('editProductMinStock').value) || 20;
     products[productIndex].description = document.getElementById('editProductDescription').value;
     products[productIndex].status = document.getElementById('editProductStatus').value;
-    
+
     // Handle image if a new one was uploaded
     const imageInput = document.getElementById('editProductImage');
     if (imageInput.files && imageInput.files[0]) {
         // In a real app, this would upload to server
         // For now, we'll use the preview URL
         const reader = new FileReader();
-        reader.onload = function(e) {
+        reader.onload = function (e) {
             products[productIndex].image = e.target.result;
             renderProductsGrid('productsGrid');
         };
         reader.readAsDataURL(imageInput.files[0]);
     }
-    
+
     // Close modal and refresh grid
     closeModal('editProductModal');
     renderProductsGrid('productsGrid');
@@ -1463,7 +1463,7 @@ function previewImage(input, previewId) {
     const preview = document.getElementById(previewId);
     if (input.files && input.files[0]) {
         const reader = new FileReader();
-        reader.onload = function(e) {
+        reader.onload = function (e) {
             preview.src = e.target.result;
         };
         reader.readAsDataURL(input.files[0]);
@@ -1474,7 +1474,7 @@ function previewImage(input, previewId) {
 function deleteProduct(productId) {
     const product = products.find(p => p.id === productId);
     if (!product) return;
-    
+
     // Create confirm modal
     let modal = document.getElementById('confirmModal');
     if (!modal) {
@@ -1483,7 +1483,7 @@ function deleteProduct(productId) {
         modal.className = 'modal-overlay';
         document.body.appendChild(modal);
     }
-    
+
     modal.innerHTML = `
         <div class="modal" style="max-width: 400px;">
             <div class="modal-header">
@@ -1508,7 +1508,7 @@ function deleteProduct(productId) {
             </div>
         </div>
     `;
-    
+
     openModal('confirmModal');
 }
 
@@ -1528,12 +1528,12 @@ function confirmDeleteProduct(productId) {
 function viewOrder(orderId) {
     const order = orders.find(o => o.id === orderId);
     if (!order) return;
-    
+
     const remainingAmount = order.amount - (order.depositAmount || 0);
-    const depositBadgeClass = order.depositStatus === 'paid' ? 'badge-delivered' : 
-                              order.depositStatus === 'pending' ? 'badge-pending' : 
-                              order.depositStatus === 'refunded' ? 'badge-shipped' : 'badge-inactive';
-    
+    const depositBadgeClass = order.depositStatus === 'paid' ? 'badge-delivered' :
+        order.depositStatus === 'pending' ? 'badge-pending' :
+            order.depositStatus === 'refunded' ? 'badge-shipped' : 'badge-inactive';
+
     // Create order receipt modal
     let modal = document.getElementById('orderReceiptModal');
     if (!modal) {
@@ -1542,7 +1542,7 @@ function viewOrder(orderId) {
         modal.className = 'modal-overlay';
         document.body.appendChild(modal);
     }
-    
+
     modal.innerHTML = `
         <div class="modal order-receipt-modal">
             <div class="modal-header">
@@ -1678,7 +1678,7 @@ function viewOrder(orderId) {
             </div>
         </div>
     `;
-    
+
     openModal('orderReceiptModal');
 }
 
@@ -1686,26 +1686,26 @@ function viewOrder(orderId) {
 function updateOrderStatus(orderId, newStatus) {
     const order = orders.find(o => o.id === orderId);
     if (!order) return;
-    
+
     const oldStatus = order.status;
-    
+
     // Handle stock changes based on status transition
     handleOrderStockChange(order, oldStatus, newStatus);
-    
+
     // If cancelling, move to trash
     if (newStatus === 'cancelled') {
         moveOrderToTrash(orderId);
         return;
     }
-    
+
     order.status = newStatus;
-    
+
     // Update the receipt modal if open
     viewOrder(orderId);
-    
+
     // Also update the orders table
     renderFilteredOrders();
-    
+
     // Show success message
     showAlert('success', `Order Status Updated!\n\nOrder: #${orderId}\nFrom: ${oldStatus.charAt(0).toUpperCase() + oldStatus.slice(1)}\nTo: ${newStatus.charAt(0).toUpperCase() + newStatus.slice(1)}`);
 }
@@ -1720,31 +1720,31 @@ function handleOrderStockChange(order, oldStatus, newStatus) {
     if (!product) {
         product = findProductByName(order.product);
     }
-    
+
     if (!product) {
         console.log(`Product not found for order: ${order.product}`);
         return;
     }
-    
+
     const quantity = order.quantity || order.items || 1;
-    
+
     // Stock should be deducted when order moves from pending to processing/shipped/delivered
     // Stock should be restored when order is cancelled
-    
+
     // If order was cancelled and now is being reactivated
     if (oldStatus === 'cancelled' && newStatus !== 'cancelled') {
         // Deduct stock
         deductStock(product, quantity, order.id);
         order.stockDeducted = true;
     }
-    
+
     // If order is being cancelled and stock was previously deducted
     if (oldStatus !== 'cancelled' && newStatus === 'cancelled' && order.stockDeducted) {
         // Restore stock
         restoreStock(product, quantity, order.id);
         order.stockDeducted = false;
     }
-    
+
     // If order moves from pending to processing (first time confirmation)
     if (oldStatus === 'pending' && !order.stockDeducted && (newStatus === 'processing' || newStatus === 'shipped')) {
         deductStock(product, quantity, order.id);
@@ -1755,42 +1755,42 @@ function handleOrderStockChange(order, oldStatus, newStatus) {
 // Find product by name (partial match)
 function findProductByName(productName) {
     if (!productName) return null;
-    
+
     const nameLower = productName.toLowerCase();
-    
+
     // Try exact match first
     let product = products.find(p => p.name.toLowerCase() === nameLower);
     if (product) return product;
-    
+
     // Try partial match
-    product = products.find(p => 
-        p.name.toLowerCase().includes(nameLower) || 
+    product = products.find(p =>
+        p.name.toLowerCase().includes(nameLower) ||
         nameLower.includes(p.name.toLowerCase())
     );
     if (product) return product;
-    
+
     // Try matching first word
     const firstWord = nameLower.split(' ')[0];
     product = products.find(p => p.name.toLowerCase().includes(firstWord));
-    
+
     return product;
 }
 
 // Deduct stock for an order
 function deductStock(product, quantity, orderId) {
     if (!product) return;
-    
+
     const newStock = Math.max(0, product.stock - quantity);
     console.log(`Stock deducted for ${product.name}: ${product.stock} -> ${newStock} (Order: ${orderId})`);
     product.stock = newStock;
-    
+
     // Update product status based on stock
     if (product.stock === 0) {
         product.status = 'out-of-stock';
     } else if (product.stock <= product.minStock) {
         product.status = 'low-stock';
     }
-    
+
     // Refresh inventory table if on inventory page
     if (document.getElementById('inventoryTable')) {
         renderInventoryTable('inventoryTable');
@@ -1801,18 +1801,18 @@ function deductStock(product, quantity, orderId) {
 // Restore stock for a cancelled order
 function restoreStock(product, quantity, orderId) {
     if (!product) return;
-    
+
     const newStock = product.stock + quantity;
     console.log(`Stock restored for ${product.name}: ${product.stock} -> ${newStock} (Order: ${orderId})`);
     product.stock = newStock;
-    
+
     // Update product status based on stock
     if (product.stock > product.minStock) {
         product.status = 'active';
     } else if (product.stock > 0) {
         product.status = 'low-stock';
     }
-    
+
     // Refresh inventory table if on inventory page
     if (document.getElementById('inventoryTable')) {
         renderInventoryTable('inventoryTable');
@@ -1824,7 +1824,7 @@ function restoreStock(product, quantity, orderId) {
 function confirmMoveToTrash(orderId) {
     const order = orders.find(o => o.id === orderId);
     if (!order) return;
-    
+
     // Create confirm modal
     let modal = document.getElementById('confirmTrashModal');
     if (!modal) {
@@ -1833,7 +1833,7 @@ function confirmMoveToTrash(orderId) {
         modal.className = 'modal-overlay';
         document.body.appendChild(modal);
     }
-    
+
     modal.innerHTML = `
         <div class="modal" style="max-width: 400px;">
             <div class="modal-header">
@@ -1864,7 +1864,7 @@ function confirmMoveToTrash(orderId) {
             </div>
         </div>
     `;
-    
+
     openModal('confirmTrashModal');
 }
 
@@ -1872,10 +1872,10 @@ function confirmMoveToTrash(orderId) {
 function moveOrderToTrash(orderId) {
     const orderIndex = orders.findIndex(o => o.id === orderId);
     if (orderIndex === -1) return;
-    
+
     const order = orders[orderIndex];
     const oldStatus = order.status;
-    
+
     // Restore stock if order was not already cancelled
     if (oldStatus !== 'cancelled') {
         const product = findProductByName(order.product);
@@ -1884,22 +1884,22 @@ function moveOrderToTrash(orderId) {
             restoreStock(product, quantity, orderId);
         }
     }
-    
+
     // Add deletion date and move to trash
     order.status = 'cancelled';
     order.deletedAt = new Date().toISOString();
     order.stockDeducted = false; // Reset flag
-    
+
     orderTrash.push(order);
     orders.splice(orderIndex, 1);
-    
+
     // Close the receipt modal if open
     closeModal('orderReceiptModal');
-    
+
     // Update the orders table
     renderFilteredOrders();
     updateTrashCount();
-    
+
     // Show success message with stock info
     const product = findProductByName(order.product);
     const stockInfo = product ? `\nStock restored: ${product.name} (${product.stock} units)` : '';
@@ -1910,22 +1910,22 @@ function moveOrderToTrash(orderId) {
 function restoreOrderFromTrash(orderId) {
     const trashIndex = orderTrash.findIndex(o => o.id === orderId);
     if (trashIndex === -1) return;
-    
+
     const order = orderTrash[trashIndex];
-    
+
     // Remove deletion info and restore
     delete order.deletedAt;
     delete order.autoDeleteDate;
     order.status = 'pending'; // Reset to pending
-    
+
     orders.push(order);
     orderTrash.splice(trashIndex, 1);
-    
+
     // Update displays
     renderFilteredOrders();
     renderTrashTable();
     updateTrashCount();
-    
+
     showAlert('success', `Order Restored!\n\nOrder: #${orderId}\nStatus: Pending\n\nThe order has been restored and set to Pending status.`);
 }
 
@@ -1933,9 +1933,9 @@ function restoreOrderFromTrash(orderId) {
 function permanentlyDeleteOrder(orderId) {
     const trashIndex = orderTrash.findIndex(o => o.id === orderId);
     if (trashIndex === -1) return;
-    
+
     const order = orderTrash[trashIndex];
-    
+
     // Create confirm modal
     let modal = document.getElementById('confirmDeleteOrderModal');
     if (!modal) {
@@ -1944,7 +1944,7 @@ function permanentlyDeleteOrder(orderId) {
         modal.className = 'modal-overlay';
         document.body.appendChild(modal);
     }
-    
+
     modal.innerHTML = `
         <div class="modal" style="max-width: 400px;">
             <div class="modal-header">
@@ -1969,7 +1969,7 @@ function permanentlyDeleteOrder(orderId) {
             </div>
         </div>
     `;
-    
+
     openModal('confirmDeleteOrderModal');
 }
 
@@ -1991,7 +1991,7 @@ function emptyAllTrash() {
         showAlert('info', 'Trash is already empty.');
         return;
     }
-    
+
     let modal = document.getElementById('confirmEmptyTrashModal');
     if (!modal) {
         modal = document.createElement('div');
@@ -1999,7 +1999,7 @@ function emptyAllTrash() {
         modal.className = 'modal-overlay';
         document.body.appendChild(modal);
     }
-    
+
     modal.innerHTML = `
         <div class="modal" style="max-width: 400px;">
             <div class="modal-header">
@@ -2024,7 +2024,7 @@ function emptyAllTrash() {
             </div>
         </div>
     `;
-    
+
     openModal('confirmEmptyTrashModal');
 }
 
@@ -2054,7 +2054,7 @@ function updateTrashCount() {
         trashCountBadge.textContent = orderTrash.length;
         trashCountBadge.style.display = orderTrash.length > 0 ? 'inline-flex' : 'none';
     }
-    
+
     // Update cancelled count in stats
     const cancelledCount = document.getElementById('cancelledCount');
     if (cancelledCount) {
@@ -2066,7 +2066,7 @@ function updateTrashCount() {
 function renderTrashTable() {
     const container = document.getElementById('trashTableBody');
     if (!container) return;
-    
+
     let html = `
         <table class="data-table">
             <thead>
@@ -2080,7 +2080,7 @@ function renderTrashTable() {
             </thead>
             <tbody>
     `;
-    
+
     if (orderTrash.length === 0) {
         html += `
             <tr>
@@ -2094,7 +2094,7 @@ function renderTrashTable() {
         orderTrash.forEach(order => {
             const deletedDate = new Date(order.deletedAt).toLocaleDateString();
             const daysSince = getDaysSinceDeleted(order.deletedAt);
-            
+
             html += `
                 <tr>
                     <td><strong>#${order.id}</strong></td>
@@ -2118,7 +2118,7 @@ function renderTrashTable() {
             `;
         });
     }
-    
+
     html += '</tbody></table>';
     container.innerHTML = html;
 }
@@ -2128,19 +2128,19 @@ function toggleTrashView() {
     const trashSection = document.getElementById('trashSection');
     const ordersSection = document.getElementById('ordersSection');
     const toggleBtn = document.getElementById('trashToggleBtn');
-    
+
     if (trashSection && ordersSection) {
         const isTrashVisible = trashSection.style.display !== 'none';
-        
+
         trashSection.style.display = isTrashVisible ? 'none' : 'block';
         ordersSection.style.display = isTrashVisible ? 'block' : 'none';
-        
+
         if (toggleBtn) {
-            toggleBtn.innerHTML = isTrashVisible 
+            toggleBtn.innerHTML = isTrashVisible
                 ? '<i class="fas fa-trash"></i> Trash <span class="badge" id="trashCountBadge" style="margin-left: 0.5rem;">' + orderTrash.length + '</span>'
                 : '<i class="fas fa-arrow-left"></i> Back to Orders';
         }
-        
+
         if (!isTrashVisible) {
             renderTrashTable();
         }
@@ -2151,7 +2151,7 @@ function toggleTrashView() {
 function printReceipt(orderId) {
     const order = orders.find(o => o.id === orderId);
     if (!order) return;
-    
+
     // Create print content
     const printContent = `
         <html>
@@ -2199,7 +2199,7 @@ function printReceipt(orderId) {
         </body>
         </html>
     `;
-    
+
     const printWindow = window.open('', '_blank');
     printWindow.document.write(printContent);
     printWindow.document.close();
@@ -2210,7 +2210,7 @@ function printReceipt(orderId) {
 function confirmDeposit(orderId) {
     const order = orders.find(o => o.id === orderId);
     if (!order) return;
-    
+
     // Create deposit modal
     let modal = document.getElementById('depositModal');
     if (!modal) {
@@ -2219,7 +2219,7 @@ function confirmDeposit(orderId) {
         modal.className = 'modal-overlay';
         document.body.appendChild(modal);
     }
-    
+
     modal.innerHTML = `
         <div class="modal" style="max-width: 400px;">
             <div class="modal-header">
@@ -2258,7 +2258,7 @@ function confirmDeposit(orderId) {
             </div>
         </div>
     `;
-    
+
     openModal('depositModal');
 }
 
@@ -2266,19 +2266,19 @@ function confirmDeposit(orderId) {
 function processDeposit(orderId) {
     const order = orders.find(o => o.id === orderId);
     if (!order) return;
-    
+
     const depositInput = document.getElementById('depositAmountInput');
     const depositAmount = parseFloat(depositInput.value);
-    
+
     if (isNaN(depositAmount) || depositAmount <= 0) {
         showAlert('error', 'Please enter a valid deposit amount.');
         return;
     }
-    
+
     order.depositStatus = 'paid';
     order.depositAmount = depositAmount;
     order.status = order.status === 'pending' ? 'processing' : order.status;
-    
+
     closeModal('depositModal');
     renderFilteredOrders();
     showAlert('success', `Deposit Confirmed!\n\nAmount: ${formatCurrency(depositAmount)}\nOrder: #${orderId}\nStatus: ${order.status.charAt(0).toUpperCase() + order.status.slice(1)}\n\nRemaining on delivery: ${formatCurrency(order.amount - depositAmount)}`);
@@ -2288,13 +2288,13 @@ function processDeposit(orderId) {
 function viewCustomer(customerId) {
     const customer = customers.find(c => c.id === customerId);
     if (!customer) return;
-    
+
     // Get all orders for this customer (match by email or name)
-    const customerOrders = orders.filter(o => 
+    const customerOrders = orders.filter(o =>
         o.customer.email.toLowerCase() === customer.email.toLowerCase() ||
         o.customer.name.toLowerCase() === customer.name.toLowerCase()
     );
-    
+
     // Create customer profile modal
     let modal = document.getElementById('customerProfileModal');
     if (!modal) {
@@ -2303,13 +2303,13 @@ function viewCustomer(customerId) {
         modal.className = 'modal-overlay';
         document.body.appendChild(modal);
     }
-    
+
     const avatarColor = getAvatarColor(customer.name);
-    
+
     // Store customer orders globally for search
     window.currentCustomerOrders = customerOrders;
     window.currentCustomerId = customerId;
-    
+
     // Generate orders list HTML
     let ordersHtml = '';
     if (customerOrders.length > 0) {
@@ -2349,11 +2349,11 @@ function viewCustomer(customerId) {
             </div>
         `;
     }
-    
+
     // Calculate actual totals from orders
     const actualOrderCount = customerOrders.length;
     const actualTotalSpent = customerOrders.reduce((sum, o) => sum + o.amount, 0);
-    
+
     modal.innerHTML = `
         <div class="modal" style="max-width: 600px;">
             <div class="modal-header">
@@ -2431,7 +2431,7 @@ function viewCustomer(customerId) {
             </div>
         </div>
     `;
-    
+
     openModal('customerProfileModal');
 }
 
@@ -2445,7 +2445,7 @@ function renderCustomerOrdersList(ordersToRender) {
             </div>
         `;
     }
-    
+
     return ordersToRender.map(order => `
         <div class="customer-order-item" style="display: flex; justify-content: space-between; align-items: center; padding: 0.75rem 1rem; border-bottom: 1px solid var(--bg-secondary); cursor: pointer; transition: background 0.2s;" onclick="viewOrderFromCustomer('${order.id}')" onmouseover="this.style.background='var(--bg-secondary)'" onmouseout="this.style.background='transparent'">
             <div style="flex: 1;">
@@ -2463,9 +2463,9 @@ function renderCustomerOrdersList(ordersToRender) {
             </div>
             <div style="text-align: right;">
                 <p style="font-weight: 700; color: var(--text-primary); margin-bottom: 0.25rem;">${formatCurrency(order.amount)}</p>
-                ${order.depositStatus === 'paid' ? `<span style="font-size: 0.65rem; color: var(--success);"><i class="fas fa-check-circle"></i> Deposit Paid</span>` : 
-                  order.depositStatus === 'pending' ? `<span style="font-size: 0.65rem; color: var(--warning);"><i class="fas fa-clock"></i> Pending</span>` : 
-                  order.depositStatus === 'refunded' ? `<span style="font-size: 0.65rem; color: var(--text-secondary);"><i class="fas fa-undo"></i> Refunded</span>` : ''}
+                ${order.depositStatus === 'paid' ? `<span style="font-size: 0.65rem; color: var(--success);"><i class="fas fa-check-circle"></i> Deposit Paid</span>` :
+            order.depositStatus === 'pending' ? `<span style="font-size: 0.65rem; color: var(--warning);"><i class="fas fa-clock"></i> Pending</span>` :
+                order.depositStatus === 'refunded' ? `<span style="font-size: 0.65rem; color: var(--text-secondary);"><i class="fas fa-undo"></i> Refunded</span>` : ''}
             </div>
             <div style="margin-left: 0.75rem; color: var(--text-muted);">
                 <i class="fas fa-chevron-right"></i>
@@ -2478,16 +2478,16 @@ function renderCustomerOrdersList(ordersToRender) {
 function filterCustomerOrders(searchTerm) {
     const ordersList = document.getElementById('customerOrdersList');
     if (!ordersList || !window.currentCustomerOrders) return;
-    
+
     const filteredOrders = window.currentCustomerOrders.filter(order => {
         if (!searchTerm) return true;
         const term = searchTerm.toLowerCase();
-        return order.id.toLowerCase().includes(term) || 
-               order.product.toLowerCase().includes(term) ||
-               order.date.includes(term) ||
-               order.status.toLowerCase().includes(term);
+        return order.id.toLowerCase().includes(term) ||
+            order.product.toLowerCase().includes(term) ||
+            order.date.includes(term) ||
+            order.status.toLowerCase().includes(term);
     });
-    
+
     ordersList.innerHTML = renderCustomerOrdersList(filteredOrders);
 }
 
@@ -2495,7 +2495,7 @@ function filterCustomerOrders(searchTerm) {
 function viewOrderFromCustomer(orderId) {
     // Close customer profile modal
     closeModal('customerProfileModal');
-    
+
     // Find the order
     const order = orders.find(o => o.id === orderId);
     if (order) {
@@ -2513,7 +2513,7 @@ function showOrderDetailsModal(orderId) {
         showAlert('error', 'Order not found.');
         return;
     }
-    
+
     // Create or get modal
     let modal = document.getElementById('orderDetailsModal');
     if (!modal) {
@@ -2522,7 +2522,7 @@ function showOrderDetailsModal(orderId) {
         modal.className = 'modal-overlay';
         document.body.appendChild(modal);
     }
-    
+
     // Generate items list (if available) or show product
     let itemsHtml = '';
     if (order.orderItems && order.orderItems.length > 0) {
@@ -2561,7 +2561,7 @@ function showOrderDetailsModal(orderId) {
             </div>
         `;
     }
-    
+
     modal.innerHTML = `
         <div class="modal" style="max-width: 550px;">
             <div class="modal-header">
@@ -2674,7 +2674,7 @@ function showOrderDetailsModal(orderId) {
             </div>
         </div>
     `;
-    
+
     openModal('orderDetailsModal');
 }
 
@@ -2684,22 +2684,22 @@ function updateOrderStatusFromModal(orderId, newStatus) {
     if (orderIndex !== -1) {
         const order = orders[orderIndex];
         const oldStatus = order.status;
-        
+
         // Handle stock changes
         handleOrderStockChange(order, oldStatus, newStatus);
-        
+
         order.status = newStatus;
         showOrderDetailsModal(orderId); // Refresh the modal
-        
+
         // Log employee activity
         if (typeof logEmployeeActivity === 'function') {
             logEmployeeActivity('order', `Updated order #${orderId} status from ${oldStatus} to ${newStatus}`);
         }
-        
+
         // Find product for notification
         let product = order.productId ? products.find(p => p.id === order.productId) : findProductByName(order.product);
         const quantity = order.quantity || order.items || 1;
-        
+
         // Show stock change notification
         if (product && oldStatus !== 'cancelled' && newStatus === 'cancelled') {
             showAlert('info', `Order cancelled!\n\nStock restored: +${quantity} units\nProduct: ${product.name}\nNew stock level: ${product.stock} units`);
@@ -2717,7 +2717,7 @@ function updateOrderStatusFromModal(orderId, newStatus) {
 function printOrderDetails(orderId) {
     const order = orders.find(o => o.id === orderId);
     if (!order) return;
-    
+
     const printWindow = window.open('', '_blank');
     printWindow.document.write(`
         <!DOCTYPE html>
@@ -2802,10 +2802,10 @@ function printOrderDetails(orderId) {
 function editCustomer(customerId) {
     const customer = customers.find(c => c.id === customerId);
     if (!customer) return;
-    
+
     // Close profile modal if open
     closeModal('customerProfileModal');
-    
+
     // Fill the edit form
     document.getElementById('editCustomerId').value = customer.id;
     document.getElementById('editCustomerName').value = customer.name;
@@ -2815,22 +2815,22 @@ function editCustomer(customerId) {
     document.getElementById('editCustomerCity').value = customer.city || '';
     document.getElementById('editCustomerStatus').value = customer.status;
     document.getElementById('editCustomerNotes').value = customer.notes || '';
-    
+
     openModal('editCustomerModal');
 }
 
 // Save Edited Customer
 function saveEditedCustomer(event) {
     event.preventDefault();
-    
+
     const customerId = parseInt(document.getElementById('editCustomerId').value);
     const customerIndex = customers.findIndex(c => c.id === customerId);
-    
+
     if (customerIndex === -1) {
         showAlert('error', 'Customer not found!');
         return;
     }
-    
+
     // Update customer data
     customers[customerIndex].name = document.getElementById('editCustomerName').value;
     customers[customerIndex].email = document.getElementById('editCustomerEmail').value;
@@ -2839,7 +2839,7 @@ function saveEditedCustomer(event) {
     customers[customerIndex].city = document.getElementById('editCustomerCity').value;
     customers[customerIndex].status = document.getElementById('editCustomerStatus').value;
     customers[customerIndex].notes = document.getElementById('editCustomerNotes').value;
-    
+
     closeModal('editCustomerModal');
     renderFilteredCustomers();
     showAlert('success', `Customer "${customers[customerIndex].name}" updated successfully!`);
@@ -2848,20 +2848,20 @@ function saveEditedCustomer(event) {
 // Add New Customer
 function addNewCustomer(event) {
     event.preventDefault();
-    
+
     const name = document.getElementById('addCustomerName').value;
     const email = document.getElementById('addCustomerEmail').value;
     const phone = document.getElementById('addCustomerPhone').value;
-    
+
     // Validate required fields
     if (!name || !email || !phone) {
         showAlert('error', 'Please fill in all required fields.');
         return;
     }
-    
+
     // Get the highest ID and add 1
     const maxId = customers.reduce((max, c) => Math.max(max, c.id), 0);
-    
+
     const newCustomer = {
         id: maxId + 1,
         name: name,
@@ -2874,14 +2874,14 @@ function addNewCustomer(event) {
         orders: 0,
         spent: 0
     };
-    
+
     customers.push(newCustomer);
-    
+
     // Log employee activity
     if (typeof logEmployeeActivity === 'function') {
         logEmployeeActivity('customer', `Added new customer: ${newCustomer.name}`);
     }
-    
+
     closeModal('addCustomerModal');
     document.getElementById('addCustomerForm').reset();
     renderFilteredCustomers();
@@ -2892,7 +2892,7 @@ function addNewCustomer(event) {
 function deleteCustomer(customerId) {
     const customer = customers.find(c => c.id === customerId);
     if (!customer) return;
-    
+
     // Create confirm modal
     let modal = document.getElementById('confirmDeleteCustomerModal');
     if (!modal) {
@@ -2901,7 +2901,7 @@ function deleteCustomer(customerId) {
         modal.className = 'modal-overlay';
         document.body.appendChild(modal);
     }
-    
+
     modal.innerHTML = `
         <div class="modal" style="max-width: 400px;">
             <div class="modal-header">
@@ -2926,7 +2926,7 @@ function deleteCustomer(customerId) {
             </div>
         </div>
     `;
-    
+
     openModal('confirmDeleteCustomerModal');
 }
 
@@ -2952,10 +2952,10 @@ let currentCustomerFilters = {
 function applyCustomerFilters() {
     const statusFilter = document.getElementById('customerStatusFilter');
     const searchInput = document.getElementById('customerSearch');
-    
+
     if (statusFilter) currentCustomerFilters.status = statusFilter.value;
     if (searchInput) currentCustomerFilters.search = searchInput.value.toLowerCase();
-    
+
     renderFilteredCustomers();
 }
 
@@ -2963,13 +2963,13 @@ function applyCustomerFilters() {
 function renderFilteredCustomers() {
     const container = document.getElementById('customersTableBody');
     if (!container) return;
-    
+
     let filteredCustomers = customers.filter(customer => {
         // Status filter
         if (currentCustomerFilters.status !== 'all' && customer.status !== currentCustomerFilters.status) {
             return false;
         }
-        
+
         // Search filter
         if (currentCustomerFilters.search) {
             const searchTerm = currentCustomerFilters.search;
@@ -2978,16 +2978,16 @@ function renderFilteredCustomers() {
             const matchesPhone = customer.phone.includes(searchTerm);
             if (!matchesName && !matchesEmail && !matchesPhone) return false;
         }
-        
+
         return true;
     });
-    
+
     // Update count
     const countElement = document.getElementById('customersCount');
     if (countElement) {
         countElement.textContent = `${filteredCustomers.length} customer${filteredCustomers.length !== 1 ? 's' : ''}`;
     }
-    
+
     // Render table
     let html = `
         <table class="data-table">
@@ -3004,7 +3004,7 @@ function renderFilteredCustomers() {
             </thead>
             <tbody>
     `;
-    
+
     if (filteredCustomers.length === 0) {
         html += `
             <tr>
@@ -3047,7 +3047,7 @@ function renderFilteredCustomers() {
             `;
         });
     }
-    
+
     html += '</tbody></table>';
     container.innerHTML = html;
 }
@@ -3059,20 +3059,20 @@ function openAddStockModal() {
     if (existingModal) {
         existingModal.remove();
     }
-    
+
     // Create modal
     const modal = document.createElement('div');
     modal.id = 'addStockSelectModal';
     modal.className = 'modal-overlay';
     document.body.appendChild(modal);
-    
+
     // Generate products list with search
     let productsHtml = products.map(product => {
         const stockStatus = getStockStatus(product.stock, product.minStock);
         const statusColor = stockStatus === 'in-stock' ? 'var(--success)' : stockStatus === 'low-stock' ? 'var(--warning)' : 'var(--danger)';
         const initials = getInitials(product.name);
         const bgColor = getAvatarColor(product.name);
-        
+
         return `
             <div class="product-select-item" style="display: flex; align-items: center; gap: 1rem; padding: 0.75rem 1rem; border-bottom: 1px solid var(--bg-secondary); cursor: pointer; transition: background 0.2s;" 
                  onclick="selectProductForStock(${product.id})"
@@ -3100,7 +3100,7 @@ function openAddStockModal() {
             </div>
         `;
     }).join('');
-    
+
     modal.innerHTML = `
         <div class="modal" style="max-width: 550px;">
             <div class="modal-header">
@@ -3137,14 +3137,14 @@ function openAddStockModal() {
             </div>
         </div>
     `;
-    
+
     // Add click outside to close
-    modal.addEventListener('click', function(e) {
+    modal.addEventListener('click', function (e) {
         if (e.target === modal) {
             closeModal('addStockSelectModal');
         }
     });
-    
+
     // Show modal with animation
     setTimeout(() => {
         modal.classList.add('active');
@@ -3156,11 +3156,11 @@ function openAddStockModal() {
 function filterProductsForStock(searchTerm) {
     const items = document.querySelectorAll('#productStockList .product-select-item');
     const term = searchTerm.toLowerCase();
-    
+
     items.forEach(item => {
         const name = item.getAttribute('data-name');
         const sku = item.getAttribute('data-sku');
-        
+
         if (name.includes(term) || sku.includes(term)) {
             item.style.display = 'flex';
         } else {
@@ -3185,28 +3185,28 @@ function updateStock(productId) {
         showAlert('error', 'Product not found!');
         return;
     }
-    
+
     // Store current product ID for save function
     window.currentStockProductId = productId;
-    
+
     // Remove existing modal if any
     const existingModal = document.getElementById('stockModal');
     if (existingModal) {
         existingModal.remove();
     }
-    
+
     // Create stock modal
     const modal = document.createElement('div');
     modal.id = 'stockModal';
     modal.className = 'modal-overlay';
     document.body.appendChild(modal);
-    
+
     const stockStatus = getStockStatus(product.stock, product.minStock);
     const statusColor = stockStatus === 'in-stock' ? 'var(--success)' : stockStatus === 'low-stock' ? 'var(--warning)' : 'var(--danger)';
     const statusLabel = stockStatus === 'in-stock' ? 'In Stock' : stockStatus === 'low-stock' ? 'Low Stock' : 'Out of Stock';
     const initials = getInitials(product.name);
     const bgColor = getAvatarColor(product.name);
-    
+
     modal.innerHTML = `
         <div class="modal" style="max-width: 450px;">
             <div class="modal-header">
@@ -3284,14 +3284,14 @@ function updateStock(productId) {
             </div>
         </div>
     `;
-    
+
     // Add click outside to close
-    modal.addEventListener('click', function(e) {
+    modal.addEventListener('click', function (e) {
         if (e.target === modal) {
             closeModal('stockModal');
         }
     });
-    
+
     // Show modal with animation
     setTimeout(() => {
         modal.classList.add('active');
@@ -3311,35 +3311,35 @@ function addToStock(amount) {
 function saveStock(productId) {
     const product = products.find(p => p.id === productId);
     if (!product) return;
-    
+
     const newStockInput = document.getElementById('newStockInput');
     const newStock = parseInt(newStockInput.value);
-    
+
     if (isNaN(newStock) || newStock < 0) {
         showAlert('error', 'Please enter a valid stock quantity.');
         return;
     }
-    
+
     const oldStock = product.stock;
     product.stock = newStock;
-    
+
     if (product.stock > 0) {
         product.status = 'active';
     } else {
         product.status = 'out-of-stock';
     }
-    
+
     closeModal('stockModal');
     renderInventoryTable('inventoryTable');
-    
+
     const change = newStock - oldStock;
     const changeText = change > 0 ? `+${change}` : change.toString();
-    
+
     // Log employee activity
     if (typeof logEmployeeActivity === 'function') {
         logEmployeeActivity('inventory', `Updated stock for ${product.name}: ${oldStock} → ${newStock} units (${changeText})`);
     }
-    
+
     showAlert('success', `Stock Updated!\n\nProduct: ${product.name}\nPrevious: ${oldStock} units\nNew: ${newStock} units\nChange: ${changeText} units`);
 }
 
@@ -3380,25 +3380,25 @@ function showAlert(type, message) {
         `;
         document.body.appendChild(alertModal);
     }
-    
+
     // Set content based on type
     const titleEl = document.getElementById('alertModalTitle');
     const iconEl = document.getElementById('alertModalIcon');
     const messageEl = document.getElementById('alertModalMessage');
-    
+
     const typeConfig = {
         success: { title: 'Success', icon: 'fa-check-circle', color: '#10b981' },
         error: { title: 'Error', icon: 'fa-times-circle', color: '#ef4444' },
         warning: { title: 'Warning', icon: 'fa-exclamation-triangle', color: '#f59e0b' },
         info: { title: 'Information', icon: 'fa-info-circle', color: '#6366f1' }
     };
-    
+
     const config = typeConfig[type] || typeConfig.info;
-    
+
     titleEl.textContent = config.title;
     iconEl.innerHTML = `<i class="fas ${config.icon}" style="color: ${config.color}"></i>`;
     messageEl.innerHTML = message.replace(/\n/g, '<br>');
-    
+
     // Show modal
     alertModal.classList.add('active');
     document.body.style.overflow = 'hidden';
@@ -3497,13 +3497,13 @@ function showNotificationModal() {
     // Remove existing modal
     const existingModal = document.getElementById('notificationModal');
     if (existingModal) existingModal.remove();
-    
+
     const modal = document.createElement('div');
     modal.id = 'notificationModal';
     modal.className = 'modal-overlay';
-    
+
     const unreadCount = notifications.filter(n => !n.read).length;
-    
+
     let notificationsHtml = notifications.map(notif => `
         <div class="notification-item ${notif.read ? '' : 'unread'}" 
              onclick="viewNotification(${notif.id})"
@@ -3521,7 +3521,7 @@ function showNotificationModal() {
             ${notif.read ? '' : '<div style="width: 8px; height: 8px; background: var(--primary); border-radius: 50%; flex-shrink: 0;"></div>'}
         </div>
     `).join('');
-    
+
     if (notifications.length === 0) {
         notificationsHtml = `
             <div style="text-align: center; padding: 3rem; color: var(--text-secondary);">
@@ -3530,7 +3530,7 @@ function showNotificationModal() {
             </div>
         `;
     }
-    
+
     modal.innerHTML = `
         <div class="modal" style="max-width: 450px;">
             <div class="modal-header">
@@ -3558,14 +3558,14 @@ function showNotificationModal() {
             </div>
         </div>
     `;
-    
+
     document.body.appendChild(modal);
-    
+
     // Add click outside to close
-    modal.addEventListener('click', function(e) {
+    modal.addEventListener('click', function (e) {
         if (e.target === modal) closeModal('notificationModal');
     });
-    
+
     openModal('notificationModal');
 }
 
@@ -3573,19 +3573,19 @@ function showNotificationModal() {
 function viewNotification(notifId) {
     const notif = notifications.find(n => n.id === notifId);
     if (!notif) return;
-    
+
     // Mark as read
     notif.read = true;
     updateNotificationBadge();
-    
+
     // Close notifications modal
     closeModal('notificationModal');
-    
+
     // Show notification detail modal
     const detailModal = document.createElement('div');
     detailModal.id = 'notificationDetailModal';
     detailModal.className = 'modal-overlay';
-    
+
     // Format details with line breaks
     const formattedDetails = notif.details.split('\n').map(line => {
         if (line.includes(':')) {
@@ -3594,7 +3594,7 @@ function viewNotification(notifId) {
         }
         return `<p style="margin: 0.5rem 0; color: var(--text-secondary);">${line}</p>`;
     }).join('');
-    
+
     detailModal.innerHTML = `
         <div class="modal" style="max-width: 450px;">
             <div class="modal-header" style="background: linear-gradient(135deg, ${notif.iconBg} 0%, var(--bg-secondary) 100%);">
@@ -3625,13 +3625,13 @@ function viewNotification(notifId) {
             </div>
         </div>
     `;
-    
+
     document.body.appendChild(detailModal);
-    
-    detailModal.addEventListener('click', function(e) {
+
+    detailModal.addEventListener('click', function (e) {
         if (e.target === detailModal) closeModal('notificationDetailModal');
     });
-    
+
     setTimeout(() => {
         detailModal.classList.add('active');
         document.body.style.overflow = 'hidden';
@@ -3641,8 +3641,8 @@ function viewNotification(notifId) {
 // Handle notification action button
 function handleNotificationAction(action, data) {
     closeModal('notificationDetailModal');
-    
-    switch(action) {
+
+    switch (action) {
         case 'viewOrder':
             // Navigate to orders page or show order details
             if (typeof showOrderDetailsModal === 'function') {
@@ -3676,7 +3676,7 @@ function clearAllNotifications() {
         showAlert('info', 'No notifications to clear.');
         return;
     }
-    
+
     notifications = [];
     updateNotificationBadge();
     showNotificationModal(); // Refresh the modal
@@ -3687,7 +3687,7 @@ function clearAllNotifications() {
 function updateNotificationBadge() {
     const unreadCount = notifications.filter(n => !n.read).length;
     const badges = document.querySelectorAll('.header-btn .badge');
-    
+
     badges.forEach((badge, index) => {
         // First badge is notifications
         if (index === 0) {
@@ -3708,9 +3708,9 @@ function addNotification(type, title, message, details, action = null, actionDat
         error: { icon: 'fa-times-circle', bg: 'var(--danger-light)', color: 'var(--danger)' },
         info: { icon: 'fa-info-circle', bg: 'var(--info-light)', color: 'var(--info)' }
     };
-    
+
     const iconInfo = iconMap[type] || iconMap.info;
-    
+
     const newNotif = {
         id: Date.now(),
         type: type,
@@ -3725,11 +3725,11 @@ function addNotification(type, title, message, details, action = null, actionDat
         action: action,
         actionData: actionData
     };
-    
+
     // Add to beginning of array
     notifications.unshift(newNotif);
     updateNotificationBadge();
-    
+
     return newNotif;
 }
 
@@ -3843,13 +3843,13 @@ function showMessagesModal() {
     // Remove existing modal
     const existingModal = document.getElementById('messagesModal');
     if (existingModal) existingModal.remove();
-    
+
     const modal = document.createElement('div');
     modal.id = 'messagesModal';
     modal.className = 'modal-overlay';
-    
+
     const unreadCount = messages.filter(m => !m.read).length;
-    
+
     let messagesHtml = messages.map(msg => `
         <div class="notification-item ${msg.read ? '' : 'unread'}" 
              onclick="viewMessage(${msg.id})"
@@ -3871,7 +3871,7 @@ function showMessagesModal() {
             ${msg.read ? '' : '<div style="width: 8px; height: 8px; background: var(--primary); border-radius: 50%; flex-shrink: 0;"></div>'}
         </div>
     `).join('');
-    
+
     if (messages.length === 0) {
         messagesHtml = `
             <div style="text-align: center; padding: 3rem; color: var(--text-secondary);">
@@ -3880,7 +3880,7 @@ function showMessagesModal() {
             </div>
         `;
     }
-    
+
     modal.innerHTML = `
         <div class="modal" style="max-width: 450px;">
             <div class="modal-header">
@@ -3908,13 +3908,13 @@ function showMessagesModal() {
             </div>
         </div>
     `;
-    
+
     document.body.appendChild(modal);
-    
-    modal.addEventListener('click', function(e) {
+
+    modal.addEventListener('click', function (e) {
         if (e.target === modal) closeModal('messagesModal');
     });
-    
+
     openModal('messagesModal');
 }
 
@@ -3922,19 +3922,19 @@ function showMessagesModal() {
 function viewMessage(msgId) {
     const msg = messages.find(m => m.id === msgId);
     if (!msg) return;
-    
+
     // Mark as read
     msg.read = true;
     updateMessageBadge();
-    
+
     // Close messages modal
     closeModal('messagesModal');
-    
+
     // Show message detail modal
     const detailModal = document.createElement('div');
     detailModal.id = 'messageDetailModal';
     detailModal.className = 'modal-overlay';
-    
+
     detailModal.innerHTML = `
         <div class="modal" style="max-width: 500px;">
             <div class="modal-header">
@@ -3970,13 +3970,13 @@ function viewMessage(msgId) {
             </div>
         </div>
     `;
-    
+
     document.body.appendChild(detailModal);
-    
-    detailModal.addEventListener('click', function(e) {
+
+    detailModal.addEventListener('click', function (e) {
         if (e.target === detailModal) closeModal('messageDetailModal');
     });
-    
+
     setTimeout(() => {
         detailModal.classList.add('active');
         document.body.style.overflow = 'hidden';
@@ -3987,14 +3987,14 @@ function viewMessage(msgId) {
 function replyToMessage(msgId) {
     const msg = messages.find(m => m.id === msgId);
     if (!msg) return;
-    
+
     closeModal('messageDetailModal');
-    
+
     // Show reply modal
     const replyModal = document.createElement('div');
     replyModal.id = 'replyModal';
     replyModal.className = 'modal-overlay';
-    
+
     replyModal.innerHTML = `
         <div class="modal" style="max-width: 500px;">
             <div class="modal-header">
@@ -4028,13 +4028,13 @@ function replyToMessage(msgId) {
             </div>
         </div>
     `;
-    
+
     document.body.appendChild(replyModal);
-    
-    replyModal.addEventListener('click', function(e) {
+
+    replyModal.addEventListener('click', function (e) {
         if (e.target === replyModal) closeModal('replyModal');
     });
-    
+
     setTimeout(() => {
         replyModal.classList.add('active');
         document.body.style.overflow = 'hidden';
@@ -4048,7 +4048,7 @@ function sendReply(msgId) {
         showAlert('error', 'Please enter a message.');
         return;
     }
-    
+
     closeModal('replyModal');
     showAlert('success', 'Reply sent successfully!');
 }
@@ -4067,7 +4067,7 @@ function clearAllMessages() {
         showAlert('info', 'No messages to clear.');
         return;
     }
-    
+
     messages = [];
     updateMessageBadge();
     showMessagesModal();
@@ -4078,7 +4078,7 @@ function clearAllMessages() {
 function updateMessageBadge() {
     const unreadCount = messages.filter(m => !m.read).length;
     const badges = document.querySelectorAll('.header-btn .badge');
-    
+
     badges.forEach((badge, index) => {
         // Second badge is messages
         if (index === 1) {
@@ -4103,14 +4103,14 @@ function showTrashModal() {
     // Remove existing modal
     const existingModal = document.getElementById('headerTrashModal');
     if (existingModal) existingModal.remove();
-    
+
     const modal = document.createElement('div');
     modal.id = 'headerTrashModal';
     modal.className = 'modal-overlay';
-    
+
     const totalTrash = orderTrash.length + messageTrash.length;
     let trashHtml = '';
-    
+
     if (totalTrash === 0) {
         trashHtml = `
             <div style="text-align: center; padding: 3rem; color: var(--text-secondary);">
@@ -4150,14 +4150,14 @@ function showTrashModal() {
                     </div>
                 </div>
             `).join('');
-            
+
             if (orderTrash.length > 3) {
                 trashHtml += `<div style="padding: 0.5rem 1rem; text-align: center; font-size: 0.8rem; color: var(--text-muted);">
                     +${orderTrash.length - 3} more orders in trash
                 </div>`;
             }
         }
-        
+
         // Messages section
         if (messageTrash.length > 0) {
             trashHtml += `<div style="padding: 0.5rem 1rem; background: var(--bg-secondary); font-size: 0.75rem; font-weight: 600; color: var(--text-secondary); text-transform: uppercase;">
@@ -4187,7 +4187,7 @@ function showTrashModal() {
                     </div>
                 </div>
             `).join('');
-            
+
             if (messageTrash.length > 3) {
                 trashHtml += `<div style="padding: 0.5rem 1rem; text-align: center; font-size: 0.8rem; color: var(--text-muted);">
                     +${messageTrash.length - 3} more messages in trash
@@ -4195,7 +4195,7 @@ function showTrashModal() {
             }
         }
     }
-    
+
     modal.innerHTML = `
         <div class="modal" style="max-width: 500px;">
             <div class="modal-header">
@@ -4223,13 +4223,13 @@ function showTrashModal() {
             </div>
         </div>
     `;
-    
+
     document.body.appendChild(modal);
-    
-    modal.addEventListener('click', function(e) {
+
+    modal.addEventListener('click', function (e) {
         if (e.target === modal) closeModal('headerTrashModal');
     });
-    
+
     setTimeout(() => {
         modal.classList.add('active');
         document.body.style.overflow = 'hidden';
@@ -4245,7 +4245,7 @@ function restoreOrderFromHeader(orderId) {
         delete order.deletedDate;
         orders.push(order);
         orderTrash.splice(orderIndex, 1);
-        
+
         updateHeaderTrashBadge();
         showTrashModal(); // Refresh the modal
         showAlert('success', `Order ${orderId} restored successfully!`);
@@ -4273,7 +4273,7 @@ function restoreMessageFromHeader(msgId) {
         delete msg.deletedDate;
         messages.push(msg);
         messageTrash.splice(msgIndex, 1);
-        
+
         updateHeaderTrashBadge();
         updateMessageBadge();
         showTrashModal(); // Refresh the modal
@@ -4302,7 +4302,7 @@ function moveMessageToTrash(msgId) {
         msg.deletedDate = new Date().toISOString();
         messageTrash.push(msg);
         messages.splice(msgIndex, 1);
-        
+
         updateHeaderTrashBadge();
         updateMessageBadge();
         return msg;
@@ -4317,7 +4317,7 @@ function emptyAllTrashFromHeader() {
         showAlert('info', 'Trash is already empty.');
         return;
     }
-    
+
     if (confirm(`Are you sure you want to permanently delete all ${totalItems} items? This action cannot be undone.`)) {
         orderTrash = [];
         messageTrash = [];
@@ -4346,7 +4346,7 @@ function filterProducts() {
     const category = document.getElementById('categoryFilter')?.value || 'all';
     const status = document.getElementById('statusFilter')?.value || 'all';
     const search = document.getElementById('productSearch')?.value || '';
-    
+
     renderProductsGrid('productsGrid', category, status, search);
 }
 
@@ -4355,7 +4355,7 @@ function setupFilterListeners() {
     const categoryFilter = document.getElementById('categoryFilter');
     const statusFilter = document.getElementById('statusFilter');
     const productSearch = document.getElementById('productSearch');
-    
+
     if (categoryFilter) {
         categoryFilter.addEventListener('change', filterProducts);
     }
@@ -4375,10 +4375,10 @@ function setActiveDateFilter(button) {
         btn.classList.remove('active');
     });
     button.classList.add('active');
-    
+
     // Get the filter type
     const filterType = button.textContent.toLowerCase().trim();
-    
+
     // Update dashboard data based on filter
     updateDashboardData(filterType);
 }
@@ -4387,17 +4387,17 @@ function setActiveDateFilter(button) {
 function updateDashboardData(period) {
     const stats = dashboardStatsByPeriod[period];
     if (!stats) return;
-    
+
     // Update stats cards with animation
     updateStatCard('revenue', stats.totalRevenue, stats.revenueGrowth, 'EGP ');
     updateStatCard('orders', stats.totalOrders, stats.ordersGrowth);
     updateStatCard('customers', stats.totalCustomers, stats.customersGrowth);
     updateStatCard('products', stats.totalProducts, stats.productsChange);
-    
+
     // Update charts
     createRevenueChart('revenueChart', period);
     createCategoryChart('categoryChart', period);
-    
+
     // Update chart labels
     const chartLabels = {
         today: 'Today',
@@ -4405,7 +4405,7 @@ function updateDashboardData(period) {
         month: 'Last 30 Days',
         year: 'Last 12 Months'
     };
-    
+
     const revenueLabel = document.getElementById('revenueChartLabel');
     if (revenueLabel) {
         revenueLabel.textContent = chartLabels[period] || 'Last 7 Days';
@@ -4416,7 +4416,7 @@ function updateDashboardData(period) {
 function updateStatCard(type, value, change, prefix = '') {
     const statCards = document.querySelectorAll('.stat-card');
     let targetCard = null;
-    
+
     statCards.forEach(card => {
         const title = card.querySelector('.stat-info h3');
         if (title) {
@@ -4427,17 +4427,17 @@ function updateStatCard(type, value, change, prefix = '') {
             if (type === 'products' && titleText.includes('products')) targetCard = card;
         }
     });
-    
+
     if (!targetCard) return;
-    
+
     const valueElement = targetCard.querySelector('.stat-value');
     const changeElement = targetCard.querySelector('.stat-change');
-    
+
     if (valueElement) {
         // Animate the value change
         animateValue(valueElement, value, prefix);
     }
-    
+
     if (changeElement) {
         // Update change indicator
         const isPositive = change >= 0;
@@ -4455,14 +4455,14 @@ function animateValue(element, target, prefix = '') {
     const start = 0;
     const increment = target / (duration / 16);
     let current = start;
-    
+
     const timer = setInterval(() => {
         current += increment;
         if (current >= target) {
             current = target;
             clearInterval(timer);
         }
-        
+
         element.textContent = prefix + formatNumber(Math.floor(current));
     }, 16);
 }
@@ -4475,14 +4475,14 @@ function animateCounter(element, target, prefix = '', suffix = '') {
     const start = 0;
     const increment = target / (duration / 16);
     let current = start;
-    
+
     const timer = setInterval(() => {
         current += increment;
         if (current >= target) {
             current = target;
             clearInterval(timer);
         }
-        
+
         if (Number.isInteger(target)) {
             element.textContent = prefix + formatNumber(Math.floor(current)) + suffix;
         } else {
@@ -4494,17 +4494,17 @@ function animateCounter(element, target, prefix = '', suffix = '') {
 // Initialize Stats Animation
 function initStatsAnimation() {
     const statElements = document.querySelectorAll('.stat-value[data-target]');
-    
+
     statElements.forEach(element => {
         const target = parseFloat(element.dataset.target);
         let prefix = element.dataset.prefix || '';
         const suffix = element.dataset.suffix || '';
-        
+
         // Convert $ to EGP if present
         if (prefix === '$') {
             prefix = 'EGP ';
         }
-        
+
         animateCounter(element, target, prefix, suffix);
     });
 }
@@ -4532,28 +4532,28 @@ function savePaymentSettings(event) {
 // Update Password
 function updatePassword(event) {
     event.preventDefault();
-    
+
     const currentPassword = document.getElementById('currentPassword')?.value;
     const newPassword = document.getElementById('newPassword')?.value;
     const confirmPassword = document.getElementById('confirmPassword')?.value;
-    
+
     if (!currentPassword || !newPassword || !confirmPassword) {
         showAlert('error', 'Please fill in all password fields.');
         return;
     }
-    
+
     if (newPassword !== confirmPassword) {
         showAlert('error', 'New passwords do not match.');
         return;
     }
-    
+
     if (newPassword.length < 8) {
         showAlert('error', 'Password must be at least 8 characters long.');
         return;
     }
-    
+
     showAlert('success', 'Password updated successfully!');
-    
+
     // Clear form
     document.getElementById('currentPassword').value = '';
     document.getElementById('newPassword').value = '';
@@ -4590,12 +4590,12 @@ function applyOrderFilters() {
     const depositStatusFilter = document.getElementById('depositStatusFilter');
     const dateFilter = document.getElementById('orderDateFilter');
     const searchInput = document.getElementById('orderSearch');
-    
+
     if (statusFilter) currentOrderFilters.status = statusFilter.value;
     if (depositStatusFilter) currentOrderFilters.depositStatus = depositStatusFilter.value;
     if (dateFilter) currentOrderFilters.date = dateFilter.value;
     if (searchInput) currentOrderFilters.search = searchInput.value.toLowerCase();
-    
+
     renderFilteredOrders();
 }
 
@@ -4605,7 +4605,7 @@ function applyModalFilters() {
     const dateFilter = document.getElementById('modalDateFilter');
     const minAmount = document.getElementById('modalMinAmount');
     const maxAmount = document.getElementById('modalMaxAmount');
-    
+
     if (statusFilter) {
         currentOrderFilters.status = statusFilter.value;
         document.getElementById('orderStatusFilter').value = statusFilter.value;
@@ -4624,7 +4624,7 @@ function applyModalFilters() {
     } else {
         currentOrderFilters.maxAmount = null;
     }
-    
+
     closeModal('orderFilterModal');
     renderFilteredOrders();
 }
@@ -4639,18 +4639,18 @@ function clearOrderFilters() {
         minAmount: null,
         maxAmount: null
     };
-    
+
     // Reset filter inputs
     const statusFilter = document.getElementById('orderStatusFilter');
     const depositStatusFilter = document.getElementById('depositStatusFilter');
     const dateFilter = document.getElementById('orderDateFilter');
     const searchInput = document.getElementById('orderSearch');
-    
+
     if (statusFilter) statusFilter.value = 'all';
     if (depositStatusFilter) depositStatusFilter.value = 'all';
     if (dateFilter) dateFilter.value = 'all';
     if (searchInput) searchInput.value = '';
-    
+
     renderFilteredOrders();
 }
 
@@ -4658,23 +4658,23 @@ function clearOrderFilters() {
 function renderFilteredOrders() {
     const container = document.getElementById('ordersTableBody');
     if (!container) return;
-    
+
     let filteredOrders = orders.filter(order => {
         // Status filter
         if (currentOrderFilters.status !== 'all' && order.status !== currentOrderFilters.status) {
             return false;
         }
-        
+
         // Deposit status filter
         if (currentOrderFilters.depositStatus !== 'all' && order.depositStatus !== currentOrderFilters.depositStatus) {
             return false;
         }
-        
+
         // Date filter
         if (currentOrderFilters.date !== 'all') {
             const orderDate = new Date(order.date);
             const today = new Date();
-            
+
             if (currentOrderFilters.date === 'today') {
                 if (orderDate.toDateString() !== today.toDateString()) return false;
             } else if (currentOrderFilters.date === 'week') {
@@ -4685,7 +4685,7 @@ function renderFilteredOrders() {
                 if (orderDate < monthAgo) return false;
             }
         }
-        
+
         // Search filter
         if (currentOrderFilters.search) {
             const searchTerm = currentOrderFilters.search;
@@ -4694,7 +4694,7 @@ function renderFilteredOrders() {
             const matchesEmail = order.customer.email.toLowerCase().includes(searchTerm);
             if (!matchesId && !matchesCustomer && !matchesEmail) return false;
         }
-        
+
         // Amount filters
         if (currentOrderFilters.minAmount !== null && order.amount < currentOrderFilters.minAmount) {
             return false;
@@ -4702,16 +4702,16 @@ function renderFilteredOrders() {
         if (currentOrderFilters.maxAmount !== null && order.amount > currentOrderFilters.maxAmount) {
             return false;
         }
-        
+
         return true;
     });
-    
+
     // Update orders count
     const countElement = document.getElementById('ordersCount');
     if (countElement) {
         countElement.textContent = `${filteredOrders.length} order${filteredOrders.length !== 1 ? 's' : ''}`;
     }
-    
+
     // Render table
     let html = `
         <table class="data-table">
@@ -4729,7 +4729,7 @@ function renderFilteredOrders() {
             </thead>
             <tbody>
     `;
-    
+
     if (filteredOrders.length === 0) {
         html += `
             <tr>
@@ -4741,13 +4741,13 @@ function renderFilteredOrders() {
         `;
     } else {
         filteredOrders.forEach(order => {
-            const depositBadgeClass = order.depositStatus === 'paid' ? 'badge-delivered' : 
-                                      order.depositStatus === 'pending' ? 'badge-pending' : 
-                                      order.depositStatus === 'refunded' ? 'badge-shipped' : 'badge-inactive';
+            const depositBadgeClass = order.depositStatus === 'paid' ? 'badge-delivered' :
+                order.depositStatus === 'pending' ? 'badge-pending' :
+                    order.depositStatus === 'refunded' ? 'badge-shipped' : 'badge-inactive';
             const depositLabel = order.depositStatus === 'paid' ? `Paid (${formatCurrency(order.depositAmount)})` :
-                                 order.depositStatus === 'pending' ? 'Awaiting' :
-                                 order.depositStatus === 'refunded' ? 'Refunded' : 'N/A';
-            
+                order.depositStatus === 'pending' ? 'Awaiting' :
+                    order.depositStatus === 'refunded' ? 'Refunded' : 'N/A';
+
             html += `
                 <tr>
                     <td><input type="checkbox" class="order-checkbox" data-id="${order.id}"></td>
@@ -4779,7 +4779,7 @@ function renderFilteredOrders() {
             `;
         });
     }
-    
+
     html += '</tbody></table>';
     container.innerHTML = html;
 }
@@ -4806,27 +4806,27 @@ function importInventory() {
 // Handle Add Product Form
 function handleAddProductForm(event) {
     event.preventDefault();
-    
+
     const form = event.target;
     const formData = new FormData(form);
-    
+
     // Validate required fields
     const requiredFields = ['productName', 'productSku', 'productCategory', 'productPrice', 'productStock'];
     let isValid = true;
     let missingFields = [];
-    
+
     requiredFields.forEach(field => {
         if (!formData.get(field)) {
             isValid = false;
             missingFields.push(field.replace('product', ''));
         }
     });
-    
+
     if (!isValid) {
         showAlert('error', `Please fill in all required fields: ${missingFields.join(', ')}`);
         return;
     }
-    
+
     addProduct(formData);
 }
 
@@ -4836,26 +4836,26 @@ function handleAddProductForm(event) {
 function initDashboard() {
     // Set active navigation item
     setActiveNavItem();
-    
+
     // Setup modal close on click outside
     setupModalCloseOnClickOutside();
-    
+
     // Setup filter listeners
     setupFilterListeners();
-    
+
     // Load saved branding (logo and store name)
     updateSidebarBranding();
-    
+
     // Update header trash badge
     updateHeaderTrashBadge();
-    
+
     // Initialize stats animation after a short delay
     setTimeout(initStatsAnimation, 500);
-    
+
     // Page-specific initialization
     const currentPage = window.location.pathname.split('/').pop() || 'index.html';
-    
-    switch(currentPage) {
+
+    switch (currentPage) {
         case 'index.html':
         case '':
             initOverviewPage();
@@ -4898,10 +4898,10 @@ function initProductsPage() {
 function initOrdersPage() {
     // Render orders
     renderFilteredOrders();
-    
+
     // Update trash count
     updateTrashCount();
-    
+
     // Update cancelled count in stats
     const cancelledCount = document.getElementById('cancelledCount');
     if (cancelledCount) {
@@ -4912,13 +4912,13 @@ function initOrdersPage() {
 // Initialize Customers Page
 function initCustomersPage() {
     renderFilteredCustomers();
-    
+
     // Add Customer Form
     const addCustomerForm = document.getElementById('addCustomerForm');
     if (addCustomerForm) {
         addCustomerForm.addEventListener('submit', addNewCustomer);
     }
-    
+
     // Edit Customer Form
     const editCustomerForm = document.getElementById('editCustomerForm');
     if (editCustomerForm) {
@@ -4945,10 +4945,10 @@ function updateLowStockAlert() {
         const status = getStockStatus(p.stock, p.minStock);
         return status === 'low-stock' || status === 'out-of-stock';
     });
-    
+
     const alertElement = document.getElementById('lowStockAlert');
     const countElement = document.getElementById('lowStockCount');
-    
+
     if (alertElement && countElement) {
         if (lowStockProducts.length > 0) {
             countElement.textContent = lowStockProducts.length;
@@ -4965,24 +4965,24 @@ function viewLowStockDetails() {
         const status = getStockStatus(p.stock, p.minStock);
         return status === 'low-stock' || status === 'out-of-stock';
     });
-    
+
     if (lowStockProducts.length === 0) {
         showAlert('success', 'All products have sufficient stock!');
         return;
     }
-    
+
     // Remove existing modal if any
     const existingModal = document.getElementById('lowStockModal');
     if (existingModal) {
         existingModal.remove();
     }
-    
+
     // Create modal
     const modal = document.createElement('div');
     modal.id = 'lowStockModal';
     modal.className = 'modal-overlay';
     document.body.appendChild(modal);
-    
+
     // Generate products list
     let productsHtml = lowStockProducts.map(product => {
         const status = getStockStatus(product.stock, product.minStock);
@@ -4992,7 +4992,7 @@ function viewLowStockDetails() {
         const bgColor = getAvatarColor(product.name);
         const urgency = product.stock === 0 ? 'URGENT' : product.stock <= product.minStock / 2 ? 'HIGH' : 'MEDIUM';
         const urgencyColor = urgency === 'URGENT' ? 'var(--danger)' : urgency === 'HIGH' ? 'var(--warning)' : 'var(--info)';
-        
+
         return `
             <div style="display: flex; align-items: center; gap: 1rem; padding: 1rem; border-bottom: 1px solid var(--bg-secondary); transition: background 0.2s;" onmouseover="this.style.background='var(--bg-secondary)'" onmouseout="this.style.background='transparent'">
                 <div style="width: 50px; height: 50px; border-radius: 8px; overflow: hidden; flex-shrink: 0; background: ${bgColor};">
@@ -5020,10 +5020,10 @@ function viewLowStockDetails() {
             </div>
         `;
     }).join('');
-    
+
     const outOfStockCount = lowStockProducts.filter(p => p.stock === 0).length;
     const lowStockCount = lowStockProducts.length - outOfStockCount;
-    
+
     modal.innerHTML = `
         <div class="modal" style="max-width: 600px;">
             <div class="modal-header" style="background: linear-gradient(135deg, var(--warning) 0%, var(--danger) 100%); color: white;">
@@ -5065,14 +5065,14 @@ function viewLowStockDetails() {
             </div>
         </div>
     `;
-    
+
     // Add click outside to close
-    modal.addEventListener('click', function(e) {
+    modal.addEventListener('click', function (e) {
         if (e.target === modal) {
             closeModal('lowStockModal');
         }
     });
-    
+
     // Show modal with animation
     setTimeout(() => {
         modal.classList.add('active');
@@ -5086,7 +5086,7 @@ function restockAllLowStock() {
         const status = getStockStatus(p.stock, p.minStock);
         return status === 'low-stock' || status === 'out-of-stock';
     });
-    
+
     let restockedCount = 0;
     lowStockProducts.forEach(product => {
         // Set stock to minimum + 50% buffer
@@ -5097,10 +5097,10 @@ function restockAllLowStock() {
             restockedCount++;
         }
     });
-    
+
     renderInventoryTable('inventoryTable');
     updateLowStockAlert();
-    
+
     if (restockedCount > 0) {
         showAlert('success', `Successfully restocked ${restockedCount} products to safe levels!`);
     } else {
@@ -5128,7 +5128,7 @@ function loadSavedSettings() {
             defaultIcon.style.display = 'none';
         }
     }
-    
+
     // Load store settings
     const storeName = localStorage.getItem('freezyBiteStoreName');
     const storeTagline = localStorage.getItem('freezyBiteTagline');
@@ -5136,7 +5136,7 @@ function loadSavedSettings() {
     const storePhone = localStorage.getItem('freezyBitePhone');
     const storeAddress = localStorage.getItem('freezyBiteAddress');
     const instapayNumber = localStorage.getItem('freezyBiteInstaPay');
-    
+
     if (storeName) document.getElementById('storeName')?.setAttribute('value', storeName);
     if (storeTagline) document.getElementById('storeTagline')?.setAttribute('value', storeTagline);
     if (storeEmail) document.getElementById('storeEmail')?.setAttribute('value', storeEmail);
@@ -5150,7 +5150,7 @@ function previewLogo(event) {
     const file = event.target.files[0];
     if (file) {
         const reader = new FileReader();
-        reader.onload = function(e) {
+        reader.onload = function (e) {
             const logoImg = document.getElementById('currentLogo');
             const defaultIcon = document.getElementById('defaultLogoIcon');
             if (logoImg && defaultIcon) {
@@ -5168,18 +5168,18 @@ function saveBrandingSettings() {
     const logoImg = document.getElementById('currentLogo');
     const storeName = document.getElementById('storeName')?.value;
     const storeTagline = document.getElementById('storeTagline')?.value;
-    
+
     // Save logo to localStorage
     if (logoImg && logoImg.src && logoImg.style.display !== 'none') {
         localStorage.setItem('freezyBiteLogo', logoImg.src);
     }
-    
+
     if (storeName) localStorage.setItem('freezyBiteStoreName', storeName);
     if (storeTagline) localStorage.setItem('freezyBiteTagline', storeTagline);
-    
+
     // Update sidebar logo if needed
     updateSidebarBranding();
-    
+
     showAlert('success', 'Branding settings saved successfully!');
 }
 
@@ -5189,12 +5189,12 @@ function saveGeneralSettings() {
     const storePhone = document.getElementById('storePhone')?.value;
     const storeAddress = document.getElementById('storeAddress')?.value;
     const storeCurrency = document.getElementById('storeCurrency')?.value;
-    
+
     if (storeEmail) localStorage.setItem('freezyBiteEmail', storeEmail);
     if (storePhone) localStorage.setItem('freezyBitePhone', storePhone);
     if (storeAddress) localStorage.setItem('freezyBiteAddress', storeAddress);
     if (storeCurrency) localStorage.setItem('freezyBiteCurrency', storeCurrency);
-    
+
     showAlert('success', 'Store information saved successfully!');
 }
 
@@ -5207,7 +5207,7 @@ function saveNotificationSettings() {
 function savePaymentSettings() {
     const instapayNumber = document.getElementById('instapayNumber')?.value;
     if (instapayNumber) localStorage.setItem('freezyBiteInstaPay', instapayNumber);
-    
+
     showAlert('success', 'Payment settings saved successfully!\n\nInstaPay: ' + instapayNumber);
 }
 
@@ -5216,27 +5216,27 @@ function updatePassword() {
     const currentPassword = document.getElementById('currentPassword')?.value;
     const newPassword = document.getElementById('newPassword')?.value;
     const confirmPassword = document.getElementById('confirmPassword')?.value;
-    
+
     if (!currentPassword || !newPassword || !confirmPassword) {
         showAlert('error', 'Please fill in all password fields.');
         return;
     }
-    
+
     if (newPassword !== confirmPassword) {
         showAlert('error', 'New passwords do not match!');
         return;
     }
-    
+
     if (newPassword.length < 6) {
         showAlert('error', 'Password must be at least 6 characters long.');
         return;
     }
-    
+
     // Clear fields
     document.getElementById('currentPassword').value = '';
     document.getElementById('newPassword').value = '';
     document.getElementById('confirmPassword').value = '';
-    
+
     showAlert('success', 'Password updated successfully!');
 }
 
@@ -5244,13 +5244,13 @@ function updatePassword() {
 function updateSidebarBranding() {
     const savedLogo = localStorage.getItem('freezyBiteLogo');
     const savedName = localStorage.getItem('freezyBiteStoreName');
-    
+
     // Update logo in sidebar
     const sidebarLogoIcon = document.querySelector('.sidebar-logo .logo-icon');
     if (sidebarLogoIcon && savedLogo) {
         sidebarLogoIcon.innerHTML = `<img src="${savedLogo}" alt="Logo" style="width: 100%; height: 100%; object-fit: contain; border-radius: 8px;">`;
     }
-    
+
     // Update store name in sidebar
     const sidebarLogoText = document.querySelector('.sidebar-logo span');
     if (sidebarLogoText && savedName) {
@@ -5299,63 +5299,63 @@ window.clearAllMessages = clearAllMessages;
 // ===== EVENT LISTENERS =====
 
 // DOM Content Loaded
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     initDashboard();
-    
+
     // Sidebar toggle button
     const sidebarToggle = document.querySelector('.sidebar-toggle');
     if (sidebarToggle) {
         sidebarToggle.addEventListener('click', toggleSidebar);
     }
-    
+
     // Mobile menu button
     const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
     if (mobileMenuBtn) {
         mobileMenuBtn.addEventListener('click', toggleSidebar);
     }
-    
+
     // Sidebar overlay
     const sidebarOverlay = document.querySelector('.sidebar-overlay');
     if (sidebarOverlay) {
         sidebarOverlay.addEventListener('click', closeSidebar);
     }
-    
+
     // Date filter buttons
     const dateFilterBtns = document.querySelectorAll('.date-filter-btn');
     dateFilterBtns.forEach(btn => {
-        btn.addEventListener('click', function() {
+        btn.addEventListener('click', function () {
             setActiveDateFilter(this);
         });
     });
-    
+
     // Add product form
     const addProductForm = document.getElementById('addProductForm');
     if (addProductForm) {
         addProductForm.addEventListener('submit', handleAddProductForm);
     }
-    
+
     // Edit product form
     const editProductForm = document.getElementById('editProductForm');
     if (editProductForm) {
         editProductForm.addEventListener('submit', saveEditedProduct);
     }
-    
+
     // Settings forms
     const generalSettingsForm = document.getElementById('generalSettingsForm');
     if (generalSettingsForm) {
         generalSettingsForm.addEventListener('submit', saveGeneralSettings);
     }
-    
+
     const notificationSettingsForm = document.getElementById('notificationSettingsForm');
     if (notificationSettingsForm) {
         notificationSettingsForm.addEventListener('submit', saveNotificationSettings);
     }
-    
+
     const paymentSettingsForm = document.getElementById('paymentSettingsForm');
     if (paymentSettingsForm) {
         paymentSettingsForm.addEventListener('submit', savePaymentSettings);
     }
-    
+
     const securityForm = document.getElementById('securityForm');
     if (securityForm) {
         securityForm.addEventListener('submit', updatePassword);
@@ -5363,12 +5363,12 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 // Window Resize Handler
-window.addEventListener('resize', function() {
+window.addEventListener('resize', function () {
     // Close mobile sidebar on resize to desktop
     if (window.innerWidth > 768) {
         const sidebar = document.querySelector('.sidebar');
         const overlay = document.querySelector('.sidebar-overlay');
-        
+
         if (sidebar) sidebar.classList.remove('active');
         if (overlay) overlay.classList.remove('active');
     }
@@ -5378,8 +5378,8 @@ window.addEventListener('resize', function() {
 
 // Get Low Stock Count
 function getLowStockCount() {
-    return products.filter(p => p.stock > 0 && p.stock <= p.minStock).length + 
-           products.filter(p => p.stock === 0).length;
+    return products.filter(p => p.stock > 0 && p.stock <= p.minStock).length +
+        products.filter(p => p.stock === 0).length;
 }
 
 // Get Low Stock Products
@@ -5509,7 +5509,7 @@ function saveEmployeeData() {
 // Log an activity
 function logEmployeeActivity(type, action) {
     if (!currentActiveEmployee) return;
-    
+
     const newActivity = {
         id: Date.now(),
         employeeId: currentActiveEmployee.id,
@@ -5518,9 +5518,9 @@ function logEmployeeActivity(type, action) {
         action: action,
         timestamp: new Date().toLocaleString()
     };
-    
+
     globalActivityLog.unshift(newActivity);
-    
+
     // Update employee stats
     const emp = globalEmployees.find(e => e.id === currentActiveEmployee.id);
     if (emp) {
@@ -5528,19 +5528,19 @@ function logEmployeeActivity(type, action) {
         if (type === 'message') emp.stats.messages++;
         if (type === 'inventory') emp.stats.inventory++;
     }
-    
+
     // Keep only last 500 activities
     if (globalActivityLog.length > 500) {
         globalActivityLog = globalActivityLog.slice(0, 500);
     }
-    
+
     saveEmployeeData();
 }
 
 // Show employee selector modal
 function showEmployeeSelector(callback) {
     const activeEmployees = globalEmployees.filter(e => e.status === 'active');
-    
+
     let modalHTML = `
         <div class="modal-overlay active" id="employeeSelectorModal" style="z-index: 9999;">
             <div class="modal" style="max-width: 450px;">
@@ -5571,13 +5571,13 @@ function showEmployeeSelector(callback) {
             </div>
         </div>
     `;
-    
+
     // Remove existing modal if any
     const existingModal = document.getElementById('employeeSelectorModal');
     if (existingModal) existingModal.remove();
-    
+
     document.body.insertAdjacentHTML('beforeend', modalHTML);
-    
+
     // Store callback for later use
     window.employeeSelectorCallback = callback;
 }
@@ -5589,7 +5589,7 @@ function selectEmployee(empId, executeCallback) {
         currentActiveEmployee = emp;
         saveEmployeeData();
         closeEmployeeSelector();
-        
+
         if (executeCallback && window.employeeSelectorCallback) {
             window.employeeSelectorCallback();
             window.employeeSelectorCallback = null;
@@ -5613,3 +5613,156 @@ window.selectEmployee = selectEmployee;
 window.closeEmployeeSelector = closeEmployeeSelector;
 window.saveEmployeeData = saveEmployeeData;
 
+// ===== API DATA LOADING =====
+// Fetch real data from backend APIs
+
+const API_BASE = '/api/admin';
+
+// Get auth token
+function getToken() {
+    return localStorage.getItem('freezyBiteAdminToken');
+}
+
+// API fetch helper
+async function fetchAPI(endpoint, options = {}) {
+    const token = getToken();
+    const headers = {
+        'Content-Type': 'application/json',
+        ...options.headers,
+    };
+    if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+    }
+
+    try {
+        const response = await fetch(`${API_BASE}${endpoint}`, { ...options, headers });
+        if (!response.ok) throw new Error('API error');
+        return await response.json();
+    } catch (error) {
+        console.error('API fetch error:', error);
+        return null;
+    }
+}
+
+// Load dashboard stats from API
+async function loadDashboardStats(period = 'week') {
+    const data = await fetchAPI(`/stats?period=${period}`);
+    if (!data) return;
+
+    // Update stats in the UI
+    const revenueEl = document.querySelector('.stat-card:nth-child(1) .stat-value');
+    const ordersEl = document.querySelector('.stat-card:nth-child(2) .stat-value');
+    const customersEl = document.querySelector('.stat-card:nth-child(3) .stat-value');
+    const productsEl = document.querySelector('.stat-card:nth-child(4) .stat-value');
+
+    if (revenueEl) revenueEl.textContent = `EGP ${formatNumber(data.totalRevenue || 0)}`;
+    if (ordersEl) ordersEl.textContent = formatNumber(data.totalOrders || 0);
+    if (customersEl) customersEl.textContent = formatNumber(data.totalCustomers || 0);
+    if (productsEl) productsEl.textContent = formatNumber(data.totalProducts || 0);
+
+    // Update growth indicators
+    const growthEls = document.querySelectorAll('.stat-growth');
+    if (growthEls[0]) {
+        const growth = data.revenueGrowth || 0;
+        growthEls[0].className = `stat-growth ${growth >= 0 ? 'positive' : 'negative'}`;
+        growthEls[0].innerHTML = `<i class="fas fa-arrow-${growth >= 0 ? 'up' : 'down'}"></i> ${Math.abs(growth)}% from last week`;
+    }
+
+    console.log('Dashboard stats loaded from API');
+    return data;
+}
+
+// Load products from API
+async function loadProducts() {
+    const data = await fetch('/api/products').then(r => r.json()).catch(() => null);
+    if (data && Array.isArray(data)) {
+        // Update global products array
+        products.length = 0;
+        data.forEach(p => products.push({
+            id: p.id,
+            name: p.name,
+            sku: p.sku,
+            category: p.category,
+            price: parseFloat(p.price),
+            stock: p.stock,
+            minStock: p.minStock || 10,
+            status: p.status || (p.stock > 0 ? 'active' : 'out-of-stock'),
+            image: p.images?.[0] || 'assets/placeholder.png',
+            description: p.description
+        }));
+        console.log(`Loaded ${products.length} products from API`);
+    }
+    return data;
+}
+
+// Load orders from API
+async function loadOrders() {
+    const data = await fetch('/api/orders').then(r => r.json()).catch(() => null);
+    if (data && Array.isArray(data)) {
+        orders.length = 0;
+        data.forEach(o => orders.push({
+            id: `ORD-${o.id}`,
+            customer: {
+                name: o.customerName || 'Guest',
+                email: o.customerEmail || '',
+                phone: o.customerPhone || ''
+            },
+            date: o.createdAt ? new Date(o.createdAt).toISOString().split('T')[0] : '',
+            amount: parseFloat(o.totalAmount),
+            status: o.status,
+            paymentMethod: o.paymentMethod || 'COD',
+            depositStatus: o.depositStatus || 'pending',
+            depositAmount: parseFloat(o.depositAmount || 0)
+        }));
+        console.log(`Loaded ${orders.length} orders from API`);
+    }
+    return data;
+}
+
+// Load customers from API
+async function loadCustomers() {
+    const data = await fetchAPI('/customers');
+    if (data && Array.isArray(data)) {
+        customers.length = 0;
+        data.forEach(c => customers.push({
+            id: c.id,
+            name: c.name,
+            email: c.email,
+            phone: c.phone,
+            orders: c.totalOrders || 0,
+            spent: parseFloat(c.totalSpent || 0),
+            status: c.status || 'active'
+        }));
+        console.log(`Loaded ${customers.length} customers from API`);
+    }
+    return data;
+}
+
+// Initialize dashboard with real data
+async function initDashboardData() {
+    console.log('Loading dashboard data from API...');
+
+    // Load all data in parallel
+    await Promise.all([
+        loadDashboardStats('week'),
+        loadProducts(),
+        loadOrders(),
+        loadCustomers()
+    ]);
+
+    console.log('Dashboard data loaded');
+}
+
+// Auto-load data when on dashboard pages
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initDashboardData);
+} else {
+    initDashboardData();
+}
+
+// Expose functions globally
+window.loadDashboardStats = loadDashboardStats;
+window.loadProducts = loadProducts;
+window.loadOrders = loadOrders;
+window.loadCustomers = loadCustomers;
+window.fetchAPI = fetchAPI;
