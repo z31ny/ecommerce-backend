@@ -1,0 +1,2535 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Website Content - Freezy Bite Dashboard</title>
+    <link rel="stylesheet" href="styles/dashboard.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Content Management Page Styles */
+        .content-tabs {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin-bottom: 1.5rem;
+            background: var(--bg-card);
+            padding: 0.5rem;
+            border-radius: var(--border-radius-lg);
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .content-tab {
+            padding: 0.75rem 1.25rem;
+            border: none;
+            background: transparent;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            font-weight: 500;
+            border-radius: var(--border-radius-md);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .content-tab:hover {
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+        }
+        
+        .content-tab.active {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .content-tab .tab-count {
+            background: rgba(255,255,255,0.2);
+            padding: 0.15rem 0.5rem;
+            border-radius: 10px;
+            font-size: 0.75rem;
+        }
+        
+        .content-tab.active .tab-count {
+            background: rgba(255,255,255,0.3);
+        }
+        
+        .content-section {
+            display: none;
+        }
+        
+        .content-section.active {
+            display: block;
+        }
+        
+        /* Content Cards */
+        .content-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        /* ===== TESTIMONIAL CARDS ===== */
+        .testimonial-card {
+            background: var(--bg-card);
+            border-radius: var(--border-radius-lg);
+            box-shadow: var(--shadow-sm);
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .testimonial-card:hover {
+            box-shadow: var(--shadow-lg);
+            transform: translateY(-2px);
+        }
+        
+        .testimonial-preview {
+            padding: 1.5rem;
+            text-align: center;
+            position: relative;
+        }
+        
+        .testimonial-bubble {
+            display: inline-block;
+            padding: 1.5rem 2rem;
+            border-radius: 30px;
+            margin-bottom: 1rem;
+            min-width: 200px;
+        }
+        
+        .testimonial-bubble.yellow { background: #fef3c7; }
+        .testimonial-bubble.purple { background: #e9d5ff; }
+        .testimonial-bubble.pink { background: #fce7f3; }
+        .testimonial-bubble.green { background: #d1fae5; }
+        .testimonial-bubble.blue { background: #dbeafe; }
+        
+        .testimonial-bubble .teaser {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #1f2937;
+        }
+        
+        .testimonial-full-review {
+            padding: 0 1.5rem 1.5rem;
+            background: var(--bg-secondary);
+            border-top: 1px dashed var(--border-color);
+        }
+        
+        .testimonial-full-review h4 {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-bottom: 0.75rem;
+            padding-top: 1rem;
+        }
+        
+        .testimonial-full-review .review-text {
+            font-size: 0.9rem;
+            color: var(--text-primary);
+            line-height: 1.6;
+            font-style: italic;
+            padding: 1rem;
+            background: var(--bg-card);
+            border-radius: var(--border-radius-md);
+            border-left: 3px solid var(--primary);
+        }
+        
+        .testimonial-footer {
+            padding: 1rem 1.5rem;
+            background: var(--bg-card);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px solid var(--border-color);
+        }
+        
+        /* ===== MOOD FLIP CARDS ===== */
+        .mood-card-container {
+            perspective: 1000px;
+            height: 320px;
+        }
+        
+        .mood-card {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transform-style: preserve-3d;
+            transition: transform 0.6s ease;
+            cursor: pointer;
+        }
+        
+        .mood-card.flipped {
+            transform: rotateY(180deg);
+        }
+        
+        .mood-card-front, .mood-card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: var(--border-radius-lg);
+            box-shadow: var(--shadow-sm);
+            overflow: hidden;
+        }
+        
+        .mood-card-front {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+            text-align: center;
+        }
+        
+        .mood-card-front.pink { background: #fce4ec; border: 3px solid #c2185b; }
+        .mood-card-front.yellow { background: #fff9c4; border: 3px solid #f57f17; }
+        .mood-card-front.green { background: #c8e6c9; border: 3px solid #388e3c; }
+        .mood-card-front.blue { background: #bbdefb; border: 3px solid #1976d2; }
+        .mood-card-front.purple { background: #e1bee7; border: 3px solid #7b1fa2; }
+        .mood-card-front.orange { background: #ffe0b2; border: 3px solid #e65100; }
+        
+        .mood-card-front h3 {
+            font-size: 1.5rem;
+            margin-bottom: 0.75rem;
+        }
+        
+        .mood-card-front.pink h3 { color: #c2185b; }
+        .mood-card-front.yellow h3 { color: #f57f17; }
+        .mood-card-front.green h3 { color: #388e3c; }
+        .mood-card-front.blue h3 { color: #1976d2; }
+        .mood-card-front.purple h3 { color: #7b1fa2; }
+        .mood-card-front.orange h3 { color: #e65100; }
+        
+        .mood-card-front p {
+            color: #4b5563;
+            margin-bottom: 1.5rem;
+        }
+        
+        .mood-card-front .flip-btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 25px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .mood-card-front.pink .flip-btn { background: #c2185b; color: white; }
+        .mood-card-front.yellow .flip-btn { background: #f57f17; color: white; }
+        .mood-card-front.green .flip-btn { background: #388e3c; color: white; }
+        .mood-card-front.blue .flip-btn { background: #1976d2; color: white; }
+        .mood-card-front.purple .flip-btn { background: #7b1fa2; color: white; }
+        .mood-card-front.orange .flip-btn { background: #e65100; color: white; }
+        
+        .mood-card-back {
+            transform: rotateY(180deg);
+            background: var(--bg-card);
+        }
+        
+        .mood-card-back .back-image {
+            height: 60%;
+            background: var(--bg-secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .mood-card-back .back-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .mood-card-back .back-content {
+            padding: 1rem;
+            text-align: center;
+        }
+        
+        .mood-card-back .back-content h4 {
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+        }
+        
+        .mood-card-back .back-content p {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+        
+        .mood-card-actions {
+            position: absolute;
+            bottom: 0.5rem;
+            right: 0.5rem;
+            display: flex;
+            gap: 0.25rem;
+            z-index: 10;
+        }
+        
+        /* ===== SNACK FLIP CARDS ===== */
+        .snack-card-container {
+            perspective: 1000px;
+            height: 280px;
+        }
+        
+        .snack-card {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transform-style: preserve-3d;
+            transition: transform 0.6s ease;
+            cursor: pointer;
+        }
+        
+        .snack-card.flipped {
+            transform: rotateY(180deg);
+        }
+        
+        .snack-card-front, .snack-card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: var(--border-radius-lg);
+            box-shadow: var(--shadow-sm);
+            overflow: hidden;
+            background: var(--bg-card);
+        }
+        
+        .snack-card-back {
+            transform: rotateY(180deg);
+        }
+        
+        .snack-card-front .image-area, .snack-card-back .image-area {
+            height: 70%;
+            background: linear-gradient(135deg, #fce4ec, #f8bbd9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .snack-card-front .image-area img, .snack-card-back .image-area img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .snack-card-front .info, .snack-card-back .info {
+            padding: 1rem;
+            text-align: center;
+        }
+        
+        .snack-card-front .info h4, .snack-card-back .info h4 {
+            margin-bottom: 0.25rem;
+            color: var(--text-primary);
+        }
+        
+        .snack-card-front .info p, .snack-card-back .info p {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+        
+        .snack-card-actions {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            display: flex;
+            gap: 0.25rem;
+            z-index: 10;
+        }
+        
+        /* Flip indicator */
+        .flip-indicator {
+            position: absolute;
+            bottom: 0.5rem;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            background: rgba(255,255,255,0.9);
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+        }
+        
+        /* Color picker */
+        .color-picker-grid {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+        
+        .color-option {
+            width: 100%;
+            aspect-ratio: 1;
+            border-radius: 8px;
+            cursor: pointer;
+            border: 3px solid transparent;
+            transition: all 0.2s ease;
+        }
+        
+        .color-option:hover {
+            transform: scale(1.1);
+        }
+        
+        .color-option.selected {
+            border-color: var(--text-primary);
+        }
+        
+        /* Bubble color picker */
+        .bubble-color-picker {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin-top: 0.5rem;
+        }
+        
+        .bubble-color-option {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 3px solid transparent;
+            transition: all 0.2s ease;
+        }
+        
+        .bubble-color-option:hover {
+            transform: scale(1.1);
+        }
+        
+        .bubble-color-option.selected {
+            border-color: var(--text-primary);
+        }
+        
+        /* FAQ Item */
+        .faq-item {
+            background: var(--bg-card);
+            border-radius: var(--border-radius-md);
+            box-shadow: var(--shadow-sm);
+            margin-bottom: 0.75rem;
+            overflow: hidden;
+        }
+        
+        .faq-item-header {
+            padding: 1rem 1.25rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--bg-secondary);
+        }
+        
+        .faq-item-header .question {
+            font-weight: 600;
+            color: var(--text-primary);
+            flex: 1;
+        }
+        
+        .faq-item-body {
+            padding: 1rem 1.25rem;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            line-height: 1.6;
+            border-top: 1px solid var(--border-color);
+        }
+        
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: var(--text-muted);
+            grid-column: 1 / -1;
+        }
+        
+        .empty-state i {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            opacity: 0.3;
+        }
+        
+        .empty-state h3 {
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+        }
+        
+        /* Image upload area */
+        .image-upload-area {
+            border: 2px dashed var(--border-color);
+            border-radius: var(--border-radius-md);
+            padding: 1.5rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: var(--bg-secondary);
+        }
+        
+        .image-upload-area:hover {
+            border-color: var(--primary);
+            background: var(--primary-light);
+        }
+        
+        .image-upload-area img {
+            max-width: 100%;
+            max-height: 120px;
+            border-radius: var(--border-radius-sm);
+        }
+        
+        /* Dual image upload */
+        .dual-image-upload {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+        
+        .dual-image-upload .image-upload-area {
+            padding: 1rem;
+        }
+        
+        .dual-image-upload .image-upload-area img {
+            max-height: 80px;
+        }
+        
+        /* ===== CUSTOMER FAVORITES ===== */
+        .favorite-card {
+            background: var(--bg-card);
+            border-radius: var(--border-radius-lg);
+            box-shadow: var(--shadow-sm);
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .favorite-card:hover {
+            box-shadow: var(--shadow-md);
+            transform: translateY(-2px);
+        }
+        
+        .favorite-image {
+            height: 180px;
+            background: linear-gradient(135deg, #fce4ec, #f8bbd9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+        
+        .favorite-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .favorite-category-badge {
+            position: absolute;
+            top: 0.75rem;
+            left: 0.75rem;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        
+        .favorite-category-badge.fruits {
+            background: #dcfce7;
+            color: #16a34a;
+        }
+        
+        .favorite-category-badge.candy {
+            background: #fce7f3;
+            color: #db2777;
+        }
+        
+        .favorite-content {
+            padding: 1.25rem;
+        }
+        
+        .favorite-content h4 {
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+        }
+        
+        .favorite-rating {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.75rem;
+        }
+        
+        .rating-stars {
+            display: flex;
+            gap: 0.15rem;
+        }
+        
+        .rating-stars i {
+            color: #fbbf24;
+            font-size: 0.9rem;
+        }
+        
+        .rating-stars i.empty {
+            color: #d1d5db;
+        }
+        
+        .rating-count {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+        
+        .favorite-price {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+        
+        .favorite-footer {
+            padding: 1rem 1.25rem;
+            background: var(--bg-secondary);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px solid var(--border-color);
+        }
+        
+        /* Rating input */
+        .rating-input {
+            display: flex;
+            gap: 0.25rem;
+            flex-direction: row-reverse;
+            justify-content: flex-end;
+        }
+        
+        .rating-input input {
+            display: none;
+        }
+        
+        .rating-input label {
+            cursor: pointer;
+            font-size: 1.5rem;
+            color: #d1d5db;
+            transition: color 0.2s;
+        }
+        
+        .rating-input label:hover,
+        .rating-input label:hover ~ label,
+        .rating-input input:checked ~ label {
+            color: #fbbf24;
+        }
+        
+        /* ===== HERO IMAGES ===== */
+        .hero-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .hero-card {
+            background: var(--bg-card);
+            border-radius: var(--border-radius-lg);
+            box-shadow: var(--shadow-sm);
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .hero-card:hover {
+            box-shadow: var(--shadow-md);
+        }
+        
+        .hero-preview {
+            height: 160px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero-preview img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .hero-preview .page-label {
+            position: absolute;
+            top: 0.75rem;
+            left: 0.75rem;
+            background: rgba(0,0,0,0.6);
+            color: white;
+            padding: 0.35rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        
+        .hero-info {
+            padding: 1.25rem;
+        }
+        
+        .hero-info h4 {
+            margin-bottom: 0.25rem;
+            color: var(--text-primary);
+        }
+        
+        .hero-info p {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+        }
+        
+        .hero-dimensions {
+            display: flex;
+            gap: 1rem;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+        
+        .hero-dimensions span {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+        
+        /* Small buttons for filters */
+        .btn-sm {
+            padding: 0.4rem 0.75rem !important;
+            font-size: 0.8rem !important;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .content-tabs {
+                overflow-x: auto;
+                flex-wrap: nowrap;
+                padding: 0.5rem;
+            }
+            
+            .content-tab {
+                white-space: nowrap;
+                padding: 0.6rem 1rem;
+                font-size: 0.8rem;
+            }
+            
+            .content-grid, .hero-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .mood-card-container, .snack-card-container {
+                height: 300px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar Overlay -->
+    <div class="sidebar-overlay"></div>
+    
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <a href="index.html" class="sidebar-logo">
+                <div class="logo-icon">
+                    <i class="fas fa-snowflake"></i>
+                </div>
+                <span>Freezy Bite</span>
+            </a>
+        </div>
+        
+        <nav class="sidebar-nav">
+            <ul class="nav-list">
+                <li><a href="index.html" class="nav-item"><i class="fas fa-chart-line"></i><span class="nav-text">Overview</span></a></li>
+                <li><a href="content.html" class="nav-item active"><i class="fas fa-palette"></i><span class="nav-text">Website Content</span></a></li>
+                <li><a href="offers.html" class="nav-item"><i class="fas fa-tags"></i><span class="nav-text">Special Offers</span></a></li>
+                <li><a href="products.html" class="nav-item"><i class="fas fa-box"></i><span class="nav-text">Products</span></a></li>
+                <li><a href="orders.html" class="nav-item"><i class="fas fa-shopping-cart"></i><span class="nav-text">Orders</span></a></li>
+                <li><a href="customers.html" class="nav-item"><i class="fas fa-users"></i><span class="nav-text">Customers</span></a></li>
+                <li><a href="messages.html" class="nav-item"><i class="fas fa-envelope"></i><span class="nav-text">Messages</span></a></li>
+                <li><a href="analytics.html" class="nav-item"><i class="fas fa-chart-bar"></i><span class="nav-text">Analytics</span></a></li>
+                <li><a href="inventory.html" class="nav-item"><i class="fas fa-warehouse"></i><span class="nav-text">Inventory</span></a></li>
+                <li><a href="employees.html" class="nav-item"><i class="fas fa-id-badge"></i><span class="nav-text">Employees</span></a></li>
+                <li><a href="users.html" class="nav-item"><i class="fas fa-user-shield"></i><span class="nav-text">Users</span></a></li>
+                <li><a href="trash.html" class="nav-item"><i class="fas fa-trash-alt"></i><span class="nav-text">Trash</span></a></li>
+                <li><a href="settings.html" class="nav-item"><i class="fas fa-cog"></i><span class="nav-text">Settings</span></a></li>
+            </ul>
+        </nav>
+        
+        <div class="sidebar-footer">
+            <div class="user-profile">
+                <img src="https://ui-avatars.com/api/?name=Admin+User&background=6366f1&color=fff" alt="Admin" class="user-avatar">
+                <div class="user-info">
+                    <h4>Admin User</h4>
+                    <p>admin@freezybite.com</p>
+                </div>
+            </div>
+        </div>
+    </aside>
+    
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Top Header -->
+        <header class="top-header">
+            <div class="header-left">
+                <button class="mobile-menu-btn"><i class="fas fa-bars"></i></button>
+                <div class="search-bar">
+                    <i class="fas fa-search"></i>
+                    <input type="text" placeholder="Search content...">
+                </div>
+            </div>
+            <div class="header-right">
+                <button class="header-btn" onclick="showNotifications()"><i class="fas fa-bell"></i><span class="badge">5</span></button>
+                <button class="header-btn" onclick="showMessages()"><i class="fas fa-envelope"></i><span class="badge">3</span></button>
+                <button class="header-btn" onclick="showTrashModal()" title="Trash"><i class="fas fa-trash-alt"></i><span class="badge" id="headerTrashBadge">0</span></button>
+                <img src="https://ui-avatars.com/api/?name=Admin+User&background=6366f1&color=fff" alt="Admin" class="header-avatar">
+            </div>
+        </header>
+        
+        <!-- Dashboard Content -->
+        <div class="dashboard-content">
+            <!-- Section Header -->
+            <div class="section">
+                <div class="section-header">
+                    <div>
+                        <h1 class="section-title"><i class="fas fa-palette" style="color: var(--primary); margin-right: 0.5rem;"></i>Website Content</h1>
+                        <p class="section-subtitle">Manage your homepage sections - testimonials, FAQs, mood cards, and more.</p>
+                    </div>
+                    <div class="section-actions">
+                        <button class="btn btn-primary" onclick="publishChanges()">
+                            <i class="fas fa-cloud-upload-alt"></i> Publish Changes
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Content Tabs -->
+            <div class="content-tabs">
+                <button class="content-tab active" onclick="switchContentTab('testimonials')">
+                    <i class="fas fa-quote-right"></i> Testimonials <span class="tab-count" id="testimonialCount">0</span>
+                </button>
+                <button class="content-tab" onclick="switchContentTab('faqs')">
+                    <i class="fas fa-question-circle"></i> FAQs <span class="tab-count" id="faqCount">0</span>
+                </button>
+                <button class="content-tab" onclick="switchContentTab('moods')">
+                    <i class="fas fa-heart"></i> Pick Your Mood <span class="tab-count" id="moodCount">0</span>
+                </button>
+                <button class="content-tab" onclick="switchContentTab('snacks')">
+                    <i class="fas fa-cookie-bite"></i> What's Inside <span class="tab-count" id="snackCount">0</span>
+                </button>
+                <button class="content-tab" onclick="switchContentTab('favorites')">
+                    <i class="fas fa-star"></i> Customer Favorites <span class="tab-count" id="favoriteCount">0</span>
+                </button>
+                <button class="content-tab" onclick="switchContentTab('heroes')">
+                    <i class="fas fa-image"></i> Hero Images <span class="tab-count" id="heroCount">0</span>
+                </button>
+                <button class="content-tab" onclick="switchContentTab('contact')">
+                    <i class="fas fa-address-card"></i> Contact Page
+                </button>
+            </div>
+            
+            <!-- Testimonials Section -->
+            <div class="content-section active" id="testimonialsSection">
+                <div class="data-card" style="margin-bottom: 1.5rem;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+                        <div>
+                            <h3 style="margin-bottom: 0.25rem;">Customer Testimonials</h3>
+                            <p style="color: var(--text-secondary); font-size: 0.85rem;">Each testimonial shows a teaser first, then reveals the full review on click/hover.</p>
+                        </div>
+                        <button class="btn btn-primary" onclick="openAddTestimonialModal()">
+                            <i class="fas fa-plus"></i> Add Testimonial
+                        </button>
+                    </div>
+                </div>
+                <div class="content-grid" id="testimonialsGrid"></div>
+            </div>
+            
+            <!-- FAQs Section -->
+            <div class="content-section" id="faqsSection">
+                <div class="data-card" style="margin-bottom: 1.5rem;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+                        <div>
+                            <h3 style="margin-bottom: 0.25rem;">Frequently Asked Questions</h3>
+                            <p style="color: var(--text-secondary); font-size: 0.85rem;">Manage FAQs to help customers find answers quickly.</p>
+                        </div>
+                        <button class="btn btn-primary" onclick="openAddFaqModal()">
+                            <i class="fas fa-plus"></i> Add FAQ
+                        </button>
+                    </div>
+                </div>
+                <div id="faqsList"></div>
+            </div>
+            
+            <!-- Pick Your Mood Section -->
+            <div class="content-section" id="moodsSection">
+                <div class="data-card" style="margin-bottom: 1.5rem;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+                        <div>
+                            <h3 style="margin-bottom: 0.25rem;">Pick Your Mood Cards</h3>
+                            <p style="color: var(--text-secondary); font-size: 0.85rem;">Cards flip to show image & description when button is clicked.</p>
+                        </div>
+                        <button class="btn btn-primary" onclick="openAddMoodModal()">
+                            <i class="fas fa-plus"></i> Add Mood Card
+                        </button>
+                    </div>
+                </div>
+                <div class="content-grid" id="moodsGrid"></div>
+            </div>
+            
+            <!-- What's Inside Snacks Section -->
+            <div class="content-section" id="snacksSection">
+                <div class="data-card" style="margin-bottom: 1.5rem;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+                        <div>
+                            <h3 style="margin-bottom: 0.25rem;">What's Inside Your Snack</h3>
+                            <p style="color: var(--text-secondary); font-size: 0.85rem;">Cards flip on click to show back of package/nutrition info.</p>
+                        </div>
+                        <button class="btn btn-primary" onclick="openAddSnackModal()">
+                            <i class="fas fa-plus"></i> Add Snack Card
+                        </button>
+                    </div>
+                </div>
+                <div class="content-grid" id="snacksGrid"></div>
+            </div>
+            
+            <!-- Customer Favorites Section -->
+            <div class="content-section" id="favoritesSection">
+                <div class="data-card" style="margin-bottom: 1.5rem;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+                        <div>
+                            <h3 style="margin-bottom: 0.25rem;">Customer Favorites</h3>
+                            <p style="color: var(--text-secondary); font-size: 0.85rem;">Featured products with customer ratings for Fruits & Candy pages.</p>
+                        </div>
+                        <button class="btn btn-primary" onclick="openAddFavoriteModal()">
+                            <i class="fas fa-plus"></i> Add Favorite
+                        </button>
+                    </div>
+                </div>
+                <!-- Category Filter -->
+                <div style="display: flex; gap: 0.5rem; margin-bottom: 1.5rem; flex-wrap: wrap;">
+                    <button class="btn btn-secondary active" onclick="filterFavorites('all', this)">All</button>
+                    <button class="btn btn-secondary" onclick="filterFavorites('fruits', this)">
+                        <i class="fas fa-apple-alt"></i> Fruits
+                    </button>
+                    <button class="btn btn-secondary" onclick="filterFavorites('candy', this)">
+                        <i class="fas fa-candy-cane"></i> Candy
+                    </button>
+                </div>
+                <div class="content-grid" id="favoritesGrid"></div>
+            </div>
+            
+            <!-- Hero Images Section -->
+            <div class="content-section" id="heroesSection">
+                <div class="data-card" style="margin-bottom: 1.5rem;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+                        <div>
+                            <h3 style="margin-bottom: 0.25rem;">Hero Images</h3>
+                            <p style="color: var(--text-secondary); font-size: 0.85rem;">Manage the main banner images for each page of your website.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="hero-grid" id="heroesGrid"></div>
+            </div>
+            
+            <!-- Contact Page Section -->
+            <div class="content-section" id="contactSection">
+                <div class="data-card" style="margin-bottom: 1.5rem;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+                        <div>
+                            <h3 style="margin-bottom: 0.25rem;"><i class="fas fa-address-card" style="color: var(--primary); margin-right: 0.5rem;"></i>Contact Page Content</h3>
+                            <p style="color: var(--text-secondary); font-size: 0.85rem;">Edit the main message, contact information, and social links displayed on your Contact Us page.</p>
+                        </div>
+                        <button class="btn btn-primary" onclick="saveContactContent()">
+                            <i class="fas fa-save"></i> Save Changes
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Main Message Section -->
+                <div class="settings-grid" style="margin-bottom: 1.5rem;">
+                    <div class="settings-card">
+                        <div class="settings-card-header">
+                            <h3 class="settings-card-title">
+                                <i class="fas fa-comment-alt"></i>
+                                Main Message
+                            </h3>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Section Title</label>
+                            <input type="text" class="form-input" id="contactMainTitle" placeholder="e.g., Main Message">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Main Description</label>
+                            <textarea class="form-input" id="contactMainDescription" rows="4" placeholder="Enter the main welcome message for your contact page..."></textarea>
+                        </div>
+                    </div>
+                    
+                    <div class="settings-card">
+                        <div class="settings-card-header">
+                            <h3 class="settings-card-title">
+                                <i class="fas fa-heading"></i>
+                                Ways to Reach Us
+                            </h3>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Section Title</label>
+                            <input type="text" class="form-input" id="contactReachTitle" placeholder="e.g., Ways to Reach Us">
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Contact Details Section -->
+                <div class="settings-grid" style="margin-bottom: 1.5rem;">
+                    <div class="settings-card">
+                        <div class="settings-card-header">
+                            <h3 class="settings-card-title">
+                                <i class="fas fa-map-marker-alt"></i>
+                                Visit Us
+                            </h3>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Label</label>
+                            <input type="text" class="form-input" id="contactVisitLabel" placeholder="e.g., Visit Us">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Address</label>
+                            <input type="text" class="form-input" id="contactAddress" placeholder="e.g., Candy HQ, Cairo, Egypt">
+                        </div>
+                    </div>
+                    
+                    <div class="settings-card">
+                        <div class="settings-card-header">
+                            <h3 class="settings-card-title">
+                                <i class="fas fa-phone-alt"></i>
+                                Call or WhatsApp
+                            </h3>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Label</label>
+                            <input type="text" class="form-input" id="contactPhoneLabel" placeholder="e.g., Call or WhatsApp">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Phone Number</label>
+                            <input type="text" class="form-input" id="contactPhone" placeholder="e.g., +20 109 019 6133">
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="settings-grid" style="margin-bottom: 1.5rem;">
+                    <div class="settings-card">
+                        <div class="settings-card-header">
+                            <h3 class="settings-card-title">
+                                <i class="fas fa-envelope"></i>
+                                Email
+                            </h3>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Label</label>
+                            <input type="text" class="form-input" id="contactEmailLabel" placeholder="e.g., Email">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Email Address</label>
+                            <input type="email" class="form-input" id="contactEmail" placeholder="e.g., hello@FreezyBite.com">
+                        </div>
+                    </div>
+                    
+                    <div class="settings-card">
+                        <div class="settings-card-header">
+                            <h3 class="settings-card-title">
+                                <i class="fas fa-share-alt"></i>
+                                Follow Us
+                            </h3>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Label</label>
+                            <input type="text" class="form-input" id="contactSocialLabel" placeholder="e.g., Follow Us">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Social Media Description</label>
+                            <input type="text" class="form-input" id="contactSocialDescription" placeholder="e.g., Snack updates, flavor drops, and behind-the-scenes fun!">
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Social Links Section -->
+                <div class="data-card" style="margin-bottom: 1.5rem;">
+                    <div class="data-card-header">
+                        <h3 class="data-card-title"><i class="fas fa-link" style="color: var(--primary); margin-right: 0.5rem;"></i>Social Media Links</h3>
+                    </div>
+                    <div style="padding: 1.5rem;">
+                        <div class="settings-grid">
+                            <div class="form-group">
+                                <label class="form-label"><i class="fab fa-tiktok" style="color: #000; margin-right: 0.5rem;"></i>TikTok URL</label>
+                                <input type="url" class="form-input" id="contactTiktok" placeholder="https://tiktok.com/@freezybite">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label"><i class="fab fa-instagram" style="color: #E4405F; margin-right: 0.5rem;"></i>Instagram URL</label>
+                                <input type="url" class="form-input" id="contactInstagram" placeholder="https://instagram.com/freezybite">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label"><i class="fab fa-facebook" style="color: #1877F2; margin-right: 0.5rem;"></i>Facebook URL</label>
+                                <input type="url" class="form-input" id="contactFacebook" placeholder="https://facebook.com/freezybite">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label"><i class="fab fa-whatsapp" style="color: #25D366; margin-right: 0.5rem;"></i>WhatsApp Link</label>
+                                <input type="url" class="form-input" id="contactWhatsapp" placeholder="https://wa.me/201090196133">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Preview Card -->
+                <div class="data-card" style="margin-top: 1.5rem;">
+                    <div class="data-card-header">
+                        <h3 class="data-card-title"><i class="fas fa-eye" style="color: var(--success); margin-right: 0.5rem;"></i>Live Preview</h3>
+                        <button class="btn btn-sm btn-secondary" onclick="refreshContactPreview()">
+                            <i class="fas fa-sync-alt"></i> Refresh
+                        </button>
+                    </div>
+                    <div style="padding: 1.5rem; background: linear-gradient(to bottom, #fce4ec, #fff); border-radius: var(--border-radius-md);">
+                        <div id="contactPreview" style="font-family: 'Segoe UI', sans-serif;">
+                            <!-- Preview will be rendered here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <!-- Add Testimonial Modal -->
+    <div class="modal-overlay" id="addTestimonialModal">
+        <div class="modal" style="max-width: 550px;">
+            <div class="modal-header">
+                <h2 class="modal-title"><i class="fas fa-quote-right" style="color: var(--primary); margin-right: 0.5rem;"></i>Add Testimonial</h2>
+                <button class="modal-close" onclick="closeModal('addTestimonialModal')"><i class="fas fa-times"></i></button>
+            </div>
+            <form id="addTestimonialForm" onsubmit="addTestimonial(event)">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label class="form-label">Customer Name / @Username <span class="required">*</span></label>
+                        <input type="text" class="form-input" id="testimonialAuthor" placeholder="@sarah_m or Sarah M" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Teaser Text <span class="required">*</span></label>
+                        <input type="text" class="form-input" id="testimonialTeaser" placeholder="e.g., left a sweet review!" required>
+                        <small style="color: var(--text-muted);">This shows first before revealing the full review</small>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Full Review <span class="required">*</span></label>
+                        <textarea class="form-input" id="testimonialFullReview" rows="4" placeholder="The complete testimonial that appears on click/hover..." required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Bubble Color</label>
+                        <div class="bubble-color-picker">
+                            <div class="bubble-color-option selected" data-color="yellow" style="background: #fef3c7;" onclick="selectBubbleColor(this, 'add')"></div>
+                            <div class="bubble-color-option" data-color="purple" style="background: #e9d5ff;" onclick="selectBubbleColor(this, 'add')"></div>
+                            <div class="bubble-color-option" data-color="pink" style="background: #fce7f3;" onclick="selectBubbleColor(this, 'add')"></div>
+                            <div class="bubble-color-option" data-color="green" style="background: #d1fae5;" onclick="selectBubbleColor(this, 'add')"></div>
+                            <div class="bubble-color-option" data-color="blue" style="background: #dbeafe;" onclick="selectBubbleColor(this, 'add')"></div>
+                        </div>
+                        <input type="hidden" id="testimonialBubbleColor" value="yellow">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('addTestimonialModal')">Cancel</button>
+                    <button type="submit" class="btn btn-primary"><i class="fas fa-plus"></i> Add Testimonial</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Edit Testimonial Modal -->
+    <div class="modal-overlay" id="editTestimonialModal">
+        <div class="modal" style="max-width: 550px;">
+            <div class="modal-header">
+                <h2 class="modal-title"><i class="fas fa-edit" style="color: var(--primary); margin-right: 0.5rem;"></i>Edit Testimonial</h2>
+                <button class="modal-close" onclick="closeModal('editTestimonialModal')"><i class="fas fa-times"></i></button>
+            </div>
+            <form id="editTestimonialForm" onsubmit="updateTestimonial(event)">
+                <input type="hidden" id="editTestimonialId">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label class="form-label">Customer Name / @Username <span class="required">*</span></label>
+                        <input type="text" class="form-input" id="editTestimonialAuthor" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Teaser Text <span class="required">*</span></label>
+                        <input type="text" class="form-input" id="editTestimonialTeaser" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Full Review <span class="required">*</span></label>
+                        <textarea class="form-input" id="editTestimonialFullReview" rows="4" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Bubble Color</label>
+                        <div class="bubble-color-picker" id="editBubbleColorPicker">
+                            <div class="bubble-color-option" data-color="yellow" style="background: #fef3c7;" onclick="selectBubbleColor(this, 'edit')"></div>
+                            <div class="bubble-color-option" data-color="purple" style="background: #e9d5ff;" onclick="selectBubbleColor(this, 'edit')"></div>
+                            <div class="bubble-color-option" data-color="pink" style="background: #fce7f3;" onclick="selectBubbleColor(this, 'edit')"></div>
+                            <div class="bubble-color-option" data-color="green" style="background: #d1fae5;" onclick="selectBubbleColor(this, 'edit')"></div>
+                            <div class="bubble-color-option" data-color="blue" style="background: #dbeafe;" onclick="selectBubbleColor(this, 'edit')"></div>
+                        </div>
+                        <input type="hidden" id="editTestimonialBubbleColor">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Status</label>
+                        <select class="form-select" id="editTestimonialStatus">
+                            <option value="active">Active</option>
+                            <option value="inactive">Inactive</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('editTestimonialModal')">Cancel</button>
+                    <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Add FAQ Modal -->
+    <div class="modal-overlay" id="addFaqModal">
+        <div class="modal" style="max-width: 500px;">
+            <div class="modal-header">
+                <h2 class="modal-title"><i class="fas fa-question-circle" style="color: var(--primary); margin-right: 0.5rem;"></i>Add FAQ</h2>
+                <button class="modal-close" onclick="closeModal('addFaqModal')"><i class="fas fa-times"></i></button>
+            </div>
+            <form id="addFaqForm" onsubmit="addFaq(event)">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label class="form-label">Question <span class="required">*</span></label>
+                        <input type="text" class="form-input" id="faqQuestion" placeholder="e.g., What kind of products do you offer?" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Answer <span class="required">*</span></label>
+                        <textarea class="form-input" id="faqAnswer" rows="4" placeholder="Provide a clear and helpful answer..." required></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('addFaqModal')">Cancel</button>
+                    <button type="submit" class="btn btn-primary"><i class="fas fa-plus"></i> Add FAQ</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Edit FAQ Modal -->
+    <div class="modal-overlay" id="editFaqModal">
+        <div class="modal" style="max-width: 500px;">
+            <div class="modal-header">
+                <h2 class="modal-title"><i class="fas fa-edit" style="color: var(--primary); margin-right: 0.5rem;"></i>Edit FAQ</h2>
+                <button class="modal-close" onclick="closeModal('editFaqModal')"><i class="fas fa-times"></i></button>
+            </div>
+            <form id="editFaqForm" onsubmit="updateFaq(event)">
+                <input type="hidden" id="editFaqId">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label class="form-label">Question <span class="required">*</span></label>
+                        <input type="text" class="form-input" id="editFaqQuestion" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Answer <span class="required">*</span></label>
+                        <textarea class="form-input" id="editFaqAnswer" rows="4" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Status</label>
+                        <select class="form-select" id="editFaqStatus">
+                            <option value="active">Active</option>
+                            <option value="inactive">Inactive</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('editFaqModal')">Cancel</button>
+                    <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Add Mood Card Modal -->
+    <div class="modal-overlay" id="addMoodModal">
+        <div class="modal" style="max-width: 550px;">
+            <div class="modal-header">
+                <h2 class="modal-title"><i class="fas fa-heart" style="color: var(--primary); margin-right: 0.5rem;"></i>Add Mood Card</h2>
+                <button class="modal-close" onclick="closeModal('addMoodModal')"><i class="fas fa-times"></i></button>
+            </div>
+            <form id="addMoodForm" onsubmit="addMood(event)">
+                <div class="modal-body">
+                    <h4 style="color: var(--text-secondary); margin-bottom: 1rem; font-size: 0.9rem;"><i class="fas fa-layer-group"></i> Front Side (Initial View)</h4>
+                    <div class="form-group">
+                        <label class="form-label">Title <span class="required">*</span></label>
+                        <input type="text" class="form-input" id="moodTitle" placeholder="e.g., Sweet & Flirty" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Description <span class="required">*</span></label>
+                        <input type="text" class="form-input" id="moodDescription" placeholder="e.g., Strawberries dipped in charm" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Button Text <span class="required">*</span></label>
+                        <input type="text" class="form-input" id="moodButtonText" placeholder="e.g., Explore Flavor" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Card Color</label>
+                        <div class="color-picker-grid">
+                            <div class="color-option selected" data-color="pink" style="background: #fce4ec;" onclick="selectMoodColor(this, 'add')"></div>
+                            <div class="color-option" data-color="yellow" style="background: #fff9c4;" onclick="selectMoodColor(this, 'add')"></div>
+                            <div class="color-option" data-color="green" style="background: #c8e6c9;" onclick="selectMoodColor(this, 'add')"></div>
+                            <div class="color-option" data-color="blue" style="background: #bbdefb;" onclick="selectMoodColor(this, 'add')"></div>
+                            <div class="color-option" data-color="purple" style="background: #e1bee7;" onclick="selectMoodColor(this, 'add')"></div>
+                            <div class="color-option" data-color="orange" style="background: #ffe0b2;" onclick="selectMoodColor(this, 'add')"></div>
+                        </div>
+                        <input type="hidden" id="moodColor" value="pink">
+                    </div>
+                    
+                    <hr style="margin: 1.5rem 0; border: none; border-top: 1px dashed var(--border-color);">
+                    
+                    <h4 style="color: var(--text-secondary); margin-bottom: 1rem; font-size: 0.9rem;"><i class="fas fa-sync-alt"></i> Back Side (After Flip)</h4>
+                    <div class="form-group">
+                        <label class="form-label">Back Image</label>
+                        <div class="image-upload-area" onclick="document.getElementById('moodBackImage').click()">
+                            <img id="moodBackImagePreview" src="" alt="Preview" style="display: none;">
+                            <div id="moodBackImagePlaceholder">
+                                <i class="fas fa-image" style="font-size: 2rem; color: var(--text-muted); margin-bottom: 0.5rem;"></i>
+                                <p style="color: var(--text-muted); font-size: 0.85rem;">Click to upload back image</p>
+                            </div>
+                        </div>
+                        <input type="file" id="moodBackImage" accept="image/*" style="display: none;" onchange="previewMoodBackImage(event, 'add')">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Back Description</label>
+                        <textarea class="form-input" id="moodBackDescription" rows="2" placeholder="Description shown on the back of the card"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Product Link</label>
+                        <input type="text" class="form-input" id="moodButtonLink" placeholder="/products/strawberry">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('addMoodModal')">Cancel</button>
+                    <button type="submit" class="btn btn-primary"><i class="fas fa-plus"></i> Add Mood Card</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Edit Mood Card Modal -->
+    <div class="modal-overlay" id="editMoodModal">
+        <div class="modal" style="max-width: 550px;">
+            <div class="modal-header">
+                <h2 class="modal-title"><i class="fas fa-edit" style="color: var(--primary); margin-right: 0.5rem;"></i>Edit Mood Card</h2>
+                <button class="modal-close" onclick="closeModal('editMoodModal')"><i class="fas fa-times"></i></button>
+            </div>
+            <form id="editMoodForm" onsubmit="updateMood(event)">
+                <input type="hidden" id="editMoodId">
+                <div class="modal-body">
+                    <h4 style="color: var(--text-secondary); margin-bottom: 1rem; font-size: 0.9rem;"><i class="fas fa-layer-group"></i> Front Side</h4>
+                    <div class="form-group">
+                        <label class="form-label">Title <span class="required">*</span></label>
+                        <input type="text" class="form-input" id="editMoodTitle" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Description <span class="required">*</span></label>
+                        <input type="text" class="form-input" id="editMoodDescription" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Button Text <span class="required">*</span></label>
+                        <input type="text" class="form-input" id="editMoodButtonText" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Card Color</label>
+                        <div class="color-picker-grid" id="editMoodColorPicker">
+                            <div class="color-option" data-color="pink" style="background: #fce4ec;" onclick="selectMoodColor(this, 'edit')"></div>
+                            <div class="color-option" data-color="yellow" style="background: #fff9c4;" onclick="selectMoodColor(this, 'edit')"></div>
+                            <div class="color-option" data-color="green" style="background: #c8e6c9;" onclick="selectMoodColor(this, 'edit')"></div>
+                            <div class="color-option" data-color="blue" style="background: #bbdefb;" onclick="selectMoodColor(this, 'edit')"></div>
+                            <div class="color-option" data-color="purple" style="background: #e1bee7;" onclick="selectMoodColor(this, 'edit')"></div>
+                            <div class="color-option" data-color="orange" style="background: #ffe0b2;" onclick="selectMoodColor(this, 'edit')"></div>
+                        </div>
+                        <input type="hidden" id="editMoodColor">
+                    </div>
+                    
+                    <hr style="margin: 1.5rem 0; border: none; border-top: 1px dashed var(--border-color);">
+                    
+                    <h4 style="color: var(--text-secondary); margin-bottom: 1rem; font-size: 0.9rem;"><i class="fas fa-sync-alt"></i> Back Side</h4>
+                    <div class="form-group">
+                        <label class="form-label">Back Image</label>
+                        <div class="image-upload-area" onclick="document.getElementById('editMoodBackImage').click()">
+                            <img id="editMoodBackImagePreview" src="" alt="Preview">
+                        </div>
+                        <input type="file" id="editMoodBackImage" accept="image/*" style="display: none;" onchange="previewMoodBackImage(event, 'edit')">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Back Description</label>
+                        <textarea class="form-input" id="editMoodBackDescription" rows="2"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Product Link</label>
+                        <input type="text" class="form-input" id="editMoodButtonLink">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Status</label>
+                        <select class="form-select" id="editMoodStatus">
+                            <option value="active">Active</option>
+                            <option value="inactive">Inactive</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('editMoodModal')">Cancel</button>
+                    <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Add Snack Card Modal -->
+    <div class="modal-overlay" id="addSnackModal">
+        <div class="modal" style="max-width: 550px;">
+            <div class="modal-header">
+                <h2 class="modal-title"><i class="fas fa-cookie-bite" style="color: var(--primary); margin-right: 0.5rem;"></i>Add Snack Card</h2>
+                <button class="modal-close" onclick="closeModal('addSnackModal')"><i class="fas fa-times"></i></button>
+            </div>
+            <form id="addSnackForm" onsubmit="addSnack(event)">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label class="form-label">Title <span class="required">*</span></label>
+                        <input type="text" class="form-input" id="snackTitle" placeholder="e.g., Freeze Dried Strawberries" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Images (Front & Back)</label>
+                        <div class="dual-image-upload">
+                            <div class="image-upload-area" onclick="document.getElementById('snackFrontImage').click()">
+                                <img id="snackFrontImagePreview" src="" alt="Front" style="display: none;">
+                                <div id="snackFrontImagePlaceholder">
+                                    <i class="fas fa-image" style="font-size: 1.5rem; color: var(--text-muted);"></i>
+                                    <p style="color: var(--text-muted); font-size: 0.75rem; margin-top: 0.25rem;">Front Image</p>
+                                </div>
+                            </div>
+                            <div class="image-upload-area" onclick="document.getElementById('snackBackImage').click()">
+                                <img id="snackBackImagePreview" src="" alt="Back" style="display: none;">
+                                <div id="snackBackImagePlaceholder">
+                                    <i class="fas fa-image" style="font-size: 1.5rem; color: var(--text-muted);"></i>
+                                    <p style="color: var(--text-muted); font-size: 0.75rem; margin-top: 0.25rem;">Back Image</p>
+                                </div>
+                            </div>
+                        </div>
+                        <input type="file" id="snackFrontImage" accept="image/*" style="display: none;" onchange="previewSnackImage(event, 'front', 'add')">
+                        <input type="file" id="snackBackImage" accept="image/*" style="display: none;" onchange="previewSnackImage(event, 'back', 'add')">
+                        <small style="color: var(--text-muted);">Front shows initially, back shows on hover/click</small>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Front Label</label>
+                            <input type="text" class="form-input" id="snackFrontLabel" placeholder="e.g., Package Front">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Back Label</label>
+                            <input type="text" class="form-input" id="snackBackLabel" placeholder="e.g., Nutrition Facts">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('addSnackModal')">Cancel</button>
+                    <button type="submit" class="btn btn-primary"><i class="fas fa-plus"></i> Add Snack Card</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Edit Snack Card Modal -->
+    <div class="modal-overlay" id="editSnackModal">
+        <div class="modal" style="max-width: 550px;">
+            <div class="modal-header">
+                <h2 class="modal-title"><i class="fas fa-edit" style="color: var(--primary); margin-right: 0.5rem;"></i>Edit Snack Card</h2>
+                <button class="modal-close" onclick="closeModal('editSnackModal')"><i class="fas fa-times"></i></button>
+            </div>
+            <form id="editSnackForm" onsubmit="updateSnack(event)">
+                <input type="hidden" id="editSnackId">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label class="form-label">Title <span class="required">*</span></label>
+                        <input type="text" class="form-input" id="editSnackTitle" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Images (Front & Back)</label>
+                        <div class="dual-image-upload">
+                            <div class="image-upload-area" onclick="document.getElementById('editSnackFrontImage').click()">
+                                <img id="editSnackFrontImagePreview" src="" alt="Front">
+                            </div>
+                            <div class="image-upload-area" onclick="document.getElementById('editSnackBackImage').click()">
+                                <img id="editSnackBackImagePreview" src="" alt="Back">
+                            </div>
+                        </div>
+                        <input type="file" id="editSnackFrontImage" accept="image/*" style="display: none;" onchange="previewSnackImage(event, 'front', 'edit')">
+                        <input type="file" id="editSnackBackImage" accept="image/*" style="display: none;" onchange="previewSnackImage(event, 'back', 'edit')">
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Front Label</label>
+                            <input type="text" class="form-input" id="editSnackFrontLabel">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Back Label</label>
+                            <input type="text" class="form-input" id="editSnackBackLabel">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Status</label>
+                        <select class="form-select" id="editSnackStatus">
+                            <option value="active">Active</option>
+                            <option value="inactive">Inactive</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('editSnackModal')">Cancel</button>
+                    <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Add Favorite Modal -->
+    <div class="modal-overlay" id="addFavoriteModal">
+        <div class="modal" style="max-width: 550px;">
+            <div class="modal-header">
+                <h2 class="modal-title"><i class="fas fa-star" style="color: #fbbf24; margin-right: 0.5rem;"></i>Add Customer Favorite</h2>
+                <button class="modal-close" onclick="closeModal('addFavoriteModal')"><i class="fas fa-times"></i></button>
+            </div>
+            <form id="addFavoriteForm" onsubmit="addFavorite(event)">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label class="form-label">Product Name <span class="required">*</span></label>
+                        <input type="text" class="form-input" id="favoriteName" placeholder="e.g., Freeze Dried Strawberries" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Category <span class="required">*</span></label>
+                        <select class="form-select" id="favoriteCategory" required>
+                            <optgroup label="🍓 Fruits">
+                                <option value="Summer">Summer</option>
+                                <option value="Tropical">Tropical</option>
+                                <option value="Winter">Winter</option>
+                                <option value="Fall">Fall</option>
+                                <option value="Mixed Packs">Mixed Packs</option>
+                                <option value="Veggies">Veggies</option>
+                            </optgroup>
+                            <optgroup label="🍬 Candy">
+                                <option value="Candies">Candies</option>
+                                <option value="Chocolate">Chocolate</option>
+                                <option value="Nuts">Nuts</option>
+                                <option value="Marshmallow">Marshmallow</option>
+                                <option value="Ice Cream">Ice Cream</option>
+                                <option value="Lollipop">Lollipop</option>
+                            </optgroup>
+                        </select>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Price (EGP) <span class="required">*</span></label>
+                            <input type="number" class="form-input" id="favoritePrice" placeholder="120" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Rating (1-5) <span class="required">*</span></label>
+                            <div class="rating-input">
+                                <input type="radio" name="addRating" id="addRating5" value="5"><label for="addRating5"><i class="fas fa-star"></i></label>
+                                <input type="radio" name="addRating" id="addRating4" value="4"><label for="addRating4"><i class="fas fa-star"></i></label>
+                                <input type="radio" name="addRating" id="addRating3" value="3"><label for="addRating3"><i class="fas fa-star"></i></label>
+                                <input type="radio" name="addRating" id="addRating2" value="2"><label for="addRating2"><i class="fas fa-star"></i></label>
+                                <input type="radio" name="addRating" id="addRating1" value="1" checked><label for="addRating1"><i class="fas fa-star"></i></label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Number of Reviews</label>
+                        <input type="number" class="form-input" id="favoriteReviewCount" placeholder="128" value="0">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Product Image</label>
+                        <div class="image-upload-area" onclick="document.getElementById('favoriteImage').click()">
+                            <img id="favoriteImagePreview" src="" alt="Preview" style="display: none;">
+                            <div id="favoriteImagePlaceholder">
+                                <i class="fas fa-image" style="font-size: 2rem; color: var(--text-muted); margin-bottom: 0.5rem;"></i>
+                                <p style="color: var(--text-muted); font-size: 0.85rem;">Click to upload product image</p>
+                            </div>
+                        </div>
+                        <input type="file" id="favoriteImage" accept="image/*" style="display: none;" onchange="previewFavoriteImage(event, 'add')">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('addFavoriteModal')">Cancel</button>
+                    <button type="submit" class="btn btn-primary"><i class="fas fa-plus"></i> Add Favorite</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Edit Favorite Modal -->
+    <div class="modal-overlay" id="editFavoriteModal">
+        <div class="modal" style="max-width: 550px;">
+            <div class="modal-header">
+                <h2 class="modal-title"><i class="fas fa-edit" style="color: var(--primary); margin-right: 0.5rem;"></i>Edit Customer Favorite</h2>
+                <button class="modal-close" onclick="closeModal('editFavoriteModal')"><i class="fas fa-times"></i></button>
+            </div>
+            <form id="editFavoriteForm" onsubmit="updateFavorite(event)">
+                <input type="hidden" id="editFavoriteId">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label class="form-label">Product Name <span class="required">*</span></label>
+                        <input type="text" class="form-input" id="editFavoriteName" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Category <span class="required">*</span></label>
+                        <select class="form-select" id="editFavoriteCategory" required>
+                            <optgroup label="🍓 Fruits">
+                                <option value="Summer">Summer</option>
+                                <option value="Tropical">Tropical</option>
+                                <option value="Winter">Winter</option>
+                                <option value="Fall">Fall</option>
+                                <option value="Mixed Packs">Mixed Packs</option>
+                                <option value="Veggies">Veggies</option>
+                            </optgroup>
+                            <optgroup label="🍬 Candy">
+                                <option value="Candies">Candies</option>
+                                <option value="Chocolate">Chocolate</option>
+                                <option value="Nuts">Nuts</option>
+                                <option value="Marshmallow">Marshmallow</option>
+                                <option value="Ice Cream">Ice Cream</option>
+                                <option value="Lollipop">Lollipop</option>
+                            </optgroup>
+                        </select>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Price (EGP) <span class="required">*</span></label>
+                            <input type="number" class="form-input" id="editFavoritePrice" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Rating (1-5) <span class="required">*</span></label>
+                            <div class="rating-input" id="editRatingInput">
+                                <input type="radio" name="editRating" id="editRating5" value="5"><label for="editRating5"><i class="fas fa-star"></i></label>
+                                <input type="radio" name="editRating" id="editRating4" value="4"><label for="editRating4"><i class="fas fa-star"></i></label>
+                                <input type="radio" name="editRating" id="editRating3" value="3"><label for="editRating3"><i class="fas fa-star"></i></label>
+                                <input type="radio" name="editRating" id="editRating2" value="2"><label for="editRating2"><i class="fas fa-star"></i></label>
+                                <input type="radio" name="editRating" id="editRating1" value="1"><label for="editRating1"><i class="fas fa-star"></i></label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Number of Reviews</label>
+                        <input type="number" class="form-input" id="editFavoriteReviewCount">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Product Image</label>
+                        <div class="image-upload-area" onclick="document.getElementById('editFavoriteImage').click()">
+                            <img id="editFavoriteImagePreview" src="" alt="Preview">
+                        </div>
+                        <input type="file" id="editFavoriteImage" accept="image/*" style="display: none;" onchange="previewFavoriteImage(event, 'edit')">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Status</label>
+                        <select class="form-select" id="editFavoriteStatus">
+                            <option value="active">Active</option>
+                            <option value="inactive">Inactive</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('editFavoriteModal')">Cancel</button>
+                    <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Edit Hero Image Modal -->
+    <div class="modal-overlay" id="editHeroModal">
+        <div class="modal" style="max-width: 550px;">
+            <div class="modal-header">
+                <h2 class="modal-title"><i class="fas fa-image" style="color: var(--primary); margin-right: 0.5rem;"></i>Edit Hero Image</h2>
+                <button class="modal-close" onclick="closeModal('editHeroModal')"><i class="fas fa-times"></i></button>
+            </div>
+            <form id="editHeroForm" onsubmit="updateHero(event)">
+                <input type="hidden" id="editHeroId">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label class="form-label">Page</label>
+                        <input type="text" class="form-input" id="editHeroPage" readonly style="background: var(--bg-secondary);">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Hero Image</label>
+                        <div class="image-upload-area" onclick="document.getElementById('heroImage').click()" style="height: 200px;">
+                            <img id="heroImagePreview" src="" alt="Preview" style="max-height: 180px;">
+                            <div id="heroImagePlaceholder" style="display: none;">
+                                <i class="fas fa-image" style="font-size: 3rem; color: var(--text-muted); margin-bottom: 0.5rem;"></i>
+                                <p style="color: var(--text-muted);">Click to upload hero image</p>
+                                <small style="color: var(--text-muted);">Recommended: 1920 x 600px</small>
+                            </div>
+                        </div>
+                        <input type="file" id="heroImage" accept="image/*" style="display: none;" onchange="previewHeroImage(event)">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Hero Title (optional)</label>
+                        <input type="text" class="form-input" id="editHeroTitle" placeholder="Main heading text">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Hero Subtitle (optional)</label>
+                        <input type="text" class="form-input" id="editHeroSubtitle" placeholder="Subtitle or tagline">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('editHeroModal')">Cancel</button>
+                    <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="scripts/auth.js"></script>
+    <script src="scripts/dashboard.js"></script>
+    <script>
+        // ===== DATA =====
+        let testimonials = JSON.parse(localStorage.getItem('freezyBiteTestimonials2')) || [
+            { id: 1, author: '@Sarah M', teaser: 'left a sweet review!', fullReview: 'These freeze-dried strawberries are absolutely amazing! The texture is perfect and they taste so fresh. Will definitely order again!', bubbleColor: 'yellow', status: 'active' },
+            { id: 2, author: '@juicyluv', teaser: 'has something to say!', fullReview: 'Best snacks I\'ve ever tried! The mango is my favorite - it\'s like eating sunshine. My kids love them too!', bubbleColor: 'purple', status: 'active' },
+            { id: 3, author: '@fruitfan', teaser: 'See what they think!', fullReview: 'I was skeptical at first but these are genuinely delicious. Great for a healthy snack that still feels like a treat.', bubbleColor: 'pink', status: 'active' }
+        ];
+        
+        let faqs = JSON.parse(localStorage.getItem('freezyBiteFaqs2')) || [
+            { id: 1, question: 'What kind of products do you offer?', answer: 'We offer freeze-dried fruits, candies, chocolates, and more delicious snacks.', status: 'active' },
+            { id: 2, question: 'Can I customize my order?', answer: 'Yes! Contact us for custom orders and bulk purchases.', status: 'active' },
+            { id: 3, question: 'Do you have a subscription option?', answer: 'Yes, we offer monthly subscription boxes with exclusive products.', status: 'active' },
+            { id: 4, question: 'Do you offer delivery?', answer: 'We deliver across Egypt. Delivery times vary by location.', status: 'active' },
+            { id: 5, question: 'Are your products specially curated for women?', answer: 'Our products are for everyone who loves delicious, healthy snacks!', status: 'active' },
+            { id: 6, question: 'Do you accept returns or exchanges?', answer: 'Due to the nature of food products, we do not accept returns. Please contact us if there is an issue.', status: 'active' }
+        ];
+        
+        let moods = JSON.parse(localStorage.getItem('freezyBiteMoods2')) || [
+            { id: 1, title: 'Sweet & Flirty', description: 'Strawberries dipped in charm', buttonText: 'Explore Flavor', color: 'pink', backImage: '', backDescription: 'Our signature strawberry collection - freeze-dried to perfection with no added sugar.', buttonLink: '/fruits/strawberry', status: 'active' },
+            { id: 2, title: 'Bold & Bright', description: 'Sunshine you can snack on', buttonText: 'Get Zesty', color: 'yellow', backImage: '', backDescription: 'Tropical mango and citrus treats that bring the sunshine to every bite.', buttonLink: '/fruits/citrus', status: 'active' },
+            { id: 3, title: 'Cool & Crisp', description: "So fresh, it's unreal", buttonText: 'Stay Chill', color: 'green', backImage: '', backDescription: 'Refreshing apple and mint flavors for those who love a crisp, clean taste.', buttonLink: '/fruits/mint', status: 'active' }
+        ];
+        
+        let snacks = JSON.parse(localStorage.getItem('freezyBiteSnacks2')) || [
+            { id: 1, title: 'Freeze Dried Strawberries', frontImage: '', backImage: '', frontLabel: 'Package Front', backLabel: 'Ingredients', status: 'active' },
+            { id: 2, title: 'Freeze Dried Marshmallows', frontImage: '', backImage: '', frontLabel: 'Package Front', backLabel: 'Nutrition Facts', status: 'active' },
+            { id: 3, title: 'Mango Slices', frontImage: '', backImage: '', frontLabel: 'Package Front', backLabel: 'Nutrition Info', status: 'active' }
+        ];
+        
+        let favorites = JSON.parse(localStorage.getItem('freezyBiteFavorites2')) || [
+            { id: 1, name: 'Freeze Dried Strawberries', category: 'Summer', price: 120, rating: 5, reviewCount: 234, image: '', status: 'active' },
+            { id: 2, name: 'Freeze Dried Mango', category: 'Tropical', price: 140, rating: 4, reviewCount: 189, image: '', status: 'active' },
+            { id: 3, name: 'Freeze Dried Banana', category: 'Tropical', price: 110, rating: 5, reviewCount: 156, image: '', status: 'active' },
+            { id: 4, name: 'Mixed Berry Pack', category: 'Mixed Packs', price: 180, rating: 5, reviewCount: 201, image: '', status: 'active' },
+            { id: 5, name: 'Apple Slices', category: 'Fall', price: 95, rating: 4, reviewCount: 87, image: '', status: 'active' },
+            { id: 6, name: 'Snickers Bites', category: 'Chocolate', price: 175, rating: 5, reviewCount: 312, image: '', status: 'active' },
+            { id: 7, name: 'Marshmallow Pops', category: 'Marshmallow', price: 90, rating: 4, reviewCount: 98, image: '', status: 'active' },
+            { id: 8, name: 'Twix Crunch', category: 'Chocolate', price: 160, rating: 4, reviewCount: 145, image: '', status: 'active' },
+            { id: 9, name: 'Gummy Bears', category: 'Candies', price: 85, rating: 5, reviewCount: 256, image: '', status: 'active' },
+            { id: 10, name: 'Almond Clusters', category: 'Nuts', price: 130, rating: 4, reviewCount: 67, image: '', status: 'active' }
+        ];
+        
+        // Category type mapping
+        const fruitCategories = ['Summer', 'Tropical', 'Winter', 'Fall', 'Mixed Packs', 'Veggies'];
+        const candyCategories = ['Candies', 'Chocolate', 'Nuts', 'Marshmallow', 'Ice Cream', 'Lollipop'];
+        
+        let heroImages = JSON.parse(localStorage.getItem('freezyBiteHeroes')) || [
+            { id: 'fruits', page: 'Fruits Page', image: '', title: 'Fresh Freeze-Dried Fruits', subtitle: 'Nature\'s candy, perfected' },
+            { id: 'candy', page: 'Candy Page', image: '', title: 'Sweet Treats', subtitle: 'Irresistible freeze-dried candy' },
+            { id: 'offers', page: 'Special Offers', image: '', title: 'Hot Deals', subtitle: 'Limited time offers you\'ll love' },
+            { id: 'about', page: 'About Us', image: '', title: 'Our Story', subtitle: 'Passion for freeze-dried goodness' },
+            { id: 'contact', page: 'Contact Us', image: '', title: 'Get in Touch', subtitle: 'We\'d love to hear from you' }
+        ];
+
+        // Contact Page Content
+        let contactContent = JSON.parse(localStorage.getItem('freezyBiteContactContent')) || {
+            mainTitle: 'Main Message',
+            mainDescription: "We're not just about crunchy, colorful freeze-dried goodies — we're about making people smile. Got a flavor request? Want to know when your order will land? Or maybe you just want to say hi? We're all ears (and taste buds).",
+            reachTitle: 'Ways to Reach Us',
+            visitLabel: 'Visit Us',
+            address: 'Candy HQ, Cairo, Egypt',
+            phoneLabel: 'Call or WhatsApp',
+            phone: '+20 109 019 6133',
+            emailLabel: 'Email',
+            email: 'hello@FreezyBite.com',
+            socialLabel: 'Follow Us',
+            socialDescription: 'Snack updates, flavor drops, and behind-the-scenes fun!',
+            tiktok: 'https://tiktok.com/@freezybite',
+            instagram: 'https://instagram.com/freezybite',
+            facebook: 'https://facebook.com/freezybite',
+            whatsapp: 'https://wa.me/201090196133'
+        };
+
+        // Temp storage for images
+        let addMoodBackImageData = null;
+        let editMoodBackImageData = null;
+        let addSnackFrontImageData = null;
+        let addSnackBackImageData = null;
+        let editSnackFrontImageData = null;
+        let editSnackBackImageData = null;
+        let addFavoriteImageData = null;
+        let editFavoriteImageData = null;
+        let editHeroImageData = null;
+        let currentAddMoodColor = 'pink';
+        let currentEditMoodColor = 'pink';
+        let currentAddBubbleColor = 'yellow';
+        let currentEditBubbleColor = 'yellow';
+        let currentFavoriteFilter = 'all';
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            renderAllContent();
+            updateCounts();
+        });
+        
+        // Save data
+        function saveAllData() {
+            localStorage.setItem('freezyBiteTestimonials2', JSON.stringify(testimonials));
+            localStorage.setItem('freezyBiteFaqs2', JSON.stringify(faqs));
+            localStorage.setItem('freezyBiteMoods2', JSON.stringify(moods));
+            localStorage.setItem('freezyBiteSnacks2', JSON.stringify(snacks));
+            localStorage.setItem('freezyBiteFavorites2', JSON.stringify(favorites));
+            localStorage.setItem('freezyBiteHeroes', JSON.stringify(heroImages));
+            localStorage.setItem('freezyBiteContactContent', JSON.stringify(contactContent));
+        }
+        
+        // Update counts
+        function updateCounts() {
+            document.getElementById('testimonialCount').textContent = testimonials.length;
+            document.getElementById('faqCount').textContent = faqs.length;
+            document.getElementById('moodCount').textContent = moods.length;
+            document.getElementById('snackCount').textContent = snacks.length;
+            document.getElementById('favoriteCount').textContent = favorites.length;
+            document.getElementById('heroCount').textContent = heroImages.length;
+        }
+        
+        // Switch tab
+        function switchContentTab(tab) {
+            document.querySelectorAll('.content-tab').forEach(btn => btn.classList.remove('active'));
+            event.target.closest('.content-tab').classList.add('active');
+            document.querySelectorAll('.content-section').forEach(sec => sec.classList.remove('active'));
+            document.getElementById(tab + 'Section').classList.add('active');
+        }
+        
+        // Render all
+        function renderAllContent() {
+            renderTestimonials();
+            renderFaqs();
+            renderMoods();
+            renderSnacks();
+            renderFavorites();
+            renderHeroes();
+            loadContactContent();
+        }
+        
+        // ===== TESTIMONIALS =====
+        function renderTestimonials() {
+            const container = document.getElementById('testimonialsGrid');
+            if (testimonials.length === 0) {
+                container.innerHTML = '<div class="empty-state"><i class="fas fa-quote-right"></i><h3>No testimonials yet</h3><p>Add customer testimonials to show on your homepage.</p></div>';
+                return;
+            }
+            
+            container.innerHTML = testimonials.map(t => `
+                <div class="testimonial-card">
+                    <div class="testimonial-preview">
+                        <div class="testimonial-bubble ${t.bubbleColor}">
+                            <div class="teaser">"${t.author} ${t.teaser}"</div>
+                        </div>
+                    </div>
+                    <div class="testimonial-full-review">
+                        <h4><i class="fas fa-eye"></i> Full Review (revealed on click/hover)</h4>
+                        <div class="review-text">"${t.fullReview}"</div>
+                    </div>
+                    <div class="testimonial-footer">
+                        <span class="badge ${t.status === 'active' ? 'success' : 'secondary'}">${t.status}</span>
+                        <div style="display: flex; gap: 0.5rem;">
+                            <button class="action-btn edit" onclick="editTestimonial(${t.id})" title="Edit"><i class="fas fa-edit"></i></button>
+                            <button class="action-btn delete" onclick="deleteTestimonial(${t.id})" title="Delete"><i class="fas fa-trash"></i></button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        function selectBubbleColor(el, mode) {
+            const container = mode === 'add' ? '#addTestimonialModal' : '#editBubbleColorPicker';
+            document.querySelectorAll(`${container} .bubble-color-option`).forEach(c => c.classList.remove('selected'));
+            el.classList.add('selected');
+            if (mode === 'add') {
+                currentAddBubbleColor = el.dataset.color;
+                document.getElementById('testimonialBubbleColor').value = el.dataset.color;
+            } else {
+                currentEditBubbleColor = el.dataset.color;
+                document.getElementById('editTestimonialBubbleColor').value = el.dataset.color;
+            }
+        }
+        
+        function openAddTestimonialModal() {
+            document.getElementById('addTestimonialForm').reset();
+            document.querySelectorAll('#addTestimonialModal .bubble-color-option').forEach(c => c.classList.remove('selected'));
+            document.querySelector('#addTestimonialModal .bubble-color-option[data-color="yellow"]').classList.add('selected');
+            currentAddBubbleColor = 'yellow';
+            openModal('addTestimonialModal');
+        }
+        
+        function addTestimonial(event) {
+            event.preventDefault();
+            const newT = {
+                id: Date.now(),
+                author: document.getElementById('testimonialAuthor').value,
+                teaser: document.getElementById('testimonialTeaser').value,
+                fullReview: document.getElementById('testimonialFullReview').value,
+                bubbleColor: currentAddBubbleColor,
+                status: 'active'
+            };
+            testimonials.push(newT);
+            saveAllData();
+            closeModal('addTestimonialModal');
+            renderTestimonials();
+            updateCounts();
+            showAlert('success', 'Testimonial added!');
+        }
+        
+        function editTestimonial(id) {
+            const t = testimonials.find(x => x.id === id);
+            if (!t) return;
+            document.getElementById('editTestimonialId').value = t.id;
+            document.getElementById('editTestimonialAuthor').value = t.author;
+            document.getElementById('editTestimonialTeaser').value = t.teaser;
+            document.getElementById('editTestimonialFullReview').value = t.fullReview;
+            document.getElementById('editTestimonialStatus').value = t.status;
+            document.getElementById('editTestimonialBubbleColor').value = t.bubbleColor;
+            document.querySelectorAll('#editBubbleColorPicker .bubble-color-option').forEach(c => c.classList.remove('selected'));
+            document.querySelector(`#editBubbleColorPicker .bubble-color-option[data-color="${t.bubbleColor}"]`)?.classList.add('selected');
+            currentEditBubbleColor = t.bubbleColor;
+            openModal('editTestimonialModal');
+        }
+        
+        function updateTestimonial(event) {
+            event.preventDefault();
+            const id = parseInt(document.getElementById('editTestimonialId').value);
+            const t = testimonials.find(x => x.id === id);
+            if (!t) return;
+            t.author = document.getElementById('editTestimonialAuthor').value;
+            t.teaser = document.getElementById('editTestimonialTeaser').value;
+            t.fullReview = document.getElementById('editTestimonialFullReview').value;
+            t.status = document.getElementById('editTestimonialStatus').value;
+            t.bubbleColor = currentEditBubbleColor;
+            saveAllData();
+            closeModal('editTestimonialModal');
+            renderTestimonials();
+            showAlert('success', 'Testimonial updated!');
+        }
+        
+        function deleteTestimonial(id) {
+            if (!confirm('Delete this testimonial?')) return;
+            testimonials = testimonials.filter(t => t.id !== id);
+            saveAllData();
+            renderTestimonials();
+            updateCounts();
+            showAlert('success', 'Testimonial deleted!');
+        }
+        
+        // ===== FAQs =====
+        function renderFaqs() {
+            const container = document.getElementById('faqsList');
+            if (faqs.length === 0) {
+                container.innerHTML = '<div class="empty-state"><i class="fas fa-question-circle"></i><h3>No FAQs yet</h3><p>Add FAQs to help customers.</p></div>';
+                return;
+            }
+            container.innerHTML = faqs.map((f, idx) => `
+                <div class="faq-item">
+                    <div class="faq-item-header">
+                        <span class="question"><strong>${idx + 1}.</strong> ${f.question}</span>
+                        <div style="display: flex; gap: 0.5rem; align-items: center;">
+                            <span class="badge ${f.status === 'active' ? 'success' : 'secondary'}" style="font-size: 0.7rem;">${f.status}</span>
+                            <button class="action-btn edit" onclick="editFaq(${f.id})" title="Edit"><i class="fas fa-edit"></i></button>
+                            <button class="action-btn delete" onclick="deleteFaq(${f.id})" title="Delete"><i class="fas fa-trash"></i></button>
+                        </div>
+                    </div>
+                    <div class="faq-item-body">${f.answer}</div>
+                </div>
+            `).join('');
+        }
+        
+        function openAddFaqModal() { document.getElementById('addFaqForm').reset(); openModal('addFaqModal'); }
+        
+        function addFaq(event) {
+            event.preventDefault();
+            faqs.push({ id: Date.now(), question: document.getElementById('faqQuestion').value, answer: document.getElementById('faqAnswer').value, status: 'active' });
+            saveAllData(); closeModal('addFaqModal'); renderFaqs(); updateCounts(); showAlert('success', 'FAQ added!');
+        }
+        
+        function editFaq(id) {
+            const f = faqs.find(x => x.id === id); if (!f) return;
+            document.getElementById('editFaqId').value = f.id;
+            document.getElementById('editFaqQuestion').value = f.question;
+            document.getElementById('editFaqAnswer').value = f.answer;
+            document.getElementById('editFaqStatus').value = f.status;
+            openModal('editFaqModal');
+        }
+        
+        function updateFaq(event) {
+            event.preventDefault();
+            const f = faqs.find(x => x.id === parseInt(document.getElementById('editFaqId').value)); if (!f) return;
+            f.question = document.getElementById('editFaqQuestion').value;
+            f.answer = document.getElementById('editFaqAnswer').value;
+            f.status = document.getElementById('editFaqStatus').value;
+            saveAllData(); closeModal('editFaqModal'); renderFaqs(); showAlert('success', 'FAQ updated!');
+        }
+        
+        function deleteFaq(id) {
+            if (!confirm('Delete this FAQ?')) return;
+            faqs = faqs.filter(f => f.id !== id); saveAllData(); renderFaqs(); updateCounts(); showAlert('success', 'FAQ deleted!');
+        }
+        
+        // ===== MOODS =====
+        function renderMoods() {
+            const container = document.getElementById('moodsGrid');
+            if (moods.length === 0) {
+                container.innerHTML = '<div class="empty-state"><i class="fas fa-heart"></i><h3>No mood cards yet</h3><p>Add mood cards for your customers.</p></div>';
+                return;
+            }
+            container.innerHTML = moods.map(m => `
+                <div class="mood-card-container">
+                    <div class="mood-card" onclick="this.classList.toggle('flipped')">
+                        <div class="mood-card-front ${m.color}">
+                            <h3>${m.title}</h3>
+                            <p>${m.description}</p>
+                            <button class="flip-btn" onclick="event.stopPropagation(); this.closest('.mood-card').classList.toggle('flipped')">${m.buttonText}</button>
+                        </div>
+                        <div class="mood-card-back">
+                            <div class="back-image">
+                                ${m.backImage ? `<img src="${m.backImage}" alt="${m.title}">` : `<i class="fas fa-image" style="font-size: 3rem; color: var(--text-muted);"></i>`}
+                            </div>
+                            <div class="back-content">
+                                <h4>${m.title}</h4>
+                                <p>${m.backDescription || 'No description added'}</p>
+                            </div>
+                        </div>
+                        <div class="mood-card-actions" onclick="event.stopPropagation()">
+                            <button class="action-btn edit" onclick="editMood(${m.id})" title="Edit"><i class="fas fa-edit"></i></button>
+                            <button class="action-btn delete" onclick="deleteMood(${m.id})" title="Delete"><i class="fas fa-trash"></i></button>
+                        </div>
+                        <div class="flip-indicator"><i class="fas fa-sync-alt"></i> Click to flip</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        function selectMoodColor(el, mode) {
+            const container = mode === 'add' ? '#addMoodModal' : '#editMoodColorPicker';
+            document.querySelectorAll(`${container} .color-option`).forEach(c => c.classList.remove('selected'));
+            el.classList.add('selected');
+            if (mode === 'add') { currentAddMoodColor = el.dataset.color; document.getElementById('moodColor').value = el.dataset.color; }
+            else { currentEditMoodColor = el.dataset.color; document.getElementById('editMoodColor').value = el.dataset.color; }
+        }
+        
+        function previewMoodBackImage(event, mode) {
+            const file = event.target.files[0]; if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                if (mode === 'add') {
+                    addMoodBackImageData = e.target.result;
+                    document.getElementById('moodBackImagePreview').src = e.target.result;
+                    document.getElementById('moodBackImagePreview').style.display = 'block';
+                    document.getElementById('moodBackImagePlaceholder').style.display = 'none';
+                } else {
+                    editMoodBackImageData = e.target.result;
+                    document.getElementById('editMoodBackImagePreview').src = e.target.result;
+                }
+            };
+            reader.readAsDataURL(file);
+        }
+        
+        function openAddMoodModal() {
+            document.getElementById('addMoodForm').reset();
+            document.querySelectorAll('#addMoodModal .color-option').forEach(c => c.classList.remove('selected'));
+            document.querySelector('#addMoodModal .color-option[data-color="pink"]').classList.add('selected');
+            currentAddMoodColor = 'pink';
+            addMoodBackImageData = null;
+            document.getElementById('moodBackImagePreview').style.display = 'none';
+            document.getElementById('moodBackImagePlaceholder').style.display = 'block';
+            openModal('addMoodModal');
+        }
+        
+        function addMood(event) {
+            event.preventDefault();
+            moods.push({
+                id: Date.now(),
+                title: document.getElementById('moodTitle').value,
+                description: document.getElementById('moodDescription').value,
+                buttonText: document.getElementById('moodButtonText').value,
+                color: currentAddMoodColor,
+                backImage: addMoodBackImageData || '',
+                backDescription: document.getElementById('moodBackDescription').value,
+                buttonLink: document.getElementById('moodButtonLink').value,
+                status: 'active'
+            });
+            saveAllData(); closeModal('addMoodModal'); renderMoods(); updateCounts(); showAlert('success', 'Mood card added!');
+        }
+        
+        function editMood(id) {
+            const m = moods.find(x => x.id === id); if (!m) return;
+            document.getElementById('editMoodId').value = m.id;
+            document.getElementById('editMoodTitle').value = m.title;
+            document.getElementById('editMoodDescription').value = m.description;
+            document.getElementById('editMoodButtonText').value = m.buttonText;
+            document.getElementById('editMoodColor').value = m.color;
+            document.getElementById('editMoodBackDescription').value = m.backDescription || '';
+            document.getElementById('editMoodButtonLink').value = m.buttonLink || '';
+            document.getElementById('editMoodStatus').value = m.status;
+            document.getElementById('editMoodBackImagePreview').src = m.backImage || 'https://via.placeholder.com/200x120/f1f5f9/64748b?text=No+Image';
+            editMoodBackImageData = m.backImage;
+            document.querySelectorAll('#editMoodColorPicker .color-option').forEach(c => c.classList.remove('selected'));
+            document.querySelector(`#editMoodColorPicker .color-option[data-color="${m.color}"]`)?.classList.add('selected');
+            currentEditMoodColor = m.color;
+            openModal('editMoodModal');
+        }
+        
+        function updateMood(event) {
+            event.preventDefault();
+            const m = moods.find(x => x.id === parseInt(document.getElementById('editMoodId').value)); if (!m) return;
+            m.title = document.getElementById('editMoodTitle').value;
+            m.description = document.getElementById('editMoodDescription').value;
+            m.buttonText = document.getElementById('editMoodButtonText').value;
+            m.color = currentEditMoodColor;
+            m.backDescription = document.getElementById('editMoodBackDescription').value;
+            m.buttonLink = document.getElementById('editMoodButtonLink').value;
+            m.status = document.getElementById('editMoodStatus').value;
+            if (editMoodBackImageData) m.backImage = editMoodBackImageData;
+            saveAllData(); closeModal('editMoodModal'); renderMoods(); showAlert('success', 'Mood card updated!');
+        }
+        
+        function deleteMood(id) {
+            if (!confirm('Delete this mood card?')) return;
+            moods = moods.filter(m => m.id !== id); saveAllData(); renderMoods(); updateCounts(); showAlert('success', 'Mood card deleted!');
+        }
+        
+        // ===== SNACKS =====
+        function renderSnacks() {
+            const container = document.getElementById('snacksGrid');
+            if (snacks.length === 0) {
+                container.innerHTML = '<div class="empty-state"><i class="fas fa-cookie-bite"></i><h3>No snack cards yet</h3><p>Add snack info cards.</p></div>';
+                return;
+            }
+            container.innerHTML = snacks.map(s => `
+                <div class="snack-card-container">
+                    <div class="snack-card" onclick="this.classList.toggle('flipped')">
+                        <div class="snack-card-front">
+                            <div class="image-area">
+                                ${s.frontImage ? `<img src="${s.frontImage}" alt="${s.title}">` : `<i class="fas fa-image" style="font-size: 3rem; color: var(--text-muted);"></i>`}
+                            </div>
+                            <div class="info">
+                                <h4>${s.title}</h4>
+                                <p>${s.frontLabel || 'Front'}</p>
+                            </div>
+                        </div>
+                        <div class="snack-card-back">
+                            <div class="image-area">
+                                ${s.backImage ? `<img src="${s.backImage}" alt="${s.title} back">` : `<i class="fas fa-clipboard-list" style="font-size: 3rem; color: var(--text-muted);"></i>`}
+                            </div>
+                            <div class="info">
+                                <h4>${s.title}</h4>
+                                <p>${s.backLabel || 'Back'}</p>
+                            </div>
+                        </div>
+                        <div class="snack-card-actions" onclick="event.stopPropagation()">
+                            <button class="action-btn edit" onclick="editSnack(${s.id})" title="Edit"><i class="fas fa-edit"></i></button>
+                            <button class="action-btn delete" onclick="deleteSnack(${s.id})" title="Delete"><i class="fas fa-trash"></i></button>
+                        </div>
+                        <div class="flip-indicator"><i class="fas fa-sync-alt"></i> Click to flip</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        function previewSnackImage(event, side, mode) {
+            const file = event.target.files[0]; if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const prefix = mode === 'add' ? 'snack' : 'editSnack';
+                const previewId = prefix + (side === 'front' ? 'FrontImagePreview' : 'BackImagePreview');
+                const placeholderId = prefix + (side === 'front' ? 'FrontImagePlaceholder' : 'BackImagePlaceholder');
+                document.getElementById(previewId).src = e.target.result;
+                document.getElementById(previewId).style.display = 'block';
+                if (document.getElementById(placeholderId)) document.getElementById(placeholderId).style.display = 'none';
+                if (mode === 'add') {
+                    if (side === 'front') addSnackFrontImageData = e.target.result;
+                    else addSnackBackImageData = e.target.result;
+                } else {
+                    if (side === 'front') editSnackFrontImageData = e.target.result;
+                    else editSnackBackImageData = e.target.result;
+                }
+            };
+            reader.readAsDataURL(file);
+        }
+        
+        function openAddSnackModal() {
+            document.getElementById('addSnackForm').reset();
+            addSnackFrontImageData = null; addSnackBackImageData = null;
+            document.getElementById('snackFrontImagePreview').style.display = 'none';
+            document.getElementById('snackBackImagePreview').style.display = 'none';
+            document.getElementById('snackFrontImagePlaceholder').style.display = 'block';
+            document.getElementById('snackBackImagePlaceholder').style.display = 'block';
+            openModal('addSnackModal');
+        }
+        
+        function addSnack(event) {
+            event.preventDefault();
+            snacks.push({
+                id: Date.now(),
+                title: document.getElementById('snackTitle').value,
+                frontImage: addSnackFrontImageData || '',
+                backImage: addSnackBackImageData || '',
+                frontLabel: document.getElementById('snackFrontLabel').value || 'Front',
+                backLabel: document.getElementById('snackBackLabel').value || 'Back',
+                status: 'active'
+            });
+            saveAllData(); closeModal('addSnackModal'); renderSnacks(); updateCounts(); showAlert('success', 'Snack card added!');
+        }
+        
+        function editSnack(id) {
+            const s = snacks.find(x => x.id === id); if (!s) return;
+            document.getElementById('editSnackId').value = s.id;
+            document.getElementById('editSnackTitle').value = s.title;
+            document.getElementById('editSnackFrontLabel').value = s.frontLabel || '';
+            document.getElementById('editSnackBackLabel').value = s.backLabel || '';
+            document.getElementById('editSnackStatus').value = s.status;
+            document.getElementById('editSnackFrontImagePreview').src = s.frontImage || 'https://via.placeholder.com/100x80/fce4ec/a31545?text=Front';
+            document.getElementById('editSnackBackImagePreview').src = s.backImage || 'https://via.placeholder.com/100x80/e1bee7/7b1fa2?text=Back';
+            editSnackFrontImageData = s.frontImage;
+            editSnackBackImageData = s.backImage;
+            openModal('editSnackModal');
+        }
+        
+        function updateSnack(event) {
+            event.preventDefault();
+            const s = snacks.find(x => x.id === parseInt(document.getElementById('editSnackId').value)); if (!s) return;
+            s.title = document.getElementById('editSnackTitle').value;
+            s.frontLabel = document.getElementById('editSnackFrontLabel').value;
+            s.backLabel = document.getElementById('editSnackBackLabel').value;
+            s.status = document.getElementById('editSnackStatus').value;
+            if (editSnackFrontImageData) s.frontImage = editSnackFrontImageData;
+            if (editSnackBackImageData) s.backImage = editSnackBackImageData;
+            saveAllData(); closeModal('editSnackModal'); renderSnacks(); showAlert('success', 'Snack card updated!');
+        }
+        
+        function deleteSnack(id) {
+            if (!confirm('Delete this snack card?')) return;
+            snacks = snacks.filter(s => s.id !== id); saveAllData(); renderSnacks(); updateCounts(); showAlert('success', 'Snack card deleted!');
+        }
+        
+        // ===== CUSTOMER FAVORITES =====
+        function getCategoryType(category) {
+            if (fruitCategories.includes(category)) return 'fruits';
+            if (candyCategories.includes(category)) return 'candy';
+            return 'other';
+        }
+        
+        function renderFavorites() {
+            const container = document.getElementById('favoritesGrid');
+            let filtered;
+            
+            if (currentFavoriteFilter === 'all') {
+                filtered = favorites;
+            } else if (currentFavoriteFilter === 'fruits') {
+                filtered = favorites.filter(f => fruitCategories.includes(f.category));
+            } else if (currentFavoriteFilter === 'candy') {
+                filtered = favorites.filter(f => candyCategories.includes(f.category));
+            } else {
+                filtered = favorites.filter(f => f.category === currentFavoriteFilter);
+            }
+            
+            if (filtered.length === 0) {
+                container.innerHTML = '<div class="empty-state"><i class="fas fa-star"></i><h3>No favorites in this category</h3><p>Add customer favorite products to showcase on your pages.</p></div>';
+                return;
+            }
+            
+            container.innerHTML = filtered.map(f => {
+                const categoryType = getCategoryType(f.category);
+                return `
+                <div class="favorite-card">
+                    <div class="favorite-image">
+                        ${f.image ? `<img src="${f.image}" alt="${f.name}">` : `<i class="fas fa-image" style="font-size: 3rem; color: var(--text-muted);"></i>`}
+                        <span class="favorite-category-badge ${categoryType}">${f.category}</span>
+                    </div>
+                    <div class="favorite-content">
+                        <h4>${f.name}</h4>
+                        <div class="favorite-rating">
+                            <div class="rating-stars">
+                                ${[1,2,3,4,5].map(i => `<i class="fas fa-star ${i <= f.rating ? '' : 'empty'}"></i>`).join('')}
+                            </div>
+                            <span class="rating-count">(${f.reviewCount} reviews)</span>
+                        </div>
+                        <div class="favorite-price">${f.price} EGP</div>
+                    </div>
+                    <div class="favorite-footer">
+                        <span class="badge ${f.status === 'active' ? 'success' : 'secondary'}">${f.status}</span>
+                        <div style="display: flex; gap: 0.5rem;">
+                            <button class="action-btn edit" onclick="editFavorite(${f.id})" title="Edit"><i class="fas fa-edit"></i></button>
+                            <button class="action-btn delete" onclick="deleteFavorite(${f.id})" title="Delete"><i class="fas fa-trash"></i></button>
+                        </div>
+                    </div>
+                </div>
+            `}).join('');
+        }
+        
+        function filterFavorites(category, btn) {
+            currentFavoriteFilter = category;
+            document.querySelectorAll('#favoritesSection .btn-secondary').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            renderFavorites();
+        }
+        
+        function previewFavoriteImage(event, mode) {
+            const file = event.target.files[0]; if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                if (mode === 'add') {
+                    addFavoriteImageData = e.target.result;
+                    document.getElementById('favoriteImagePreview').src = e.target.result;
+                    document.getElementById('favoriteImagePreview').style.display = 'block';
+                    document.getElementById('favoriteImagePlaceholder').style.display = 'none';
+                } else {
+                    editFavoriteImageData = e.target.result;
+                    document.getElementById('editFavoriteImagePreview').src = e.target.result;
+                }
+            };
+            reader.readAsDataURL(file);
+        }
+        
+        function openAddFavoriteModal() {
+            document.getElementById('addFavoriteForm').reset();
+            addFavoriteImageData = null;
+            document.getElementById('favoriteImagePreview').style.display = 'none';
+            document.getElementById('favoriteImagePlaceholder').style.display = 'block';
+            document.getElementById('addRating5').checked = true;
+            openModal('addFavoriteModal');
+        }
+        
+        function addFavorite(event) {
+            event.preventDefault();
+            const selectedRating = document.querySelector('input[name="addRating"]:checked');
+            favorites.push({
+                id: Date.now(),
+                name: document.getElementById('favoriteName').value,
+                category: document.getElementById('favoriteCategory').value,
+                price: parseInt(document.getElementById('favoritePrice').value),
+                rating: selectedRating ? parseInt(selectedRating.value) : 5,
+                reviewCount: parseInt(document.getElementById('favoriteReviewCount').value) || 0,
+                image: addFavoriteImageData || '',
+                status: 'active'
+            });
+            saveAllData(); closeModal('addFavoriteModal'); renderFavorites(); updateCounts(); showAlert('success', 'Customer favorite added!');
+        }
+        
+        function editFavorite(id) {
+            const f = favorites.find(x => x.id === id); if (!f) return;
+            document.getElementById('editFavoriteId').value = f.id;
+            document.getElementById('editFavoriteName').value = f.name;
+            document.getElementById('editFavoriteCategory').value = f.category;
+            document.getElementById('editFavoritePrice').value = f.price;
+            document.getElementById('editFavoriteReviewCount').value = f.reviewCount;
+            document.getElementById('editFavoriteStatus').value = f.status;
+            document.getElementById('editFavoriteImagePreview').src = f.image || 'https://via.placeholder.com/200x120/f1f5f9/64748b?text=No+Image';
+            editFavoriteImageData = f.image;
+            // Set rating
+            const ratingInput = document.getElementById(`editRating${f.rating}`);
+            if (ratingInput) ratingInput.checked = true;
+            openModal('editFavoriteModal');
+        }
+        
+        function updateFavorite(event) {
+            event.preventDefault();
+            const f = favorites.find(x => x.id === parseInt(document.getElementById('editFavoriteId').value)); if (!f) return;
+            const selectedRating = document.querySelector('input[name="editRating"]:checked');
+            f.name = document.getElementById('editFavoriteName').value;
+            f.category = document.getElementById('editFavoriteCategory').value;
+            f.price = parseInt(document.getElementById('editFavoritePrice').value);
+            f.rating = selectedRating ? parseInt(selectedRating.value) : f.rating;
+            f.reviewCount = parseInt(document.getElementById('editFavoriteReviewCount').value) || 0;
+            f.status = document.getElementById('editFavoriteStatus').value;
+            if (editFavoriteImageData) f.image = editFavoriteImageData;
+            saveAllData(); closeModal('editFavoriteModal'); renderFavorites(); showAlert('success', 'Customer favorite updated!');
+        }
+        
+        function deleteFavorite(id) {
+            if (!confirm('Delete this customer favorite?')) return;
+            favorites = favorites.filter(f => f.id !== id); saveAllData(); renderFavorites(); updateCounts(); showAlert('success', 'Customer favorite deleted!');
+        }
+        
+        // ===== HERO IMAGES =====
+        function renderHeroes() {
+            const container = document.getElementById('heroesGrid');
+            container.innerHTML = heroImages.map(h => `
+                <div class="hero-card">
+                    <div class="hero-preview">
+                        ${h.image ? `<img src="${h.image}" alt="${h.page}">` : `<div style="display: flex; flex-direction: column; align-items: center;"><i class="fas fa-image" style="font-size: 2.5rem; color: rgba(255,255,255,0.7); margin-bottom: 0.5rem;"></i><span style="color: rgba(255,255,255,0.8); font-size: 0.85rem;">No image set</span></div>`}
+                        <span class="page-label">${h.page}</span>
+                    </div>
+                    <div class="hero-info">
+                        <h4>${h.title || 'No title set'}</h4>
+                        <p>${h.subtitle || 'No subtitle set'}</p>
+                        <div class="hero-dimensions">
+                            <span><i class="fas fa-arrows-alt-h"></i> 1920px</span>
+                            <span><i class="fas fa-arrows-alt-v"></i> 600px</span>
+                        </div>
+                    </div>
+                    <div style="padding: 1rem; border-top: 1px solid var(--border-color);">
+                        <button class="btn btn-primary btn-sm" onclick="editHero('${h.id}')" style="width: 100%;">
+                            <i class="fas fa-edit"></i> Change Hero Image
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        function previewHeroImage(event) {
+            const file = event.target.files[0]; if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                editHeroImageData = e.target.result;
+                document.getElementById('heroImagePreview').src = e.target.result;
+                document.getElementById('heroImagePreview').style.display = 'block';
+                document.getElementById('heroImagePlaceholder').style.display = 'none';
+            };
+            reader.readAsDataURL(file);
+        }
+        
+        function editHero(id) {
+            const h = heroImages.find(x => x.id === id); if (!h) return;
+            document.getElementById('editHeroId').value = h.id;
+            document.getElementById('editHeroPage').value = h.page;
+            document.getElementById('editHeroTitle').value = h.title || '';
+            document.getElementById('editHeroSubtitle').value = h.subtitle || '';
+            editHeroImageData = h.image;
+            if (h.image) {
+                document.getElementById('heroImagePreview').src = h.image;
+                document.getElementById('heroImagePreview').style.display = 'block';
+                document.getElementById('heroImagePlaceholder').style.display = 'none';
+            } else {
+                document.getElementById('heroImagePreview').style.display = 'none';
+                document.getElementById('heroImagePlaceholder').style.display = 'block';
+            }
+            openModal('editHeroModal');
+        }
+        
+        function updateHero(event) {
+            event.preventDefault();
+            const h = heroImages.find(x => x.id === document.getElementById('editHeroId').value); if (!h) return;
+            h.title = document.getElementById('editHeroTitle').value;
+            h.subtitle = document.getElementById('editHeroSubtitle').value;
+            if (editHeroImageData) h.image = editHeroImageData;
+            saveAllData(); closeModal('editHeroModal'); renderHeroes(); showAlert('success', 'Hero image updated!');
+        }
+        
+        // ===== CONTACT PAGE CONTENT =====
+        function loadContactContent() {
+            // Load data into form fields
+            document.getElementById('contactMainTitle').value = contactContent.mainTitle || '';
+            document.getElementById('contactMainDescription').value = contactContent.mainDescription || '';
+            document.getElementById('contactReachTitle').value = contactContent.reachTitle || '';
+            document.getElementById('contactVisitLabel').value = contactContent.visitLabel || '';
+            document.getElementById('contactAddress').value = contactContent.address || '';
+            document.getElementById('contactPhoneLabel').value = contactContent.phoneLabel || '';
+            document.getElementById('contactPhone').value = contactContent.phone || '';
+            document.getElementById('contactEmailLabel').value = contactContent.emailLabel || '';
+            document.getElementById('contactEmail').value = contactContent.email || '';
+            document.getElementById('contactSocialLabel').value = contactContent.socialLabel || '';
+            document.getElementById('contactSocialDescription').value = contactContent.socialDescription || '';
+            document.getElementById('contactTiktok').value = contactContent.tiktok || '';
+            document.getElementById('contactInstagram').value = contactContent.instagram || '';
+            document.getElementById('contactFacebook').value = contactContent.facebook || '';
+            document.getElementById('contactWhatsapp').value = contactContent.whatsapp || '';
+            
+            // Render preview
+            refreshContactPreview();
+        }
+        
+        function saveContactContent() {
+            // Get values from form
+            contactContent.mainTitle = document.getElementById('contactMainTitle').value;
+            contactContent.mainDescription = document.getElementById('contactMainDescription').value;
+            contactContent.reachTitle = document.getElementById('contactReachTitle').value;
+            contactContent.visitLabel = document.getElementById('contactVisitLabel').value;
+            contactContent.address = document.getElementById('contactAddress').value;
+            contactContent.phoneLabel = document.getElementById('contactPhoneLabel').value;
+            contactContent.phone = document.getElementById('contactPhone').value;
+            contactContent.emailLabel = document.getElementById('contactEmailLabel').value;
+            contactContent.email = document.getElementById('contactEmail').value;
+            contactContent.socialLabel = document.getElementById('contactSocialLabel').value;
+            contactContent.socialDescription = document.getElementById('contactSocialDescription').value;
+            contactContent.tiktok = document.getElementById('contactTiktok').value;
+            contactContent.instagram = document.getElementById('contactInstagram').value;
+            contactContent.facebook = document.getElementById('contactFacebook').value;
+            contactContent.whatsapp = document.getElementById('contactWhatsapp').value;
+            
+            // Save to localStorage
+            saveAllData();
+            
+            // Refresh preview
+            refreshContactPreview();
+            
+            showAlert('success', 'Contact page content saved successfully!');
+        }
+        
+        function refreshContactPreview() {
+            const preview = document.getElementById('contactPreview');
+            if (!preview) return;
+            
+            const mainTitle = document.getElementById('contactMainTitle').value || 'Main Message';
+            const mainDescription = document.getElementById('contactMainDescription').value || 'Your description here...';
+            const reachTitle = document.getElementById('contactReachTitle').value || 'Ways to Reach Us';
+            const visitLabel = document.getElementById('contactVisitLabel').value || 'Visit Us';
+            const address = document.getElementById('contactAddress').value || 'Your address';
+            const phoneLabel = document.getElementById('contactPhoneLabel').value || 'Call or WhatsApp';
+            const phone = document.getElementById('contactPhone').value || 'Your phone';
+            const emailLabel = document.getElementById('contactEmailLabel').value || 'Email';
+            const email = document.getElementById('contactEmail').value || 'your@email.com';
+            const socialLabel = document.getElementById('contactSocialLabel').value || 'Follow Us';
+            const socialDescription = document.getElementById('contactSocialDescription').value || 'Social media description';
+            const tiktok = document.getElementById('contactTiktok').value;
+            const instagram = document.getElementById('contactInstagram').value;
+            const facebook = document.getElementById('contactFacebook').value;
+            
+            preview.innerHTML = `
+                <div style="text-align: center; margin-bottom: 2rem;">
+                    <h2 style="color: #a31545; font-size: 1.75rem; margin-bottom: 1rem;">${mainTitle}</h2>
+                    <p style="color: #333; line-height: 1.6; max-width: 600px; margin: 0 auto;">${mainDescription}</p>
+                </div>
+                
+                <h3 style="color: #a31545; font-size: 1.25rem; text-align: center; margin-bottom: 1rem;">${reachTitle}</h3>
+                
+                <div style="background: rgba(255,255,255,0.7); border-radius: 12px; padding: 1.5rem; margin-bottom: 2rem;">
+                    <div style="margin-bottom: 1rem;">
+                        <strong style="color: #a31545;">${visitLabel}</strong><br>
+                        <span style="color: #333;">${address}</span>
+                    </div>
+                    <div style="margin-bottom: 1rem;">
+                        <strong style="color: #a31545;">${phoneLabel}</strong><br>
+                        <span style="color: #333;">${phone}</span>
+                    </div>
+                    <div style="margin-bottom: 1rem;">
+                        <strong style="color: #a31545;">${emailLabel}</strong><br>
+                        <span style="color: #333;">${email}</span>
+                    </div>
+                    <div>
+                        <strong style="color: #a31545;">${socialLabel}</strong><br>
+                        <span style="color: #333;">
+                            ${tiktok ? '<a href="' + tiktok + '" style="color: #a31545; text-decoration: underline;">TikTok</a>' : ''}
+                            ${tiktok && instagram ? ' · ' : ''}
+                            ${instagram ? '<a href="' + instagram + '" style="color: #a31545; text-decoration: underline;">Instagram</a>' : ''}
+                            ${(tiktok || instagram) && facebook ? ' · ' : ''}
+                            ${facebook ? '<a href="' + facebook + '" style="color: #a31545; text-decoration: underline;">Facebook</a>' : ''}
+                        </span><br>
+                        <small style="color: #666;">${socialDescription}</small>
+                    </div>
+                </div>
+            `;
+        }
+        
+        // Publish
+        function publishChanges() { showAlert('success', 'All changes published to your website!'); }
+    </script>
+</body>
+</html>

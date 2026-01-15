@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings - Freezy Bite Dashboard</title>
+    <link rel="stylesheet" href="styles/dashboard.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Sidebar Overlay (for mobile) -->
+    <div class="sidebar-overlay"></div>
+    
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <a href="index.html" class="sidebar-logo">
+                <div class="logo-icon">
+                    <i class="fas fa-snowflake"></i>
+                </div>
+                <span>Freezy Bite</span>
+            </a>
+            <button class="sidebar-toggle">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+        
+        <nav class="sidebar-nav">
+            <ul class="nav-list">
+                <li>
+                    <a href="index.html" class="nav-item">
+                        <i class="fas fa-chart-line"></i>
+                        <span class="nav-text">Overview</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="content.html" class="nav-item">
+                        <i class="fas fa-palette"></i>
+                        <span class="nav-text">Website Content</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="offers.html" class="nav-item">
+                        <i class="fas fa-tags"></i>
+                        <span class="nav-text">Special Offers</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="products.html" class="nav-item">
+                        <i class="fas fa-box"></i>
+                        <span class="nav-text">Products</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="orders.html" class="nav-item">
+                        <i class="fas fa-shopping-cart"></i>
+                        <span class="nav-text">Orders</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="customers.html" class="nav-item">
+                        <i class="fas fa-users"></i>
+                        <span class="nav-text">Customers</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="messages.html" class="nav-item">
+                        <i class="fas fa-envelope"></i>
+                        <span class="nav-text">Messages</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="analytics.html" class="nav-item">
+                        <i class="fas fa-chart-bar"></i>
+                        <span class="nav-text">Analytics</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="inventory.html" class="nav-item">
+                        <i class="fas fa-warehouse"></i>
+                        <span class="nav-text">Inventory</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="employees.html" class="nav-item">
+                        <i class="fas fa-id-badge"></i>
+                        <span class="nav-text">Employees</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="users.html" class="nav-item">
+                        <i class="fas fa-user-shield"></i>
+                        <span class="nav-text">Users</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="trash.html" class="nav-item">
+                        <i class="fas fa-trash-alt"></i>
+                        <span class="nav-text">Trash</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="settings.html" class="nav-item active">
+                        <i class="fas fa-cog"></i>
+                        <span class="nav-text">Settings</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+        
+        <div class="sidebar-footer">
+            <div class="user-profile">
+                <img src="https://ui-avatars.com/api/?name=Admin+User&background=6366f1&color=fff" alt="Admin" class="user-avatar">
+                <div class="user-info">
+                    <h4>Admin User</h4>
+                    <p>admin@freezybite.com</p>
+                </div>
+            </div>
+            <button class="logout-btn">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>Logout</span>
+            </button>
+        </div>
+    </aside>
+    
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Top Header -->
+        <header class="top-header">
+            <div class="header-left">
+                <button class="mobile-menu-btn">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <div class="search-bar">
+                    <i class="fas fa-search"></i>
+                    <input type="text" placeholder="Search products, orders, customers...">
+                </div>
+            </div>
+            <div class="header-right">
+                <button class="header-btn" onclick="showNotifications()">
+                    <i class="fas fa-bell"></i>
+                    <span class="badge">5</span>
+                </button>
+                <button class="header-btn" onclick="showMessages()">
+                    <i class="fas fa-envelope"></i>
+                    <span class="badge">3</span>
+                </button>
+                <button class="header-btn" onclick="showTrashModal()" title="Trash">
+                    <i class="fas fa-trash-alt"></i>
+                    <span class="badge" id="headerTrashBadge">0</span>
+                </button>
+                <img src="https://ui-avatars.com/api/?name=Admin+User&background=6366f1&color=fff" alt="Admin" class="header-avatar">
+            </div>
+        </header>
+        
+        <!-- Dashboard Content -->
+        <div class="dashboard-content">
+            <!-- Section Header -->
+            <div class="section">
+                <div class="section-header">
+                    <div>
+                        <h1 class="section-title">Settings</h1>
+                        <p class="section-subtitle">Configure your store settings, notifications, payments, and security.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Settings Grid -->
+            <div class="settings-grid">
+                <!-- Branding & Logo Settings -->
+                <div class="settings-card">
+                    <div class="settings-card-header">
+                        <h3 class="settings-card-title">
+                            <i class="fas fa-palette"></i>
+                            Branding & Logo
+                        </h3>
+                    </div>
+                    <form id="brandingSettingsForm">
+                        <div class="form-group">
+                            <label class="form-label">Store Logo</label>
+                            <div style="display: flex; align-items: center; gap: 1.5rem; margin-bottom: 1rem;">
+                                <div id="logoPreview" style="width: 100px; height: 100px; border-radius: 12px; background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%); display: flex; align-items: center; justify-content: center; overflow: hidden; border: 3px solid var(--bg-secondary);">
+                                    <img id="currentLogo" src="" alt="Logo" style="width: 100%; height: 100%; object-fit: contain; display: none;">
+                                    <i class="fas fa-snowflake" id="defaultLogoIcon" style="font-size: 2.5rem; color: white;"></i>
+                                </div>
+                                <div>
+                                    <p style="font-weight: 600; color: var(--text-primary); margin-bottom: 0.5rem;">Current Logo</p>
+                                    <p style="font-size: 0.75rem; color: var(--text-secondary);">Recommended: 200x200px, PNG or JPG</p>
+                                </div>
+                            </div>
+                            <div class="logo-upload-area" onclick="document.getElementById('logoUpload').click()" style="border: 2px dashed var(--primary); border-radius: 12px; padding: 1.5rem; text-align: center; cursor: pointer; transition: all 0.3s; background: var(--bg-secondary);" onmouseover="this.style.background='var(--primary-light)'" onmouseout="this.style.background='var(--bg-secondary)'">
+                                <i class="fas fa-cloud-upload-alt" style="font-size: 2rem; color: var(--primary); margin-bottom: 0.5rem;"></i>
+                                <p style="color: var(--primary); font-weight: 600;">Click to upload new logo</p>
+                                <p style="font-size: 0.75rem; color: var(--text-secondary);">or drag and drop</p>
+                                <input type="file" id="logoUpload" accept="image/*" style="display: none;" onchange="previewLogo(event)">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Store Name</label>
+                            <input type="text" class="form-input" id="storeName" value="Freezy Bite" placeholder="Enter store name">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Tagline</label>
+                            <input type="text" class="form-input" id="storeTagline" value="Fresh Frozen Delights" placeholder="Enter store tagline">
+                        </div>
+                        <button type="button" class="btn btn-primary" onclick="saveBrandingSettings()">
+                            <i class="fas fa-save"></i>
+                            Save Branding
+                        </button>
+                    </form>
+                </div>
+                
+                <!-- General Settings -->
+                <div class="settings-card">
+                    <div class="settings-card-header">
+                        <h3 class="settings-card-title">
+                            <i class="fas fa-store"></i>
+                            Store Information
+                        </h3>
+                    </div>
+                    <form id="generalSettingsForm">
+                        <div class="form-group">
+                            <label class="form-label">Store Email</label>
+                            <input type="email" class="form-input" id="storeEmail" value="info@freezybite.com" placeholder="Enter store email">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Store Phone</label>
+                            <input type="tel" class="form-input" id="storePhone" value="+20 109 396 1545" placeholder="Enter store phone">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Store Address</label>
+                            <textarea class="form-input" id="storeAddress" rows="2" placeholder="Enter store address">Cairo, Egypt</textarea>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Currency</label>
+                            <select class="form-select" id="storeCurrency">
+                                <option value="EGP" selected>Egyptian Pound (EGP)</option>
+                                <option value="USD">US Dollar (USD)</option>
+                                <option value="EUR">Euro (EUR)</option>
+                            </select>
+                        </div>
+                        <button type="button" class="btn btn-primary" onclick="saveGeneralSettings()">
+                            <i class="fas fa-save"></i>
+                            Save Changes
+                        </button>
+                    </form>
+                </div>
+                
+                <!-- Notification Settings -->
+                <div class="settings-card">
+                    <div class="settings-card-header">
+                        <h3 class="settings-card-title">
+                            <i class="fas fa-bell"></i>
+                            Notification Settings
+                        </h3>
+                    </div>
+                    <form id="notificationSettingsForm">
+                        <div class="setting-item">
+                            <div>
+                                <div class="setting-label">Email Notifications</div>
+                                <div class="setting-description">Receive notifications via email</div>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                        <div class="setting-item">
+                            <div>
+                                <div class="setting-label">Order Notifications</div>
+                                <div class="setting-description">Get notified for new orders</div>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                        <div class="setting-item">
+                            <div>
+                                <div class="setting-label">Low Stock Alerts</div>
+                                <div class="setting-description">Alert when products are low in stock</div>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                        <button type="button" class="btn btn-primary mt-4" onclick="saveNotificationSettings()">
+                            <i class="fas fa-save"></i>
+                            Save Changes
+                        </button>
+                    </form>
+                </div>
+                
+                <!-- Payment Info (COD Only) -->
+                <div class="settings-card">
+                    <div class="settings-card-header">
+                        <h3 class="settings-card-title">
+                            <i class="fas fa-money-bill-wave"></i>
+                            Payment Method
+                        </h3>
+                    </div>
+                    <div style="padding: 0;">
+                        <!-- COD Banner -->
+                        <div style="background: linear-gradient(135deg, var(--success) 0%, #059669 100%); padding: 1.5rem; border-radius: 12px; margin-bottom: 1rem; color: white;">
+                            <div style="display: flex; align-items: center; gap: 1rem;">
+                                <div style="width: 50px; height: 50px; background: rgba(255,255,255,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                                    <i class="fas fa-hand-holding-usd" style="font-size: 1.5rem;"></i>
+                                </div>
+                                <div>
+                                    <h4 style="margin-bottom: 0.25rem; font-size: 1.1rem;">Cash on Delivery (COD)</h4>
+                                    <p style="font-size: 0.85rem; opacity: 0.9;">Your only payment method</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- InstaPay Info -->
+                        <div style="background: var(--bg-secondary); padding: 1rem; border-radius: 8px; margin-bottom: 1rem;">
+                            <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.75rem;">
+                                <i class="fas fa-mobile-alt" style="color: var(--primary); font-size: 1.25rem;"></i>
+                                <span style="font-weight: 600; color: var(--text-primary);">InstaPay Deposit Option</span>
+                            </div>
+                            <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 0.75rem;">
+                                Customers can send a small deposit via InstaPay for faster order confirmation.
+                            </p>
+                            <div class="form-group" style="margin-bottom: 0;">
+                                <label class="form-label">InstaPay Number</label>
+                                <input type="tel" class="form-input" id="instapayNumber" value="01093961545" placeholder="Enter InstaPay number">
+                            </div>
+                        </div>
+                        
+                        <button type="button" class="btn btn-primary" onclick="savePaymentSettings()">
+                            <i class="fas fa-save"></i>
+                            Save Payment Info
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Security Settings -->
+                <div class="settings-card">
+                    <div class="settings-card-header">
+                        <h3 class="settings-card-title">
+                            <i class="fas fa-shield-alt"></i>
+                            Security
+                        </h3>
+                    </div>
+                    <form id="securityForm">
+                        <div class="form-group">
+                            <label class="form-label">Current Password</label>
+                            <input type="password" class="form-input" id="currentPassword" placeholder="Enter current password">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">New Password</label>
+                            <input type="password" class="form-input" id="newPassword" placeholder="Enter new password">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Confirm Password</label>
+                            <input type="password" class="form-input" id="confirmPassword" placeholder="Confirm new password">
+                        </div>
+                        <button type="button" class="btn btn-primary" onclick="updatePassword()">
+                            <i class="fas fa-key"></i>
+                            Update Password
+                        </button>
+                    </form>
+                </div>
+            </div>
+            
+            <!-- Danger Zone -->
+            <div class="section" style="margin-top: 2rem;">
+                <div class="data-card" style="border-left: 4px solid var(--danger);">
+                    <div class="data-card-header">
+                        <h3 class="data-card-title" style="color: var(--danger);">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            Danger Zone
+                        </h3>
+                    </div>
+                    <div style="padding: 1.5rem;">
+                        <p class="text-secondary mb-4">Once you delete your account, there is no going back. Please be certain.</p>
+                        <button class="btn btn-danger" onclick="alert('This action is disabled in demo mode.')">
+                            <i class="fas fa-trash"></i>
+                            Delete Account
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="scripts/auth.js"></script>
+    <script src="scripts/dashboard.js"></script>
+</body>
+</html>
+

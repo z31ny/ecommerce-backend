@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Freezy Bite Dashboard</title>
+    <link rel="stylesheet" href="styles/dashboard.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="login-page">
+    <!-- Left Side - Login Form -->
+    <div class="login-side">
+        <div class="login-container">
+            <div class="login-logo">
+                <div class="logo-icon">
+                    <i class="fas fa-snowflake"></i>
+                </div>
+                <span>Freezy Bite</span>
+            </div>
+            
+            <div class="login-header">
+                <h1>Welcome Back!</h1>
+                <p>Enter your credentials to access the dashboard</p>
+            </div>
+            
+            <div class="error-message" id="errorMessage">
+                <i class="fas fa-exclamation-circle"></i>
+                <span>Invalid email or password. Please try again.</span>
+            </div>
+            
+            <div class="success-message" id="successMessage">
+                <i class="fas fa-check-circle"></i>
+                <span>Login successful! Redirecting...</span>
+            </div>
+            
+            <form id="loginForm" class="login-form" onsubmit="handleLogin(event)">
+                <div class="form-group">
+                    <label class="form-label">Email Address</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-envelope"></i>
+                        <input type="email" id="email" placeholder="Enter your email" required>
+                        <span></span>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Password</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" id="password" placeholder="Enter your password" required>
+                        <button type="button" class="toggle-password" onclick="togglePassword()">
+                            <i class="fas fa-eye" id="toggleIcon"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="form-options">
+                    <label class="remember-me">
+                        <input type="checkbox" id="rememberMe">
+                        <span>Remember me</span>
+                    </label>
+                    <a href="#" class="forgot-password" onclick="showForgotPassword()">Forgot Password?</a>
+                </div>
+                
+                <button type="submit" class="login-btn">
+                    <i class="fas fa-sign-in-alt"></i>
+                    Sign In
+                </button>
+            </form>
+            
+            <div class="divider">
+                <span>or continue with</span>
+            </div>
+            
+            <button class="demo-btn" onclick="openDemoModal()">
+                <i class="fas fa-users"></i>
+                Try Demo Accounts
+            </button>
+        </div>
+    </div>
+    
+    <!-- Right Side - Branding -->
+    <div class="brand-side">
+        <div class="brand-content">
+            <div class="brand-icon">
+                <i class="fas fa-snowflake"></i>
+            </div>
+            <h2>Freezy Bite Dashboard</h2>
+            <p>Manage your frozen delights business with our powerful admin dashboard.</p>
+            
+            <div class="brand-features">
+                <div class="brand-feature">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Real-time analytics & insights</span>
+                </div>
+                <div class="brand-feature">
+                    <i class="fas fa-box"></i>
+                    <span>Complete inventory management</span>
+                </div>
+                <div class="brand-feature">
+                    <i class="fas fa-users"></i>
+                    <span>Customer relationship tools</span>
+                </div>
+                <div class="brand-feature">
+                    <i class="fas fa-shield-alt"></i>
+                    <span>Role-based access control</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Demo Accounts Modal -->
+    <div class="login-modal-overlay" id="demoModal">
+        <div class="demo-modal">
+            <div class="demo-modal-header">
+                <h2><i class="fas fa-users"></i> Select Demo Account</h2>
+                <button class="close-modal" onclick="closeDemoModal()">&times;</button>
+            </div>
+            <div class="demo-modal-body">
+                <div class="demo-cards">
+                    <!-- Super Admin (Owner) -->
+                    <div class="demo-card super-admin" onclick="selectDemo('super-admin')">
+                        <div class="avatar">
+                            <i class="fas fa-crown"></i>
+                        </div>
+                        <h3>Sarah Johnson</h3>
+                        <span class="role-badge">Super Admin (Owner)</span>
+                        <ul class="access-list">
+                            <li><i class="fas fa-check"></i> Full Dashboard Access</li>
+                            <li><i class="fas fa-check"></i> Add/Remove Users</li>
+                            <li><i class="fas fa-check"></i> Delete Dashboard Data</li>
+                            <li><i class="fas fa-check"></i> All Settings & Controls</li>
+                        </ul>
+                    </div>
+                    
+                    <!-- Admin -->
+                    <div class="demo-card admin" onclick="selectDemo('admin')">
+                        <div class="avatar">
+                            <i class="fas fa-user-shield"></i>
+                        </div>
+                        <h3>Ahmed Hassan</h3>
+                        <span class="role-badge">Admin</span>
+                        <ul class="access-list">
+                            <li><i class="fas fa-check"></i> Full Dashboard Access</li>
+                            <li><i class="fas fa-check"></i> User & Employee Mgmt</li>
+                            <li><i class="fas fa-check"></i> All Settings</li>
+                            <li><i class="fas fa-times"></i> Cannot delete dashboard</li>
+                        </ul>
+                    </div>
+                    
+                    <!-- Manager -->
+                    <div class="demo-card manager" onclick="selectDemo('manager')">
+                        <div class="avatar">
+                            <i class="fas fa-user-tie"></i>
+                        </div>
+                        <h3>Mohamed Ali</h3>
+                        <span class="role-badge">Manager</span>
+                        <ul class="access-list">
+                            <li><i class="fas fa-check"></i> Products & Orders</li>
+                            <li><i class="fas fa-check"></i> Customers & Inventory</li>
+                            <li><i class="fas fa-check"></i> Messages & Analytics</li>
+                            <li><i class="fas fa-times"></i> No Users/Employees/Settings</li>
+                        </ul>
+                    </div>
+                    
+                    <!-- Staff -->
+                    <div class="demo-card staff" onclick="selectDemo('staff')">
+                        <div class="avatar">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <h3>Fatima Ibrahim</h3>
+                        <span class="role-badge">Staff</span>
+                        <ul class="access-list">
+                            <li><i class="fas fa-check"></i> Products & Orders</li>
+                            <li><i class="fas fa-check"></i> Customers & Inventory</li>
+                            <li><i class="fas fa-check"></i> Messages</li>
+                            <li><i class="fas fa-times"></i> No Analytics/Settings</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="demo-modal-footer">
+                <button class="btn btn-secondary" onclick="closeDemoModal()">Cancel</button>
+                <button class="btn btn-primary" id="loginDemoBtn" onclick="loginDemo()" disabled>
+                    <i class="fas fa-sign-in-alt"></i> Login as Demo User
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Forgot Password Modal -->
+    <div class="login-modal-overlay" id="forgotModal">
+        <div class="demo-modal" style="max-width: 450px;">
+            <div class="demo-modal-header">
+                <h2><i class="fas fa-key"></i> Reset Password</h2>
+                <button class="close-modal" onclick="closeForgotModal()">&times;</button>
+            </div>
+            <div class="demo-modal-body">
+                <p class="text-secondary mb-4">Enter your email address and we'll send you instructions to reset your password.</p>
+                <div class="form-group">
+                    <label class="form-label">Email Address</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-envelope"></i>
+                        <input type="email" id="resetEmail" placeholder="Enter your email">
+                        <span></span>
+                    </div>
+                </div>
+            </div>
+            <div class="demo-modal-footer">
+                <button class="btn btn-secondary" onclick="closeForgotModal()">Cancel</button>
+                <button class="btn btn-primary" onclick="sendResetEmail()">
+                    <i class="fas fa-paper-plane"></i> Send Reset Link
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Demo Users Data
+        const demoUsers = {
+            'super-admin': {
+                id: 1,
+                name: 'Sarah Johnson',
+                email: 'sarah@freezybite.com',
+                role: 'Super Admin',
+                avatar: 'https://ui-avatars.com/api/?name=Sarah+Johnson&background=ec4899&color=fff',
+                access: ['all'],
+                isOwner: true
+            },
+            'admin': {
+                id: 2,
+                name: 'Ahmed Hassan',
+                email: 'ahmed@freezybite.com',
+                role: 'Admin',
+                avatar: 'https://ui-avatars.com/api/?name=Ahmed+Hassan&background=8b5cf6&color=fff',
+                access: ['overview', 'content', 'products', 'orders', 'customers', 'messages', 'analytics', 'inventory', 'employees', 'users', 'trash', 'settings']
+            },
+            'manager': {
+                id: 3,
+                name: 'Mohamed Ali',
+                email: 'mohamed@freezybite.com',
+                role: 'Manager',
+                avatar: 'https://ui-avatars.com/api/?name=Mohamed+Ali&background=f59e0b&color=fff',
+                access: ['overview', 'content', 'products', 'orders', 'customers', 'messages', 'analytics', 'inventory', 'trash']
+            },
+            'staff': {
+                id: 4,
+                name: 'Fatima Ibrahim',
+                email: 'fatima@freezybite.com',
+                role: 'Staff',
+                avatar: 'https://ui-avatars.com/api/?name=Fatima+Ibrahim&background=10b981&color=fff',
+                access: ['products', 'orders', 'customers', 'inventory', 'messages', 'trash']
+            }
+        };
+        
+        // Registered users (for regular login)
+        const registeredUsers = [
+            { email: 'sarah@freezybite.com', password: 'admin123', userData: demoUsers['super-admin'] },
+            { email: 'ahmed@freezybite.com', password: 'admin123', userData: demoUsers['admin'] },
+            { email: 'mohamed@freezybite.com', password: 'manager123', userData: demoUsers['manager'] },
+            { email: 'fatima@freezybite.com', password: 'staff123', userData: demoUsers['staff'] },
+            { email: 'admin@freezybite.com', password: 'password', userData: demoUsers['super-admin'] }
+        ];
+        
+        let selectedDemo = null;
+        
+        // Toggle password visibility
+        function togglePassword() {
+            const passwordInput = document.getElementById('password');
+            const toggleIcon = document.getElementById('toggleIcon');
+            
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                toggleIcon.classList.remove('fa-eye');
+                toggleIcon.classList.add('fa-eye-slash');
+            } else {
+                passwordInput.type = 'password';
+                toggleIcon.classList.remove('fa-eye-slash');
+                toggleIcon.classList.add('fa-eye');
+            }
+        }
+        
+        // Get custom permissions from managed users
+        function getCustomPermissions(email) {
+            const managedUsers = JSON.parse(localStorage.getItem('freezyBiteUsers'));
+            if (managedUsers) {
+                const managedUser = managedUsers.find(u => u.email.toLowerCase() === email.toLowerCase());
+                if (managedUser && managedUser.access) {
+                    return managedUser.access;
+                }
+            }
+            return null;
+        }
+        
+        // Handle regular login
+        function handleLogin(event) {
+            event.preventDefault();
+            
+            const email = document.getElementById('email').value.toLowerCase();
+            const password = document.getElementById('password').value;
+            const rememberMe = document.getElementById('rememberMe').checked;
+            
+            // Hide any previous messages
+            document.getElementById('errorMessage').classList.remove('show');
+            document.getElementById('successMessage').classList.remove('show');
+            
+            // Find user
+            const user = registeredUsers.find(u => u.email.toLowerCase() === email && u.password === password);
+            
+            if (user) {
+                // Show success message
+                document.getElementById('successMessage').classList.add('show');
+                
+                // Create user data with custom permissions if available
+                const userData = { ...user.userData };
+                const customAccess = getCustomPermissions(email);
+                if (customAccess) {
+                    userData.access = customAccess;
+                }
+                
+                // Store user data
+                localStorage.setItem('freezyBiteCurrentUser', JSON.stringify(userData));
+                localStorage.setItem('freezyBiteLoggedIn', 'true');
+                
+                if (rememberMe) {
+                    localStorage.setItem('freezyBiteRememberMe', email);
+                } else {
+                    localStorage.removeItem('freezyBiteRememberMe');
+                }
+                
+                // Redirect after short delay
+                setTimeout(() => {
+                    window.location.href = 'index.html';
+                }, 1000);
+            } else {
+                // Show error message
+                document.getElementById('errorMessage').classList.add('show');
+            }
+        }
+        
+        // Demo Modal Functions
+        function openDemoModal() {
+            document.getElementById('demoModal').classList.add('active');
+        }
+        
+        function closeDemoModal() {
+            document.getElementById('demoModal').classList.remove('active');
+            selectedDemo = null;
+            document.querySelectorAll('.demo-card').forEach(card => card.classList.remove('selected'));
+            document.getElementById('loginDemoBtn').disabled = true;
+            document.getElementById('loginDemoBtn').innerHTML = '<i class="fas fa-sign-in-alt"></i> Login as Demo User';
+        }
+        
+        function selectDemo(demo) {
+            selectedDemo = demo;
+            
+            // Update UI
+            document.querySelectorAll('.demo-card').forEach(card => card.classList.remove('selected'));
+            document.querySelector(`.demo-card.${demo}`).classList.add('selected');
+            
+            // Enable login button
+            const btn = document.getElementById('loginDemoBtn');
+            btn.disabled = false;
+            btn.innerHTML = `<i class="fas fa-sign-in-alt"></i> Login as ${demoUsers[demo].role}`;
+        }
+        
+        function loginDemo() {
+            if (!selectedDemo) return;
+            
+            const user = { ...demoUsers[selectedDemo] };
+            
+            // Check for custom permissions
+            const customAccess = getCustomPermissions(user.email);
+            if (customAccess) {
+                user.access = customAccess;
+            }
+            
+            // Store user in localStorage
+            localStorage.setItem('freezyBiteCurrentUser', JSON.stringify(user));
+            localStorage.setItem('freezyBiteLoggedIn', 'true');
+            
+            // Redirect to dashboard
+            window.location.href = 'index.html';
+        }
+        
+        // Forgot Password Modal Functions
+        function showForgotPassword() {
+            event.preventDefault();
+            document.getElementById('forgotModal').classList.add('active');
+        }
+        
+        function closeForgotModal() {
+            document.getElementById('forgotModal').classList.remove('active');
+        }
+        
+        function sendResetEmail() {
+            const email = document.getElementById('resetEmail').value;
+            if (email) {
+                alert('Password reset link has been sent to ' + email + '\n\n(This is a demo - no actual email is sent)');
+                closeForgotModal();
+            }
+        }
+        
+        // Close modals on outside click
+        document.querySelectorAll('.login-modal-overlay').forEach(modal => {
+            modal.addEventListener('click', function(e) {
+                if (e.target === this) {
+                    this.classList.remove('active');
+                }
+            });
+        });
+        
+        // Check for remembered email
+        document.addEventListener('DOMContentLoaded', function() {
+            const rememberedEmail = localStorage.getItem('freezyBiteRememberMe');
+            if (rememberedEmail) {
+                document.getElementById('email').value = rememberedEmail;
+                document.getElementById('rememberMe').checked = true;
+            }
+            
+            // Check if already logged in
+            if (localStorage.getItem('freezyBiteLoggedIn') === 'true') {
+                // Optional: auto-redirect
+                // window.location.href = 'index.html';
+            }
+        });
+    </script>
+</body>
+</html>

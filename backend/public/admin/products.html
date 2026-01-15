@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Products - Freezy Bite Dashboard</title>
+    <link rel="stylesheet" href="styles/dashboard.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Sidebar Overlay (for mobile) -->
+    <div class="sidebar-overlay"></div>
+    
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <a href="index.html" class="sidebar-logo">
+                <div class="logo-icon">
+                    <i class="fas fa-snowflake"></i>
+                </div>
+                <span>Freezy Bite</span>
+            </a>
+            <button class="sidebar-toggle">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+        
+        <nav class="sidebar-nav">
+            <ul class="nav-list">
+                <li>
+                    <a href="index.html" class="nav-item">
+                        <i class="fas fa-chart-line"></i>
+                        <span class="nav-text">Overview</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="content.html" class="nav-item">
+                        <i class="fas fa-palette"></i>
+                        <span class="nav-text">Website Content</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="offers.html" class="nav-item">
+                        <i class="fas fa-tags"></i>
+                        <span class="nav-text">Special Offers</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="products.html" class="nav-item active">
+                        <i class="fas fa-box"></i>
+                        <span class="nav-text">Products</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="orders.html" class="nav-item">
+                        <i class="fas fa-shopping-cart"></i>
+                        <span class="nav-text">Orders</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="customers.html" class="nav-item">
+                        <i class="fas fa-users"></i>
+                        <span class="nav-text">Customers</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="messages.html" class="nav-item">
+                        <i class="fas fa-envelope"></i>
+                        <span class="nav-text">Messages</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="analytics.html" class="nav-item">
+                        <i class="fas fa-chart-bar"></i>
+                        <span class="nav-text">Analytics</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="inventory.html" class="nav-item">
+                        <i class="fas fa-warehouse"></i>
+                        <span class="nav-text">Inventory</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="employees.html" class="nav-item">
+                        <i class="fas fa-id-badge"></i>
+                        <span class="nav-text">Employees</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="users.html" class="nav-item">
+                        <i class="fas fa-user-shield"></i>
+                        <span class="nav-text">Users</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="trash.html" class="nav-item">
+                        <i class="fas fa-trash-alt"></i>
+                        <span class="nav-text">Trash</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="settings.html" class="nav-item">
+                        <i class="fas fa-cog"></i>
+                        <span class="nav-text">Settings</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+        
+        <div class="sidebar-footer">
+            <div class="user-profile">
+                <img src="https://ui-avatars.com/api/?name=Admin+User&background=6366f1&color=fff" alt="Admin" class="user-avatar">
+                <div class="user-info">
+                    <h4>Admin User</h4>
+                    <p>admin@freezybite.com</p>
+                </div>
+            </div>
+            <button class="logout-btn">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>Logout</span>
+            </button>
+        </div>
+    </aside>
+    
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Top Header -->
+        <header class="top-header">
+            <div class="header-left">
+                <button class="mobile-menu-btn">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <div class="search-bar">
+                    <i class="fas fa-search"></i>
+                    <input type="text" placeholder="Search products, orders, customers...">
+                </div>
+            </div>
+            <div class="header-right">
+                <button class="header-btn" onclick="showNotifications()">
+                    <i class="fas fa-bell"></i>
+                    <span class="badge">5</span>
+                </button>
+                <button class="header-btn" onclick="showMessages()">
+                    <i class="fas fa-envelope"></i>
+                    <span class="badge">3</span>
+                </button>
+                <button class="header-btn" onclick="showTrashModal()" title="Trash">
+                    <i class="fas fa-trash-alt"></i>
+                    <span class="badge" id="headerTrashBadge">0</span>
+                </button>
+                <img src="https://ui-avatars.com/api/?name=Admin+User&background=6366f1&color=fff" alt="Admin" class="header-avatar">
+            </div>
+        </header>
+        
+        <!-- Dashboard Content -->
+        <div class="dashboard-content">
+            <!-- Section Header -->
+            <div class="section">
+                <div class="section-header">
+                    <div>
+                        <h1 class="section-title">Products Management</h1>
+                        <p class="section-subtitle">Manage your product catalog, add new products, and track inventory.</p>
+                    </div>
+                    <div class="section-actions">
+                        <button class="btn btn-primary" onclick="openModal('addProductModal')">
+                            <i class="fas fa-plus"></i>
+                            Add New Product
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Filters Bar -->
+            <div class="filters-bar">
+                <div class="filter-group">
+                    <select class="filter-select" id="categoryFilter">
+                        <option value="all">All Categories</option>
+                        <optgroup label="🍓 Fruits">
+                            <option value="Summer">Summer</option>
+                            <option value="Tropical">Tropical</option>
+                            <option value="Winter">Winter</option>
+                            <option value="Fall">Fall</option>
+                            <option value="Mixed Packs">Mixed Packs</option>
+                            <option value="Veggies">Veggies</option>
+                        </optgroup>
+                        <optgroup label="🍬 Candy">
+                            <option value="Candies">Candies</option>
+                            <option value="Chocolate">Chocolate</option>
+                            <option value="Nuts">Nuts</option>
+                            <option value="Marshmallow">Marshmallow</option>
+                            <option value="Ice Cream">Ice Cream</option>
+                            <option value="Lollipop">Lollipop</option>
+                        </optgroup>
+                    </select>
+                    <select class="filter-select" id="statusFilter">
+                        <option value="all">All Status</option>
+                        <option value="active">Active</option>
+                        <option value="inactive">Inactive</option>
+                        <option value="out-of-stock">Out of Stock</option>
+                    </select>
+                </div>
+                <div class="filter-search">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="productSearch" placeholder="Search products...">
+                </div>
+            </div>
+            
+            <!-- Products Grid -->
+            <div class="products-grid" id="productsGrid">
+                <!-- Rendered by JavaScript -->
+            </div>
+        </div>
+    </main>
+    
+    <!-- Add Product Modal -->
+    <div class="modal-overlay" id="addProductModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 class="modal-title">Add New Product</h2>
+                <button class="modal-close" onclick="closeModal('addProductModal')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form id="addProductForm">
+                <div class="modal-body">
+                    <!-- Image Preview -->
+                    <div class="form-group">
+                        <label class="form-label">Product Image</label>
+                        <div class="image-preview-container">
+                            <img id="addImagePreview" src="https://via.placeholder.com/200x150/f1f5f9/64748b?text=Product+Image" alt="Preview" class="image-preview">
+                        </div>
+                        <div class="file-upload" style="margin-top: 0.5rem;">
+                            <input type="file" name="productImage" id="addProductImage" accept="image/*" onchange="previewImage(this, 'addImagePreview')">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            <span>Click to upload or drag and drop</span>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Product Name <span class="required">*</span></label>
+                        <input type="text" class="form-input" name="productName" id="addProductName" placeholder="Enter product name" required>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">SKU <span class="required">*</span></label>
+                            <input type="text" class="form-input" name="productSku" id="addProductSku" placeholder="e.g., FRT-001" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Category <span class="required">*</span></label>
+                            <select class="form-select" name="productCategory" id="addProductCategory" required>
+                                <option value="">Select Category</option>
+                                <optgroup label="🍓 Fruits">
+                                    <option value="Summer">Summer</option>
+                                    <option value="Tropical">Tropical</option>
+                                    <option value="Winter">Winter</option>
+                                    <option value="Fall">Fall</option>
+                                    <option value="Mixed Packs">Mixed Packs</option>
+                                    <option value="Veggies">Veggies</option>
+                                </optgroup>
+                                <optgroup label="🍬 Candy">
+                                    <option value="Candies">Candies</option>
+                                    <option value="Chocolate">Chocolate</option>
+                                    <option value="Nuts">Nuts</option>
+                                    <option value="Marshmallow">Marshmallow</option>
+                                    <option value="Ice Cream">Ice Cream</option>
+                                    <option value="Lollipop">Lollipop</option>
+                                </optgroup>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Price (EGP) <span class="required">*</span></label>
+                            <input type="number" class="form-input" name="productPrice" id="addProductPrice" placeholder="0.00" step="0.01" min="0" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Stock Quantity <span class="required">*</span></label>
+                            <input type="number" class="form-input" name="productStock" id="addProductStock" placeholder="0" min="0" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Min Stock Level</label>
+                            <input type="number" class="form-input" name="productMinStock" id="addProductMinStock" placeholder="20" min="0" value="20">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Status</label>
+                            <select class="form-select" name="productStatus" id="addProductStatus">
+                                <option value="active">Active</option>
+                                <option value="inactive">Inactive</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Description</label>
+                        <textarea class="form-input" name="productDescription" id="addProductDescription" rows="4" placeholder="Enter product description..."></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('addProductModal')">Cancel</button>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-plus"></i> Add Product
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Edit Product Modal -->
+    <div class="modal-overlay" id="editProductModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 class="modal-title">Edit Product</h2>
+                <button class="modal-close" onclick="closeModal('editProductModal')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form id="editProductForm">
+                <input type="hidden" name="productId" id="editProductId">
+                <div class="modal-body">
+                    <!-- Image Preview -->
+                    <div class="form-group">
+                        <label class="form-label">Product Image</label>
+                        <div class="image-preview-container">
+                            <img id="editImagePreview" src="" alt="Preview" class="image-preview">
+                        </div>
+                        <div class="file-upload" style="margin-top: 0.5rem;">
+                            <input type="file" name="productImage" id="editProductImage" accept="image/*" onchange="previewImage(this, 'editImagePreview')">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            <span>Click to upload new image</span>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Product Name <span class="required">*</span></label>
+                        <input type="text" class="form-input" name="productName" id="editProductName" placeholder="Enter product name" required>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">SKU <span class="required">*</span></label>
+                            <input type="text" class="form-input" name="productSku" id="editProductSku" placeholder="e.g., FRT-001" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Category <span class="required">*</span></label>
+                            <select class="form-select" name="productCategory" id="editProductCategory" required>
+                                <option value="">Select Category</option>
+                                <optgroup label="🍓 Fruits">
+                                    <option value="Summer">Summer</option>
+                                    <option value="Tropical">Tropical</option>
+                                    <option value="Winter">Winter</option>
+                                    <option value="Fall">Fall</option>
+                                    <option value="Mixed Packs">Mixed Packs</option>
+                                    <option value="Veggies">Veggies</option>
+                                </optgroup>
+                                <optgroup label="🍬 Candy">
+                                    <option value="Candies">Candies</option>
+                                    <option value="Chocolate">Chocolate</option>
+                                    <option value="Nuts">Nuts</option>
+                                    <option value="Marshmallow">Marshmallow</option>
+                                    <option value="Ice Cream">Ice Cream</option>
+                                    <option value="Lollipop">Lollipop</option>
+                                </optgroup>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Price (EGP) <span class="required">*</span></label>
+                            <input type="number" class="form-input" name="productPrice" id="editProductPrice" placeholder="0.00" step="0.01" min="0" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Stock Quantity <span class="required">*</span></label>
+                            <input type="number" class="form-input" name="productStock" id="editProductStock" placeholder="0" min="0" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Min Stock Level</label>
+                            <input type="number" class="form-input" name="productMinStock" id="editProductMinStock" placeholder="20" min="0">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Status</label>
+                            <select class="form-select" name="productStatus" id="editProductStatus">
+                                <option value="active">Active</option>
+                                <option value="inactive">Inactive</option>
+                                <option value="out-of-stock">Out of Stock</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Description</label>
+                        <textarea class="form-input" name="productDescription" id="editProductDescription" rows="4" placeholder="Enter product description..."></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('editProductModal')">Cancel</button>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save"></i> Save Changes
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="scripts/auth.js"></script>
+    <script src="scripts/dashboard.js"></script>
+</body>
+</html>
+
