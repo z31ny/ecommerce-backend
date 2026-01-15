@@ -43,21 +43,26 @@ export async function POST(request: NextRequest) {
             );
         }
 
+        // Generate SKU if not provided
+        const sku = body.sku || `SKU-${Date.now()}`;
+
         const [newProduct] = await db.insert(products).values({
+            sku,
             name: body.name,
             description: body.description || null,
-            price: body.price,
+            price: body.price.toString(),
             stock: body.stock ?? 0,
-            images: body.images || null,
+            minStock: body.minStock ?? 10,
+            images: body.images || body.image ? [body.image] : null,
             category: body.category || null,
             attributes: body.attributes || null,
+            status: body.status || 'active',
         }).returning();
 
-        return NextResponse.json(
-            { message: "Product created", product: newProduct },
-            { status: 201 }
-        );
+        return NextResponse.json(newProduct, { status: 201 });
     } catch (error) {
+        console.error('Create product error:', error);
         return NextResponse.json({ error: "Failed to create product" }, { status: 500 });
     }
 }
+

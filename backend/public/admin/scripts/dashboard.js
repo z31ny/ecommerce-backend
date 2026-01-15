@@ -1,7 +1,90 @@
-// ===== MOCK DATA =====
+// ===== API HELPERS =====
+// These functions connect the dashboard to the backend database
+
+const DashboardAPI = {
+    token: localStorage.getItem('freezyBiteAdminToken'),
+
+    async request(endpoint, options = {}) {
+        const headers = {
+            'Content-Type': 'application/json',
+            ...options.headers,
+        };
+        if (this.token) {
+            headers['Authorization'] = `Bearer ${this.token}`;
+        }
+
+        const response = await fetch(endpoint, { ...options, headers });
+        if (!response.ok) {
+            const error = await response.json().catch(() => ({}));
+            throw new Error(error.error || 'API request failed');
+        }
+        return response.json();
+    },
+
+    // Products
+    async getProducts() {
+        return this.request('/api/products?limit=1000');
+    },
+    async createProduct(data) {
+        return this.request('/api/products', { method: 'POST', body: JSON.stringify(data) });
+    },
+    async updateProduct(id, data) {
+        return this.request(`/api/products/${id}`, { method: 'PUT', body: JSON.stringify(data) });
+    },
+    async deleteProduct(id) {
+        return this.request(`/api/products/${id}`, { method: 'DELETE' });
+    },
+
+    // Orders
+    async getOrders() {
+        return this.request('/api/admin/orders');
+    },
+    async updateOrder(id, data) {
+        return this.request(`/api/admin/orders/${id}`, { method: 'PUT', body: JSON.stringify(data) });
+    },
+    async deleteOrder(id) {
+        return this.request(`/api/admin/orders/${id}`, { method: 'DELETE' });
+    },
+
+    // Customers
+    async getCustomers() {
+        return this.request('/api/admin/customers');
+    },
+    async createCustomer(data) {
+        return this.request('/api/admin/customers', { method: 'POST', body: JSON.stringify(data) });
+    },
+    async updateCustomer(id, data) {
+        return this.request(`/api/admin/customers/${id}`, { method: 'PUT', body: JSON.stringify(data) });
+    },
+    async deleteCustomer(id) {
+        return this.request(`/api/admin/customers/${id}`, { method: 'DELETE' });
+    },
+
+    // Stats
+    async getStats(period = 'today') {
+        return this.request(`/api/admin/stats?period=${period}`);
+    },
+
+    // Inventory
+    async getInventory() {
+        return this.request('/api/admin/inventory');
+    },
+    async updateStock(productId, stock) {
+        return this.request('/api/admin/inventory', {
+            method: 'PUT',
+            body: JSON.stringify({ productId, stock })
+        });
+    }
+};
+
+// Make API available globally
+window.DashboardAPI = DashboardAPI;
+
+// ===== MOCK DATA (fallback if API fails) =====
 
 // Products Data
-const products = [
+let products = [
+
     {
         id: 1,
         name: 'Strawberry Freeze',
