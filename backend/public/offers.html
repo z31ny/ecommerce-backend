@@ -1,11 +1,13 @@
 <!doctype html>
 <html lang="en">
+
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Freezy Bite — Offers</title>
   <link rel="stylesheet" href="./styles/home.css">
 </head>
+
 <body>
   <div class="masthead">
     <header class="site-header container site-header--nav">
@@ -51,38 +53,83 @@
     </section>
 
     <section class="offers container">
-      <div class="offers-grid">
-        <article class="offer-card" data-sku="snickers-pack">
-          <div class="offer-badge">-20%</div>
-          <div class="offer-media"><img src="assets/home-page-img/must-have/must have 3.png" alt="Snickers Pack"></div>
-          <h4 class="offer-title">Snickers Pack</h4>
-          <div class="offer-prices"><span class="offer-old">175 EGP</span><span class="offer-new">140 EGP</span></div>
-          <button class="btn btn-primary add-to-cart" data-sku="snickers-pack"><img class="btn-icon" src="./assets/icons/cart.svg" alt=""> Add to Cart</button>
-        </article>
-        <article class="offer-card" data-sku="mango-250">
-          <div class="offer-badge">-15%</div>
-          <div class="offer-media"><img src="assets/home-page-img/must-have/must have1.png" alt="Mango 250g"></div>
-          <h4 class="offer-title">Mango 250g</h4>
-          <div class="offer-prices"><span class="offer-old">140 EGP</span><span class="offer-new">120 EGP</span></div>
-          <button class="btn btn-primary add-to-cart" data-sku="mango-250"><img class="btn-icon" src="./assets/icons/cart.svg" alt=""> Add to Cart</button>
-        </article>
-        <article class="offer-card" data-sku="banana-250">
-          <div class="offer-badge">-10%</div>
-          <div class="offer-media"><img src="assets/home-page-img/must-have/must have4.png" alt="Banana 250g"></div>
-          <h4 class="offer-title">Banana 250g</h4>
-          <div class="offer-prices"><span class="offer-old">120 EGP</span><span class="offer-new">110 EGP</span></div>
-          <button class="btn btn-primary add-to-cart" data-sku="banana-250"><img class="btn-icon" src="./assets/icons/cart.svg" alt=""> Add to Cart</button>
-        </article>
-        <article class="offer-card" data-sku="marshmallow-pack">
-          <div class="offer-badge">-10%</div>
-          <div class="offer-media"><img src="assets/home-page-img/must-have/must have2.png" alt="Marshmallow Pack"></div>
-          <h4 class="offer-title">Marshmallow Pack</h4>
-          <div class="offer-prices"><span class="offer-old">100 EGP</span><span class="offer-new">90 EGP</span></div>
-          <button class="btn btn-primary add-to-cart" data-sku="marshmallow-pack"><img class="btn-icon" src="./assets/icons/cart.svg" alt=""> Add to Cart</button>
-        </article>
+      <div class="offers-grid" id="offersGrid">
+        <!-- Offers loading from API -->
+        <div class="loading-offers" style="grid-column: 1 / -1; text-align: center; padding: 3rem;">
+          <p style="color: #666;">Loading offers...</p>
+        </div>
       </div>
     </section>
   </main>
+
+  <script>
+    // Fetch and render offers from API
+    async function loadOffers() {
+      const grid = document.getElementById('offersGrid');
+      try {
+        const response = await fetch('/api/offers');
+        const offers = await response.json();
+
+        if (!offers || offers.length === 0) {
+          grid.innerHTML = `
+            <div style="grid-column: 1 / -1; text-align: center; padding: 3rem;">
+              <p style="color: #666;">No offers available at the moment. Check back soon!</p>
+            </div>
+          `;
+          return;
+        }
+
+        grid.innerHTML = offers.map(offer => `
+          <article class="offer-card" data-sku="${offer.productSku || ''}">
+            <div class="offer-badge">-${offer.discount}%</div>
+            <div class="offer-media">
+              <img src="${offer.image || 'assets/home-page-img/must-have/must have 3.png'}" alt="${offer.name}" onerror="this.src='assets/home-page-img/must-have/must have 3.png'">
+            </div>
+            <h4 class="offer-title">${offer.name}</h4>
+            <div class="offer-prices">
+              <span class="offer-old">${parseFloat(offer.originalPrice).toFixed(0)} EGP</span>
+              <span class="offer-new">${parseFloat(offer.salePrice).toFixed(0)} EGP</span>
+            </div>
+            <button class="btn btn-primary add-to-cart" data-sku="${offer.productSku || ''}" data-name="${offer.name}" data-price="${offer.salePrice}">
+              <img class="btn-icon" src="./assets/icons/cart.svg" alt=""> Add to Cart
+            </button>
+          </article>
+        `).join('');
+
+        // Re-attach cart event listeners for dynamically loaded offers
+        grid.querySelectorAll('.add-to-cart').forEach(btn => {
+          btn.addEventListener('click', function () {
+            const sku = this.dataset.sku;
+            const name = this.dataset.name;
+            const price = parseFloat(this.dataset.price);
+            // Use the existing cart functionality from home.js if available
+            if (typeof addToCart === 'function') {
+              addToCart({ sku, name, price, qty: 1 });
+            } else {
+              // Fallback: show a toast notification
+              const toast = document.querySelector('.toast');
+              if (toast) {
+                toast.textContent = `${name} added to cart!`;
+                toast.classList.add('show');
+                setTimeout(() => toast.classList.remove('show'), 2000);
+              }
+            }
+          });
+        });
+
+      } catch (error) {
+        console.error('Failed to load offers:', error);
+        grid.innerHTML = `
+          <div style="grid-column: 1 / -1; text-align: center; padding: 3rem;">
+            <p style="color: #666;">Unable to load offers. Please try again later.</p>
+          </div>
+        `;
+      }
+    }
+
+    // Load offers when page loads
+    document.addEventListener('DOMContentLoaded', loadOffers);
+  </script>
 
   <!-- Cart Drawer -->
   <aside class="cart" aria-hidden="true">
@@ -139,7 +186,9 @@
           <img src="./assets/icons/google.svg" alt="Google"> Continue with Google
         </button>
         <button class="social-btn social-facebook">
-          <img src="./assets/icons/facebook.svg" onerror="this.onerror=null;this.src='./assets/icons/facebook-white.svg';" alt="Facebook"> Continue with Facebook
+          <img src="./assets/icons/facebook.svg"
+            onerror="this.onerror=null;this.src='./assets/icons/facebook-white.svg';" alt="Facebook"> Continue with
+          Facebook
         </button>
         <button class="social-btn continue-guest">
           <img src="./assets/icons/profile.svg" alt="Guest"> Continue as Guest
@@ -162,9 +211,14 @@
       <div class="footer-left">
         <h4 class="footer-heading">Follow our snack journey</h4>
         <div class="footer-social">
-          <a class="social-badge" href="https://www.tiktok.com/@freezybittes?_r=1&_t=ZS-910WaIKhLCZ" target="_blank" rel="noopener noreferrer" aria-label="TikTok"><img src="./assets/icons/tiktok-white.svg" alt="tiktok"></a>
-          <a class="social-badge" href="https://www.facebook.com/share/1R9jBHHhas/?mibextid=wwXIfr" target="_blank" rel="noopener noreferrer" aria-label="Facebook"><img src="./assets/icons/facebook-white.svg" alt="facebook"></a>
-          <a class="social-badge" href="https://www.instagram.com/freezy_bites_?igsh=M2lsYThtaWtucG1q" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><img src="./assets/icons/instagram-white.svg" alt="instagram"></a>
+          <a class="social-badge" href="https://www.tiktok.com/@freezybittes?_r=1&_t=ZS-910WaIKhLCZ" target="_blank"
+            rel="noopener noreferrer" aria-label="TikTok"><img src="./assets/icons/tiktok-white.svg" alt="tiktok"></a>
+          <a class="social-badge" href="https://www.facebook.com/share/1R9jBHHhas/?mibextid=wwXIfr" target="_blank"
+            rel="noopener noreferrer" aria-label="Facebook"><img src="./assets/icons/facebook-white.svg"
+              alt="facebook"></a>
+          <a class="social-badge" href="https://www.instagram.com/freezy_bites_?igsh=M2lsYThtaWtucG1q" target="_blank"
+            rel="noopener noreferrer" aria-label="Instagram"><img src="./assets/icons/instagram-white.svg"
+              alt="instagram"></a>
         </div>
         <div class="footer-contact">
           <div class="fc-row"><img src="./assets/icons/phone-white.svg" alt="phone"><span>+20 10 90196133</span></div>
@@ -195,6 +249,5 @@
 
   <script src="./scripts/home.js" defer></script>
 </body>
+
 </html>
-
-
