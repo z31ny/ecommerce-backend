@@ -22,10 +22,10 @@ const DashboardAPI = {
     },
 
     // Products
-    async getProducts() { return this.request('/api/products?limit=1000'); },
-    async createProduct(data) { return this.request('/api/products', { method: 'POST', body: JSON.stringify(data) }); },
-    async updateProduct(id, data) { return this.request(`/api/products/${id}`, { method: 'PUT', body: JSON.stringify(data) }); },
-    async deleteProduct(id) { return this.request(`/api/products/${id}`, { method: 'DELETE' }); },
+    async getProducts() { return this.request('/api/admin/products?limit=1000'); },
+    async createProduct(data) { return this.request('/api/admin/products', { method: 'POST', body: JSON.stringify(data) }); },
+    async updateProduct(id, data) { return this.request(`/api/admin/products/${id}`, { method: 'PUT', body: JSON.stringify(data) }); },
+    async deleteProduct(id) { return this.request(`/api/admin/products/${id}`, { method: 'DELETE' }); },
 
     // Orders
     async getOrders() { return this.request('/api/admin/orders'); },
@@ -5534,6 +5534,110 @@ function updateSidebarBranding() {
     }
 }
 
+// ===== PRODUCTS RENDERING =====
+
+// Render products in the admin products table/grid
+function renderProducts() {
+    const grid = document.getElementById('productsGrid') || document.querySelector('.products-grid');
+    if (!grid) return;
+
+    if (!products || products.length === 0) {
+        grid.innerHTML = `
+            <div class="empty-state" style="grid-column: 1/-1; text-align: center; padding: 3rem;">
+                <i class="fas fa-box-open" style="font-size: 3rem; color: #ccc; margin-bottom: 1rem;"></i>
+                <h3>No Products Found</h3>
+                <p>Add your first product to get started.</p>
+            </div>
+        `;
+        return;
+    }
+
+    grid.innerHTML = products.map(product => `
+        <div class="product-card" data-id="${product.id}">
+            <div class="product-image-wrapper">
+                <img src="${product.image || product.images?.[0] || 'assets/placeholder.png'}" 
+                     alt="${product.name}" 
+                     class="product-image"
+                     onerror="handleImageError(this)">
+            </div>
+            <div class="product-info">
+                <h3 class="product-name">${product.name}</h3>
+                <p class="product-sku">${product.sku || 'No SKU'}</p>
+                <div class="product-meta">
+                    <span class="product-category">${product.category || 'Uncategorized'}</span>
+                    <span class="product-price">${formatCurrency(product.price)}</span>
+                </div>
+                <div class="product-stock">
+                    <span class="stock-badge ${getStockStatus(product.stock, product.minStock)}">
+                        ${product.stock} in stock
+                    </span>
+                </div>
+                <span class="badge ${getStatusBadgeClass(product.status)}">${product.status}</span>
+            </div>
+            <div class="product-actions">
+                <button class="btn btn-sm btn-secondary" onclick="editProduct(${product.id})" title="Edit">
+                    <i class="fas fa-edit"></i>
+                </button>
+                <button class="btn btn-sm btn-danger" onclick="deleteProduct(${product.id})" title="Delete">
+                    <i class="fas fa-trash"></i>
+                </button>
+            </div>
+        </div>
+    `).join('');
+}
+
+// Edit product - populate edit form and open modal
+function editProduct(productId) {
+    const product = products.find(p => p.id === productId);
+    if (!product) return;
+
+    document.getElementById('editProductId').value = product.id;
+    document.getElementById('editProductName').value = product.name || '';
+    document.getElementById('editProductSku').value = product.sku || '';
+    document.getElementById('editProductCategory').value = product.category || '';
+    document.getElementById('editProductPrice').value = product.price || '';
+    document.getElementById('editProductStock').value = product.stock || 0;
+    document.getElementById('editProductMinStock').value = product.minStock || 20;
+    document.getElementById('editProductStatus').value = product.status || 'active';
+    document.getElementById('editProductDescription').value = product.description || '';
+
+    openModal('editProductModal');
+}
+
+// Delete product
+async function deleteProduct(productId) {
+    if (!confirm('Are you sure you want to delete this product?')) return;
+
+    try {
+        await DashboardAPI.deleteProduct(productId);
+        showAlert('success', 'Product deleted successfully!');
+        // Reload products
+        const apiProducts = await DashboardAPI.getProducts();
+        products.length = 0;
+        apiProducts.forEach(p => {
+            products.push({
+                id: p.id,
+                name: p.name,
+                sku: p.sku || '',
+                category: p.category || '',
+                price: parseFloat(p.price) || 0,
+                stock: p.stock || 0,
+                minStock: p.minStock || 10,
+                status: p.status || 'active',
+                image: p.images?.[0] || '',
+                description: p.description || ''
+            });
+        });
+        renderProducts();
+    } catch (err) {
+        // Fallback to local-only
+        const idx = products.findIndex(p => p.id === productId);
+        if (idx !== -1) products.splice(idx, 1);
+        renderProducts();
+        showAlert('warning', 'Deleted locally (API unavailable)');
+    }
+}
+
 // ===== EXPOSE FUNCTIONS GLOBALLY =====
 // Make functions available for onclick handlers in dynamically generated HTML
 window.updateStock = updateStock;
@@ -5571,6 +5675,9 @@ window.replyToMessage = replyToMessage;
 window.sendReply = sendReply;
 window.markAllMessagesRead = markAllMessagesRead;
 window.clearAllMessages = clearAllMessages;
+window.renderProducts = renderProducts;
+window.editProduct = editProduct;
+window.deleteProduct = deleteProduct;
 
 // ===== EVENT LISTENERS =====
 
