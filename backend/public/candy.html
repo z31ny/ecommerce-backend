@@ -1,5 +1,6 @@
 <!doctype html>
 <html lang="en">
+
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -7,6 +8,7 @@
   <link rel="stylesheet" href="./styles/home.css">
   <link rel="stylesheet" href="./styles/candy.css">
 </head>
+
 <body>
   <div class="masthead">
     <div class="topbar">
@@ -63,248 +65,54 @@
     <section class="candy-hero">
       <img class="hero-bg" src="./assets/candy-page-img/candy-hero-img.png" alt="" aria-hidden="true">
       <div class="container">
-        <p class="hero-quote hero-quote--left">“Freeze–Dried Candy – A New Way to Crunch Your Favorite Sweets!”</p>
-        <p class="hero-quote hero-quote--right">“Get the taste you love in a crunchy, airy twist!”</p>
+        <p class="hero-quote hero-quote--left">"Freeze–Dried Candy – A New Way to Crunch Your Favorite Sweets!"</p>
+        <p class="hero-quote hero-quote--right">"Get the taste you love in a crunchy, airy twist!"</p>
         <h1 class="explore-title">Explore Flavors</h1>
       </div>
     </section>
 
-    <!-- Customer Favorites (moved up) -->
+    <!-- Customer Favorites -->
     <section class="fav-section container">
       <div class="fav-header">
         <h2 class="fav-title">Customer Favorites</h2>
         <p class="fav-sub">These top picks have everyone coming back for more!</p>
         <p class="fav-sub">Try the candies that customers are absolutely obsessed with.</p>
       </div>
-      <div class="fav-grid">
-        <article class="fav-card" data-sku="swirl-lollipop" data-price="200">
-          <div class="fav-media"><img src="assets/candy-page-img/coustmer-favorit/customer favorit1.png" alt="Caramel swirl lollipop"></div>
-          <p class="fav-desc">“Giant caramel swirl—crunchy, creamy, and freeze–dried to perfection.”</p>
-          <div class="fav-meta"><span class="fav-weight">280Gm</span><span class="fav-price">200L.E</span></div>
-          <div class="fav-rating" aria-label="rating 4.9">★★★★★ <span class="fav-score">(4.9)</span></div>
-          <button class="fav-cart add-to-cart" aria-label="Add to cart"><img src="./assets/icons/cart.svg" alt="cart"></button>
-        </article>
-
-        <article class="fav-card" data-sku="choco-bar-crisp" data-price="200">
-          <div class="fav-media"><img src="assets/candy-page-img/coustmer-favorit/cutomer-favorit2.png" alt="Crispy caramel chocolate bar"></div>
-          <p class="fav-desc">“Crispy outside, gooey inside — caramel, nougat & chocolate reimagined!”</p>
-          <div class="fav-meta"><span class="fav-weight">280Gm</span><span class="fav-price">200L.E</span></div>
-          <div class="fav-rating" aria-label="rating 4.9">★★★★★ <span class="fav-score">(4.9)</span></div>
-          <button class="fav-cart add-to-cart" aria-label="Add to cart"><img src="./assets/icons/cart.svg" alt="cart"></button>
-        </article>
-
-        <article class="fav-card" data-sku="fruity-best-seller" data-price="300">
-          <div class="fav-media"><img src="assets/candy-page-img/coustmer-favorit/cutomer-favorit3.png" alt="Fruity best sellers"></div>
-          <p class="fav-desc">“Fruity, crunchy, and totally addictive — our best sellers are the treats you can’t stop craving!”</p>
-          <div class="fav-meta"><span class="fav-weight">1 Large</span><span class="fav-price">300L.E</span></div>
-          <div class="fav-rating" aria-label="rating 4.8">★★★★★ <span class="fav-score">(4.8)</span></div>
-          <button class="fav-cart add-to-cart" aria-label="Add to cart"><img src="./assets/icons/cart.svg" alt="cart"></button>
-        </article>
-
-        <article class="fav-card" data-sku="straw-van-choco" data-price="150">
-          <div class="fav-media"><img src="assets/candy-page-img/coustmer-favorit/coustmer-favorit4.png" alt="Strawberry Vanilla Chocolate cups"></div>
-          <p class="fav-desc">“Strawberry, Vanilla, Chocolate – crisp, light, and magical!”</p>
-          <div class="fav-meta"><span class="fav-weight">200Gm</span><span class="fav-price">150L.E</span></div>
-          <div class="fav-rating" aria-label="rating 4.9">★★★★★ <span class="fav-score">(4.9)</span></div>
-          <button class="fav-cart add-to-cart" aria-label="Add to cart"><img src="./assets/icons/cart.svg" alt="cart"></button>
-        </article>
+      <div class="fav-grid" id="favoritesGrid">
+        <div class="loading-products" style="grid-column: 1 / -1; text-align: center; padding: 2rem;">
+          <p style="color: #666;">Loading favorites...</p>
+        </div>
       </div>
     </section>
 
+    <!-- Filter -->
     <section class="filter-bar container">
       <button class="filter-toggle" aria-expanded="false" aria-controls="filter-menu">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M3 5h18l-6.8 7.2v5.1l-4.4 1.9v-7L3 5z" fill="#c55468"/></svg>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M3 5h18l-6.8 7.2v5.1l-4.4 1.9v-7L3 5z" fill="#c55468" />
+        </svg>
         <span class="filter-toggle-text">Filter</span>
-        <svg class="chev" width="14" height="14" viewBox="0 0 24 24" fill="#c55468" aria-hidden="true"><path d="M7 10l5 5 5-5z"/></svg>
+        <svg class="chev" width="14" height="14" viewBox="0 0 24 24" fill="#c55468" aria-hidden="true">
+          <path d="M7 10l5 5 5-5z" />
+        </svg>
       </button>
       <div id="filter-menu" class="filter-menu" role="menu" aria-label="Filter options">
         <button class="filter-item is-active" data-value="all" role="menuitem">All</button>
-        <button class="filter-item" data-value="candies" role="menuitem">Candies</button>
-        <button class="filter-item" data-value="chocolate" role="menuitem">Chocolate</button>
-        <button class="filter-item" data-value="nuts" role="menuitem">Nuts</button>
-        <button class="filter-item" data-value="marshmallow" role="menuitem">Marshmallow</button>
-        <button class="filter-item" data-value="ice-cream" role="menuitem">Ice Cream</button>
-        <button class="filter-item" data-value="lollipop" role="menuitem">Lollipop</button>
+        <button class="filter-item" data-value="Candies" role="menuitem">Candies</button>
+        <button class="filter-item" data-value="Chocolate" role="menuitem">Chocolate</button>
+        <button class="filter-item" data-value="Nuts" role="menuitem">Nuts</button>
+        <button class="filter-item" data-value="Marshmallow" role="menuitem">Marshmallow</button>
+        <button class="filter-item" data-value="Ice Cream" role="menuitem">Ice Cream</button>
+        <button class="filter-item" data-value="Lollipop" role="menuitem">Lollipop</button>
       </div>
     </section>
 
-    <!-- Candies section -->
-    <section class="candies-section container">
-      <header class="section-header"><h2>Candies</h2></header>
-      <div class="candies-grid">
-        <article class="candies-card" data-sku="fd-skittles" data-price="150" data-cat="candies">
-          <div class="candies-media"><img src="assets/candy-page-img/candy/candy1.png" alt="Freeze‑Dried Skittles"></div>
-          <h3 class="candies-name">Freeze‑Dried Skittles</h3>
-          <p class="candies-desc">Taste the rainbow—crispy style! Each crunch pops with fruity magic.</p>
-          <div class="candies-meta"><span class="candies-weight">250gm</span><span class="candies-price">150L.E</span></div>
-          <button class="candies-cart add-to-cart" aria-label="Add to cart"><img src="./assets/icons/cart.svg" alt="cart"></button>
-        </article>
-        <article class="candies-card" data-sku="fd-banana-mm" data-price="200" data-cat="marshmallow">
-          <div class="candies-media"><img src="assets/candy-page-img/candy/candy2.png" alt="Freeze‑Dried Marshmallows"></div>
-          <h3 class="candies-name">Freeze‑Dried Marshmallows</h3>
-          <p class="candies-desc">Puffy, crunchy, and dreamy! Like a bite of a sweet pastel cloud.</p>
-          <div class="candies-meta"><span class="candies-weight">200gm</span><span class="candies-price">200L.E</span></div>
-          <button class="candies-cart add-to-cart" aria-label="Add to cart"><img src="./assets/icons/cart.svg" alt="cart"></button>
-        </article>
-        <article class="candies-card" data-sku="fd-twirl-mm" data-price="200" data-cat="marshmallow">
-          <div class="candies-media"><img src="assets/candy-page-img/candy/candy3.png" alt="Freeze‑Dried Marshmallows"></div>
-          <h3 class="candies-name">Freeze‑Dried Marshmallows</h3>
-          <p class="candies-desc">Sweet cloud swirls with extra joy.</p>
-          <div class="candies-meta"><span class="candies-weight">200gm</span><span class="candies-price">200L.E</span></div>
-          <button class="candies-cart add-to-cart" aria-label="Add to cart"><img src="./assets/icons/cart.svg" alt="cart"></button>
-        </article>
-        <article class="candies-card" data-sku="fd-sour-worms" data-price="200" data-cat="candies">
-          <div class="candies-media"><img src="assets/candy-page-img/candy/candy4.png" alt="Freeze‑Dried Sour Worms"></div>
-          <h3 class="candies-name">Freeze‑Dried Sour Worms</h3>
-          <p class="candies-desc">A wriggly zing in every crunch! Sweet, sour, and totally addictive.</p>
-          <div class="candies-meta"><span class="candies-weight">200gm</span><span class="candies-price">200L.E</span></div>
-          <button class="candies-cart add-to-cart" aria-label="Add to cart"><img src="./assets/icons/cart.svg" alt="cart"></button>
-        </article>
-        <article class="candies-card" data-sku="fd-gummies" data-price="200" data-cat="candies">
-          <div class="candies-media"><img src="assets/candy-page-img/candy/candy5.png" alt="Freeze‑Dried Gummies"></div>
-          <h3 class="candies-name">Freeze‑Dried Gummies</h3>
-          <p class="candies-desc">Crispy cuties bursting with flavor! From chewy to crackly joy.</p>
-          <div class="candies-meta"><span class="candies-weight">280gm</span><span class="candies-price">200L.E</span></div>
-          <button class="candies-cart add-to-cart" aria-label="Add to cart"><img src="./assets/icons/cart.svg" alt="cart"></button>
-        </article>
-        <article class="candies-card" data-sku="fd-rainbow-drops" data-price="150" data-cat="candies">
-          <div class="candies-media"><img src="assets/candy-page-img/candy/candy6.png" alt="Freeze‑Dried Rainbow Drops"></div>
-          <h3 class="candies-name">Freeze‑Dried Rainbow Drops</h3>
-          <p class="candies-desc">Colorful crunchers that melt like magic.</p>
-          <div class="candies-meta"><span class="candies-weight">250gm</span><span class="candies-price">150L.E</span></div>
-          <button class="candies-cart add-to-cart" aria-label="Add to cart"><img src="./assets/icons/cart.svg" alt="cart"></button>
-        </article>
-        <article class="candies-card" data-sku="fd-fruit-rolls" data-price="300" data-cat="candies">
-          <div class="candies-media"><img src="assets/candy-page-img/candy/candy7.png" alt="Freeze‑Dried Fruit Roll‑Ups"></div>
-          <h3 class="candies-name">Freeze‑Dried Fruit Roll‑Ups</h3>
-          <p class="candies-desc">Swirls of fruity fun turned crisp! A rainbow crunch in every fluttery ribbon.</p>
-          <div class="candies-meta"><span class="candies-weight">200gm</span><span class="candies-price">300L.E</span></div>
-          <button class="candies-cart add-to-cart" aria-label="Add to cart"><img src="./assets/icons/cart.svg" alt="cart"></button>
-        </article>
-        <article class="candies-card" data-sku="fd-cotton-taffy" data-price="150" data-cat="candies">
-          <div class="candies-media"><img src="assets/candy-page-img/candy/candy8.png" alt="Freeze‑Dried Cotton Candy Taffy"></div>
-          <h3 class="candies-name">Freeze‑Dried Cotton Candy Taffy</h3>
-          <p class="candies-desc">Like fairytales in a crunch! Swirly colors and a melt‑in‑your‑mouth sparkle.</p>
-          <div class="candies-meta"><span class="candies-weight">200gm</span><span class="candies-price">150L.E</span></div>
-          <button class="candies-cart add-to-cart" aria-label="Add to cart"><img src="./assets/icons/cart.svg" alt="cart"></button>
-        </article>
+    <!-- Products Container - Will be populated by API -->
+    <div id="productsContainer">
+      <div class="loading-products" style="text-align: center; padding: 3rem;">
+        <p style="color: #666;">Loading products...</p>
       </div>
-    </section>
-
-
-    <section class="container choc-section">
-      <header class="section-header"><h2>Chocolate</h2></header>
-      <div class="candies-grid">
-        <article class="candies-card" data-sku="mars" data-price="150" data-cat="chocolate">
-          <div class="candies-media"><img src="assets/candy-page-img/chocolate/chocolate1.png" alt="Mars"></div>
-          <h3 class="candies-name">Mars</h3>
-          <p class="candies-desc">Bold and chewy with a heart of caramel — Mars will launch your taste buds into orbit.</p>
-          <div class="candies-meta"><span class="candies-weight">250gm</span><span class="candies-price">150L.E</span></div>
-          <button class="candies-cart add-to-cart" aria-label="Add to cart"><img src="./assets/icons/cart.svg" alt="cart"></button>
-        </article>
-        <article class="candies-card" data-sku="eclair-caramel" data-price="200" data-cat="chocolate">
-          <div class="candies-media"><img src="assets/candy-page-img/chocolate/chocolate1.png" alt="Eclair Caramel"></div>
-          <h3 class="candies-name">Eclair Caramel</h3>
-          <p class="candies-desc">Golden caramel and silky smooth chocolate — a classy delight that melts with magic.</p>
-          <div class="candies-meta"><span class="candies-weight">200gm</span><span class="candies-price">200L.E</span></div>
-          <button class="candies-cart add-to-cart" aria-label="Add to cart"><img src="./assets/icons/cart.svg" alt="cart"></button>
-        </article>
-        <article class="candies-card" data-sku="lion-chocolate" data-price="200" data-cat="chocolate">
-          <div class="candies-media"><img src="assets/candy-page-img/chocolate/chocolate1.png" alt="Lion Chocolate"></div>
-          <h3 class="candies-name">Lion Chocolate</h3>
-          <p class="candies-desc">Crunchy, chewy, and chocolatey! Lion is a wild roar of textures and tastes in every bite.</p>
-          <div class="candies-meta"><span class="candies-weight">200gm</span><span class="candies-price">200L.E</span></div>
-          <button class="candies-cart add-to-cart" aria-label="Add to cart"><img src="./assets/icons/cart.svg" alt="cart"></button>
-        </article>
-        <article class="candies-card" data-sku="milky-way" data-price="200" data-cat="chocolate">
-          <div class="candies-media"><img src="assets/candy-page-img/chocolate/chocolate1.png" alt="Milky Way"></div>
-          <h3 class="candies-name">Milky Way</h3>
-          <p class="candies-desc">Light, fluffy, and out‑of‑this‑world sweet — Milky Way is a galaxy of softness and joy.</p>
-          <div class="candies-meta"><span class="candies-weight">200gm</span><span class="candies-price">200L.E</span></div>
-          <button class="candies-cart add-to-cart" aria-label="Add to cart"><img src="./assets/icons/cart.svg" alt="cart"></button>
-        </article>
-        <article class="candies-card" data-sku="snickers" data-price="150" data-cat="chocolate">
-          <div class="candies-media"><img src="assets/candy-page-img/chocolate/chocolate1.png" alt="Snickers"></div>
-          <h3 class="candies-name">Snickers</h3>
-          <p class="candies-desc">Peanuts, caramel, nougat, and chocolate — Snickers is a hug for your hunger.</p>
-          <div class="candies-meta"><span class="candies-weight">250gm</span><span class="candies-price">150L.E</span></div>
-          <button class="candies-cart add-to-cart" aria-label="Add to cart"><img src="./assets/icons/cart.svg" alt="cart"></button>
-        </article>
-      </div>
-    </section>
-
-    <section class="container lolli-section">
-      <header class="section-header"><h2>LolliPop</h2></header>
-      <div class="candies-grid">
-        <article class="candies-card" data-sku="caramel-giant-lollipop" data-price="300" data-cat="lollipop">
-          <div class="candies-media"><img src="assets/candy-page-img/candy/Rectangle 38.png" alt="Caramel Giant Lollipop"></div>
-          <h3 class="candies-name">Caramel Giant Lollipop</h3>
-          <p class="candies-desc">A swirl of golden caramel dreams! Smooth, sweet, and totally irresistible. One lick and you're in candy heaven!</p>
-          <div class="candies-meta"><span class="candies-weight">1 Large</span><span class="candies-price">300L.E</span></div>
-          <button class="candies-cart add-to-cart" aria-label="Add to cart"><img src="./assets/icons/cart.svg" alt="cart"></button>
-        </article>
-        <article class="candies-card" data-sku="choco-cream-lollipop" data-price="300" data-cat="lollipop">
-          <div class="candies-media"><img src="assets/candy-page-img/candy/candy3.png" alt="Choco Cream Giant Lollipop"></div>
-          <h3 class="candies-name">Choco Cream Giant Lollipop</h3>
-          <p class="candies-desc">Rich chocolate meets creamy delight in this giant lollipop! A perfect treat for true chocoholics with a soft heart.</p>
-          <div class="candies-meta"><span class="candies-weight">1 Large</span><span class="candies-price">300L.E</span></div>
-          <button class="candies-cart add-to-cart" aria-label="Add to cart"><img src="./assets/icons/cart.svg" alt="cart"></button>
-        </article>
-        <article class="candies-card" data-sku="strawberry-giant-lollipop" data-price="300" data-cat="lollipop">
-          <div class="candies-media"><img src="assets/candy-page-img/candy/candy1.png" alt="Strawberry Giant Lollipop"></div>
-          <h3 class="candies-name">Strawberry Giant Lollipop</h3>
-          <p class="candies-desc">Juicy strawberry swirls bursting with fruity fun! Sweet, tangy, and made for smiles — a classic favorite.</p>
-          <div class="candies-meta"><span class="candies-weight">1 Large</span><span class="candies-price">300L.E</span></div>
-          <button class="candies-cart add-to-cart" aria-label="Add to cart"><img src="./assets/icons/cart.svg" alt="cart"></button>
-        </article>
-        <article class="candies-card" data-sku="vanilla-giant-lollipop" data-price="300" data-cat="lollipop">
-          <div class="candies-media"><img src="assets/candy-page-img/candy/candy2.png" alt="Vanilla Giant Lollipop"></div>
-          <h3 class="candies-name">Vanilla Giant Lollipop</h3>
-          <p class="candies-desc">Soft vanilla clouds in a swirl of candy magic. Gentle, sweet, and oh‑so‑yummy — like a hug in every bite!</p>
-          <div class="candies-meta"><span class="candies-weight">1 Large</span><span class="candies-price">300L.E</span></div>
-          <button class="candies-cart add-to-cart" aria-label="Add to cart"><img src="./assets/icons/cart.svg" alt="cart"></button>
-        </article>
-      </div>
-    </section>
-
-    <section class="container ice-section">
-      <header class="section-header"><h2>Ice–Cream</h2></header>
-      <div class="candies-grid">
-        <article class="candies-card" data-sku="ice-cream-cubes" data-price="400" data-cat="ice-cream">
-          <div class="candies-media"><img src="assets/candy-page-img/candy/candy6.png" alt="Mixed Ice Cream Cubes"></div>
-          <h3 class="candies-name">Mixed Ice Cream Cubes</h3>
-          <p class="candies-desc">Freeze‑dried ice cream cubes bursting with flavor — cool, crunchy, and totally fun!</p>
-          <div class="candies-meta"><span class="candies-weight">200gm</span><span class="candies-price">400L.E</span></div>
-          <button class="candies-cart add-to-cart" aria-label="Add to cart"><img src="./assets/icons/cart.svg" alt="cart"></button>
-        </article>
-      </div>
-    </section>
-
-    <section class="container mellow-section">
-      <header class="section-header"><h2>Marshmellow</h2></header>
-      <div class="candies-grid">
-        <article class="candies-card" data-sku="mix-marshmallow-dip" data-price="500" data-cat="marshmallow">
-          <div class="candies-media"><img src="assets/candy-page-img/candy/candy8.png" alt="Mix Marshmallow with Dipping Sauce"></div>
-          <h3 class="candies-name">Mix Marshmallow with Dipping Sauce</h3>
-          <p class="candies-desc">Fluffy marshmallows paired with a delicious dip — the perfect sweet combo!</p>
-          <div class="candies-meta"><span class="candies-weight">200gm</span><span class="candies-price">500L.E</span></div>
-          <button class="candies-cart add-to-cart" aria-label="Add to cart"><img src="./assets/icons/cart.svg" alt="cart"></button>
-        </article>
-      </div>
-    </section>
-
-    <section class="container nuts-section">
-      <header class="section-header"><h2>Nuts</h2></header>
-      <div class="nuts-wrap">
-        <article class="candies-card" data-sku="vanilla-pecan-shell" data-price="400" data-cat="nuts">
-          <div class="candies-media"><img src="assets/candy-page-img/candy/candy3.png" alt="Vanilla Sugar Pecan with Shell"></div>
-          <h3 class="candies-name">Vanilla Sugar Pecan with Shell</h3>
-          <p class="candies-desc">Crunchy pecans coated in sweet vanilla sugar — a tasty treat in every bite!</p>
-          <div class="candies-meta"><span class="candies-weight">300gm</span><span class="candies-price">400L.E</span></div>
-          <button class="candies-cart add-to-cart" aria-label="Add to cart"><img src="./assets/icons/cart.svg" alt="cart"></button>
-        </article>
-      </div>
-    </section>
+    </div>
   </main>
 
   <!-- Cart Drawer -->
@@ -360,7 +168,9 @@
           <img src="./assets/icons/google.svg" alt="Google"> Continue with Google
         </button>
         <button class="social-btn social-facebook">
-          <img src="./assets/icons/facebook.svg" onerror="this.onerror=null;this.src='./assets/icons/facebook-white.svg';" alt="Facebook"> Continue with Facebook
+          <img src="./assets/icons/facebook.svg"
+            onerror="this.onerror=null;this.src='./assets/icons/facebook-white.svg';" alt="Facebook"> Continue with
+          Facebook
         </button>
         <button class="social-btn continue-guest">
           <img src="./assets/icons/profile.svg" alt="Guest"> Continue as Guest
@@ -369,9 +179,11 @@
     </div>
   </div>
 
+  <div class="toast" role="status" aria-live="polite"></div>
+
   <footer class="site-footer">
     <div class="footer-top container">
-      <h3 class="footer-quote">“Fruit, candy, fun — freeze‑dried and fabulous!”</h3>
+      <h3 class="footer-quote">"Fruit, candy, fun — freeze‑dried and fabulous!"</h3>
       <form class="newsletter-form" autocomplete="on">
         <label class="nl-label">Email</label>
         <input class="nl-input" type="email" name="email" placeholder="you@example.com" required>
@@ -383,9 +195,14 @@
       <div class="footer-left">
         <h4 class="footer-heading">Follow our snack journey</h4>
         <div class="footer-social">
-          <a class="social-badge" href="https://www.tiktok.com/@freezybittes?_r=1&_t=ZS-910WaIKhLCZ" target="_blank" rel="noopener noreferrer" aria-label="TikTok"><img src="./assets/icons/tiktok-white.svg" alt="tiktok"></a>
-          <a class="social-badge" href="https://www.facebook.com/share/1R9jBHHhas/?mibextid=wwXIfr" target="_blank" rel="noopener noreferrer" aria-label="Facebook"><img src="./assets/icons/facebook-white.svg" alt="facebook"></a>
-          <a class="social-badge" href="https://www.instagram.com/freezy_bites_?igsh=M2lsYThtaWtucG1q" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><img src="./assets/icons/instagram-white.svg" alt="instagram"></a>
+          <a class="social-badge" href="https://www.tiktok.com/@freezybittes?_r=1&_t=ZS-910WaIKhLCZ" target="_blank"
+            rel="noopener noreferrer" aria-label="TikTok"><img src="./assets/icons/tiktok-white.svg" alt="tiktok"></a>
+          <a class="social-badge" href="https://www.facebook.com/share/1R9jBHHhas/?mibextid=wwXIfr" target="_blank"
+            rel="noopener noreferrer" aria-label="Facebook"><img src="./assets/icons/facebook-white.svg"
+              alt="facebook"></a>
+          <a class="social-badge" href="https://www.instagram.com/freezy_bites_?igsh=M2lsYThtaWtucG1q" target="_blank"
+            rel="noopener noreferrer" aria-label="Instagram"><img src="./assets/icons/instagram-white.svg"
+              alt="instagram"></a>
         </div>
         <div class="footer-contact">
           <div class="fc-row"><img src="./assets/icons/phone-white.svg" alt="phone"><span>+20 10 90196133</span></div>
@@ -415,7 +232,193 @@
   </footer>
 
   <script src="./scripts/candy.js" defer></script>
+  <script>
+    // ===== DYNAMIC PRODUCTS LOADING =====
+    const candyCategories = ['Candies', 'Chocolate', 'Lollipop', 'Ice Cream', 'Marshmallow', 'Nuts'];
+    let allProducts = [];
+    let currentFilter = 'all';
+
+    // Render a product card
+    function renderProductCard(product) {
+      const price = parseFloat(product.price) || 0;
+      const weight = product.attributes?.weight || '200gm';
+      const image = product.images?.[0] || product.image || 'assets/candy-page-img/candy/candy1.png';
+
+      return `
+        <article class="candies-card" data-sku="${product.sku}" data-price="${price}" data-cat="${product.category?.toLowerCase() || ''}">
+          <div class="candies-media"><img src="${image}" alt="${product.name}" onerror="this.src='assets/candy-page-img/candy/candy1.png'"></div>
+          <h3 class="candies-name">${product.name}</h3>
+          <p class="candies-desc">${product.description || 'Delicious freeze-dried treat.'}</p>
+          <div class="candies-meta"><span class="candies-weight">${weight}</span><span class="candies-price">${price}L.E</span></div>
+          <button class="candies-cart add-to-cart" data-sku="${product.sku}" aria-label="Add to cart"><img src="./assets/icons/cart.svg" alt="cart"></button>
+        </article>
+      `;
+    }
+
+    // Render products grouped by category
+    function renderProducts(products) {
+      const container = document.getElementById('productsContainer');
+      if (!products || products.length === 0) {
+        container.innerHTML = '<div style="text-align: center; padding: 3rem;"><p style="color: #666;">No products available. Check back soon!</p></div>';
+        return;
+      }
+
+      // Filter products based on current filter
+      let filteredProducts = products;
+      if (currentFilter !== 'all') {
+        filteredProducts = products.filter(p =>
+          p.category?.toLowerCase() === currentFilter.toLowerCase() ||
+          p.category?.toLowerCase().includes(currentFilter.toLowerCase())
+        );
+      }
+
+      // Group by category
+      const grouped = {};
+      filteredProducts.forEach(p => {
+        const cat = p.category || 'Other';
+        if (!grouped[cat]) grouped[cat] = [];
+        grouped[cat].push(p);
+      });
+
+      // Render sections
+      let html = '';
+      candyCategories.forEach(cat => {
+        const catProducts = grouped[cat];
+        if (catProducts && catProducts.length > 0) {
+          html += `
+            <section class="container candies-section">
+              <header class="section-header"><h2>${cat}</h2></header>
+              <div class="candies-grid">
+                ${catProducts.map(renderProductCard).join('')}
+              </div>
+            </section>
+          `;
+        }
+      });
+
+      // Handle "Other" category
+      if (grouped['Other'] && grouped['Other'].length > 0) {
+        html += `
+          <section class="container candies-section">
+            <header class="section-header"><h2>Other Treats</h2></header>
+            <div class="candies-grid">
+              ${grouped['Other'].map(renderProductCard).join('')}
+            </div>
+          </section>
+        `;
+      }
+
+      if (!html) {
+        html = '<div style="text-align: center; padding: 3rem;"><p style="color: #666;">No products in this category.</p></div>';
+      }
+
+      container.innerHTML = html;
+      bindAddToCartButtons();
+    }
+
+    // Render favorites (top 4 products with highest ratings/first items)
+    function renderFavorites(products) {
+      const grid = document.getElementById('favoritesGrid');
+      if (!products || products.length === 0) {
+        grid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: #666;">Loading favorites...</p>';
+        return;
+      }
+
+      const favorites = products.slice(0, 4);
+      grid.innerHTML = favorites.map(product => {
+        const price = parseFloat(product.price) || 0;
+        const weight = product.attributes?.weight || '280Gm';
+        const image = product.images?.[0] || product.image || 'assets/candy-page-img/coustmer-favorit/customer favorit1.png';
+
+        return `
+          <article class="fav-card" data-sku="${product.sku}" data-price="${price}">
+            <div class="fav-media"><img src="${image}" alt="${product.name}" onerror="this.src='assets/candy-page-img/coustmer-favorit/customer favorit1.png'"></div>
+            <p class="fav-desc">"${product.description || 'Delicious freeze-dried treat with amazing flavor!'}"</p>
+            <div class="fav-meta"><span class="fav-weight">${weight}</span><span class="fav-price">${price}L.E</span></div>
+            <div class="fav-rating" aria-label="rating 4.9">★★★★★ <span class="fav-score">(4.9)</span></div>
+            <button class="fav-cart add-to-cart" data-sku="${product.sku}" aria-label="Add to cart"><img src="./assets/icons/cart.svg" alt="cart"></button>
+          </article>
+        `;
+      }).join('');
+
+      bindAddToCartButtons();
+    }
+
+    // Bind add to cart buttons
+    function bindAddToCartButtons() {
+      document.querySelectorAll('.add-to-cart').forEach(btn => {
+        btn.addEventListener('click', function () {
+          const sku = this.dataset.sku;
+          const toast = document.querySelector('.toast');
+          if (toast) {
+            toast.textContent = 'Added to cart!';
+            toast.classList.add('is-show');
+            setTimeout(() => toast.classList.remove('is-show'), 1800);
+          }
+          // Use localStorage cart
+          try {
+            const cart = JSON.parse(localStorage.getItem('fb_cart_v1') || '{}');
+            cart[sku] = (cart[sku] || 0) + 1;
+            localStorage.setItem('fb_cart_v1', JSON.stringify(cart));
+          } catch (e) { }
+        });
+      });
+    }
+
+    // Filter handling
+    function setupFilters() {
+      const filterItems = document.querySelectorAll('.filter-item');
+      filterItems.forEach(item => {
+        item.addEventListener('click', function () {
+          filterItems.forEach(i => i.classList.remove('is-active'));
+          this.classList.add('is-active');
+          currentFilter = this.dataset.value;
+          renderProducts(allProducts);
+        });
+      });
+
+      const filterToggle = document.querySelector('.filter-toggle');
+      const filterMenu = document.getElementById('filter-menu');
+      if (filterToggle && filterMenu) {
+        filterToggle.addEventListener('click', function () {
+          const expanded = this.getAttribute('aria-expanded') === 'true';
+          this.setAttribute('aria-expanded', !expanded);
+          filterMenu.classList.toggle('is-open');
+        });
+      }
+    }
+
+    // Load products from API
+    async function loadProducts() {
+      try {
+        // Fetch all candy products (limit 100)
+        const response = await fetch('/api/products?limit=100');
+        const products = await response.json();
+
+        // Filter for candy-related categories
+        allProducts = products.filter(p =>
+          candyCategories.some(cat =>
+            p.category?.toLowerCase().includes(cat.toLowerCase()) ||
+            cat.toLowerCase().includes(p.category?.toLowerCase() || '')
+          ) || !p.category
+        );
+
+        renderFavorites(allProducts);
+        renderProducts(allProducts);
+
+      } catch (error) {
+        console.error('Failed to load products:', error);
+        document.getElementById('productsContainer').innerHTML =
+          '<div style="text-align: center; padding: 3rem;"><p style="color: #666;">Unable to load products. Please try again later.</p></div>';
+      }
+    }
+
+    // Initialize
+    document.addEventListener('DOMContentLoaded', function () {
+      setupFilters();
+      loadProducts();
+    });
+  </script>
 </body>
+
 </html>
-
-

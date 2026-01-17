@@ -1,5 +1,6 @@
 <!doctype html>
 <html lang="en">
+
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -7,6 +8,7 @@
   <link rel="stylesheet" href="./styles/home.css">
   <link rel="stylesheet" href="./styles/candy.css">
 </head>
+
 <body>
   <div class="masthead">
     <div class="topbar">
@@ -63,8 +65,8 @@
     <section class="candy-hero">
       <img class="hero-bg" src="assets/fruits/furits-hero-img.png" alt="" aria-hidden="true">
       <div class="container">
-        <p class="hero-quote hero-quote--left">“Fresh, fruity, and fabulously crunchy — discover your favorites!”</p>
-        <p class="hero-quote hero-quote--right">“Taste real fruit, freeze‑dried to perfection.”</p>
+        <p class="hero-quote hero-quote--left">"Fresh, fruity, and fabulously crunchy — discover your favorites!"</p>
+        <p class="hero-quote hero-quote--right">"Taste real fruit, freeze‑dried to perfection."</p>
         <h1 class="explore-title">Explore Fruits</h1>
       </div>
     </section>
@@ -73,213 +75,114 @@
     <section class="fav-section container">
       <div class="fav-header">
         <h2 class="fav-title">Customer Favorites</h2>
-        <p class="fav-sub">Top‑picked freeze‑dried fruits you’ll love.</p>
+        <p class="fav-sub">Top‑picked freeze‑dried fruits you'll love.</p>
       </div>
-      <div class="fav-grid">
-        <article class="fav-card" data-sku="strawberry-fav" data-price="130" data-cat="summer">
-          <div class="fav-media"><img src="assets/home-page-img/must-have/must have1.png" alt="Strawberries 250gm"></div>
-          <p class="fav-desc">Real strawberries — sweet, crisp, and snack‑ready.</p>
-          <div class="fav-meta"><span class="fav-weight">250gm</span><span class="fav-price">130 L.E</span></div>
-          <button class="fav-cart add-to-cart" aria-label="Add to cart"><img src="./assets/icons/cart.svg" alt="cart"></button>
-        </article>
-        <article class="fav-card" data-sku="marshmallow-pack" data-price="90" data-cat="mixed">
-          <div class="fav-media"><img src="assets/home-page-img/must-have/must have2.png" alt="Marshmallows"></div>
-          <p class="fav-desc">Puffy marshmallows — a delightfully sweet crunch.</p>
-          <div class="fav-meta"><span class="fav-weight">200gm</span><span class="fav-price">90 L.E</span></div>
-          <button class="fav-cart add-to-cart" aria-label="Add to cart"><img src="./assets/icons/cart.svg" alt="cart"></button>
-        </article>
-        <article class="fav-card" data-sku="snickers-pack" data-price="140" data-cat="mixed">
-          <div class="fav-media"><img src="assets/home-page-img/must-have/must have 3.png" alt="Snickers Pack"></div>
-          <p class="fav-desc">Fan‑favorite sweet packs to fuel your day.</p>
-          <div class="fav-meta"><span class="fav-weight">—</span><span class="fav-price">140 L.E</span></div>
-          <button class="fav-cart add-to-cart" aria-label="Add to cart"><img src="./assets/icons/cart.svg" alt="cart"></button>
-        </article>
-        <article class="fav-card" data-sku="banana-250" data-price="110" data-cat="tropical">
-          <div class="fav-media"><img src="assets/home-page-img/must-have/must have4.png" alt="Banana 250gm"></div>
-          <p class="fav-desc">Sweet banana slices, crunchy and clean.</p>
-          <div class="fav-meta"><span class="fav-weight">250gm</span><span class="fav-price">110 L.E</span></div>
-          <button class="fav-cart add-to-cart" aria-label="Add to cart"><img src="./assets/icons/cart.svg" alt="cart"></button>
-        </article>
+      <div class="fav-grid" id="favoritesGrid">
+        <div class="loading-products" style="grid-column: 1 / -1; text-align: center; padding: 2rem;">
+          <p style="color: #666;">Loading favorites...</p>
+        </div>
       </div>
     </section>
 
     <!-- Filter -->
     <section class="filter-bar container">
       <button class="filter-toggle" aria-expanded="false" aria-controls="filter-menu">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M3 5h18l-6.8 7.2v5.1l-4.4 1.9v-7L3 5z" fill="#c55468"/></svg>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M3 5h18l-6.8 7.2v5.1l-4.4 1.9v-7L3 5z" fill="#c55468" />
+        </svg>
         <span class="filter-toggle-text">Filter</span>
-        <svg class="chev" width="14" height="14" viewBox="0 0 24 24" fill="#c55468" aria-hidden="true"><path d="M7 10l5 5 5-5z"/></svg>
+        <svg class="chev" width="14" height="14" viewBox="0 0 24 24" fill="#c55468" aria-hidden="true">
+          <path d="M7 10l5 5 5-5z" />
+        </svg>
       </button>
       <div id="filter-menu" class="filter-menu" role="menu" aria-label="Filter options">
         <button class="filter-item is-active" data-value="all" role="menuitem">All</button>
-        <button class="filter-item" data-value="summer" role="menuitem">Summer</button>
-        <button class="filter-item" data-value="tropical" role="menuitem">Tropical</button>
-        <button class="filter-item" data-value="winter" role="menuitem">Winter</button>
-        <button class="filter-item" data-value="fall" role="menuitem">Fall</button>
-        <button class="filter-item" data-value="mixed" role="menuitem">Mixed Packs</button>
-        <button class="filter-item" data-value="veggies" role="menuitem">Veggies</button>
+        <button class="filter-item" data-value="Summer" role="menuitem">Summer</button>
+        <button class="filter-item" data-value="Tropical" role="menuitem">Tropical</button>
+        <button class="filter-item" data-value="Winter" role="menuitem">Winter</button>
+        <button class="filter-item" data-value="Fall" role="menuitem">Fall</button>
+        <button class="filter-item" data-value="Mixed" role="menuitem">Mixed Packs</button>
+        <button class="filter-item" data-value="Veggies" role="menuitem">Veggies</button>
       </div>
     </section>
 
-    <!-- Summer Fruits -->
-    <section class="container candies-section">
-      <header class="section-header"><h2>Summer Fruits</h2></header>
-      <div class="candies-grid">
-        <article class="candies-card" data-sku="peach-slices" data-price="120" data-cat="summer">
-          <div class="candies-media"><img src="assets/home-page-img/whats-inside-us/inside us 5.png" alt="Peach slices"></div>
-          <h3 class="candies-name">Peach Slices</h3>
-          <p class="candies-desc">Juicy peaches freeze‑dried for a bright, sunny crunch.</p>
-          <div class="candies-meta"><span class="candies-weight">200gm</span><span class="candies-price">120 L.E</span></div>
-          <button class="candies-cart add-to-cart" aria-label="Add to cart"><img src="./assets/icons/cart.svg" alt="cart"></button>
-        </article>
-        <article class="candies-card" data-sku="mango-bites" data-price="150" data-cat="summer">
-          <div class="candies-media"><img src="assets/home-page-img/pick-your-mood/your mood3.png" alt="Mango Bites"></div>
-          <h3 class="candies-name">Mango Bites</h3>
-          <p class="candies-desc">Tropical mango with a clean, crisp snap.</p>
-          <div class="candies-meta"><span class="candies-weight">200gm</span><span class="candies-price">150 L.E</span></div>
-          <button class="candies-cart add-to-cart" aria-label="Add to cart"><img src="./assets/icons/cart.svg" alt="cart"></button>
-        </article>
-        <article class="candies-card" data-sku="strawberries-250" data-price="130" data-cat="summer">
-          <div class="candies-media"><img src="assets/home-page-img/whats-inside-us/isnide us 1.png" alt="Strawberries"></div>
-          <h3 class="candies-name">Strawberries</h3>
-          <p class="candies-desc">Sweet strawberry pieces — light, lovely, irresistible.</p>
-          <div class="candies-meta"><span class="candies-weight">250gm</span><span class="candies-price">130 L.E</span></div>
-          <button class="candies-cart add-to-cart" aria-label="Add to cart"><img src="./assets/icons/cart.svg" alt="cart"></button>
-        </article>
+    <!-- Products Container - Will be populated by API -->
+    <div id="productsContainer">
+      <div class="loading-products" style="text-align: center; padding: 3rem;">
+        <p style="color: #666;">Loading products...</p>
       </div>
-    </section>
-
-    <!-- Tropical Fruits -->
-    <section class="container candies-section">
-      <header class="section-header"><h2>Tropical Fruits</h2></header>
-      <div class="candies-grid">
-        <article class="candies-card" data-sku="pineapple-rings" data-price="160" data-cat="tropical">
-          <div class="candies-media"><img src="assets/home-page-img/pick-your-mood/your mood5.png" alt="Pineapple Rings"></div>
-          <h3 class="candies-name">Pineapple Rings</h3>
-          <p class="candies-desc">Golden, tangy rings with a sunny crunch.</p>
-          <div class="candies-meta"><span class="candies-weight">200gm</span><span class="candies-price">160 L.E</span></div>
-          <button class="candies-cart add-to-cart" aria-label="Add to cart"><img src="./assets/icons/cart.svg" alt="cart"></button>
-        </article>
-        <article class="candies-card" data-sku="banana-chips" data-price="110" data-cat="tropical">
-          <div class="candies-media"><img src="assets/home-page-img/must-have/must have4.png" alt="Banana Chips"></div>
-          <h3 class="candies-name">Banana Chips</h3>
-          <p class="candies-desc">Naturally sweet banana — simply crisp.</p>
-          <div class="candies-meta"><span class="candies-weight">250gm</span><span class="candies-price">110 L.E</span></div>
-          <button class="candies-cart add-to-cart" aria-label="Add to cart"><img src="./assets/icons/cart.svg" alt="cart"></button>
-        </article>
-        <article class="candies-card" data-sku="coconut-crisp" data-price="140" data-cat="tropical">
-          <div class="candies-media"><img src="assets/home-page-img/pick-your-mood/your mood 6.png" alt="Coconut Crisp"></div>
-          <h3 class="candies-name">Coconut Crisp</h3>
-          <p class="candies-desc">Lightly sweet coconut with a tropical twist.</p>
-          <div class="candies-meta"><span class="candies-weight">200gm</span><span class="candies-price">140 L.E</span></div>
-          <button class="candies-cart add-to-cart" aria-label="Add to cart"><img src="./assets/icons/cart.svg" alt="cart"></button>
-        </article>
-      </div>
-    </section>
-
-    <!-- Winter Fruits -->
-    <section class="container candies-section">
-      <header class="section-header"><h2>Winter Fruits</h2></header>
-      <div class="candies-grid">
-        <article class="candies-card" data-sku="apple-slices" data-price="120" data-cat="winter">
-          <div class="candies-media"><img src="assets/home-page-img/whats-inside-us/inside us 4.png" alt="Apple Slices"></div>
-          <h3 class="candies-name">Apple Slices</h3>
-          <p class="candies-desc">Classic apple crunch with cozy sweetness.</p>
-          <div class="candies-meta"><span class="candies-weight">200gm</span><span class="candies-price">120 L.E</span></div>
-          <button class="candies-cart add-to-cart" aria-label="Add to cart"><img src="./assets/icons/cart.svg" alt="cart"></button>
-        </article>
-        <article class="candies-card" data-sku="pear-bites" data-price="130" data-cat="winter">
-          <div class="candies-media"><img src="assets/home-page-img/why-us/why us 3.png" alt="Pear Bites"></div>
-          <h3 class="candies-name">Pear Bites</h3>
-          <p class="candies-desc">Soft, delicate pear now a snappy delight.</p>
-          <div class="candies-meta"><span class="candies-weight">200gm</span><span class="candies-price">130 L.E</span></div>
-          <button class="candies-cart add-to-cart" aria-label="Add to cart"><img src="./assets/icons/cart.svg" alt="cart"></button>
-        </article>
-        <article class="candies-card" data-sku="cranberry-pop" data-price="135" data-cat="winter">
-          <div class="candies-media"><img src="assets/home-page-img/why-us/why us 2.png" alt="Cranberry Pop"></div>
-          <h3 class="candies-name">Cranberry Pop</h3>
-          <p class="candies-desc">Bright, zingy cranberries with a festive crunch.</p>
-          <div class="candies-meta"><span class="candies-weight">200gm</span><span class="candies-price">135 L.E</span></div>
-          <button class="candies-cart add-to-cart" aria-label="Add to cart"><img src="./assets/icons/cart.svg" alt="cart"></button>
-        </article>
-      </div>
-    </section>
-
-    <!-- Fall Favorites -->
-    <section class="container candies-section">
-      <header class="section-header"><h2>Fall Favorites</h2></header>
-      <div class="candies-grid">
-        <article class="candies-card" data-sku="figs" data-price="140" data-cat="fall">
-          <div class="candies-media"><img src="assets/home-page-img/why-us/why us 1.png" alt="Figs"></div>
-          <h3 class="candies-name">Figs</h3>
-          <p class="candies-desc">Rich, jammy figs with a light crunch.</p>
-          <div class="candies-meta"><span class="candies-weight">200gm</span><span class="candies-price">140 L.E</span></div>
-          <button class="candies-cart add-to-cart" aria-label="Add to cart"><img src="./assets/icons/cart.svg" alt="cart"></button>
-        </article>
-        <article class="candies-card" data-sku="pear-fall" data-price="130" data-cat="fall">
-          <div class="candies-media"><img src="assets/home-page-img/whats-inside-us/inside us 5.png" alt="Pear"></div>
-          <h3 class="candies-name">Pear</h3>
-          <p class="candies-desc">Soft, mellow pear — sweet and satisfying.</p>
-          <div class="candies-meta"><span class="candies-weight">200gm</span><span class="candies-price">130 L.E</span></div>
-          <button class="candies-cart add-to-cart" aria-label="Add to cart"><img src="./assets/icons/cart.svg" alt="cart"></button>
-        </article>
-        <article class="candies-card" data-sku="plum-dream" data-price="145" data-cat="fall">
-          <div class="candies-media"><img src="assets/home-page-img/whats-inside-us/inside us 3.png" alt="Plum Dream"></div>
-          <h3 class="candies-name">Plum Dream</h3>
-          <p class="candies-desc">Sweet‑tart plums — a cozy autumn treat.</p>
-          <div class="candies-meta"><span class="candies-weight">200gm</span><span class="candies-price">145 L.E</span></div>
-          <button class="candies-cart add-to-cart" aria-label="Add to cart"><img src="./assets/icons/cart.svg" alt="cart"></button>
-        </article>
-      </div>
-    </section>
-
-    <!-- Mixed Fruit Packs -->
-    <section class="container candies-section">
-      <header class="section-header"><h2>Mixed Fruit Packs</h2></header>
-      <div class="candies-grid">
-        <article class="candies-card" data-sku="rainbow-mix" data-price="160" data-cat="mixed">
-          <div class="candies-media"><img src="assets/home-page-img/whats-inside-us/isnide us 1.png" alt="Rainbow Mix"></div>
-          <h3 class="candies-name">Rainbow Mix</h3>
-          <p class="candies-desc">A colorful blend — each bite a new burst.</p>
-          <div class="candies-meta"><span class="candies-weight">220gm</span><span class="candies-price">160 L.E</span></div>
-          <button class="candies-cart add-to-cart" aria-label="Add to cart"><img src="./assets/icons/cart.svg" alt="cart"></button>
-        </article>
-        <article class="candies-card" data-sku="berry-bash" data-price="155" data-cat="mixed">
-          <div class="candies-media"><img src="assets/home-page-img/whats-inside-us/inside us 2.png" alt="Berry Bash"></div>
-          <h3 class="candies-name">Berry Bash</h3>
-          <p class="candies-desc">A berry‑forward mix for fruit lovers.</p>
-          <div class="candies-meta"><span class="candies-weight">220gm</span><span class="candies-price">155 L.E</span></div>
-          <button class="candies-cart add-to-cart" aria-label="Add to cart"><img src="./assets/icons/cart.svg" alt="cart"></button>
-        </article>
-        <article class="candies-card" data-sku="citrus-party" data-price="150" data-cat="mixed">
-          <div class="candies-media"><img src="assets/home-page-img/whats-inside-us/inside us 4.png" alt="Citrus Party"></div>
-          <h3 class="candies-name">Citrus Party</h3>
-          <p class="candies-desc">A bright mix of citrus favorites.</p>
-          <div class="candies-meta"><span class="candies-weight">220gm</span><span class="candies-price">150 L.E</span></div>
-          <button class="candies-cart add-to-cart" aria-label="Add to cart"><img src="./assets/icons/cart.svg" alt="cart"></button>
-        </article>
-      </div>
-    </section>
-
-    <!-- Veggies -->
-    <section class="container candies-section">
-      <header class="section-header"><h2>Veggies</h2></header>
-      <div class="candies-grid">
-        <article class="candies-card" data-sku="veggie-crunch" data-price="140" data-cat="veggies">
-          <div class="candies-media"><img src="assets/home-page-img/why-us/why us 2.png" alt="Veggie Crunch"></div>
-          <h3 class="candies-name">Veggie Crunch</h3>
-          <p class="candies-desc">Crisp garden goodness for a light, savory snack.</p>
-          <div class="candies-meta"><span class="candies-weight">200gm</span><span class="candies-price">140 L.E</span></div>
-          <button class="candies-cart add-to-cart" aria-label="Add to cart"><img src="./assets/icons/cart.svg" alt="cart"></button>
-        </article>
-      </div>
-    </section>
+    </div>
   </main>
 
-  <!-- Footer from candy page -->
+  <!-- Cart Drawer -->
+  <aside class="cart" aria-hidden="true">
+    <div class="cart-backdrop" data-cart-close></div>
+    <div class="cart-panel" role="dialog" aria-modal="true" aria-labelledby="cart-title">
+      <header class="cart-header">
+        <h3 id="cart-title">Your Cart</h3>
+        <button class="icon-btn" data-cart-close aria-label="Close">
+          <img src="./assets/icons/close.svg" alt="close">
+        </button>
+      </header>
+      <div class="cart-body">
+        <ul class="cart-list"></ul>
+        <div class="cart-empty" hidden>Cart is empty</div>
+      </div>
+      <footer class="cart-footer">
+        <div class="cart-total">Total items: <span class="cart-count">0</span></div>
+        <a class="btn btn-primary go-checkout" href="checkout.html">Checkout</a>
+      </footer>
+    </div>
+  </aside>
+
+  <div class="toast" role="status" aria-live="polite"></div>
+
+  <!-- Auth Modal -->
+  <div class="modal" id="auth-modal" aria-hidden="true">
+    <div class="modal-backdrop" data-close></div>
+    <div class="modal-dialog" role="dialog" aria-modal="true" aria-labelledby="auth-title">
+      <button class="icon-btn modal-close" aria-label="Close" data-close>
+        <img src="./assets/icons/close.svg" alt="close">
+      </button>
+      <h3 id="auth-title">Welcome</h3>
+      <p class="sub">Log in, create an account, or continue as a guest.</p>
+      <div class="tabs">
+        <button class="tab is-active" data-tab="login">Log in</button>
+        <button class="tab" data-tab="register">Register</button>
+      </div>
+      <div class="tab-panels">
+        <form class="panel is-active" data-panel="login">
+          <label>Email<input type="email" required placeholder="you@example.com"></label>
+          <label>Password<input type="password" required placeholder="••••••••"></label>
+          <button class="btn btn-primary" type="submit">Log in</button>
+        </form>
+        <form class="panel" data-panel="register">
+          <label>Name<input type="text" required placeholder="Your name"></label>
+          <label>Email<input type="email" required placeholder="you@example.com"></label>
+          <label>Password<input type="password" required placeholder="Create password"></label>
+          <button class="btn btn-primary" type="submit">Create account</button>
+        </form>
+      </div>
+      <div class="or">or</div>
+      <div class="social">
+        <button class="social-btn social-google">
+          <img src="./assets/icons/google.svg" alt="Google"> Continue with Google
+        </button>
+        <button class="social-btn social-facebook">
+          <img src="./assets/icons/facebook.svg"
+            onerror="this.onerror=null;this.src='./assets/icons/facebook-white.svg';" alt="Facebook"> Continue with
+          Facebook
+        </button>
+        <button class="social-btn continue-guest">
+          <img src="./assets/icons/profile.svg" alt="Guest"> Continue as Guest
+        </button>
+      </div>
+    </div>
+  </div>
+
   <footer class="site-footer">
     <div class="footer-top container">
-      <h3 class="footer-quote">“Fruit, candy, fun — freeze‑dried and fabulous!”</h3>
+      <h3 class="footer-quote">"Fruit, candy, fun — freeze‑dried and fabulous!"</h3>
       <form class="newsletter-form" autocomplete="on">
         <label class="nl-label">Email</label>
         <input class="nl-input" type="email" name="email" placeholder="you@example.com" required>
@@ -291,9 +194,14 @@
       <div class="footer-left">
         <h4 class="footer-heading">Follow our snack journey</h4>
         <div class="footer-social">
-          <a class="social-badge" href="https://www.tiktok.com/@freezybittes?_r=1&_t=ZS-910WaIKhLCZ" target="_blank" rel="noopener noreferrer" aria-label="TikTok"><img src="./assets/icons/tiktok-white.svg" alt="tiktok"></a>
-          <a class="social-badge" href="https://www.facebook.com/share/1R9jBHHhas/?mibextid=wwXIfr" target="_blank" rel="noopener noreferrer" aria-label="Facebook"><img src="./assets/icons/facebook-white.svg" alt="facebook"></a>
-          <a class="social-badge" href="https://www.instagram.com/freezy_bites_?igsh=M2lsYThtaWtucG1q" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><img src="./assets/icons/instagram-white.svg" alt="instagram"></a>
+          <a class="social-badge" href="https://www.tiktok.com/@freezybittes?_r=1&_t=ZS-910WaIKhLCZ" target="_blank"
+            rel="noopener noreferrer" aria-label="TikTok"><img src="./assets/icons/tiktok-white.svg" alt="tiktok"></a>
+          <a class="social-badge" href="https://www.facebook.com/share/1R9jBHHhas/?mibextid=wwXIfr" target="_blank"
+            rel="noopener noreferrer" aria-label="Facebook"><img src="./assets/icons/facebook-white.svg"
+              alt="facebook"></a>
+          <a class="social-badge" href="https://www.instagram.com/freezy_bites_?igsh=M2lsYThtaWtucG1q" target="_blank"
+            rel="noopener noreferrer" aria-label="Instagram"><img src="./assets/icons/instagram-white.svg"
+              alt="instagram"></a>
         </div>
         <div class="footer-contact">
           <div class="fc-row"><img src="./assets/icons/phone-white.svg" alt="phone"><span>+20 10 90196133</span></div>
@@ -323,6 +231,191 @@
   </footer>
 
   <script src="./scripts/candy.js" defer></script>
-</body>
-</html>
+  <script>
+    // ===== DYNAMIC PRODUCTS LOADING =====
+    const fruitCategories = ['Summer', 'Tropical', 'Winter', 'Fall', 'Mixed', 'Veggies'];
+    let allProducts = [];
+    let currentFilter = 'all';
 
+    // Render a product card
+    function renderProductCard(product) {
+      const price = parseFloat(product.price) || 0;
+      const weight = product.attributes?.weight || '200gm';
+      const image = product.images?.[0] || product.image || 'assets/home-page-img/must-have/must have1.png';
+
+      return `
+        <article class="candies-card" data-sku="${product.sku}" data-price="${price}" data-cat="${product.category?.toLowerCase() || ''}">
+          <div class="candies-media"><img src="${image}" alt="${product.name}" onerror="this.src='assets/home-page-img/must-have/must have1.png'"></div>
+          <h3 class="candies-name">${product.name}</h3>
+          <p class="candies-desc">${product.description || 'Delicious freeze-dried treat.'}</p>
+          <div class="candies-meta"><span class="candies-weight">${weight}</span><span class="candies-price">${price} L.E</span></div>
+          <button class="candies-cart add-to-cart" data-sku="${product.sku}" aria-label="Add to cart"><img src="./assets/icons/cart.svg" alt="cart"></button>
+        </article>
+      `;
+    }
+
+    // Render products grouped by category
+    function renderProducts(products) {
+      const container = document.getElementById('productsContainer');
+      if (!products || products.length === 0) {
+        container.innerHTML = '<div style="text-align: center; padding: 3rem;"><p style="color: #666;">No products available. Check back soon!</p></div>';
+        return;
+      }
+
+      // Filter products based on current filter
+      let filteredProducts = products;
+      if (currentFilter !== 'all') {
+        filteredProducts = products.filter(p =>
+          p.category?.toLowerCase() === currentFilter.toLowerCase()
+        );
+      }
+
+      // Group by category
+      const grouped = {};
+      filteredProducts.forEach(p => {
+        const cat = p.category || 'Other';
+        if (!grouped[cat]) grouped[cat] = [];
+        grouped[cat].push(p);
+      });
+
+      // Render sections
+      let html = '';
+      fruitCategories.forEach(cat => {
+        const catProducts = grouped[cat];
+        if (catProducts && catProducts.length > 0) {
+          html += `
+            <section class="container candies-section">
+              <header class="section-header"><h2>${cat === 'Mixed' ? 'Mixed Fruit Packs' : cat + ' Fruits'}</h2></header>
+              <div class="candies-grid">
+                ${catProducts.map(renderProductCard).join('')}
+              </div>
+            </section>
+          `;
+        }
+      });
+
+      // Handle "Other" category
+      if (grouped['Other'] && grouped['Other'].length > 0) {
+        html += `
+          <section class="container candies-section">
+            <header class="section-header"><h2>Other Treats</h2></header>
+            <div class="candies-grid">
+              ${grouped['Other'].map(renderProductCard).join('')}
+            </div>
+          </section>
+        `;
+      }
+
+      if (!html) {
+        html = '<div style="text-align: center; padding: 3rem;"><p style="color: #666;">No products in this category.</p></div>';
+      }
+
+      container.innerHTML = html;
+      bindAddToCartButtons();
+    }
+
+    // Render favorites (top 4 products)
+    function renderFavorites(products) {
+      const grid = document.getElementById('favoritesGrid');
+      if (!products || products.length === 0) {
+        grid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: #666;">Loading favorites...</p>';
+        return;
+      }
+
+      const favorites = products.slice(0, 4);
+      grid.innerHTML = favorites.map(product => {
+        const price = parseFloat(product.price) || 0;
+        const weight = product.attributes?.weight || '250gm';
+        const image = product.images?.[0] || product.image || 'assets/home-page-img/must-have/must have1.png';
+
+        return `
+          <article class="fav-card" data-sku="${product.sku}" data-price="${price}" data-cat="${product.category?.toLowerCase() || ''}">
+            <div class="fav-media"><img src="${image}" alt="${product.name}" onerror="this.src='assets/home-page-img/must-have/must have1.png'"></div>
+            <p class="fav-desc">${product.description || 'Delicious freeze-dried treat.'}</p>
+            <div class="fav-meta"><span class="fav-weight">${weight}</span><span class="fav-price">${price} L.E</span></div>
+            <button class="fav-cart add-to-cart" data-sku="${product.sku}" aria-label="Add to cart"><img src="./assets/icons/cart.svg" alt="cart"></button>
+          </article>
+        `;
+      }).join('');
+
+      bindAddToCartButtons();
+    }
+
+    // Bind add to cart buttons
+    function bindAddToCartButtons() {
+      document.querySelectorAll('.add-to-cart').forEach(btn => {
+        btn.addEventListener('click', function () {
+          const sku = this.dataset.sku;
+          const toast = document.querySelector('.toast');
+          if (toast) {
+            toast.textContent = 'Added to cart!';
+            toast.classList.add('is-show');
+            setTimeout(() => toast.classList.remove('is-show'), 1800);
+          }
+          // Use localStorage cart
+          try {
+            const cart = JSON.parse(localStorage.getItem('fb_cart_v1') || '{}');
+            cart[sku] = (cart[sku] || 0) + 1;
+            localStorage.setItem('fb_cart_v1', JSON.stringify(cart));
+          } catch (e) { }
+        });
+      });
+    }
+
+    // Filter handling
+    function setupFilters() {
+      const filterItems = document.querySelectorAll('.filter-item');
+      filterItems.forEach(item => {
+        item.addEventListener('click', function () {
+          filterItems.forEach(i => i.classList.remove('is-active'));
+          this.classList.add('is-active');
+          currentFilter = this.dataset.value;
+          renderProducts(allProducts);
+        });
+      });
+
+      const filterToggle = document.querySelector('.filter-toggle');
+      const filterMenu = document.getElementById('filter-menu');
+      if (filterToggle && filterMenu) {
+        filterToggle.addEventListener('click', function () {
+          const expanded = this.getAttribute('aria-expanded') === 'true';
+          this.setAttribute('aria-expanded', !expanded);
+          filterMenu.classList.toggle('is-open');
+        });
+      }
+    }
+
+    // Load products from API
+    async function loadProducts() {
+      try {
+        // Fetch all fruit products (limit 100)
+        const response = await fetch('/api/products?limit=100');
+        const products = await response.json();
+
+        // Filter for fruit-related categories
+        allProducts = products.filter(p =>
+          fruitCategories.some(cat =>
+            p.category?.toLowerCase().includes(cat.toLowerCase()) ||
+            cat.toLowerCase().includes(p.category?.toLowerCase() || '')
+          ) || !p.category
+        );
+
+        renderFavorites(allProducts);
+        renderProducts(allProducts);
+
+      } catch (error) {
+        console.error('Failed to load products:', error);
+        document.getElementById('productsContainer').innerHTML =
+          '<div style="text-align: center; padding: 3rem;"><p style="color: #666;">Unable to load products. Please try again later.</p></div>';
+      }
+    }
+
+    // Initialize
+    document.addEventListener('DOMContentLoaded', function () {
+      setupFilters();
+      loadProducts();
+    });
+  </script>
+</body>
+
+</html>
