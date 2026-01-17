@@ -388,9 +388,11 @@
     // Load products from API
     async function loadProducts() {
       try {
+        console.log('Fetching products from API...');
         // Fetch all fruit products (limit 100)
         const response = await fetch('/api/products?limit=100');
         const products = await response.json();
+        console.log('API returned products:', products);
 
         // Filter for fruit-related categories
         allProducts = products.filter(p =>
@@ -399,6 +401,7 @@
             cat.toLowerCase().includes(p.category?.toLowerCase() || '')
           ) || !p.category
         );
+        console.log('Filtered fruit products:', allProducts);
 
         renderFavorites(allProducts);
         renderProducts(allProducts);
