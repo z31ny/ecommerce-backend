@@ -476,30 +476,25 @@
                 name: document.getElementById('addProductName').value,
                 sku: document.getElementById('addProductSku').value,
                 category: document.getElementById('addProductCategory').value,
-                price: parseFloat(document.getElementById('addProductPrice').value),
-                stock: parseInt(document.getElementById('addProductStock').value),
+                price: parseFloat(document.getElementById('addProductPrice').value) || 0,
+                stock: parseInt(document.getElementById('addProductStock').value) || 0,
                 minStock: parseInt(document.getElementById('addProductMinStock').value) || 20,
-                status: document.getElementById('addProductStatus').value,
-                description: document.getElementById('addProductDescription').value
+                status: document.getElementById('addProductStatus').value || 'active',
+                description: document.getElementById('addProductDescription').value || ''
             };
+
+            console.log('Creating product:', productData);
 
             try {
                 const newProduct = await DashboardAPI.createProduct(productData);
+                console.log('Product created:', newProduct);
                 showAlert('success', 'Product added successfully!');
                 closeModal('addProductModal');
                 await loadProductsFromAPI();
                 this.reset();
             } catch (err) {
-                // Fallback to local-only
-                const newProduct = {
-                    id: Date.now(),
-                    ...productData
-                };
-                products.unshift(newProduct);
-                if (typeof renderProducts === 'function') renderProducts();
-                showAlert('warning', 'Saved locally (API unavailable)');
-                closeModal('addProductModal');
-                this.reset();
+                console.error('Create product error:', err);
+                showAlert('error', 'Failed to add product: ' + (err.message || 'Unknown error'));
             }
         });
 
