@@ -443,10 +443,15 @@
         // Load products from API on page load
         async function loadProductsFromAPI() {
             try {
+                console.log('Loading products from API...');
                 const apiProducts = await DashboardAPI.getProducts();
-                // Update global products array if API succeeds
-                if (apiProducts && apiProducts.length > 0) {
-                    products.length = 0; // Clear existing
+                console.log('API returned:', apiProducts);
+
+                // ALWAYS clear the mock products array
+                products.length = 0;
+
+                // Add products from API
+                if (apiProducts && Array.isArray(apiProducts)) {
                     apiProducts.forEach(p => {
                         products.push({
                             id: p.id,
@@ -461,10 +466,15 @@
                             description: p.description || ''
                         });
                     });
+                    console.log('Loaded', products.length, 'products from database');
                 }
+
                 if (typeof renderProducts === 'function') renderProducts();
             } catch (err) {
-                console.log('Using mock products data');
+                console.error('API Error loading products:', err);
+                showAlert('error', 'Failed to load products from database: ' + err.message);
+                // Still render whatever we have
+                if (typeof renderProducts === 'function') renderProducts();
             }
         }
 
