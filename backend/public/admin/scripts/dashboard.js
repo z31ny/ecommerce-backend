@@ -5412,7 +5412,7 @@ function renderProducts() {
     grid.innerHTML = products.map(product => `
         <div class="product-card" data-id="${product.id}">
             <div class="product-image-wrapper">
-                <img src="${product.image || product.images?.[0] || 'assets/placeholder.png'}" 
+                <img src="${product.image || product.images?.[0] || 'https://placehold.co/200x150/f1f5f9/64748b?text=No+Image'}" 
                      alt="${product.name}" 
                      class="product-image"
                      onerror="handleImageError(this)">

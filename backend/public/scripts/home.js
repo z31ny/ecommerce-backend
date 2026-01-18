@@ -591,7 +591,7 @@
 
           card.innerHTML =
             '<div class="offer-badge">-' + offer.discount + '%</div>' +
-            '<div class="offer-media"><img src="' + (offer.image || 'assets/placeholder.png') + '" alt="' + offer.name + '"></div>' +
+            '<div class="offer-media"><img src="' + (offer.image || 'https://placehold.co/200x150/f1f5f9/64748b?text=No+Image') + '" alt="' + offer.name + '"></div>' +
             '<h4 class="offer-title">' + offer.name + '</h4>' +
             '<div class="offer-prices">' +
             '<span class="offer-old">' + Math.round(offer.originalPrice) + ' EGP</span>' +
