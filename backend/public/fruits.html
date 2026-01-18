@@ -241,11 +241,11 @@
     function renderProductCard(product) {
       const price = parseFloat(product.price) || 0;
       const weight = product.attributes?.weight || '200gm';
-      const image = product.images?.[0] || product.image || 'assets/home-page-img/must-have/must have1.png';
+      const image = product.images?.[0] || product.image || 'https://placehold.co/200x200/f1f5f9/64748b?text=No+Image';
 
       return `
         <article class="candies-card" data-sku="${product.sku}" data-price="${price}" data-cat="${product.category?.toLowerCase() || ''}">
-          <div class="candies-media"><img src="${image}" alt="${product.name}" onerror="this.src='assets/home-page-img/must-have/must have1.png'"></div>
+          <div class="candies-media"><img src="${image}" alt="${product.name}" onerror="this.src='https://placehold.co/200x200/f1f5f9/64748b?text=No+Image'"></div>
           <h3 class="candies-name">${product.name}</h3>
           <p class="candies-desc">${product.description || 'Delicious freeze-dried treat.'}</p>
           <div class="candies-meta"><span class="candies-weight">${weight}</span><span class="candies-price">${price} L.E</span></div>

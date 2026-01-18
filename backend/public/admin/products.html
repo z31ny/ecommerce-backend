@@ -229,19 +229,17 @@
             </div>
             <form id="addProductForm">
                 <div class="modal-body">
-                    <!-- Image Preview -->
+                    <!-- Image URL -->
                     <div class="form-group">
-                        <label class="form-label">Product Image</label>
-                        <div class="image-preview-container">
+                        <label class="form-label">Product Image URL</label>
+                        <input type="text" class="form-input" name="productImageUrl" id="addProductImageUrl"
+                            placeholder="e.g., assets/fruits/summer fruits/summer1.png"
+                            onchange="document.getElementById('addImagePreview').src = this.value || 'https://placehold.co/200x150/f1f5f9/64748b?text=No+Image'">
+                        <small style="color: #888; font-size: 0.8rem;">Enter the image path or URL</small>
+                        <div class="image-preview-container" style="margin-top: 0.5rem;">
                             <img id="addImagePreview"
                                 src="https://placehold.co/200x150/f1f5f9/64748b?text=Product+Image" alt="Preview"
-                                class="image-preview">
-                        </div>
-                        <div class="file-upload" style="margin-top: 0.5rem;">
-                            <input type="file" name="productImage" id="addProductImage" accept="image/*"
-                                onchange="previewImage(this, 'addImagePreview')">
-                            <i class="fas fa-cloud-upload-alt"></i>
-                            <span>Click to upload or drag and drop</span>
+                                class="image-preview" style="max-height: 100px; border-radius: 8px;">
                         </div>
                     </div>
 
@@ -482,6 +480,7 @@
         document.getElementById('addProductForm')?.addEventListener('submit', async function (e) {
             e.preventDefault();
 
+            const imageUrl = document.getElementById('addProductImageUrl').value;
             const productData = {
                 name: document.getElementById('addProductName').value,
                 sku: document.getElementById('addProductSku').value,
@@ -490,7 +489,8 @@
                 stock: parseInt(document.getElementById('addProductStock').value) || 0,
                 minStock: parseInt(document.getElementById('addProductMinStock').value) || 20,
                 status: document.getElementById('addProductStatus').value || 'active',
-                description: document.getElementById('addProductDescription').value || ''
+                description: document.getElementById('addProductDescription').value || '',
+                images: imageUrl ? [imageUrl] : []
             };
 
             console.log('Creating product:', productData);
