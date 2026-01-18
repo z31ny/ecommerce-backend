@@ -46,379 +46,70 @@ window.DashboardAPI = DashboardAPI;
 
 // ===== MOCK DATA =====
 
-// Products Data - NOW LOADED FROM DATABASE (see loadProductsFromAPI in products.html)
-// This array is populated dynamically from the API
+// Products Data - NOW LOADED FROM DATABASE
 const products = [];
 
+// Orders Data - NOW LOADED FROM DATABASE
+const orders = [];
 
-// Orders Data
-const orders = [
-    // John Smith Orders - with productId linking to products
-    { id: 'ORD-2024-001', customer: { name: 'John Smith', email: 'john@email.com', phone: '+20 109 396 1545' }, date: '2024-01-13', items: 3, product: 'Strawberry Freeze', productId: 1, quantity: 3, amount: 45.99, status: 'delivered', paymentMethod: 'COD', depositStatus: 'paid', depositAmount: 20, stockDeducted: true },
-    { id: 'ORD-2023-101', customer: { name: 'John Smith', email: 'john@email.com', phone: '+20 109 396 1545' }, date: '2023-12-28', items: 2, product: 'Blueberry Blast', productId: 2, quantity: 2, amount: 35.50, status: 'delivered', paymentMethod: 'COD', depositStatus: 'paid', depositAmount: 15, stockDeducted: true },
-    { id: 'ORD-2023-089', customer: { name: 'John Smith', email: 'john@email.com', phone: '+20 109 396 1545' }, date: '2023-12-15', items: 5, product: 'Candy Mix', productId: 5, quantity: 5, amount: 78.00, status: 'delivered', paymentMethod: 'COD', depositStatus: 'paid', depositAmount: 30, stockDeducted: true },
-    { id: 'ORD-2023-075', customer: { name: 'John Smith', email: 'john@email.com', phone: '+20 109 396 1545' }, date: '2023-11-22', items: 1, product: 'Dark Chocolate Bar', productId: 4, quantity: 1, amount: 25.99, status: 'delivered', paymentMethod: 'COD', depositStatus: 'paid', depositAmount: 10, stockDeducted: true },
-    { id: 'ORD-2023-058', customer: { name: 'John Smith', email: 'john@email.com', phone: '+20 109 396 1545' }, date: '2023-10-30', items: 4, product: 'Tropical Mix', productId: 8, quantity: 4, amount: 62.50, status: 'delivered', paymentMethod: 'COD', depositStatus: 'paid', depositAmount: 25, stockDeducted: true },
+// Customers Data - NOW LOADED FROM DATABASE  
+const customers = [];
 
-    // Emma Wilson Orders
-    { id: 'ORD-2024-002', customer: { name: 'Emma Wilson', email: 'emma@email.com', phone: '+20 112 345 6789' }, date: '2024-01-13', items: 2, product: 'Chocolate Delight', productId: 3, quantity: 2, amount: 32.50, status: 'shipped', paymentMethod: 'COD', depositStatus: 'paid', depositAmount: 15, stockDeducted: true },
-    { id: 'ORD-2023-098', customer: { name: 'Emma Wilson', email: 'emma@email.com', phone: '+20 112 345 6789' }, date: '2023-12-20', items: 3, product: 'Blueberry Blast', productId: 2, quantity: 3, amount: 45.00, status: 'delivered', paymentMethod: 'COD', depositStatus: 'paid', depositAmount: 20, stockDeducted: true },
-    { id: 'ORD-2023-082', customer: { name: 'Emma Wilson', email: 'emma@email.com', phone: '+20 112 345 6789' }, date: '2023-11-28', items: 2, product: 'Ice Cream Sundae', productId: 7, quantity: 2, amount: 28.99, status: 'delivered', paymentMethod: 'COD', depositStatus: 'paid', depositAmount: 10, stockDeducted: true },
-    { id: 'ORD-2023-065', customer: { name: 'Emma Wilson', email: 'emma@email.com', phone: '+20 112 345 6789' }, date: '2023-10-15', items: 4, product: 'Lollipop Pack', productId: 6, quantity: 4, amount: 55.50, status: 'delivered', paymentMethod: 'COD', depositStatus: 'paid', depositAmount: 20, stockDeducted: true },
+// Top Products Data - Will be calculated from real orders
+const topProducts = [];
 
-    // Michael Brown Orders
-    { id: 'ORD-2024-003', customer: { name: 'Michael Brown', email: 'michael@email.com', phone: '+20 100 123 4567' }, date: '2024-01-12', items: 4, product: 'Tropical Mix', productId: 8, quantity: 4, amount: 28.75, status: 'processing', paymentMethod: 'COD', depositStatus: 'paid', depositAmount: 10, stockDeducted: true },
-    { id: 'ORD-2023-105', customer: { name: 'Michael Brown', email: 'michael@email.com', phone: '+20 100 123 4567' }, date: '2023-12-30', items: 6, product: 'Winter Fruit Pack', productId: 10, quantity: 6, amount: 120.00, status: 'delivered', paymentMethod: 'COD', depositStatus: 'paid', depositAmount: 50, stockDeducted: true },
-    { id: 'ORD-2023-092', customer: { name: 'Michael Brown', email: 'michael@email.com', phone: '+20 100 123 4567' }, date: '2023-12-18', items: 2, product: 'Marshmallow Delight', productId: 9, quantity: 2, amount: 22.50, status: 'delivered', paymentMethod: 'COD', depositStatus: 'paid', depositAmount: 10, stockDeducted: true },
-    { id: 'ORD-2023-078', customer: { name: 'Michael Brown', email: 'michael@email.com', phone: '+20 100 123 4567' }, date: '2023-11-25', items: 3, product: 'Nutty Chocolate', productId: 11, quantity: 3, amount: 48.99, status: 'delivered', paymentMethod: 'COD', depositStatus: 'paid', depositAmount: 20, stockDeducted: true },
-    { id: 'ORD-2023-061', customer: { name: 'Michael Brown', email: 'michael@email.com', phone: '+20 100 123 4567' }, date: '2023-10-20', items: 5, product: 'Fall Fruit Selection', productId: 12, quantity: 5, amount: 89.00, status: 'delivered', paymentMethod: 'COD', depositStatus: 'paid', depositAmount: 35, stockDeducted: true },
-    { id: 'ORD-2023-045', customer: { name: 'Michael Brown', email: 'michael@email.com', phone: '+20 100 123 4567' }, date: '2023-09-12', items: 2, product: 'Ice Cream Sundae', productId: 7, quantity: 2, amount: 18.50, status: 'delivered', paymentMethod: 'COD', depositStatus: 'paid', depositAmount: 8, stockDeducted: true },
-
-    // Sarah Davis Orders - pending order has stockDeducted: false
-    { id: 'ORD-2024-004', customer: { name: 'Sarah Davis', email: 'sarah@email.com', phone: '+20 101 987 6543' }, date: '2024-01-12', items: 5, product: 'Candy Mix', productId: 5, quantity: 5, amount: 52.00, status: 'pending', paymentMethod: 'COD', depositStatus: 'pending', depositAmount: 0, stockDeducted: false },
-    { id: 'ORD-2023-095', customer: { name: 'Sarah Davis', email: 'sarah@email.com', phone: '+20 101 987 6543' }, date: '2023-12-22', items: 3, product: 'Marshmallow Delight', productId: 9, quantity: 3, amount: 24.99, status: 'delivered', paymentMethod: 'COD', depositStatus: 'paid', depositAmount: 10, stockDeducted: true },
-    { id: 'ORD-2023-080', customer: { name: 'Sarah Davis', email: 'sarah@email.com', phone: '+20 101 987 6543' }, date: '2023-11-30', items: 2, product: 'Lollipop Pack', productId: 6, quantity: 2, amount: 15.50, status: 'delivered', paymentMethod: 'COD', depositStatus: 'paid', depositAmount: 5, stockDeducted: true },
-    { id: 'ORD-2023-068', customer: { name: 'Sarah Davis', email: 'sarah@email.com', phone: '+20 101 987 6543' }, date: '2023-10-28', items: 4, product: 'Chocolate Delight', productId: 3, quantity: 4, amount: 38.00, status: 'delivered', paymentMethod: 'COD', depositStatus: 'paid', depositAmount: 15, stockDeducted: true },
-
-    // James Miller Orders
-    { id: 'ORD-2024-005', customer: { name: 'James Miller', email: 'james@email.com', phone: '+20 111 222 3333' }, date: '2024-01-11', items: 2, product: 'Tropical Mix', productId: 8, quantity: 2, amount: 38.90, status: 'delivered', paymentMethod: 'COD', depositStatus: 'paid', depositAmount: 15, stockDeducted: true },
-    { id: 'ORD-2023-088', customer: { name: 'James Miller', email: 'james@email.com', phone: '+20 111 222 3333' }, date: '2023-12-10', items: 3, product: 'Strawberry Freeze', productId: 1, quantity: 3, amount: 42.00, status: 'delivered', paymentMethod: 'COD', depositStatus: 'paid', depositAmount: 18, stockDeducted: true },
-    { id: 'ORD-2023-072', customer: { name: 'James Miller', email: 'james@email.com', phone: '+20 111 222 3333' }, date: '2023-11-18', items: 1, product: 'Winter Fruit Pack', productId: 10, quantity: 1, amount: 19.99, status: 'delivered', paymentMethod: 'COD', depositStatus: 'paid', depositAmount: 8, stockDeducted: true },
-
-    // Lisa Anderson Orders - cancelled has stockDeducted: false (restored)
-    { id: 'ORD-2024-006', customer: { name: 'Lisa Anderson', email: 'lisa@email.com', phone: '+20 122 333 4444' }, date: '2024-01-11', items: 3, product: 'Dark Chocolate Bar', productId: 4, quantity: 3, amount: 67.50, status: 'cancelled', paymentMethod: 'COD', depositStatus: 'refunded', depositAmount: 25, stockDeducted: false },
-    { id: 'ORD-2023-102', customer: { name: 'Lisa Anderson', email: 'lisa@email.com', phone: '+20 122 333 4444' }, date: '2023-12-29', items: 2, product: 'Dark Chocolate Bar', productId: 4, quantity: 2, amount: 45.00, status: 'delivered', paymentMethod: 'COD', depositStatus: 'paid', depositAmount: 18, stockDeducted: true },
-    { id: 'ORD-2023-091', customer: { name: 'Lisa Anderson', email: 'lisa@email.com', phone: '+20 122 333 4444' }, date: '2023-12-15', items: 4, product: 'Chocolate Delight', productId: 3, quantity: 4, amount: 52.50, status: 'delivered', paymentMethod: 'COD', depositStatus: 'paid', depositAmount: 20, stockDeducted: true },
-    { id: 'ORD-2023-077', customer: { name: 'Lisa Anderson', email: 'lisa@email.com', phone: '+20 122 333 4444' }, date: '2023-11-22', items: 2, product: 'Nutty Chocolate', productId: 11, quantity: 2, amount: 38.99, status: 'delivered', paymentMethod: 'COD', depositStatus: 'paid', depositAmount: 15, stockDeducted: true },
-    { id: 'ORD-2023-064', customer: { name: 'Lisa Anderson', email: 'lisa@email.com', phone: '+20 122 333 4444' }, date: '2023-10-18', items: 5, product: 'Fall Fruit Selection', productId: 12, quantity: 5, amount: 95.00, status: 'delivered', paymentMethod: 'COD', depositStatus: 'paid', depositAmount: 40, stockDeducted: true },
-    { id: 'ORD-2023-051', customer: { name: 'Lisa Anderson', email: 'lisa@email.com', phone: '+20 122 333 4444' }, date: '2023-09-25', items: 1, product: 'Chocolate Delight', productId: 3, quantity: 1, amount: 18.50, status: 'delivered', paymentMethod: 'COD', depositStatus: 'paid', depositAmount: 8, stockDeducted: true },
-    { id: 'ORD-2023-038', customer: { name: 'Lisa Anderson', email: 'lisa@email.com', phone: '+20 122 333 4444' }, date: '2023-08-30', items: 3, product: 'Dark Chocolate Bar', productId: 4, quantity: 3, amount: 55.00, status: 'delivered', paymentMethod: 'COD', depositStatus: 'paid', depositAmount: 22, stockDeducted: true },
-    { id: 'ORD-2023-025', customer: { name: 'Lisa Anderson', email: 'lisa@email.com', phone: '+20 122 333 4444' }, date: '2023-07-15', items: 2, product: 'Nutty Chocolate', productId: 11, quantity: 2, amount: 29.99, status: 'delivered', paymentMethod: 'COD', depositStatus: 'paid', depositAmount: 12, stockDeducted: true },
-
-    // David Taylor Orders
-    { id: 'ORD-2024-007', customer: { name: 'David Taylor', email: 'david@email.com', phone: '+20 100 555 6666' }, date: '2024-01-10', items: 1, product: 'Ice Cream Sundae', productId: 7, quantity: 1, amount: 15.99, status: 'delivered', paymentMethod: 'COD', depositStatus: 'paid', depositAmount: 10, stockDeducted: true },
-    { id: 'ORD-2023-099', customer: { name: 'David Taylor', email: 'david@email.com', phone: '+20 100 555 6666' }, date: '2023-12-24', items: 4, product: 'Marshmallow Delight', productId: 9, quantity: 4, amount: 65.00, status: 'delivered', paymentMethod: 'COD', depositStatus: 'paid', depositAmount: 25, stockDeducted: true },
-    { id: 'ORD-2023-084', customer: { name: 'David Taylor', email: 'david@email.com', phone: '+20 100 555 6666' }, date: '2023-12-01', items: 2, product: 'Strawberry Freeze', productId: 1, quantity: 2, amount: 35.50, status: 'delivered', paymentMethod: 'COD', depositStatus: 'paid', depositAmount: 14, stockDeducted: true },
-    { id: 'ORD-2023-069', customer: { name: 'David Taylor', email: 'david@email.com', phone: '+20 100 555 6666' }, date: '2023-10-25', items: 3, product: 'Blueberry Blast', productId: 2, quantity: 3, amount: 42.99, status: 'delivered', paymentMethod: 'COD', depositStatus: 'paid', depositAmount: 18, stockDeducted: true },
-    { id: 'ORD-2023-054', customer: { name: 'David Taylor', email: 'david@email.com', phone: '+20 100 555 6666' }, date: '2023-09-18', items: 2, product: 'Tropical Mix', productId: 8, quantity: 2, amount: 28.00, status: 'delivered', paymentMethod: 'COD', depositStatus: 'paid', depositAmount: 12, stockDeducted: true },
-
-    // Jennifer White Orders
-    { id: 'ORD-2024-008', customer: { name: 'Jennifer White', email: 'jennifer@email.com', phone: '+20 109 777 8888' }, date: '2024-01-10', items: 6, product: 'Fall Fruit Selection', productId: 12, quantity: 6, amount: 89.99, status: 'shipped', paymentMethod: 'COD', depositStatus: 'paid', depositAmount: 30, stockDeducted: true },
-    { id: 'ORD-2023-096', customer: { name: 'Jennifer White', email: 'jennifer@email.com', phone: '+20 109 777 8888' }, date: '2023-12-23', items: 3, product: 'Tropical Mix', productId: 8, quantity: 3, amount: 55.00, status: 'delivered', paymentMethod: 'COD', depositStatus: 'paid', depositAmount: 22, stockDeducted: true },
-    { id: 'ORD-2023-081', customer: { name: 'Jennifer White', email: 'jennifer@email.com', phone: '+20 109 777 8888' }, date: '2023-11-29', items: 4, product: 'Winter Fruit Pack', productId: 10, quantity: 4, amount: 48.50, status: 'delivered', paymentMethod: 'COD', depositStatus: 'paid', depositAmount: 20, stockDeducted: true },
-    { id: 'ORD-2023-066', customer: { name: 'Jennifer White', email: 'jennifer@email.com', phone: '+20 109 777 8888' }, date: '2023-10-22', items: 2, product: 'Blueberry Blast', productId: 2, quantity: 2, amount: 32.00, status: 'delivered', paymentMethod: 'COD', depositStatus: 'paid', depositAmount: 12, stockDeducted: true },
-
-    // Robert Harris Orders - processing has stockDeducted: true
-    { id: 'ORD-2024-009', customer: { name: 'Robert Harris', email: 'robert@email.com', phone: '+20 115 999 0000' }, date: '2024-01-09', items: 2, product: 'Candy Mix', productId: 5, quantity: 2, amount: 24.99, status: 'processing', paymentMethod: 'COD', depositStatus: 'pending', depositAmount: 0, stockDeducted: true },
-    { id: 'ORD-2023-087', customer: { name: 'Robert Harris', email: 'robert@email.com', phone: '+20 115 999 0000' }, date: '2023-12-08', items: 3, product: 'Lollipop Pack', productId: 6, quantity: 3, amount: 28.50, status: 'delivered', paymentMethod: 'COD', depositStatus: 'paid', depositAmount: 12, stockDeducted: true },
-    { id: 'ORD-2023-070', customer: { name: 'Robert Harris', email: 'robert@email.com', phone: '+20 115 999 0000' }, date: '2023-10-30', items: 2, product: 'Marshmallow Delight', productId: 9, quantity: 2, amount: 19.99, status: 'delivered', paymentMethod: 'COD', depositStatus: 'paid', depositAmount: 8, stockDeducted: true },
-
-    // Maria Garcia Orders - pending has stockDeducted: false
-    { id: 'ORD-2024-010', customer: { name: 'Maria Garcia', email: 'maria@email.com', phone: '+20 106 111 2222' }, date: '2024-01-09', items: 4, product: 'Winter Fruit Pack', productId: 10, quantity: 4, amount: 56.80, status: 'pending', paymentMethod: 'COD', depositStatus: 'pending', depositAmount: 0, stockDeducted: false },
-    { id: 'ORD-2023-093', customer: { name: 'Maria Garcia', email: 'maria@email.com', phone: '+20 106 111 2222' }, date: '2023-12-19', items: 2, product: 'Strawberry Freeze', productId: 1, quantity: 2, amount: 35.00, status: 'delivered', paymentMethod: 'COD', depositStatus: 'paid', depositAmount: 14, stockDeducted: true },
-    { id: 'ORD-2023-076', customer: { name: 'Maria Garcia', email: 'maria@email.com', phone: '+20 106 111 2222' }, date: '2023-11-20', items: 3, product: 'Fall Fruit Selection', productId: 12, quantity: 3, amount: 42.50, status: 'delivered', paymentMethod: 'COD', depositStatus: 'paid', depositAmount: 18, stockDeducted: true }
-];
-
-// Customers Data
-const customers = [
-    {
-        id: 1,
-        name: 'John Smith',
-        email: 'john@email.com',
-        phone: '+20 109 396 1545',
-        orders: 5,
-        spent: 247.98,
-        status: 'active'
-    },
-    {
-        id: 2,
-        name: 'Emma Wilson',
-        email: 'emma@email.com',
-        phone: '+20 112 345 6789',
-        orders: 4,
-        spent: 161.99,
-        status: 'active'
-    },
-    {
-        id: 3,
-        name: 'Michael Brown',
-        email: 'michael@email.com',
-        phone: '+20 100 123 4567',
-        orders: 6,
-        spent: 327.74,
-        status: 'active'
-    },
-    {
-        id: 4,
-        name: 'Sarah Davis',
-        email: 'sarah@email.com',
-        phone: '+20 101 987 6543',
-        orders: 4,
-        spent: 130.49,
-        status: 'active'
-    },
-    {
-        id: 5,
-        name: 'James Miller',
-        email: 'james@email.com',
-        phone: '+20 111 222 3333',
-        orders: 3,
-        spent: 100.89,
-        status: 'active'
-    },
-    {
-        id: 6,
-        name: 'Lisa Anderson',
-        email: 'lisa@email.com',
-        phone: '+20 122 333 4444',
-        orders: 8,
-        spent: 402.48,
-        status: 'inactive'
-    },
-    {
-        id: 7,
-        name: 'David Taylor',
-        email: 'david@email.com',
-        phone: '+20 100 555 6666',
-        orders: 5,
-        spent: 187.48,
-        status: 'active'
-    },
-    {
-        id: 8,
-        name: 'Jennifer White',
-        email: 'jennifer@email.com',
-        phone: '+20 109 777 8888',
-        orders: 4,
-        spent: 225.49,
-        status: 'active'
-    },
-    {
-        id: 9,
-        name: 'Robert Harris',
-        email: 'robert@email.com',
-        phone: '+20 115 999 0000',
-        orders: 3,
-        spent: 73.48,
-        status: 'active'
-    },
-    {
-        id: 10,
-        name: 'Maria Garcia',
-        email: 'maria@email.com',
-        phone: '+20 106 111 2222',
-        orders: 3,
-        spent: 134.30,
-        status: 'active'
-    }
-];
-
-// Top Products Data
-const topProducts = [
-    { name: 'Strawberry Freeze', category: 'Fruits', sales: 245, image: 'assets/fruits/summer fruits/summer1.png' },
-    { name: 'Chocolate Delight', category: 'Chocolate', sales: 198, image: 'assets/candy-page-img/chocolate/chocolate1.png' },
-    { name: 'Mixed Berry Pack', category: 'Fruits', sales: 176, image: 'assets/fruits/mixed fruits/mixed1.png' },
-    { name: 'Candy Swirl', category: 'Candy', sales: 154, image: 'assets/candy-page-img/candy/candy1.png' },
-    { name: 'Ice Cream Sundae', category: 'Ice Cream', sales: 142, image: 'assets/candy-page-img/icecream/ic-cream.png' }
-];
-
-// Chart Data by Time Period
+// Chart Data by Time Period - Will be calculated from real data
 const chartDataByPeriod = {
-    today: {
-        revenue: {
-            labels: ['6AM', '9AM', '12PM', '3PM', '6PM', '9PM', 'Now'],
-            data: [120, 350, 580, 420, 390, 450, 140]
-        },
-        category: {
-            labels: ['Fruits', 'Chocolate', 'Candy', 'Ice Cream'],
-            data: [42, 25, 18, 15],
-            colors: ['#10b981', '#8b5cf6', '#f59e0b', '#3b82f6']
-        }
-    },
-    week: {
-        revenue: {
-            labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-            data: [4200, 5800, 4500, 7200, 6800, 8900, 9500]
-        },
-        category: {
-            labels: ['Fruits', 'Chocolate', 'Candy', 'Ice Cream'],
-            data: [35, 28, 22, 15],
-            colors: ['#10b981', '#8b5cf6', '#f59e0b', '#3b82f6']
-        }
-    },
-    month: {
-        revenue: {
-            labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
-            data: [28500, 32400, 35200, 32650]
-        },
-        category: {
-            labels: ['Fruits', 'Chocolate', 'Candy', 'Ice Cream'],
-            data: [38, 26, 24, 12],
-            colors: ['#10b981', '#8b5cf6', '#f59e0b', '#3b82f6']
-        }
-    },
-    year: {
-        revenue: {
-            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-            data: [85000, 92000, 108000, 115000, 125000, 132000, 128000, 138000, 142000, 148000, 155000, 188890]
-        },
-        category: {
-            labels: ['Fruits', 'Chocolate', 'Candy', 'Ice Cream'],
-            data: [32, 30, 23, 15],
-            colors: ['#10b981', '#8b5cf6', '#f59e0b', '#3b82f6']
-        }
-    }
+    today: { revenue: { labels: [], data: [] }, category: { labels: [], data: [], colors: [] } },
+    week: { revenue: { labels: [], data: [] }, category: { labels: [], data: [], colors: [] } },
+    month: { revenue: { labels: [], data: [] }, category: { labels: [], data: [], colors: [] } },
+    year: { revenue: { labels: [], data: [] }, category: { labels: [], data: [], colors: [] } }
 };
 
-// Chart Data (default)
+// Chart Data (default) - Will be calculated from real data
 const chartData = {
-    revenueWeekly: {
-        labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-        data: [4200, 5800, 4500, 7200, 6800, 8900, 9500]
-    },
-    categoryDistribution: {
-        labels: ['Fruits', 'Chocolate', 'Candy', 'Ice Cream'],
-        data: [35, 28, 22, 15],
-        colors: ['#10b981', '#8b5cf6', '#f59e0b', '#3b82f6']
-    },
-    salesMonthly: {
-        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-        data: [12000, 19000, 15000, 25000, 22000, 30000, 28000, 32000, 29000, 35000, 38000, 42000]
-    },
-    customerGrowth: {
-        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-        data: [45, 62, 58, 78, 85, 92, 88, 105, 98, 112, 125, 138]
-    },
-    revenueByCategory: {
-        labels: ['Fruits', 'Chocolate', 'Candy', 'Ice Cream', 'Nuts', 'Marshmallow'],
-        data: [15800, 12600, 9800, 6700, 4200, 3500],
-        colors: ['#10b981', '#8b5cf6', '#f59e0b', '#3b82f6', '#ec4899', '#06b6d4']
-    }
+    revenueWeekly: { labels: [], data: [] },
+    categoryDistribution: { labels: [], data: [], colors: [] },
+    salesMonthly: { labels: [], data: [] },
+    customerGrowth: { labels: [], data: [] },
+    revenueByCategory: { labels: [], data: [], colors: [] }
 };
 
 // Store chart instances for updating
 let revenueChartInstance = null;
 let categoryChartInstance = null;
 
-// Dashboard Stats by Time Period
+// Dashboard Stats by Time Period - Will be fetched from API
 const dashboardStatsByPeriod = {
-    today: {
-        totalRevenue: 2450,
-        revenueGrowth: 8.2,
-        totalOrders: 47,
-        ordersGrowth: 5.1,
-        totalCustomers: 23,
-        customersGrowth: 12.3,
-        totalProducts: 156,
-        productsChange: 0
-    },
-    week: {
-        totalRevenue: 45280,
-        revenueGrowth: 12.5,
-        totalOrders: 1284,
-        ordersGrowth: 8.3,
-        totalCustomers: 892,
-        customersGrowth: 15.2,
-        totalProducts: 156,
-        productsChange: -2.1
-    },
-    month: {
-        totalRevenue: 128750,
-        revenueGrowth: 18.7,
-        totalOrders: 4523,
-        ordersGrowth: 14.2,
-        totalCustomers: 2156,
-        customersGrowth: 22.8,
-        totalProducts: 156,
-        productsChange: 3.5
-    },
-    year: {
-        totalRevenue: 1456890,
-        revenueGrowth: 24.3,
-        totalOrders: 52847,
-        ordersGrowth: 19.6,
-        totalCustomers: 12450,
-        customersGrowth: 35.4,
-        totalProducts: 156,
-        productsChange: 8.2
-    }
+    today: { totalRevenue: 0, revenueGrowth: 0, totalOrders: 0, ordersGrowth: 0, totalCustomers: 0, customersGrowth: 0, totalProducts: 0, productsChange: 0 },
+    week: { totalRevenue: 0, revenueGrowth: 0, totalOrders: 0, ordersGrowth: 0, totalCustomers: 0, customersGrowth: 0, totalProducts: 0, productsChange: 0 },
+    month: { totalRevenue: 0, revenueGrowth: 0, totalOrders: 0, ordersGrowth: 0, totalCustomers: 0, customersGrowth: 0, totalProducts: 0, productsChange: 0 },
+    year: { totalRevenue: 0, revenueGrowth: 0, totalOrders: 0, ordersGrowth: 0, totalCustomers: 0, customersGrowth: 0, totalProducts: 0, productsChange: 0 }
 };
 
 // Current dashboard stats (default to week)
 let dashboardStats = { ...dashboardStatsByPeriod.week };
 
-// Order Statistics
+// Order Statistics - Will be calculated from real orders
 const orderStats = {
-    pending: 24,
-    processing: 18,
-    shipped: 42,
-    delivered: 156,
-    cancelled: 8
+    pending: 0,
+    processing: 0,
+    shipped: 0,
+    delivered: 0,
+    cancelled: 0
 };
 
-// Trash for deleted/cancelled orders (manual delete only)
-let orderTrash = [
-    {
-        id: 'ORD-2024-099',
-        customer: { id: 99, name: 'Customer Cancelled', email: 'cancel@test.com', phone: '+20 100 000 0000' },
-        date: '2024-01-10',
-        items: [
-            { productId: 1, name: 'Strawberry Freeze', quantity: 2, price: 12.99 }
-        ],
-        totalAmount: 25.98,
-        status: 'cancelled',
-        paymentMethod: 'COD',
-        depositStatus: 'none',
-        deletedDate: new Date().toISOString()
-    },
-    {
-        id: 'ORD-2024-098',
-        customer: { id: 98, name: 'Another Cancel', email: 'another@test.com', phone: '+20 100 111 1111' },
-        date: '2024-01-08',
-        items: [
-            { productId: 3, name: 'Chocolate Delight', quantity: 1, price: 18.99 }
-        ],
-        totalAmount: 18.99,
-        status: 'cancelled',
-        paymentMethod: 'COD',
-        depositStatus: 'pending',
-        deletedDate: new Date().toISOString()
-    }
-];
+// Trash for deleted/cancelled orders
+let orderTrash = [];
+
+// Messages Data - NOW LOADED FROM DATABASE
+const messages = [];
 
 // Trash for deleted messages
-let messageTrash = [
-    {
-        id: 100,
-        sender: 'Old Customer',
-        email: 'old@customer.com',
-        subject: 'Old inquiry - Resolved',
-        preview: 'This issue has been resolved...',
-        fullMessage: 'This issue has been resolved and the message was moved to trash.',
-        avatar: 'OC',
-        avatarColor: '#6366f1',
-        time: '2 weeks ago',
-        read: true,
-        deletedDate: new Date().toISOString()
-    }
-];
+let messageTrash = [];
 
 // Archived messages
-let archivedMessages = [
-    {
-        id: 200,
-        sender: 'Completed Deal',
-        email: 'deal@company.com',
-        subject: 'Partnership Agreement Signed',
-        preview: 'Thank you for signing the partnership agreement...',
-        fullMessage: 'Thank you for signing the partnership agreement. We look forward to working with you.\n\nBest regards,\nCompleted Deal Team',
-        avatar: 'CD',
-        avatarColor: '#10b981',
-        time: '1 month ago',
-        read: true,
-        archivedDate: new Date().toISOString()
-    }
-];
+let archivedMessages = [];
 
 // Move message to archive
 function moveMessageToArchive(msgId) {
@@ -428,7 +119,7 @@ function moveMessageToArchive(msgId) {
         msg.archivedDate = new Date().toISOString();
         archivedMessages.push(msg);
         messages.splice(msgIndex, 1);
-        updateMessageBadge();
+        if (typeof updateMessageBadge === 'function') updateMessageBadge();
         return msg;
     }
     return null;
@@ -442,7 +133,7 @@ function restoreMessageFromArchive(msgId) {
         delete msg.archivedDate;
         messages.unshift(msg);
         archivedMessages.splice(msgIndex, 1);
-        updateMessageBadge();
+        if (typeof updateMessageBadge === 'function') updateMessageBadge();
         return msg;
     }
     return null;
@@ -457,7 +148,7 @@ function deleteArchivedMessage(msgId) {
         delete msg.archivedDate;
         messageTrash.push(msg);
         archivedMessages.splice(msgIndex, 1);
-        updateHeaderTrashBadge();
+        if (typeof updateHeaderTrashBadge === 'function') updateHeaderTrashBadge();
         return msg;
     }
     return null;
@@ -469,12 +160,12 @@ window.moveMessageToArchive = moveMessageToArchive;
 window.restoreMessageFromArchive = restoreMessageFromArchive;
 window.deleteArchivedMessage = deleteArchivedMessage;
 
-// Customer Statistics
+// Customer Statistics - Will be calculated from real data
 const customerStats = {
-    active: 732,
-    newThisMonth: 48,
-    avgOrderValue: 52.80,
-    retentionRate: 78
+    active: 0,
+    newThisMonth: 0,
+    avgOrderValue: 0,
+    retentionRate: 0
 };
 
 // ===== UTILITY FUNCTIONS =====
