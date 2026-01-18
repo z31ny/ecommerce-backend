@@ -2078,7 +2078,7 @@
             document.getElementById('editMoodBackDescription').value = m.backDescription || '';
             document.getElementById('editMoodButtonLink').value = m.buttonLink || '';
             document.getElementById('editMoodStatus').value = m.status;
-            document.getElementById('editMoodBackImagePreview').src = m.backImage || 'https://via.placeholder.com/200x120/f1f5f9/64748b?text=No+Image';
+            document.getElementById('editMoodBackImagePreview').src = m.backImage || 'https://placehold.co/200x120/f1f5f9/64748b?text=No+Image';
             editMoodBackImageData = m.backImage;
             document.querySelectorAll('#editMoodColorPicker .color-option').forEach(c => c.classList.remove('selected'));
             document.querySelector(`#editMoodColorPicker .color-option[data-color="${m.color}"]`)?.classList.add('selected');
@@ -2195,8 +2195,8 @@
             document.getElementById('editSnackFrontLabel').value = s.frontLabel || '';
             document.getElementById('editSnackBackLabel').value = s.backLabel || '';
             document.getElementById('editSnackStatus').value = s.status;
-            document.getElementById('editSnackFrontImagePreview').src = s.frontImage || 'https://via.placeholder.com/100x80/fce4ec/a31545?text=Front';
-            document.getElementById('editSnackBackImagePreview').src = s.backImage || 'https://via.placeholder.com/100x80/e1bee7/7b1fa2?text=Back';
+            document.getElementById('editSnackFrontImagePreview').src = s.frontImage || 'https://placehold.co/100x80/fce4ec/a31545?text=Front';
+            document.getElementById('editSnackBackImagePreview').src = s.backImage || 'https://placehold.co/100x80/e1bee7/7b1fa2?text=Back';
             editSnackFrontImageData = s.frontImage;
             editSnackBackImageData = s.backImage;
             openModal('editSnackModal');
@@ -2331,7 +2331,7 @@
             document.getElementById('editFavoritePrice').value = f.price;
             document.getElementById('editFavoriteReviewCount').value = f.reviewCount;
             document.getElementById('editFavoriteStatus').value = f.status;
-            document.getElementById('editFavoriteImagePreview').src = f.image || 'https://via.placeholder.com/200x120/f1f5f9/64748b?text=No+Image';
+            document.getElementById('editFavoriteImagePreview').src = f.image || 'https://placehold.co/200x120/f1f5f9/64748b?text=No+Image';
             editFavoriteImageData = f.image;
             // Set rating
             const ratingInput = document.getElementById(`editRating${f.rating}`);
@@ -2533,3 +2533,4 @@
     </script>
 </body>
 </html>
+

@@ -1470,7 +1470,7 @@ function addProduct(formData) {
         minStock: parseInt(formData.get('productMinStock')) || 20,
         status: formData.get('productStatus') || 'active',
         description: formData.get('productDescription'),
-        image: 'https://via.placeholder.com/280x200/f1f5f9/64748b?text=New+Product'
+        image: 'https://placehold.co/280x200/f1f5f9/64748b?text=New+Product'
     };
 
     // Handle image if uploaded
@@ -1511,7 +1511,7 @@ function resetAddProductForm() {
         // Reset image preview
         const preview = document.getElementById('addImagePreview');
         if (preview) {
-            preview.src = 'https://via.placeholder.com/200x150/f1f5f9/64748b?text=Product+Image';
+            preview.src = 'https://placehold.co/200x150/f1f5f9/64748b?text=Product+Image';
         }
     }
 }
@@ -1541,9 +1541,9 @@ function editProduct(productId) {
 
     // Set image preview
     const imagePreview = document.getElementById('editImagePreview');
-    imagePreview.src = product.image || 'https://via.placeholder.com/200x150/f1f5f9/64748b?text=No+Image';
+    imagePreview.src = product.image || 'https://placehold.co/200x150/f1f5f9/64748b?text=No+Image';
     imagePreview.onerror = function () {
-        this.src = 'https://via.placeholder.com/200x150/f1f5f9/64748b?text=No+Image';
+        this.src = 'https://placehold.co/200x150/f1f5f9/64748b?text=No+Image';
     };
 
     // Open the modal
@@ -5852,4 +5852,5 @@ window.showEmployeeSelector = showEmployeeSelector;
 window.selectEmployee = selectEmployee;
 window.closeEmployeeSelector = closeEmployeeSelector;
 window.saveEmployeeData = saveEmployeeData;
+
 
