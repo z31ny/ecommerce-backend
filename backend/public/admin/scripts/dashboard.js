@@ -39,10 +39,67 @@ const DashboardAPI = {
     async getOffers(showAll = false) { return this.request(`/api/admin/offers?all=${showAll}`); },
     async createOffer(data) { return this.request('/api/admin/offers', { method: 'POST', body: JSON.stringify(data) }); },
     async updateOffer(id, data) { return this.request(`/api/admin/offers/${id}`, { method: 'PUT', body: JSON.stringify(data) }); },
-    async deleteOffer(id) { return this.request(`/api/admin/offers/${id}`, { method: 'DELETE' }); }
+    async deleteOffer(id) { return this.request(`/api/admin/offers/${id}`, { method: 'DELETE' }); },
+
+    // Stats - Dashboard overview  
+    async getStats() { return this.request('/api/admin/stats'); }
 };
 
 window.DashboardAPI = DashboardAPI;
+
+// Load real dashboard stats from API
+async function loadDashboardStats() {
+    try {
+        console.log('Loading dashboard stats from API...');
+        const stats = await DashboardAPI.getStats();
+        console.log('Dashboard stats:', stats);
+
+        // Update global variables
+        if (stats.statsByPeriod) {
+            dashboardStatsByPeriod.today = stats.statsByPeriod.today;
+            dashboardStatsByPeriod.week = stats.statsByPeriod.week;
+            dashboardStatsByPeriod.month = stats.statsByPeriod.month;
+            dashboardStatsByPeriod.year = stats.statsByPeriod.year;
+        }
+
+        if (stats.orderStats) {
+            orderStats.pending = stats.orderStats.pending;
+            orderStats.processing = stats.orderStats.processing;
+            orderStats.shipped = stats.orderStats.shipped;
+            orderStats.delivered = stats.orderStats.delivered;
+            orderStats.cancelled = stats.orderStats.cancelled;
+        }
+
+        if (stats.customerStats) {
+            customerStats.active = stats.customerStats.active;
+            customerStats.newThisMonth = stats.customerStats.newThisMonth;
+            customerStats.avgOrderValue = stats.customerStats.avgOrderValue;
+            customerStats.retentionRate = stats.customerStats.retentionRate;
+        }
+
+        if (stats.topProducts) {
+            topProducts.length = 0;
+            stats.topProducts.forEach(p => topProducts.push(p));
+        }
+
+        // Update current period stats
+        dashboardStats = { ...dashboardStatsByPeriod.week };
+
+        // Update the UI
+        if (typeof updateDashboardUI === 'function') {
+            updateDashboardUI();
+        }
+
+        return stats;
+    } catch (error) {
+        console.error('Failed to load dashboard stats:', error);
+        return null;
+    }
+}
+
+// Make it available globally
+window.loadDashboardStats = loadDashboardStats;
+
 
 // ===== MOCK DATA =====
 
