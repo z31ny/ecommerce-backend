@@ -39,134 +39,386 @@ const DashboardAPI = {
     async getOffers(showAll = false) { return this.request(`/api/admin/offers?all=${showAll}`); },
     async createOffer(data) { return this.request('/api/admin/offers', { method: 'POST', body: JSON.stringify(data) }); },
     async updateOffer(id, data) { return this.request(`/api/admin/offers/${id}`, { method: 'PUT', body: JSON.stringify(data) }); },
-    async deleteOffer(id) { return this.request(`/api/admin/offers/${id}`, { method: 'DELETE' }); },
-
-    // Stats - Dashboard overview  
-    async getStats() { return this.request('/api/admin/stats'); }
+    async deleteOffer(id) { return this.request(`/api/admin/offers/${id}`, { method: 'DELETE' }); }
 };
 
 window.DashboardAPI = DashboardAPI;
 
-// Load real dashboard stats from API
-async function loadDashboardStats() {
-    try {
-        console.log('Loading dashboard stats from API...');
-        const stats = await DashboardAPI.getStats();
-        console.log('Dashboard stats:', stats);
-
-        // Update global variables
-        if (stats.statsByPeriod) {
-            dashboardStatsByPeriod.today = stats.statsByPeriod.today;
-            dashboardStatsByPeriod.week = stats.statsByPeriod.week;
-            dashboardStatsByPeriod.month = stats.statsByPeriod.month;
-            dashboardStatsByPeriod.year = stats.statsByPeriod.year;
-        }
-
-        if (stats.orderStats) {
-            orderStats.pending = stats.orderStats.pending;
-            orderStats.processing = stats.orderStats.processing;
-            orderStats.shipped = stats.orderStats.shipped;
-            orderStats.delivered = stats.orderStats.delivered;
-            orderStats.cancelled = stats.orderStats.cancelled;
-        }
-
-        if (stats.customerStats) {
-            customerStats.active = stats.customerStats.active;
-            customerStats.newThisMonth = stats.customerStats.newThisMonth;
-            customerStats.avgOrderValue = stats.customerStats.avgOrderValue;
-            customerStats.retentionRate = stats.customerStats.retentionRate;
-        }
-
-        if (stats.topProducts) {
-            topProducts.length = 0;
-            stats.topProducts.forEach(p => topProducts.push(p));
-        }
-
-        // Update current period stats
-        dashboardStats = { ...dashboardStatsByPeriod.week };
-
-        // Update the UI
-        if (typeof updateDashboardUI === 'function') {
-            updateDashboardUI();
-        }
-
-        return stats;
-    } catch (error) {
-        console.error('Failed to load dashboard stats:', error);
-        return null;
-    }
-}
-
-// Make it available globally
-window.loadDashboardStats = loadDashboardStats;
-
-
 // ===== MOCK DATA =====
 
-// Products Data - NOW LOADED FROM DATABASE
+// Products Data - NOW LOADED FROM DATABASE (see loadProductsFromAPI in products.html)
+// This array is populated dynamically from the API
 const products = [];
 
-// Orders Data - NOW LOADED FROM DATABASE
-const orders = [];
 
-// Customers Data - NOW LOADED FROM DATABASE  
-const customers = [];
+// Orders Data
+const orders = [
+    // John Smith Orders - with productId linking to products
+    { id: 'ORD-2024-001', customer: { name: 'John Smith', email: 'john@email.com', phone: '+20 109 396 1545' }, date: '2024-01-13', items: 3, product: 'Strawberry Freeze', productId: 1, quantity: 3, amount: 45.99, status: 'delivered', paymentMethod: 'COD', depositStatus: 'paid', depositAmount: 20, stockDeducted: true },
+    { id: 'ORD-2023-101', customer: { name: 'John Smith', email: 'john@email.com', phone: '+20 109 396 1545' }, date: '2023-12-28', items: 2, product: 'Blueberry Blast', productId: 2, quantity: 2, amount: 35.50, status: 'delivered', paymentMethod: 'COD', depositStatus: 'paid', depositAmount: 15, stockDeducted: true },
+    { id: 'ORD-2023-089', customer: { name: 'John Smith', email: 'john@email.com', phone: '+20 109 396 1545' }, date: '2023-12-15', items: 5, product: 'Candy Mix', productId: 5, quantity: 5, amount: 78.00, status: 'delivered', paymentMethod: 'COD', depositStatus: 'paid', depositAmount: 30, stockDeducted: true },
+    { id: 'ORD-2023-075', customer: { name: 'John Smith', email: 'john@email.com', phone: '+20 109 396 1545' }, date: '2023-11-22', items: 1, product: 'Dark Chocolate Bar', productId: 4, quantity: 1, amount: 25.99, status: 'delivered', paymentMethod: 'COD', depositStatus: 'paid', depositAmount: 10, stockDeducted: true },
+    { id: 'ORD-2023-058', customer: { name: 'John Smith', email: 'john@email.com', phone: '+20 109 396 1545' }, date: '2023-10-30', items: 4, product: 'Tropical Mix', productId: 8, quantity: 4, amount: 62.50, status: 'delivered', paymentMethod: 'COD', depositStatus: 'paid', depositAmount: 25, stockDeducted: true },
 
-// Top Products Data - Will be calculated from real orders
-const topProducts = [];
+    // Emma Wilson Orders
+    { id: 'ORD-2024-002', customer: { name: 'Emma Wilson', email: 'emma@email.com', phone: '+20 112 345 6789' }, date: '2024-01-13', items: 2, product: 'Chocolate Delight', productId: 3, quantity: 2, amount: 32.50, status: 'shipped', paymentMethod: 'COD', depositStatus: 'paid', depositAmount: 15, stockDeducted: true },
+    { id: 'ORD-2023-098', customer: { name: 'Emma Wilson', email: 'emma@email.com', phone: '+20 112 345 6789' }, date: '2023-12-20', items: 3, product: 'Blueberry Blast', productId: 2, quantity: 3, amount: 45.00, status: 'delivered', paymentMethod: 'COD', depositStatus: 'paid', depositAmount: 20, stockDeducted: true },
+    { id: 'ORD-2023-082', customer: { name: 'Emma Wilson', email: 'emma@email.com', phone: '+20 112 345 6789' }, date: '2023-11-28', items: 2, product: 'Ice Cream Sundae', productId: 7, quantity: 2, amount: 28.99, status: 'delivered', paymentMethod: 'COD', depositStatus: 'paid', depositAmount: 10, stockDeducted: true },
+    { id: 'ORD-2023-065', customer: { name: 'Emma Wilson', email: 'emma@email.com', phone: '+20 112 345 6789' }, date: '2023-10-15', items: 4, product: 'Lollipop Pack', productId: 6, quantity: 4, amount: 55.50, status: 'delivered', paymentMethod: 'COD', depositStatus: 'paid', depositAmount: 20, stockDeducted: true },
 
-// Chart Data by Time Period - Will be calculated from real data
+    // Michael Brown Orders
+    { id: 'ORD-2024-003', customer: { name: 'Michael Brown', email: 'michael@email.com', phone: '+20 100 123 4567' }, date: '2024-01-12', items: 4, product: 'Tropical Mix', productId: 8, quantity: 4, amount: 28.75, status: 'processing', paymentMethod: 'COD', depositStatus: 'paid', depositAmount: 10, stockDeducted: true },
+    { id: 'ORD-2023-105', customer: { name: 'Michael Brown', email: 'michael@email.com', phone: '+20 100 123 4567' }, date: '2023-12-30', items: 6, product: 'Winter Fruit Pack', productId: 10, quantity: 6, amount: 120.00, status: 'delivered', paymentMethod: 'COD', depositStatus: 'paid', depositAmount: 50, stockDeducted: true },
+    { id: 'ORD-2023-092', customer: { name: 'Michael Brown', email: 'michael@email.com', phone: '+20 100 123 4567' }, date: '2023-12-18', items: 2, product: 'Marshmallow Delight', productId: 9, quantity: 2, amount: 22.50, status: 'delivered', paymentMethod: 'COD', depositStatus: 'paid', depositAmount: 10, stockDeducted: true },
+    { id: 'ORD-2023-078', customer: { name: 'Michael Brown', email: 'michael@email.com', phone: '+20 100 123 4567' }, date: '2023-11-25', items: 3, product: 'Nutty Chocolate', productId: 11, quantity: 3, amount: 48.99, status: 'delivered', paymentMethod: 'COD', depositStatus: 'paid', depositAmount: 20, stockDeducted: true },
+    { id: 'ORD-2023-061', customer: { name: 'Michael Brown', email: 'michael@email.com', phone: '+20 100 123 4567' }, date: '2023-10-20', items: 5, product: 'Fall Fruit Selection', productId: 12, quantity: 5, amount: 89.00, status: 'delivered', paymentMethod: 'COD', depositStatus: 'paid', depositAmount: 35, stockDeducted: true },
+    { id: 'ORD-2023-045', customer: { name: 'Michael Brown', email: 'michael@email.com', phone: '+20 100 123 4567' }, date: '2023-09-12', items: 2, product: 'Ice Cream Sundae', productId: 7, quantity: 2, amount: 18.50, status: 'delivered', paymentMethod: 'COD', depositStatus: 'paid', depositAmount: 8, stockDeducted: true },
+
+    // Sarah Davis Orders - pending order has stockDeducted: false
+    { id: 'ORD-2024-004', customer: { name: 'Sarah Davis', email: 'sarah@email.com', phone: '+20 101 987 6543' }, date: '2024-01-12', items: 5, product: 'Candy Mix', productId: 5, quantity: 5, amount: 52.00, status: 'pending', paymentMethod: 'COD', depositStatus: 'pending', depositAmount: 0, stockDeducted: false },
+    { id: 'ORD-2023-095', customer: { name: 'Sarah Davis', email: 'sarah@email.com', phone: '+20 101 987 6543' }, date: '2023-12-22', items: 3, product: 'Marshmallow Delight', productId: 9, quantity: 3, amount: 24.99, status: 'delivered', paymentMethod: 'COD', depositStatus: 'paid', depositAmount: 10, stockDeducted: true },
+    { id: 'ORD-2023-080', customer: { name: 'Sarah Davis', email: 'sarah@email.com', phone: '+20 101 987 6543' }, date: '2023-11-30', items: 2, product: 'Lollipop Pack', productId: 6, quantity: 2, amount: 15.50, status: 'delivered', paymentMethod: 'COD', depositStatus: 'paid', depositAmount: 5, stockDeducted: true },
+    { id: 'ORD-2023-068', customer: { name: 'Sarah Davis', email: 'sarah@email.com', phone: '+20 101 987 6543' }, date: '2023-10-28', items: 4, product: 'Chocolate Delight', productId: 3, quantity: 4, amount: 38.00, status: 'delivered', paymentMethod: 'COD', depositStatus: 'paid', depositAmount: 15, stockDeducted: true },
+
+    // James Miller Orders
+    { id: 'ORD-2024-005', customer: { name: 'James Miller', email: 'james@email.com', phone: '+20 111 222 3333' }, date: '2024-01-11', items: 2, product: 'Tropical Mix', productId: 8, quantity: 2, amount: 38.90, status: 'delivered', paymentMethod: 'COD', depositStatus: 'paid', depositAmount: 15, stockDeducted: true },
+    { id: 'ORD-2023-088', customer: { name: 'James Miller', email: 'james@email.com', phone: '+20 111 222 3333' }, date: '2023-12-10', items: 3, product: 'Strawberry Freeze', productId: 1, quantity: 3, amount: 42.00, status: 'delivered', paymentMethod: 'COD', depositStatus: 'paid', depositAmount: 18, stockDeducted: true },
+    { id: 'ORD-2023-072', customer: { name: 'James Miller', email: 'james@email.com', phone: '+20 111 222 3333' }, date: '2023-11-18', items: 1, product: 'Winter Fruit Pack', productId: 10, quantity: 1, amount: 19.99, status: 'delivered', paymentMethod: 'COD', depositStatus: 'paid', depositAmount: 8, stockDeducted: true },
+
+    // Lisa Anderson Orders - cancelled has stockDeducted: false (restored)
+    { id: 'ORD-2024-006', customer: { name: 'Lisa Anderson', email: 'lisa@email.com', phone: '+20 122 333 4444' }, date: '2024-01-11', items: 3, product: 'Dark Chocolate Bar', productId: 4, quantity: 3, amount: 67.50, status: 'cancelled', paymentMethod: 'COD', depositStatus: 'refunded', depositAmount: 25, stockDeducted: false },
+    { id: 'ORD-2023-102', customer: { name: 'Lisa Anderson', email: 'lisa@email.com', phone: '+20 122 333 4444' }, date: '2023-12-29', items: 2, product: 'Dark Chocolate Bar', productId: 4, quantity: 2, amount: 45.00, status: 'delivered', paymentMethod: 'COD', depositStatus: 'paid', depositAmount: 18, stockDeducted: true },
+    { id: 'ORD-2023-091', customer: { name: 'Lisa Anderson', email: 'lisa@email.com', phone: '+20 122 333 4444' }, date: '2023-12-15', items: 4, product: 'Chocolate Delight', productId: 3, quantity: 4, amount: 52.50, status: 'delivered', paymentMethod: 'COD', depositStatus: 'paid', depositAmount: 20, stockDeducted: true },
+    { id: 'ORD-2023-077', customer: { name: 'Lisa Anderson', email: 'lisa@email.com', phone: '+20 122 333 4444' }, date: '2023-11-22', items: 2, product: 'Nutty Chocolate', productId: 11, quantity: 2, amount: 38.99, status: 'delivered', paymentMethod: 'COD', depositStatus: 'paid', depositAmount: 15, stockDeducted: true },
+    { id: 'ORD-2023-064', customer: { name: 'Lisa Anderson', email: 'lisa@email.com', phone: '+20 122 333 4444' }, date: '2023-10-18', items: 5, product: 'Fall Fruit Selection', productId: 12, quantity: 5, amount: 95.00, status: 'delivered', paymentMethod: 'COD', depositStatus: 'paid', depositAmount: 40, stockDeducted: true },
+    { id: 'ORD-2023-051', customer: { name: 'Lisa Anderson', email: 'lisa@email.com', phone: '+20 122 333 4444' }, date: '2023-09-25', items: 1, product: 'Chocolate Delight', productId: 3, quantity: 1, amount: 18.50, status: 'delivered', paymentMethod: 'COD', depositStatus: 'paid', depositAmount: 8, stockDeducted: true },
+    { id: 'ORD-2023-038', customer: { name: 'Lisa Anderson', email: 'lisa@email.com', phone: '+20 122 333 4444' }, date: '2023-08-30', items: 3, product: 'Dark Chocolate Bar', productId: 4, quantity: 3, amount: 55.00, status: 'delivered', paymentMethod: 'COD', depositStatus: 'paid', depositAmount: 22, stockDeducted: true },
+    { id: 'ORD-2023-025', customer: { name: 'Lisa Anderson', email: 'lisa@email.com', phone: '+20 122 333 4444' }, date: '2023-07-15', items: 2, product: 'Nutty Chocolate', productId: 11, quantity: 2, amount: 29.99, status: 'delivered', paymentMethod: 'COD', depositStatus: 'paid', depositAmount: 12, stockDeducted: true },
+
+    // David Taylor Orders
+    { id: 'ORD-2024-007', customer: { name: 'David Taylor', email: 'david@email.com', phone: '+20 100 555 6666' }, date: '2024-01-10', items: 1, product: 'Ice Cream Sundae', productId: 7, quantity: 1, amount: 15.99, status: 'delivered', paymentMethod: 'COD', depositStatus: 'paid', depositAmount: 10, stockDeducted: true },
+    { id: 'ORD-2023-099', customer: { name: 'David Taylor', email: 'david@email.com', phone: '+20 100 555 6666' }, date: '2023-12-24', items: 4, product: 'Marshmallow Delight', productId: 9, quantity: 4, amount: 65.00, status: 'delivered', paymentMethod: 'COD', depositStatus: 'paid', depositAmount: 25, stockDeducted: true },
+    { id: 'ORD-2023-084', customer: { name: 'David Taylor', email: 'david@email.com', phone: '+20 100 555 6666' }, date: '2023-12-01', items: 2, product: 'Strawberry Freeze', productId: 1, quantity: 2, amount: 35.50, status: 'delivered', paymentMethod: 'COD', depositStatus: 'paid', depositAmount: 14, stockDeducted: true },
+    { id: 'ORD-2023-069', customer: { name: 'David Taylor', email: 'david@email.com', phone: '+20 100 555 6666' }, date: '2023-10-25', items: 3, product: 'Blueberry Blast', productId: 2, quantity: 3, amount: 42.99, status: 'delivered', paymentMethod: 'COD', depositStatus: 'paid', depositAmount: 18, stockDeducted: true },
+    { id: 'ORD-2023-054', customer: { name: 'David Taylor', email: 'david@email.com', phone: '+20 100 555 6666' }, date: '2023-09-18', items: 2, product: 'Tropical Mix', productId: 8, quantity: 2, amount: 28.00, status: 'delivered', paymentMethod: 'COD', depositStatus: 'paid', depositAmount: 12, stockDeducted: true },
+
+    // Jennifer White Orders
+    { id: 'ORD-2024-008', customer: { name: 'Jennifer White', email: 'jennifer@email.com', phone: '+20 109 777 8888' }, date: '2024-01-10', items: 6, product: 'Fall Fruit Selection', productId: 12, quantity: 6, amount: 89.99, status: 'shipped', paymentMethod: 'COD', depositStatus: 'paid', depositAmount: 30, stockDeducted: true },
+    { id: 'ORD-2023-096', customer: { name: 'Jennifer White', email: 'jennifer@email.com', phone: '+20 109 777 8888' }, date: '2023-12-23', items: 3, product: 'Tropical Mix', productId: 8, quantity: 3, amount: 55.00, status: 'delivered', paymentMethod: 'COD', depositStatus: 'paid', depositAmount: 22, stockDeducted: true },
+    { id: 'ORD-2023-081', customer: { name: 'Jennifer White', email: 'jennifer@email.com', phone: '+20 109 777 8888' }, date: '2023-11-29', items: 4, product: 'Winter Fruit Pack', productId: 10, quantity: 4, amount: 48.50, status: 'delivered', paymentMethod: 'COD', depositStatus: 'paid', depositAmount: 20, stockDeducted: true },
+    { id: 'ORD-2023-066', customer: { name: 'Jennifer White', email: 'jennifer@email.com', phone: '+20 109 777 8888' }, date: '2023-10-22', items: 2, product: 'Blueberry Blast', productId: 2, quantity: 2, amount: 32.00, status: 'delivered', paymentMethod: 'COD', depositStatus: 'paid', depositAmount: 12, stockDeducted: true },
+
+    // Robert Harris Orders - processing has stockDeducted: true
+    { id: 'ORD-2024-009', customer: { name: 'Robert Harris', email: 'robert@email.com', phone: '+20 115 999 0000' }, date: '2024-01-09', items: 2, product: 'Candy Mix', productId: 5, quantity: 2, amount: 24.99, status: 'processing', paymentMethod: 'COD', depositStatus: 'pending', depositAmount: 0, stockDeducted: true },
+    { id: 'ORD-2023-087', customer: { name: 'Robert Harris', email: 'robert@email.com', phone: '+20 115 999 0000' }, date: '2023-12-08', items: 3, product: 'Lollipop Pack', productId: 6, quantity: 3, amount: 28.50, status: 'delivered', paymentMethod: 'COD', depositStatus: 'paid', depositAmount: 12, stockDeducted: true },
+    { id: 'ORD-2023-070', customer: { name: 'Robert Harris', email: 'robert@email.com', phone: '+20 115 999 0000' }, date: '2023-10-30', items: 2, product: 'Marshmallow Delight', productId: 9, quantity: 2, amount: 19.99, status: 'delivered', paymentMethod: 'COD', depositStatus: 'paid', depositAmount: 8, stockDeducted: true },
+
+    // Maria Garcia Orders - pending has stockDeducted: false
+    { id: 'ORD-2024-010', customer: { name: 'Maria Garcia', email: 'maria@email.com', phone: '+20 106 111 2222' }, date: '2024-01-09', items: 4, product: 'Winter Fruit Pack', productId: 10, quantity: 4, amount: 56.80, status: 'pending', paymentMethod: 'COD', depositStatus: 'pending', depositAmount: 0, stockDeducted: false },
+    { id: 'ORD-2023-093', customer: { name: 'Maria Garcia', email: 'maria@email.com', phone: '+20 106 111 2222' }, date: '2023-12-19', items: 2, product: 'Strawberry Freeze', productId: 1, quantity: 2, amount: 35.00, status: 'delivered', paymentMethod: 'COD', depositStatus: 'paid', depositAmount: 14, stockDeducted: true },
+    { id: 'ORD-2023-076', customer: { name: 'Maria Garcia', email: 'maria@email.com', phone: '+20 106 111 2222' }, date: '2023-11-20', items: 3, product: 'Fall Fruit Selection', productId: 12, quantity: 3, amount: 42.50, status: 'delivered', paymentMethod: 'COD', depositStatus: 'paid', depositAmount: 18, stockDeducted: true }
+];
+
+// Customers Data
+const customers = [
+    {
+        id: 1,
+        name: 'John Smith',
+        email: 'john@email.com',
+        phone: '+20 109 396 1545',
+        orders: 5,
+        spent: 247.98,
+        status: 'active'
+    },
+    {
+        id: 2,
+        name: 'Emma Wilson',
+        email: 'emma@email.com',
+        phone: '+20 112 345 6789',
+        orders: 4,
+        spent: 161.99,
+        status: 'active'
+    },
+    {
+        id: 3,
+        name: 'Michael Brown',
+        email: 'michael@email.com',
+        phone: '+20 100 123 4567',
+        orders: 6,
+        spent: 327.74,
+        status: 'active'
+    },
+    {
+        id: 4,
+        name: 'Sarah Davis',
+        email: 'sarah@email.com',
+        phone: '+20 101 987 6543',
+        orders: 4,
+        spent: 130.49,
+        status: 'active'
+    },
+    {
+        id: 5,
+        name: 'James Miller',
+        email: 'james@email.com',
+        phone: '+20 111 222 3333',
+        orders: 3,
+        spent: 100.89,
+        status: 'active'
+    },
+    {
+        id: 6,
+        name: 'Lisa Anderson',
+        email: 'lisa@email.com',
+        phone: '+20 122 333 4444',
+        orders: 8,
+        spent: 402.48,
+        status: 'inactive'
+    },
+    {
+        id: 7,
+        name: 'David Taylor',
+        email: 'david@email.com',
+        phone: '+20 100 555 6666',
+        orders: 5,
+        spent: 187.48,
+        status: 'active'
+    },
+    {
+        id: 8,
+        name: 'Jennifer White',
+        email: 'jennifer@email.com',
+        phone: '+20 109 777 8888',
+        orders: 4,
+        spent: 225.49,
+        status: 'active'
+    },
+    {
+        id: 9,
+        name: 'Robert Harris',
+        email: 'robert@email.com',
+        phone: '+20 115 999 0000',
+        orders: 3,
+        spent: 73.48,
+        status: 'active'
+    },
+    {
+        id: 10,
+        name: 'Maria Garcia',
+        email: 'maria@email.com',
+        phone: '+20 106 111 2222',
+        orders: 3,
+        spent: 134.30,
+        status: 'active'
+    }
+];
+
+// Top Products Data
+const topProducts = [
+    { name: 'Strawberry Freeze', category: 'Fruits', sales: 245, image: 'assets/fruits/summer fruits/summer1.png' },
+    { name: 'Chocolate Delight', category: 'Chocolate', sales: 198, image: 'assets/candy-page-img/chocolate/chocolate1.png' },
+    { name: 'Mixed Berry Pack', category: 'Fruits', sales: 176, image: 'assets/fruits/mixed fruits/mixed1.png' },
+    { name: 'Candy Swirl', category: 'Candy', sales: 154, image: 'assets/candy-page-img/candy/candy1.png' },
+    { name: 'Ice Cream Sundae', category: 'Ice Cream', sales: 142, image: 'assets/candy-page-img/icecream/ic-cream.png' }
+];
+
+// Chart Data by Time Period
 const chartDataByPeriod = {
-    today: { revenue: { labels: [], data: [] }, category: { labels: [], data: [], colors: [] } },
-    week: { revenue: { labels: [], data: [] }, category: { labels: [], data: [], colors: [] } },
-    month: { revenue: { labels: [], data: [] }, category: { labels: [], data: [], colors: [] } },
-    year: { revenue: { labels: [], data: [] }, category: { labels: [], data: [], colors: [] } }
+    today: {
+        revenue: {
+            labels: ['6AM', '9AM', '12PM', '3PM', '6PM', '9PM', 'Now'],
+            data: [120, 350, 580, 420, 390, 450, 140]
+        },
+        category: {
+            labels: ['Fruits', 'Chocolate', 'Candy', 'Ice Cream'],
+            data: [42, 25, 18, 15],
+            colors: ['#10b981', '#8b5cf6', '#f59e0b', '#3b82f6']
+        }
+    },
+    week: {
+        revenue: {
+            labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+            data: [4200, 5800, 4500, 7200, 6800, 8900, 9500]
+        },
+        category: {
+            labels: ['Fruits', 'Chocolate', 'Candy', 'Ice Cream'],
+            data: [35, 28, 22, 15],
+            colors: ['#10b981', '#8b5cf6', '#f59e0b', '#3b82f6']
+        }
+    },
+    month: {
+        revenue: {
+            labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
+            data: [28500, 32400, 35200, 32650]
+        },
+        category: {
+            labels: ['Fruits', 'Chocolate', 'Candy', 'Ice Cream'],
+            data: [38, 26, 24, 12],
+            colors: ['#10b981', '#8b5cf6', '#f59e0b', '#3b82f6']
+        }
+    },
+    year: {
+        revenue: {
+            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+            data: [85000, 92000, 108000, 115000, 125000, 132000, 128000, 138000, 142000, 148000, 155000, 188890]
+        },
+        category: {
+            labels: ['Fruits', 'Chocolate', 'Candy', 'Ice Cream'],
+            data: [32, 30, 23, 15],
+            colors: ['#10b981', '#8b5cf6', '#f59e0b', '#3b82f6']
+        }
+    }
 };
 
-// Chart Data (default) - Will be calculated from real data
+// Chart Data (default)
 const chartData = {
-    revenueWeekly: { labels: [], data: [] },
-    categoryDistribution: { labels: [], data: [], colors: [] },
-    salesMonthly: { labels: [], data: [] },
-    customerGrowth: { labels: [], data: [] },
-    revenueByCategory: { labels: [], data: [], colors: [] }
+    revenueWeekly: {
+        labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+        data: [4200, 5800, 4500, 7200, 6800, 8900, 9500]
+    },
+    categoryDistribution: {
+        labels: ['Fruits', 'Chocolate', 'Candy', 'Ice Cream'],
+        data: [35, 28, 22, 15],
+        colors: ['#10b981', '#8b5cf6', '#f59e0b', '#3b82f6']
+    },
+    salesMonthly: {
+        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+        data: [12000, 19000, 15000, 25000, 22000, 30000, 28000, 32000, 29000, 35000, 38000, 42000]
+    },
+    customerGrowth: {
+        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+        data: [45, 62, 58, 78, 85, 92, 88, 105, 98, 112, 125, 138]
+    },
+    revenueByCategory: {
+        labels: ['Fruits', 'Chocolate', 'Candy', 'Ice Cream', 'Nuts', 'Marshmallow'],
+        data: [15800, 12600, 9800, 6700, 4200, 3500],
+        colors: ['#10b981', '#8b5cf6', '#f59e0b', '#3b82f6', '#ec4899', '#06b6d4']
+    }
 };
 
 // Store chart instances for updating
 let revenueChartInstance = null;
 let categoryChartInstance = null;
 
-// Dashboard Stats by Time Period - Will be fetched from API
+// Dashboard Stats by Time Period
 const dashboardStatsByPeriod = {
-    today: { totalRevenue: 0, revenueGrowth: 0, totalOrders: 0, ordersGrowth: 0, totalCustomers: 0, customersGrowth: 0, totalProducts: 0, productsChange: 0 },
-    week: { totalRevenue: 0, revenueGrowth: 0, totalOrders: 0, ordersGrowth: 0, totalCustomers: 0, customersGrowth: 0, totalProducts: 0, productsChange: 0 },
-    month: { totalRevenue: 0, revenueGrowth: 0, totalOrders: 0, ordersGrowth: 0, totalCustomers: 0, customersGrowth: 0, totalProducts: 0, productsChange: 0 },
-    year: { totalRevenue: 0, revenueGrowth: 0, totalOrders: 0, ordersGrowth: 0, totalCustomers: 0, customersGrowth: 0, totalProducts: 0, productsChange: 0 }
+    today: {
+        totalRevenue: 2450,
+        revenueGrowth: 8.2,
+        totalOrders: 47,
+        ordersGrowth: 5.1,
+        totalCustomers: 23,
+        customersGrowth: 12.3,
+        totalProducts: 156,
+        productsChange: 0
+    },
+    week: {
+        totalRevenue: 45280,
+        revenueGrowth: 12.5,
+        totalOrders: 1284,
+        ordersGrowth: 8.3,
+        totalCustomers: 892,
+        customersGrowth: 15.2,
+        totalProducts: 156,
+        productsChange: -2.1
+    },
+    month: {
+        totalRevenue: 128750,
+        revenueGrowth: 18.7,
+        totalOrders: 4523,
+        ordersGrowth: 14.2,
+        totalCustomers: 2156,
+        customersGrowth: 22.8,
+        totalProducts: 156,
+        productsChange: 3.5
+    },
+    year: {
+        totalRevenue: 1456890,
+        revenueGrowth: 24.3,
+        totalOrders: 52847,
+        ordersGrowth: 19.6,
+        totalCustomers: 12450,
+        customersGrowth: 35.4,
+        totalProducts: 156,
+        productsChange: 8.2
+    }
 };
 
 // Current dashboard stats (default to week)
 let dashboardStats = { ...dashboardStatsByPeriod.week };
 
-// Order Statistics - Will be calculated from real orders
+// Order Statistics
 const orderStats = {
-    pending: 0,
-    processing: 0,
-    shipped: 0,
-    delivered: 0,
-    cancelled: 0
+    pending: 24,
+    processing: 18,
+    shipped: 42,
+    delivered: 156,
+    cancelled: 8
 };
 
-// Trash for deleted/cancelled orders
-let orderTrash = [];
-
-// Messages Data - NOW LOADED FROM DATABASE
-const messages = [];
+// Trash for deleted/cancelled orders (manual delete only)
+let orderTrash = [
+    {
+        id: 'ORD-2024-099',
+        customer: { id: 99, name: 'Customer Cancelled', email: 'cancel@test.com', phone: '+20 100 000 0000' },
+        date: '2024-01-10',
+        items: [
+            { productId: 1, name: 'Strawberry Freeze', quantity: 2, price: 12.99 }
+        ],
+        totalAmount: 25.98,
+        status: 'cancelled',
+        paymentMethod: 'COD',
+        depositStatus: 'none',
+        deletedDate: new Date().toISOString()
+    },
+    {
+        id: 'ORD-2024-098',
+        customer: { id: 98, name: 'Another Cancel', email: 'another@test.com', phone: '+20 100 111 1111' },
+        date: '2024-01-08',
+        items: [
+            { productId: 3, name: 'Chocolate Delight', quantity: 1, price: 18.99 }
+        ],
+        totalAmount: 18.99,
+        status: 'cancelled',
+        paymentMethod: 'COD',
+        depositStatus: 'pending',
+        deletedDate: new Date().toISOString()
+    }
+];
 
 // Trash for deleted messages
-let messageTrash = [];
+let messageTrash = [
+    {
+        id: 100,
+        sender: 'Old Customer',
+        email: 'old@customer.com',
+        subject: 'Old inquiry - Resolved',
+        preview: 'This issue has been resolved...',
+        fullMessage: 'This issue has been resolved and the message was moved to trash.',
+        avatar: 'OC',
+        avatarColor: '#6366f1',
+        time: '2 weeks ago',
+        read: true,
+        deletedDate: new Date().toISOString()
+    }
+];
 
 // Archived messages
-let archivedMessages = [];
+let archivedMessages = [
+    {
+        id: 200,
+        sender: 'Completed Deal',
+        email: 'deal@company.com',
+        subject: 'Partnership Agreement Signed',
+        preview: 'Thank you for signing the partnership agreement...',
+        fullMessage: 'Thank you for signing the partnership agreement. We look forward to working with you.\n\nBest regards,\nCompleted Deal Team',
+        avatar: 'CD',
+        avatarColor: '#10b981',
+        time: '1 month ago',
+        read: true,
+        archivedDate: new Date().toISOString()
+    }
+];
 
 // Move message to archive
 function moveMessageToArchive(msgId) {
@@ -176,7 +428,7 @@ function moveMessageToArchive(msgId) {
         msg.archivedDate = new Date().toISOString();
         archivedMessages.push(msg);
         messages.splice(msgIndex, 1);
-        if (typeof updateMessageBadge === 'function') updateMessageBadge();
+        updateMessageBadge();
         return msg;
     }
     return null;
@@ -190,7 +442,7 @@ function restoreMessageFromArchive(msgId) {
         delete msg.archivedDate;
         messages.unshift(msg);
         archivedMessages.splice(msgIndex, 1);
-        if (typeof updateMessageBadge === 'function') updateMessageBadge();
+        updateMessageBadge();
         return msg;
     }
     return null;
@@ -205,7 +457,7 @@ function deleteArchivedMessage(msgId) {
         delete msg.archivedDate;
         messageTrash.push(msg);
         archivedMessages.splice(msgIndex, 1);
-        if (typeof updateHeaderTrashBadge === 'function') updateHeaderTrashBadge();
+        updateHeaderTrashBadge();
         return msg;
     }
     return null;
@@ -217,12 +469,12 @@ window.moveMessageToArchive = moveMessageToArchive;
 window.restoreMessageFromArchive = restoreMessageFromArchive;
 window.deleteArchivedMessage = deleteArchivedMessage;
 
-// Customer Statistics - Will be calculated from real data
+// Customer Statistics
 const customerStats = {
-    active: 0,
-    newThisMonth: 0,
-    avgOrderValue: 0,
-    retentionRate: 0
+    active: 732,
+    newThisMonth: 48,
+    avgOrderValue: 52.80,
+    retentionRate: 78
 };
 
 // ===== UTILITY FUNCTIONS =====
@@ -3615,7 +3867,105 @@ function addNotification(type, title, message, details, action = null, actionDat
 }
 
 // Show Messages
-// Messages data is now loaded from the database (empty array defined at the top of this file)
+// Messages Data
+let messages = [
+    {
+        id: 1,
+        sender: 'John Smith',
+        email: 'john@email.com',
+        subject: 'Question about my order',
+        preview: 'I have a question about my order...',
+        fullMessage: 'Hi,\n\nI placed an order yesterday (#ORD-2024-001) and I wanted to know if it\'s possible to add one more item to it before it ships?\n\nI\'d like to add 2x Blueberry Blast if possible.\n\nThank you!',
+        avatar: 'JS',
+        avatarColor: '#6366f1',
+        time: '10 minutes ago',
+        read: false
+    },
+    {
+        id: 2,
+        sender: 'Ahmed Corp.',
+        email: 'purchasing@ahmedcorp.com',
+        subject: 'Bulk Order Inquiry',
+        preview: 'Inquiry about bulk orders for events',
+        fullMessage: 'Dear Freezy Bite Team,\n\nWe are interested in placing a bulk order for our upcoming corporate event on February 15th.\n\nWe would need:\n- 50x Strawberry Freeze\n- 30x Chocolate Delight\n- 40x Mixed Candy Pack\n\nCould you please provide a quote with any available bulk discounts?\n\nBest regards,\nAhmed Corp. Purchasing Department',
+        avatar: 'AC',
+        avatarColor: '#10b981',
+        time: '1 hour ago',
+        read: false
+    },
+    {
+        id: 3,
+        sender: 'Premium Partners',
+        email: 'partnerships@premiumpartners.com',
+        subject: 'Partnership Proposal',
+        preview: 'Partnership proposal for distribution',
+        fullMessage: 'Hello,\n\nWe are Premium Partners, a distribution company specializing in frozen goods across Egypt.\n\nWe\'ve been impressed by your product quality and would like to discuss a potential partnership to distribute Freezy Bite products in the Alexandria and Delta regions.\n\nWould you be available for a call this week?\n\nLooking forward to hearing from you.\n\nBest,\nSarah Ahmed\nBusiness Development Manager',
+        avatar: 'PP',
+        avatarColor: '#f59e0b',
+        time: 'Yesterday',
+        read: true
+    },
+    {
+        id: 4,
+        sender: 'Fatima Hassan',
+        email: 'fatima.hassan@gmail.com',
+        subject: 'Delivery Issue - Need Help!',
+        preview: 'My order hasn\'t arrived yet and it\'s been 3 days...',
+        fullMessage: 'Hello Freezy Bite Support,\n\nI placed an order 3 days ago (Order #ORD-2024-008) but it still hasn\'t arrived. The tracking shows it\'s been "out for delivery" for 2 days now.\n\nCan you please check what\'s happening with my order? I\'m really looking forward to receiving my items.\n\nMy address is:\n123 Nile Street, Giza, Egypt\nPhone: +20 101 234 5678\n\nThank you for your help!\n\nFatima',
+        avatar: 'FH',
+        avatarColor: '#ec4899',
+        time: '2 days ago',
+        read: true
+    },
+    {
+        id: 5,
+        sender: 'Cairo Events Co.',
+        email: 'events@cairoevents.com',
+        subject: 'Catering Request for Wedding',
+        preview: 'We would like to discuss frozen desserts for a wedding...',
+        fullMessage: 'Dear Freezy Bite Team,\n\nWe are Cairo Events Co., a premier event planning company in Egypt.\n\nWe are organizing a wedding reception for 200 guests on March 20th and would love to include your frozen desserts in our menu.\n\nWe\'re interested in:\n- Ice cream bar setup\n- Frozen fruit platters\n- Chocolate desserts\n\nCould we schedule a tasting session and discuss bulk pricing?\n\nBest regards,\nMohamed Ali\nEvent Director\nCairo Events Co.',
+        avatar: 'CE',
+        avatarColor: '#8b5cf6',
+        time: '3 days ago',
+        read: true
+    },
+    {
+        id: 6,
+        sender: 'Omar Farouk',
+        email: 'omar.farouk@outlook.com',
+        subject: 'Product Suggestion',
+        preview: 'I have some ideas for new flavors you might like...',
+        fullMessage: 'Hi Freezy Bite!\n\nI\'m a regular customer and I absolutely love your products! I wanted to suggest some new flavors that I think would be amazing:\n\n1. Mango Tango - Fresh frozen mango with a hint of chili\n2. Egyptian Dates & Cream - Dates mixed with vanilla ice cream\n3. Guava Blast - Frozen guava with cream\n\nJust some ideas from a big fan! Keep up the great work!\n\nCheers,\nOmar',
+        avatar: 'OF',
+        avatarColor: '#3b82f6',
+        time: '4 days ago',
+        read: true
+    },
+    {
+        id: 7,
+        sender: 'Quality Supplies Ltd.',
+        email: 'supply@qualitysupplies.com',
+        subject: 'Re: Packaging Materials Quote',
+        preview: 'Here is the updated quote for eco-friendly packaging...',
+        fullMessage: 'Dear Freezy Bite Team,\n\nThank you for your inquiry about eco-friendly packaging materials.\n\nPlease find below our updated quote:\n\n- Biodegradable containers (500pcs): EGP 2,500\n- Eco-friendly bags (1000pcs): EGP 1,800\n- Recyclable cups (500pcs): EGP 1,200\n- Wooden spoons (1000pcs): EGP 800\n\nTotal: EGP 6,300 (10% discount applied)\n\nDelivery within 5 business days.\n\nLet us know if you\'d like to proceed!\n\nBest,\nSupply Team\nQuality Supplies Ltd.',
+        avatar: 'QS',
+        avatarColor: '#06b6d4',
+        time: '5 days ago',
+        read: true
+    },
+    {
+        id: 8,
+        sender: 'Layla Mohamed',
+        email: 'layla.m@yahoo.com',
+        subject: 'Thank you! Amazing service!',
+        preview: 'I just wanted to say thank you for the wonderful...',
+        fullMessage: 'Hello Freezy Bite!\n\nI just wanted to send a quick message to say THANK YOU!\n\nMy order arrived today and everything was perfect - the packaging was beautiful, the products were fresh, and the delivery was super fast.\n\nI ordered the Strawberry Freeze and Chocolate Delight for my daughter\'s birthday party and everyone loved them! The kids were so happy!\n\nYou\'ve definitely earned a loyal customer. I\'ll be ordering again soon!\n\nBest wishes,\nLayla',
+        avatar: 'LM',
+        avatarColor: '#ef4444',
+        time: '1 week ago',
+        read: true
+    }
+];
 
 function showMessages() {
     showMessagesModal();
