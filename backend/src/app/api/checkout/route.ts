@@ -1,5 +1,5 @@
 import { db } from '@/db';
-import { orders, orderItems, cartItems, products } from '@/db/schema';
+import { orders, orderItems, cartItems, products, customers } from '@/db/schema';
 import { NextResponse, NextRequest } from 'next/server';
 import { eq, inArray } from 'drizzle-orm';
 
@@ -101,13 +101,53 @@ export async function POST(request: NextRequest) {
                 acc + (Number(item.price) * item.quantity), 0
             );
 
-            // Create Order (with optional guest info stored in stripeSessionId field temporarily)
-            const guestData = guest ? JSON.stringify(guest) : null;
+            // Create or find customer for guest checkout
+            let customerId: number | null = null;
+            if (guest && guest.email) {
+                // Check if customer already exists
+                const existingCustomers = await tx.select()
+                    .from(customers)
+                    .where(eq(customers.email, guest.email.toLowerCase()))
+                    .limit(1);
+
+                if (existingCustomers.length > 0 && existingCustomers[0]) {
+                    // Update existing customer's order count and total spent
+                    const customer = existingCustomers[0];
+                    customerId = customer.id;
+                    await tx.update(customers)
+                        .set({
+                            totalOrders: (customer.totalOrders ?? 0) + 1,
+                            totalSpent: ((Number(customer.totalSpent) || 0) + total).toString(),
+                            phone: guest.phone || customer.phone,
+                            address: guest.address || customer.address,
+                        })
+                        .where(eq(customers.id, customerId));
+                } else {
+                    // Create new customer
+                    const insertedCustomers = await tx.insert(customers)
+                        .values({
+                            name: guest.name,
+                            email: guest.email.toLowerCase(),
+                            phone: guest.phone || null,
+                            address: guest.address || null,
+                            totalOrders: 1,
+                            totalSpent: total.toString(),
+                            status: 'active',
+                        })
+                        .returning();
+                    if (insertedCustomers[0]) {
+                        customerId = insertedCustomers[0].id;
+                    }
+                }
+            }
+
+            // Create Order (linked to customer)
             const insertedOrder = await tx.insert(orders).values({
                 userId: userId || null,
+                customerId: customerId,
                 totalAmount: total.toString(),
                 status: 'pending',
-                stripeSessionId: guestData, // Store guest info here for now
+                paymentMethod: 'COD',
             }).returning();
 
             const newOrder = insertedOrder[0];
