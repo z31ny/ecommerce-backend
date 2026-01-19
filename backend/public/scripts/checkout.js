@@ -285,6 +285,12 @@
         address: address + ', ' + city + ', ' + gov
       };
 
+      console.log('[Checkout] Cart items (SKUs):', items);
+      console.log('[Checkout] SKU to Product map:', skuToProduct);
+      console.log('[Checkout] Has all IDs:', hasAllIds);
+      console.log('[Checkout] API items:', apiItems);
+      console.log('[Checkout] FreezybiteAPI available:', typeof FreezybiteAPI !== 'undefined');
+
       // Disable submit button
       var submitBtn = form.querySelector('button[type="submit"]');
       if (submitBtn) {
@@ -292,17 +298,19 @@
         submitBtn.textContent = 'Processing...';
       }
 
-      // Try API checkout first
-      if (hasAllIds && typeof FreezybiteAPI !== 'undefined') {
+      // Try API checkout if we have product IDs
+      if (hasAllIds && apiItems.length > 0 && typeof FreezybiteAPI !== 'undefined') {
+        console.log('[Checkout] Attempting API checkout...');
         FreezybiteAPI.guestCheckout(apiItems, guestInfo)
           .then(function (result) {
+            console.log('[Checkout] API checkout SUCCESS:', result);
             // Send confirmation email
             sendConfirmationEmail(result.orderId, name, email, items, cart, gov, city, address);
             clearCart();
             showSuccess(result.orderId, name, email);
           })
           .catch(function (err) {
-            console.error('API checkout failed:', err);
+            console.error('[Checkout] API checkout FAILED:', err);
             // Fallback to email
             fallbackToEmail(name, email, phone, gov, city, address, cart, items);
           })
@@ -313,6 +321,8 @@
             }
           });
       } else {
+        console.log('[Checkout] Falling back to email-only (no product IDs or API unavailable)');
+        console.log('[Checkout] Reason: hasAllIds=' + hasAllIds + ', apiItems.length=' + apiItems.length);
         // Fallback: email receipt
         fallbackToEmail(name, email, phone, gov, city, address, cart, items);
         if (submitBtn) {
