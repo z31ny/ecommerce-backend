@@ -450,7 +450,7 @@
         
         <div class="sidebar-footer">
             <div class="user-profile">
-                <img src="https://ui-avatars.com/api/?name=Admin+User&background=6366f1&color=fff" alt="Admin" class="user-avatar">
+                <img src="/assets/icons/profile.svg" alt="Admin" class="user-avatar">
                 <div class="user-info">
                     <h4>Admin User</h4>
                     <p>admin@freezybite.com</p>
@@ -489,7 +489,7 @@
                     <i class="fas fa-trash-alt"></i>
                     <span class="badge" id="headerTrashBadge">0</span>
                 </button>
-                <img src="https://ui-avatars.com/api/?name=Admin+User&background=6366f1&color=fff" alt="Admin" class="header-avatar">
+                <img src="/assets/icons/profile.svg" alt="Admin" class="header-avatar">
             </div>
         </header>
         
@@ -595,7 +595,7 @@
                     <!-- Avatar Upload -->
                     <div class="form-group" style="text-align: center; margin-bottom: 1.5rem;">
                         <div style="position: relative; display: inline-block;">
-                            <img src="https://ui-avatars.com/api/?name=New+Employee&background=6366f1&color=fff&size=128" alt="Avatar" id="newEmployeeAvatarPreview" style="width: 80px; height: 80px; border-radius: 50%; border: 3px solid var(--primary-light); object-fit: cover;">
+                            <img src="/assets/icons/profile.svg" alt="Avatar" id="newEmployeeAvatarPreview" style="width: 80px; height: 80px; border-radius: 50%; border: 3px solid var(--primary-light); object-fit: cover;">
                             <button type="button" class="btn btn-sm btn-primary" onclick="document.getElementById('newEmployeeAvatarInput').click()" style="position: absolute; bottom: 0; right: 0; width: 28px; height: 28px; padding: 0; border-radius: 50%;">
                                 <i class="fas fa-camera" style="font-size: 0.7rem;"></i>
                             </button>
@@ -839,12 +839,7 @@
             }
             
             container.innerHTML = filteredEmployees.map((emp, index) => {
-                const defaultAvatar = `https://ui-avatars.com/api/?name=${encodeURIComponent(emp.name)}&background=${getDepartmentColor(emp.department)}&color=fff&size=160`;
-                const avatar = emp.avatar || defaultAvatar;
-                const totalActions = emp.stats.orders + emp.stats.messages + emp.stats.inventory;
-                
-                return `
-                    <div class="employee-card">
+                const defaultAvatar = `/assets/icons/profile.svg"employee-card">
                         <div class="employee-card-header ${emp.department}">
                             <span class="employee-status-badge ${emp.status}">${formatStatus(emp.status)}</span>
                             <img src="${avatar}" alt="${emp.name}" class="employee-avatar">
@@ -971,15 +966,7 @@
             const emp = employees[index];
             if (!emp) return;
             
-            const defaultAvatar = `https://ui-avatars.com/api/?name=${encodeURIComponent(emp.name)}&background=${getDepartmentColor(emp.department)}&color=fff&size=200`;
-            const avatar = emp.avatar || defaultAvatar;
-            const totalActions = emp.stats.orders + emp.stats.messages + emp.stats.inventory;
-            
-            // Get employee activities
-            const empActivities = activityLog.filter(a => a.employeeId === emp.id).slice(0, 5);
-            
-            const content = `
-                <div class="employee-profile-header" style="background: linear-gradient(135deg, ${getGradientColors(emp.department)});">
+            const defaultAvatar = `/assets/icons/profile.svg"employee-profile-header" style="background: linear-gradient(135deg, ${getGradientColors(emp.department)});">
                     <button class="modal-close" onclick="closeModal('employeeProfileModal')" style="position: absolute; top: 1rem; right: 1rem; background: rgba(255,255,255,0.2); border: none; color: white; width: 32px; height: 32px; border-radius: 50%; cursor: pointer;">
                         <i class="fas fa-times"></i>
                     </button>
@@ -1090,7 +1077,7 @@
         function openAddEmployeeModal() {
             document.getElementById('addEmployeeForm').reset();
             newEmployeeAvatarData = null;
-            document.getElementById('newEmployeeAvatarPreview').src = 'https://ui-avatars.com/api/?name=New+Employee&background=6366f1&color=fff&size=128';
+            document.getElementById('newEmployeeAvatarPreview').src = '/assets/icons/profile.svg';
             
             // Set default hire date to today
             document.getElementById('newEmployeeHireDate').value = new Date().toISOString().split('T')[0];
@@ -1119,15 +1106,7 @@
         function updateNewEmployeeAvatarPreview() {
             if (newEmployeeAvatarData) return;
             const name = document.getElementById('newEmployeeName').value || 'New Employee';
-            document.getElementById('newEmployeeAvatarPreview').src = `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=6366f1&color=fff&size=128`;
-        }
-        
-        // Add employee
-        function addEmployee(event) {
-            event.preventDefault();
-            
-            const newEmployee = {
-                id: document.getElementById('newEmployeeId').value,
+            document.getElementById('newEmployeeAvatarPreview').src = `/assets/icons/profile.svg'newEmployeeId').value,
                 name: document.getElementById('newEmployeeName').value,
                 email: document.getElementById('newEmployeeEmail').value,
                 phone: document.getElementById('newEmployeePhone').value,
@@ -1181,8 +1160,7 @@
             document.getElementById('editEmployeeSalary').value = emp.salary || '';
             document.getElementById('editEmployeeAddress').value = emp.address || '';
             
-            const defaultAvatar = `https://ui-avatars.com/api/?name=${encodeURIComponent(emp.name)}&background=${getDepartmentColor(emp.department)}&color=fff&size=128`;
-            document.getElementById('editEmployeeAvatarPreview').src = emp.avatar || defaultAvatar;
+            const defaultAvatar = `/assets/icons/profile.svg'editEmployeeAvatarPreview').src = emp.avatar || defaultAvatar;
             
             openModal('editEmployeeModal');
         }

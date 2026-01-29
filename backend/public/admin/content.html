@@ -751,7 +751,7 @@
         
         <div class="sidebar-footer">
             <div class="user-profile">
-                <img src="https://ui-avatars.com/api/?name=Admin+User&background=6366f1&color=fff" alt="Admin" class="user-avatar">
+                <img src="/assets/icons/profile.svg" alt="Admin" class="user-avatar">
                 <div class="user-info">
                     <h4>Admin User</h4>
                     <p>admin@freezybite.com</p>
@@ -775,7 +775,7 @@
                 <button class="header-btn" onclick="showNotifications()"><i class="fas fa-bell"></i><span class="badge">5</span></button>
                 <button class="header-btn" onclick="showMessages()"><i class="fas fa-envelope"></i><span class="badge">3</span></button>
                 <button class="header-btn" onclick="showTrashModal()" title="Trash"><i class="fas fa-trash-alt"></i><span class="badge" id="headerTrashBadge">0</span></button>
-                <img src="https://ui-avatars.com/api/?name=Admin+User&background=6366f1&color=fff" alt="Admin" class="header-avatar">
+                <img src="/assets/icons/profile.svg" alt="Admin" class="header-avatar">
             </div>
         </header>
         
@@ -2078,7 +2078,7 @@
             document.getElementById('editMoodBackDescription').value = m.backDescription || '';
             document.getElementById('editMoodButtonLink').value = m.buttonLink || '';
             document.getElementById('editMoodStatus').value = m.status;
-            document.getElementById('editMoodBackImagePreview').src = m.backImage || 'https://placehold.co/200x120/f1f5f9/64748b?text=No+Image';
+            document.getElementById('editMoodBackImagePreview').src = m.backImage || '/assets/icons/profile.svg';
             editMoodBackImageData = m.backImage;
             document.querySelectorAll('#editMoodColorPicker .color-option').forEach(c => c.classList.remove('selected'));
             document.querySelector(`#editMoodColorPicker .color-option[data-color="${m.color}"]`)?.classList.add('selected');
@@ -2195,8 +2195,8 @@
             document.getElementById('editSnackFrontLabel').value = s.frontLabel || '';
             document.getElementById('editSnackBackLabel').value = s.backLabel || '';
             document.getElementById('editSnackStatus').value = s.status;
-            document.getElementById('editSnackFrontImagePreview').src = s.frontImage || 'https://placehold.co/100x80/fce4ec/a31545?text=Front';
-            document.getElementById('editSnackBackImagePreview').src = s.backImage || 'https://placehold.co/100x80/e1bee7/7b1fa2?text=Back';
+            document.getElementById('editSnackFrontImagePreview').src = s.frontImage || '/assets/icons/profile.svg';
+            document.getElementById('editSnackBackImagePreview').src = s.backImage || '/assets/icons/profile.svg';
             editSnackFrontImageData = s.frontImage;
             editSnackBackImageData = s.backImage;
             openModal('editSnackModal');
@@ -2331,7 +2331,7 @@
             document.getElementById('editFavoritePrice').value = f.price;
             document.getElementById('editFavoriteReviewCount').value = f.reviewCount;
             document.getElementById('editFavoriteStatus').value = f.status;
-            document.getElementById('editFavoriteImagePreview').src = f.image || 'https://placehold.co/200x120/f1f5f9/64748b?text=No+Image';
+            document.getElementById('editFavoriteImagePreview').src = f.image || '/assets/icons/profile.svg';
             editFavoriteImageData = f.image;
             // Set rating
             const ratingInput = document.getElementById(`editRating${f.rating}`);

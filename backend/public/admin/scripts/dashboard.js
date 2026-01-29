@@ -34,6 +34,37 @@ const DashboardAPI = {
 
     // Customers
     async getCustomers() { return this.request('/api/admin/customers'); },
+    async createCustomer(data) { return this.request('/api/admin/customers', { method: 'POST', body: JSON.stringify(data) }); },
+    async updateCustomer(id, data) { return this.request(`/api/admin/customers/${id}`, { method: 'PUT', body: JSON.stringify(data) }); },
+    async deleteCustomer(id) { return this.request(`/api/admin/customers/${id}`, { method: 'DELETE' }); },
+
+    // Analytics & Stats
+    async getStats() { return this.request('/api/admin/stats'); },
+    async getAnalytics(period = 'week') { return this.request(`/api/admin/analytics?period=${encodeURIComponent(period)}`); },
+
+    // Inventory
+    async getInventory(filter = 'all') {
+        const query = filter && filter !== 'all' ? `?filter=${encodeURIComponent(filter)}` : '';
+        return this.request(`/api/admin/inventory${query}`);
+    },
+    async updateInventory(updates) { return this.request('/api/admin/inventory', { method: 'PUT', body: JSON.stringify({ updates }) }); },
+
+    // Employees
+    async getEmployees() { return this.request('/api/admin/employees'); },
+    async createEmployee(data) { return this.request('/api/admin/employees', { method: 'POST', body: JSON.stringify(data) }); },
+    async updateEmployee(id, data) { return this.request(`/api/admin/employees/${id}`, { method: 'PUT', body: JSON.stringify(data) }); },
+    async deleteEmployee(id) { return this.request(`/api/admin/employees/${id}`, { method: 'DELETE' }); },
+
+    // Messages
+    async getMessages(filter = 'inbox') { return this.request(`/api/admin/messages?filter=${encodeURIComponent(filter)}`); },
+    async updateMessage(id, data) { return this.request(`/api/admin/messages/${id}`, { method: 'PUT', body: JSON.stringify(data) }); },
+    async deleteMessage(id) { return this.request(`/api/admin/messages/${id}`, { method: 'DELETE' }); },
+
+    // Admin Users
+    async getAdminUsers() { return this.request('/api/admin/users'); },
+    async createAdminUser(data) { return this.request('/api/admin/users', { method: 'POST', body: JSON.stringify(data) }); },
+    async updateAdminUser(id, data) { return this.request(`/api/admin/users/${id}`, { method: 'PUT', body: JSON.stringify(data) }); },
+    async deleteAdminUser(id) { return this.request(`/api/admin/users/${id}`, { method: 'DELETE' }); },
 
     // Offers  
     async getOffers(showAll = false) { return this.request(`/api/admin/offers?all=${showAll}`); },
@@ -44,7 +75,7 @@ const DashboardAPI = {
 
 window.DashboardAPI = DashboardAPI;
 
-// ===== MOCK DATA =====
+// ===== DATA STATE =====
 
 // Products Data - NOW LOADED FROM DATABASE (see loadProductsFromAPI in products.html)
 // This array is populated dynamically from the API
@@ -52,248 +83,24 @@ const products = [];
 
 
 // Orders Data
-const orders = [
-    // John Smith Orders - with productId linking to products
-    { id: 'ORD-2024-001', customer: { name: 'John Smith', email: 'john@email.com', phone: '+20 109 396 1545' }, date: '2024-01-13', items: 3, product: 'Strawberry Freeze', productId: 1, quantity: 3, amount: 45.99, status: 'delivered', paymentMethod: 'COD', depositStatus: 'paid', depositAmount: 20, stockDeducted: true },
-    { id: 'ORD-2023-101', customer: { name: 'John Smith', email: 'john@email.com', phone: '+20 109 396 1545' }, date: '2023-12-28', items: 2, product: 'Blueberry Blast', productId: 2, quantity: 2, amount: 35.50, status: 'delivered', paymentMethod: 'COD', depositStatus: 'paid', depositAmount: 15, stockDeducted: true },
-    { id: 'ORD-2023-089', customer: { name: 'John Smith', email: 'john@email.com', phone: '+20 109 396 1545' }, date: '2023-12-15', items: 5, product: 'Candy Mix', productId: 5, quantity: 5, amount: 78.00, status: 'delivered', paymentMethod: 'COD', depositStatus: 'paid', depositAmount: 30, stockDeducted: true },
-    { id: 'ORD-2023-075', customer: { name: 'John Smith', email: 'john@email.com', phone: '+20 109 396 1545' }, date: '2023-11-22', items: 1, product: 'Dark Chocolate Bar', productId: 4, quantity: 1, amount: 25.99, status: 'delivered', paymentMethod: 'COD', depositStatus: 'paid', depositAmount: 10, stockDeducted: true },
-    { id: 'ORD-2023-058', customer: { name: 'John Smith', email: 'john@email.com', phone: '+20 109 396 1545' }, date: '2023-10-30', items: 4, product: 'Tropical Mix', productId: 8, quantity: 4, amount: 62.50, status: 'delivered', paymentMethod: 'COD', depositStatus: 'paid', depositAmount: 25, stockDeducted: true },
-
-    // Emma Wilson Orders
-    { id: 'ORD-2024-002', customer: { name: 'Emma Wilson', email: 'emma@email.com', phone: '+20 112 345 6789' }, date: '2024-01-13', items: 2, product: 'Chocolate Delight', productId: 3, quantity: 2, amount: 32.50, status: 'shipped', paymentMethod: 'COD', depositStatus: 'paid', depositAmount: 15, stockDeducted: true },
-    { id: 'ORD-2023-098', customer: { name: 'Emma Wilson', email: 'emma@email.com', phone: '+20 112 345 6789' }, date: '2023-12-20', items: 3, product: 'Blueberry Blast', productId: 2, quantity: 3, amount: 45.00, status: 'delivered', paymentMethod: 'COD', depositStatus: 'paid', depositAmount: 20, stockDeducted: true },
-    { id: 'ORD-2023-082', customer: { name: 'Emma Wilson', email: 'emma@email.com', phone: '+20 112 345 6789' }, date: '2023-11-28', items: 2, product: 'Ice Cream Sundae', productId: 7, quantity: 2, amount: 28.99, status: 'delivered', paymentMethod: 'COD', depositStatus: 'paid', depositAmount: 10, stockDeducted: true },
-    { id: 'ORD-2023-065', customer: { name: 'Emma Wilson', email: 'emma@email.com', phone: '+20 112 345 6789' }, date: '2023-10-15', items: 4, product: 'Lollipop Pack', productId: 6, quantity: 4, amount: 55.50, status: 'delivered', paymentMethod: 'COD', depositStatus: 'paid', depositAmount: 20, stockDeducted: true },
-
-    // Michael Brown Orders
-    { id: 'ORD-2024-003', customer: { name: 'Michael Brown', email: 'michael@email.com', phone: '+20 100 123 4567' }, date: '2024-01-12', items: 4, product: 'Tropical Mix', productId: 8, quantity: 4, amount: 28.75, status: 'processing', paymentMethod: 'COD', depositStatus: 'paid', depositAmount: 10, stockDeducted: true },
-    { id: 'ORD-2023-105', customer: { name: 'Michael Brown', email: 'michael@email.com', phone: '+20 100 123 4567' }, date: '2023-12-30', items: 6, product: 'Winter Fruit Pack', productId: 10, quantity: 6, amount: 120.00, status: 'delivered', paymentMethod: 'COD', depositStatus: 'paid', depositAmount: 50, stockDeducted: true },
-    { id: 'ORD-2023-092', customer: { name: 'Michael Brown', email: 'michael@email.com', phone: '+20 100 123 4567' }, date: '2023-12-18', items: 2, product: 'Marshmallow Delight', productId: 9, quantity: 2, amount: 22.50, status: 'delivered', paymentMethod: 'COD', depositStatus: 'paid', depositAmount: 10, stockDeducted: true },
-    { id: 'ORD-2023-078', customer: { name: 'Michael Brown', email: 'michael@email.com', phone: '+20 100 123 4567' }, date: '2023-11-25', items: 3, product: 'Nutty Chocolate', productId: 11, quantity: 3, amount: 48.99, status: 'delivered', paymentMethod: 'COD', depositStatus: 'paid', depositAmount: 20, stockDeducted: true },
-    { id: 'ORD-2023-061', customer: { name: 'Michael Brown', email: 'michael@email.com', phone: '+20 100 123 4567' }, date: '2023-10-20', items: 5, product: 'Fall Fruit Selection', productId: 12, quantity: 5, amount: 89.00, status: 'delivered', paymentMethod: 'COD', depositStatus: 'paid', depositAmount: 35, stockDeducted: true },
-    { id: 'ORD-2023-045', customer: { name: 'Michael Brown', email: 'michael@email.com', phone: '+20 100 123 4567' }, date: '2023-09-12', items: 2, product: 'Ice Cream Sundae', productId: 7, quantity: 2, amount: 18.50, status: 'delivered', paymentMethod: 'COD', depositStatus: 'paid', depositAmount: 8, stockDeducted: true },
-
-    // Sarah Davis Orders - pending order has stockDeducted: false
-    { id: 'ORD-2024-004', customer: { name: 'Sarah Davis', email: 'sarah@email.com', phone: '+20 101 987 6543' }, date: '2024-01-12', items: 5, product: 'Candy Mix', productId: 5, quantity: 5, amount: 52.00, status: 'pending', paymentMethod: 'COD', depositStatus: 'pending', depositAmount: 0, stockDeducted: false },
-    { id: 'ORD-2023-095', customer: { name: 'Sarah Davis', email: 'sarah@email.com', phone: '+20 101 987 6543' }, date: '2023-12-22', items: 3, product: 'Marshmallow Delight', productId: 9, quantity: 3, amount: 24.99, status: 'delivered', paymentMethod: 'COD', depositStatus: 'paid', depositAmount: 10, stockDeducted: true },
-    { id: 'ORD-2023-080', customer: { name: 'Sarah Davis', email: 'sarah@email.com', phone: '+20 101 987 6543' }, date: '2023-11-30', items: 2, product: 'Lollipop Pack', productId: 6, quantity: 2, amount: 15.50, status: 'delivered', paymentMethod: 'COD', depositStatus: 'paid', depositAmount: 5, stockDeducted: true },
-    { id: 'ORD-2023-068', customer: { name: 'Sarah Davis', email: 'sarah@email.com', phone: '+20 101 987 6543' }, date: '2023-10-28', items: 4, product: 'Chocolate Delight', productId: 3, quantity: 4, amount: 38.00, status: 'delivered', paymentMethod: 'COD', depositStatus: 'paid', depositAmount: 15, stockDeducted: true },
-
-    // James Miller Orders
-    { id: 'ORD-2024-005', customer: { name: 'James Miller', email: 'james@email.com', phone: '+20 111 222 3333' }, date: '2024-01-11', items: 2, product: 'Tropical Mix', productId: 8, quantity: 2, amount: 38.90, status: 'delivered', paymentMethod: 'COD', depositStatus: 'paid', depositAmount: 15, stockDeducted: true },
-    { id: 'ORD-2023-088', customer: { name: 'James Miller', email: 'james@email.com', phone: '+20 111 222 3333' }, date: '2023-12-10', items: 3, product: 'Strawberry Freeze', productId: 1, quantity: 3, amount: 42.00, status: 'delivered', paymentMethod: 'COD', depositStatus: 'paid', depositAmount: 18, stockDeducted: true },
-    { id: 'ORD-2023-072', customer: { name: 'James Miller', email: 'james@email.com', phone: '+20 111 222 3333' }, date: '2023-11-18', items: 1, product: 'Winter Fruit Pack', productId: 10, quantity: 1, amount: 19.99, status: 'delivered', paymentMethod: 'COD', depositStatus: 'paid', depositAmount: 8, stockDeducted: true },
-
-    // Lisa Anderson Orders - cancelled has stockDeducted: false (restored)
-    { id: 'ORD-2024-006', customer: { name: 'Lisa Anderson', email: 'lisa@email.com', phone: '+20 122 333 4444' }, date: '2024-01-11', items: 3, product: 'Dark Chocolate Bar', productId: 4, quantity: 3, amount: 67.50, status: 'cancelled', paymentMethod: 'COD', depositStatus: 'refunded', depositAmount: 25, stockDeducted: false },
-    { id: 'ORD-2023-102', customer: { name: 'Lisa Anderson', email: 'lisa@email.com', phone: '+20 122 333 4444' }, date: '2023-12-29', items: 2, product: 'Dark Chocolate Bar', productId: 4, quantity: 2, amount: 45.00, status: 'delivered', paymentMethod: 'COD', depositStatus: 'paid', depositAmount: 18, stockDeducted: true },
-    { id: 'ORD-2023-091', customer: { name: 'Lisa Anderson', email: 'lisa@email.com', phone: '+20 122 333 4444' }, date: '2023-12-15', items: 4, product: 'Chocolate Delight', productId: 3, quantity: 4, amount: 52.50, status: 'delivered', paymentMethod: 'COD', depositStatus: 'paid', depositAmount: 20, stockDeducted: true },
-    { id: 'ORD-2023-077', customer: { name: 'Lisa Anderson', email: 'lisa@email.com', phone: '+20 122 333 4444' }, date: '2023-11-22', items: 2, product: 'Nutty Chocolate', productId: 11, quantity: 2, amount: 38.99, status: 'delivered', paymentMethod: 'COD', depositStatus: 'paid', depositAmount: 15, stockDeducted: true },
-    { id: 'ORD-2023-064', customer: { name: 'Lisa Anderson', email: 'lisa@email.com', phone: '+20 122 333 4444' }, date: '2023-10-18', items: 5, product: 'Fall Fruit Selection', productId: 12, quantity: 5, amount: 95.00, status: 'delivered', paymentMethod: 'COD', depositStatus: 'paid', depositAmount: 40, stockDeducted: true },
-    { id: 'ORD-2023-051', customer: { name: 'Lisa Anderson', email: 'lisa@email.com', phone: '+20 122 333 4444' }, date: '2023-09-25', items: 1, product: 'Chocolate Delight', productId: 3, quantity: 1, amount: 18.50, status: 'delivered', paymentMethod: 'COD', depositStatus: 'paid', depositAmount: 8, stockDeducted: true },
-    { id: 'ORD-2023-038', customer: { name: 'Lisa Anderson', email: 'lisa@email.com', phone: '+20 122 333 4444' }, date: '2023-08-30', items: 3, product: 'Dark Chocolate Bar', productId: 4, quantity: 3, amount: 55.00, status: 'delivered', paymentMethod: 'COD', depositStatus: 'paid', depositAmount: 22, stockDeducted: true },
-    { id: 'ORD-2023-025', customer: { name: 'Lisa Anderson', email: 'lisa@email.com', phone: '+20 122 333 4444' }, date: '2023-07-15', items: 2, product: 'Nutty Chocolate', productId: 11, quantity: 2, amount: 29.99, status: 'delivered', paymentMethod: 'COD', depositStatus: 'paid', depositAmount: 12, stockDeducted: true },
-
-    // David Taylor Orders
-    { id: 'ORD-2024-007', customer: { name: 'David Taylor', email: 'david@email.com', phone: '+20 100 555 6666' }, date: '2024-01-10', items: 1, product: 'Ice Cream Sundae', productId: 7, quantity: 1, amount: 15.99, status: 'delivered', paymentMethod: 'COD', depositStatus: 'paid', depositAmount: 10, stockDeducted: true },
-    { id: 'ORD-2023-099', customer: { name: 'David Taylor', email: 'david@email.com', phone: '+20 100 555 6666' }, date: '2023-12-24', items: 4, product: 'Marshmallow Delight', productId: 9, quantity: 4, amount: 65.00, status: 'delivered', paymentMethod: 'COD', depositStatus: 'paid', depositAmount: 25, stockDeducted: true },
-    { id: 'ORD-2023-084', customer: { name: 'David Taylor', email: 'david@email.com', phone: '+20 100 555 6666' }, date: '2023-12-01', items: 2, product: 'Strawberry Freeze', productId: 1, quantity: 2, amount: 35.50, status: 'delivered', paymentMethod: 'COD', depositStatus: 'paid', depositAmount: 14, stockDeducted: true },
-    { id: 'ORD-2023-069', customer: { name: 'David Taylor', email: 'david@email.com', phone: '+20 100 555 6666' }, date: '2023-10-25', items: 3, product: 'Blueberry Blast', productId: 2, quantity: 3, amount: 42.99, status: 'delivered', paymentMethod: 'COD', depositStatus: 'paid', depositAmount: 18, stockDeducted: true },
-    { id: 'ORD-2023-054', customer: { name: 'David Taylor', email: 'david@email.com', phone: '+20 100 555 6666' }, date: '2023-09-18', items: 2, product: 'Tropical Mix', productId: 8, quantity: 2, amount: 28.00, status: 'delivered', paymentMethod: 'COD', depositStatus: 'paid', depositAmount: 12, stockDeducted: true },
-
-    // Jennifer White Orders
-    { id: 'ORD-2024-008', customer: { name: 'Jennifer White', email: 'jennifer@email.com', phone: '+20 109 777 8888' }, date: '2024-01-10', items: 6, product: 'Fall Fruit Selection', productId: 12, quantity: 6, amount: 89.99, status: 'shipped', paymentMethod: 'COD', depositStatus: 'paid', depositAmount: 30, stockDeducted: true },
-    { id: 'ORD-2023-096', customer: { name: 'Jennifer White', email: 'jennifer@email.com', phone: '+20 109 777 8888' }, date: '2023-12-23', items: 3, product: 'Tropical Mix', productId: 8, quantity: 3, amount: 55.00, status: 'delivered', paymentMethod: 'COD', depositStatus: 'paid', depositAmount: 22, stockDeducted: true },
-    { id: 'ORD-2023-081', customer: { name: 'Jennifer White', email: 'jennifer@email.com', phone: '+20 109 777 8888' }, date: '2023-11-29', items: 4, product: 'Winter Fruit Pack', productId: 10, quantity: 4, amount: 48.50, status: 'delivered', paymentMethod: 'COD', depositStatus: 'paid', depositAmount: 20, stockDeducted: true },
-    { id: 'ORD-2023-066', customer: { name: 'Jennifer White', email: 'jennifer@email.com', phone: '+20 109 777 8888' }, date: '2023-10-22', items: 2, product: 'Blueberry Blast', productId: 2, quantity: 2, amount: 32.00, status: 'delivered', paymentMethod: 'COD', depositStatus: 'paid', depositAmount: 12, stockDeducted: true },
-
-    // Robert Harris Orders - processing has stockDeducted: true
-    { id: 'ORD-2024-009', customer: { name: 'Robert Harris', email: 'robert@email.com', phone: '+20 115 999 0000' }, date: '2024-01-09', items: 2, product: 'Candy Mix', productId: 5, quantity: 2, amount: 24.99, status: 'processing', paymentMethod: 'COD', depositStatus: 'pending', depositAmount: 0, stockDeducted: true },
-    { id: 'ORD-2023-087', customer: { name: 'Robert Harris', email: 'robert@email.com', phone: '+20 115 999 0000' }, date: '2023-12-08', items: 3, product: 'Lollipop Pack', productId: 6, quantity: 3, amount: 28.50, status: 'delivered', paymentMethod: 'COD', depositStatus: 'paid', depositAmount: 12, stockDeducted: true },
-    { id: 'ORD-2023-070', customer: { name: 'Robert Harris', email: 'robert@email.com', phone: '+20 115 999 0000' }, date: '2023-10-30', items: 2, product: 'Marshmallow Delight', productId: 9, quantity: 2, amount: 19.99, status: 'delivered', paymentMethod: 'COD', depositStatus: 'paid', depositAmount: 8, stockDeducted: true },
-
-    // Maria Garcia Orders - pending has stockDeducted: false
-    { id: 'ORD-2024-010', customer: { name: 'Maria Garcia', email: 'maria@email.com', phone: '+20 106 111 2222' }, date: '2024-01-09', items: 4, product: 'Winter Fruit Pack', productId: 10, quantity: 4, amount: 56.80, status: 'pending', paymentMethod: 'COD', depositStatus: 'pending', depositAmount: 0, stockDeducted: false },
-    { id: 'ORD-2023-093', customer: { name: 'Maria Garcia', email: 'maria@email.com', phone: '+20 106 111 2222' }, date: '2023-12-19', items: 2, product: 'Strawberry Freeze', productId: 1, quantity: 2, amount: 35.00, status: 'delivered', paymentMethod: 'COD', depositStatus: 'paid', depositAmount: 14, stockDeducted: true },
-    { id: 'ORD-2023-076', customer: { name: 'Maria Garcia', email: 'maria@email.com', phone: '+20 106 111 2222' }, date: '2023-11-20', items: 3, product: 'Fall Fruit Selection', productId: 12, quantity: 3, amount: 42.50, status: 'delivered', paymentMethod: 'COD', depositStatus: 'paid', depositAmount: 18, stockDeducted: true }
-];
+const orders = [];
 
 // Customers Data
-const customers = [
-    {
-        id: 1,
-        name: 'John Smith',
-        email: 'john@email.com',
-        phone: '+20 109 396 1545',
-        orders: 5,
-        spent: 247.98,
-        status: 'active'
-    },
-    {
-        id: 2,
-        name: 'Emma Wilson',
-        email: 'emma@email.com',
-        phone: '+20 112 345 6789',
-        orders: 4,
-        spent: 161.99,
-        status: 'active'
-    },
-    {
-        id: 3,
-        name: 'Michael Brown',
-        email: 'michael@email.com',
-        phone: '+20 100 123 4567',
-        orders: 6,
-        spent: 327.74,
-        status: 'active'
-    },
-    {
-        id: 4,
-        name: 'Sarah Davis',
-        email: 'sarah@email.com',
-        phone: '+20 101 987 6543',
-        orders: 4,
-        spent: 130.49,
-        status: 'active'
-    },
-    {
-        id: 5,
-        name: 'James Miller',
-        email: 'james@email.com',
-        phone: '+20 111 222 3333',
-        orders: 3,
-        spent: 100.89,
-        status: 'active'
-    },
-    {
-        id: 6,
-        name: 'Lisa Anderson',
-        email: 'lisa@email.com',
-        phone: '+20 122 333 4444',
-        orders: 8,
-        spent: 402.48,
-        status: 'inactive'
-    },
-    {
-        id: 7,
-        name: 'David Taylor',
-        email: 'david@email.com',
-        phone: '+20 100 555 6666',
-        orders: 5,
-        spent: 187.48,
-        status: 'active'
-    },
-    {
-        id: 8,
-        name: 'Jennifer White',
-        email: 'jennifer@email.com',
-        phone: '+20 109 777 8888',
-        orders: 4,
-        spent: 225.49,
-        status: 'active'
-    },
-    {
-        id: 9,
-        name: 'Robert Harris',
-        email: 'robert@email.com',
-        phone: '+20 115 999 0000',
-        orders: 3,
-        spent: 73.48,
-        status: 'active'
-    },
-    {
-        id: 10,
-        name: 'Maria Garcia',
-        email: 'maria@email.com',
-        phone: '+20 106 111 2222',
-        orders: 3,
-        spent: 134.30,
-        status: 'active'
-    }
-];
+const customers = [];
 
 // Top Products Data
-const topProducts = [
-    { name: 'Strawberry Freeze', category: 'Fruits', sales: 245, image: 'assets/fruits/summer fruits/summer1.png' },
-    { name: 'Chocolate Delight', category: 'Chocolate', sales: 198, image: 'assets/candy-page-img/chocolate/chocolate1.png' },
-    { name: 'Mixed Berry Pack', category: 'Fruits', sales: 176, image: 'assets/fruits/mixed fruits/mixed1.png' },
-    { name: 'Candy Swirl', category: 'Candy', sales: 154, image: 'assets/candy-page-img/candy/candy1.png' },
-    { name: 'Ice Cream Sundae', category: 'Ice Cream', sales: 142, image: 'assets/candy-page-img/icecream/ic-cream.png' }
-];
+const topProducts = [];
 
 // Chart Data by Time Period
-const chartDataByPeriod = {
-    today: {
-        revenue: {
-            labels: ['6AM', '9AM', '12PM', '3PM', '6PM', '9PM', 'Now'],
-            data: [120, 350, 580, 420, 390, 450, 140]
-        },
-        category: {
-            labels: ['Fruits', 'Chocolate', 'Candy', 'Ice Cream'],
-            data: [42, 25, 18, 15],
-            colors: ['#10b981', '#8b5cf6', '#f59e0b', '#3b82f6']
-        }
-    },
-    week: {
-        revenue: {
-            labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-            data: [4200, 5800, 4500, 7200, 6800, 8900, 9500]
-        },
-        category: {
-            labels: ['Fruits', 'Chocolate', 'Candy', 'Ice Cream'],
-            data: [35, 28, 22, 15],
-            colors: ['#10b981', '#8b5cf6', '#f59e0b', '#3b82f6']
-        }
-    },
-    month: {
-        revenue: {
-            labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
-            data: [28500, 32400, 35200, 32650]
-        },
-        category: {
-            labels: ['Fruits', 'Chocolate', 'Candy', 'Ice Cream'],
-            data: [38, 26, 24, 12],
-            colors: ['#10b981', '#8b5cf6', '#f59e0b', '#3b82f6']
-        }
-    },
-    year: {
-        revenue: {
-            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-            data: [85000, 92000, 108000, 115000, 125000, 132000, 128000, 138000, 142000, 148000, 155000, 188890]
-        },
-        category: {
-            labels: ['Fruits', 'Chocolate', 'Candy', 'Ice Cream'],
-            data: [32, 30, 23, 15],
-            colors: ['#10b981', '#8b5cf6', '#f59e0b', '#3b82f6']
-        }
-    }
-};
+const chartDataByPeriod = {};
 
 // Chart Data (default)
 const chartData = {
-    revenueWeekly: {
-        labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-        data: [4200, 5800, 4500, 7200, 6800, 8900, 9500]
-    },
-    categoryDistribution: {
-        labels: ['Fruits', 'Chocolate', 'Candy', 'Ice Cream'],
-        data: [35, 28, 22, 15],
-        colors: ['#10b981', '#8b5cf6', '#f59e0b', '#3b82f6']
-    },
-    salesMonthly: {
-        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-        data: [12000, 19000, 15000, 25000, 22000, 30000, 28000, 32000, 29000, 35000, 38000, 42000]
-    },
-    customerGrowth: {
-        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-        data: [45, 62, 58, 78, 85, 92, 88, 105, 98, 112, 125, 138]
-    },
-    revenueByCategory: {
-        labels: ['Fruits', 'Chocolate', 'Candy', 'Ice Cream', 'Nuts', 'Marshmallow'],
-        data: [15800, 12600, 9800, 6700, 4200, 3500],
-        colors: ['#10b981', '#8b5cf6', '#f59e0b', '#3b82f6', '#ec4899', '#06b6d4']
-    }
+    revenueWeekly: { labels: [], data: [] },
+    categoryDistribution: { labels: [], data: [], colors: [] },
+    salesMonthly: { labels: [], data: [] },
+    customerGrowth: { labels: [], data: [] },
+    revenueByCategory: { labels: [], data: [], colors: [] }
 };
 
 // Store chart instances for updating
@@ -301,127 +108,299 @@ let revenueChartInstance = null;
 let categoryChartInstance = null;
 
 // Dashboard Stats by Time Period
-const dashboardStatsByPeriod = {
-    today: {
-        totalRevenue: 2450,
-        revenueGrowth: 8.2,
-        totalOrders: 47,
-        ordersGrowth: 5.1,
-        totalCustomers: 23,
-        customersGrowth: 12.3,
-        totalProducts: 156,
-        productsChange: 0
-    },
-    week: {
-        totalRevenue: 45280,
-        revenueGrowth: 12.5,
-        totalOrders: 1284,
-        ordersGrowth: 8.3,
-        totalCustomers: 892,
-        customersGrowth: 15.2,
-        totalProducts: 156,
-        productsChange: -2.1
-    },
-    month: {
-        totalRevenue: 128750,
-        revenueGrowth: 18.7,
-        totalOrders: 4523,
-        ordersGrowth: 14.2,
-        totalCustomers: 2156,
-        customersGrowth: 22.8,
-        totalProducts: 156,
-        productsChange: 3.5
-    },
-    year: {
-        totalRevenue: 1456890,
-        revenueGrowth: 24.3,
-        totalOrders: 52847,
-        ordersGrowth: 19.6,
-        totalCustomers: 12450,
-        customersGrowth: 35.4,
-        totalProducts: 156,
-        productsChange: 8.2
-    }
-};
+const dashboardStatsByPeriod = {};
 
 // Current dashboard stats (default to week)
-let dashboardStats = { ...dashboardStatsByPeriod.week };
+let dashboardStats = {};
 
 // Order Statistics
-const orderStats = {
-    pending: 24,
-    processing: 18,
-    shipped: 42,
-    delivered: 156,
-    cancelled: 8
-};
+const orderStats = { pending: 0, processing: 0, shipped: 0, delivered: 0, cancelled: 0 };
 
 // Trash for deleted/cancelled orders (manual delete only)
-let orderTrash = [
-    {
-        id: 'ORD-2024-099',
-        customer: { id: 99, name: 'Customer Cancelled', email: 'cancel@test.com', phone: '+20 100 000 0000' },
-        date: '2024-01-10',
-        items: [
-            { productId: 1, name: 'Strawberry Freeze', quantity: 2, price: 12.99 }
-        ],
-        totalAmount: 25.98,
-        status: 'cancelled',
-        paymentMethod: 'COD',
-        depositStatus: 'none',
-        deletedDate: new Date().toISOString()
-    },
-    {
-        id: 'ORD-2024-098',
-        customer: { id: 98, name: 'Another Cancel', email: 'another@test.com', phone: '+20 100 111 1111' },
-        date: '2024-01-08',
-        items: [
-            { productId: 3, name: 'Chocolate Delight', quantity: 1, price: 18.99 }
-        ],
-        totalAmount: 18.99,
-        status: 'cancelled',
-        paymentMethod: 'COD',
-        depositStatus: 'pending',
-        deletedDate: new Date().toISOString()
-    }
-];
+let orderTrash = [];
 
 // Trash for deleted messages
-let messageTrash = [
-    {
-        id: 100,
-        sender: 'Old Customer',
-        email: 'old@customer.com',
-        subject: 'Old inquiry - Resolved',
-        preview: 'This issue has been resolved...',
-        fullMessage: 'This issue has been resolved and the message was moved to trash.',
-        avatar: 'OC',
-        avatarColor: '#6366f1',
-        time: '2 weeks ago',
-        read: true,
-        deletedDate: new Date().toISOString()
-    }
-];
+let messageTrash = [];
 
 // Archived messages
-let archivedMessages = [
-    {
-        id: 200,
-        sender: 'Completed Deal',
-        email: 'deal@company.com',
-        subject: 'Partnership Agreement Signed',
-        preview: 'Thank you for signing the partnership agreement...',
-        fullMessage: 'Thank you for signing the partnership agreement. We look forward to working with you.\n\nBest regards,\nCompleted Deal Team',
-        avatar: 'CD',
-        avatarColor: '#10b981',
-        time: '1 month ago',
-        read: true,
-        archivedDate: new Date().toISOString()
+let archivedMessages = [];
+
+const analyticsCache = {};
+const dataLoadState = {
+    products: false,
+    orders: false,
+    customers: false,
+    stats: false,
+    messages: false,
+    employees: false,
+    users: false
+};
+
+function parseNumber(value, fallback = 0) {
+    const parsed = parseFloat(value);
+    return Number.isFinite(parsed) ? parsed : fallback;
+}
+
+function formatRelativeTime(dateValue) {
+    if (!dateValue) return '';
+    const date = new Date(dateValue);
+    if (Number.isNaN(date.getTime())) return '';
+    const diffMs = Date.now() - date.getTime();
+    const diffSeconds = Math.floor(diffMs / 1000);
+    const diffMinutes = Math.floor(diffSeconds / 60);
+    const diffHours = Math.floor(diffMinutes / 60);
+    const diffDays = Math.floor(diffHours / 24);
+    if (diffSeconds < 60) return 'Just now';
+    if (diffMinutes < 60) return `${diffMinutes} minute${diffMinutes !== 1 ? 's' : ''} ago`;
+    if (diffHours < 24) return `${diffHours} hour${diffHours !== 1 ? 's' : ''} ago`;
+    return `${diffDays} day${diffDays !== 1 ? 's' : ''} ago`;
+}
+
+function getOrderItemLabel(items = []) {
+    if (!items.length) return 'Order Items';
+    if (items.length === 1) return items[0].productName || 'Order Item';
+    return `${items[0].productName || 'Item'} + ${items.length - 1} more`;
+}
+
+function getOrderItemCount(items = []) {
+    if (!items.length) return 0;
+    return items.reduce((sum, item) => sum + (item.quantity || 0), 0);
+}
+
+function normalizeOrder(order) {
+    const lineItems = Array.isArray(order.items) ? order.items : [];
+    const itemsCount = getOrderItemCount(lineItems) || order.items || 0;
+    const primaryItem = lineItems[0];
+    return {
+        id: String(order.id),
+        customer: order.customer || { name: 'Guest', email: '', phone: '' },
+        date: order.date || (order.createdAt ? new Date(order.createdAt).toISOString().split('T')[0] : ''),
+        items: itemsCount,
+        lineItems,
+        product: lineItems.length ? getOrderItemLabel(lineItems) : (order.product || 'Order Items'),
+        productId: primaryItem?.productId,
+        quantity: primaryItem?.quantity || itemsCount || 1,
+        amount: parseNumber(order.totalAmount ?? order.amount, 0),
+        status: order.status || 'pending',
+        paymentMethod: order.paymentMethod || 'COD',
+        paymentStatus: order.paymentStatus || 'unpaid',
+        depositAmount: parseNumber(order.depositAmount, 0),
+        depositStatus: order.depositStatus || 'pending'
+    };
+}
+
+function renderOrderItemsHTML(order) {
+    const items = order.lineItems || [];
+    if (!items.length) {
+        return `
+            <div class="receipt-item">
+                <div class="receipt-item-info">
+                    <span class="receipt-item-name">${order.product}</span>
+                    <span class="receipt-item-qty">× ${order.items}</span>
+                </div>
+                <span class="receipt-item-price">${formatCurrency(order.amount)}</span>
+            </div>
+        `;
     }
-];
+
+    return items.map(item => `
+        <div class="receipt-item">
+            <div class="receipt-item-info">
+                <span class="receipt-item-name">${item.productName || 'Item'}</span>
+                <span class="receipt-item-qty">× ${item.quantity || 0}</span>
+            </div>
+            <span class="receipt-item-price">${formatCurrency(parseNumber(item.priceAtPurchase, 0))}</span>
+        </div>
+    `).join('');
+}
+
+function normalizeCustomer(customer) {
+    return {
+        id: customer.id,
+        name: customer.name || 'Unknown',
+        email: customer.email || '',
+        phone: customer.phone || '',
+        address: customer.address || '',
+        status: customer.status || 'active',
+        orders: customer.totalOrders ?? 0,
+        spent: parseNumber(customer.totalSpent, 0)
+    };
+}
+
+function normalizeMessage(message) {
+    const sender = message.senderName || message.sender || 'Customer';
+    return {
+        id: message.id,
+        sender,
+        email: message.senderEmail || message.email || '',
+        subject: message.subject || 'No subject',
+        preview: message.message ? message.message.slice(0, 80) : '',
+        fullMessage: message.message || message.fullMessage || '',
+        avatar: getInitials(sender),
+        avatarColor: getAvatarColor(sender),
+        time: formatRelativeTime(message.createdAt),
+        read: message.isRead ?? message.read ?? false
+    };
+}
+
+function normalizeEmployee(employee) {
+    return {
+        id: employee.id,
+        name: employee.name,
+        email: employee.email || '',
+        phone: employee.phone || '',
+        department: employee.department || '',
+        position: employee.position || '',
+        status: employee.status || 'active',
+        hireDate: employee.hireDate || '',
+        salary: parseNumber(employee.salary, 0),
+        address: employee.address || '',
+        avatar: employee.avatar || null,
+        stats: employee.stats || { orders: 0, messages: 0, inventory: 0 }
+    };
+}
+
+function setChartDataForPeriod(period, analytics) {
+    const revenueLabels = analytics.revenueOverTime?.map(item => item.date) || [];
+    const revenueData = analytics.revenueOverTime?.map(item => parseNumber(item.revenue, 0)) || [];
+    const categoryLabels = analytics.revenueByCategory?.map(item => item.category || 'Other') || [];
+    const categoryData = analytics.revenueByCategory?.map(item => parseNumber(item.revenue, 0)) || [];
+    const palette = ['#10b981', '#8b5cf6', '#f59e0b', '#3b82f6', '#ec4899', '#06b6d4', '#f97316', '#22c55e'];
+    chartDataByPeriod[period] = {
+        revenue: { labels: revenueLabels, data: revenueData },
+        category: {
+            labels: categoryLabels,
+            data: categoryData,
+            colors: categoryLabels.map((_, idx) => palette[idx % palette.length])
+        }
+    };
+}
+
+function syncAnalyticsToCharts(analytics) {
+    chartData.salesMonthly = {
+        labels: analytics.revenueOverTime?.map(item => item.date) || [],
+        data: analytics.revenueOverTime?.map(item => parseNumber(item.revenue, 0)) || []
+    };
+    chartData.customerGrowth = {
+        labels: analytics.customerGrowth?.map(item => item.date) || [],
+        data: analytics.customerGrowth?.map(item => parseNumber(item.count, 0)) || []
+    };
+    chartData.revenueByCategory = {
+        labels: analytics.revenueByCategory?.map(item => item.category || 'Other') || [],
+        data: analytics.revenueByCategory?.map(item => parseNumber(item.revenue, 0)) || [],
+        colors: chartDataByPeriod.month?.category?.colors || []
+    };
+}
+
+async function loadProductsFromAPI(force = false) {
+    if (dataLoadState.products && !force) return;
+    const apiProducts = await DashboardAPI.getProducts();
+    products.length = 0;
+    apiProducts.forEach(p => {
+        products.push({
+            id: p.id,
+            name: p.name,
+            sku: p.sku || '',
+            category: p.category || '',
+            price: parseNumber(p.price, 0),
+            stock: p.stock || 0,
+            minStock: p.minStock || 10,
+            status: p.status || 'active',
+            image: p.images?.[0] || '',
+            images: p.images || [],
+            description: p.description || ''
+        });
+    });
+    dataLoadState.products = true;
+}
+
+async function loadOrdersFromAPI(force = false) {
+    if (dataLoadState.orders && !force) return;
+    const apiOrders = await DashboardAPI.getOrders();
+    orders.length = 0;
+    apiOrders.forEach(order => orders.push(normalizeOrder(order)));
+    dataLoadState.orders = true;
+}
+
+async function loadCustomersFromAPI(force = false) {
+    if (dataLoadState.customers && !force) return;
+    const apiCustomers = await DashboardAPI.getCustomers();
+    customers.length = 0;
+    apiCustomers.forEach(customer => customers.push(normalizeCustomer(customer)));
+    dataLoadState.customers = true;
+}
+
+async function loadStatsFromAPI(force = false) {
+    if (dataLoadState.stats && !force) return;
+    const stats = await DashboardAPI.getStats();
+    Object.keys(dashboardStatsByPeriod).forEach(key => delete dashboardStatsByPeriod[key]);
+    Object.entries(stats.statsByPeriod || {}).forEach(([period, values]) => {
+        dashboardStatsByPeriod[period] = {
+            ...values,
+            revenueGrowth: 0,
+            ordersGrowth: 0,
+            customersGrowth: 0,
+            productsChange: 0
+        };
+    });
+    dashboardStats = { ...(dashboardStatsByPeriod.week || {}) };
+    orderStats.pending = stats.orderStats?.pending ?? 0;
+    orderStats.processing = stats.orderStats?.processing ?? 0;
+    orderStats.shipped = stats.orderStats?.shipped ?? 0;
+    orderStats.delivered = stats.orderStats?.delivered ?? 0;
+    orderStats.cancelled = stats.orderStats?.cancelled ?? 0;
+    topProducts.length = 0;
+    (stats.topProducts || []).forEach(product => topProducts.push(product));
+    dataLoadState.stats = true;
+}
+
+async function loadAnalyticsFromAPI(period = 'week') {
+    if (analyticsCache[period]) return analyticsCache[period];
+    const analytics = await DashboardAPI.getAnalytics(period);
+    analyticsCache[period] = analytics;
+    setChartDataForPeriod(period, analytics);
+    if (period === 'month') {
+        syncAnalyticsToCharts(analytics);
+    }
+    return analytics;
+}
+
+async function loadMessagesFromAPI(force = false) {
+    if (dataLoadState.messages && !force) return;
+    const [inbox, archived, trash] = await Promise.all([
+        DashboardAPI.getMessages('inbox'),
+        DashboardAPI.getMessages('archived'),
+        DashboardAPI.getMessages('trash')
+    ]);
+    messages.length = 0;
+    archivedMessages.length = 0;
+    messageTrash.length = 0;
+    inbox.forEach(msg => messages.push(normalizeMessage(msg)));
+    archived.forEach(msg => archivedMessages.push(normalizeMessage(msg)));
+    trash.forEach(msg => messageTrash.push(normalizeMessage(msg)));
+    dataLoadState.messages = true;
+    updateMessageBadge();
+    updateHeaderTrashBadge();
+}
+
+async function loadEmployeesFromAPI(force = false) {
+    if (dataLoadState.employees && !force) return;
+    const apiEmployees = await DashboardAPI.getEmployees();
+    globalEmployees.length = 0;
+    apiEmployees.forEach(emp => globalEmployees.push(normalizeEmployee(emp)));
+    currentActiveEmployee = globalEmployees.find(emp => emp.status === 'active') || globalEmployees[0] || null;
+    dataLoadState.employees = true;
+}
+
+async function loadAdminUsersFromAPI(force = false) {
+    if (dataLoadState.users && !force) return;
+    const apiUsers = await DashboardAPI.getAdminUsers();
+    window.adminUsers = apiUsers;
+    dataLoadState.users = true;
+}
 
 // Move message to archive
-function moveMessageToArchive(msgId) {
+async function moveMessageToArchive(msgId) {
     const msgIndex = messages.findIndex(m => m.id === msgId);
     if (msgIndex !== -1) {
         const msg = messages[msgIndex];
@@ -429,13 +408,18 @@ function moveMessageToArchive(msgId) {
         archivedMessages.push(msg);
         messages.splice(msgIndex, 1);
         updateMessageBadge();
+        try {
+            await DashboardAPI.updateMessage(msgId, { isArchived: true, isDeleted: false });
+        } catch (error) {
+            console.warn('Failed to archive message:', error);
+        }
         return msg;
     }
     return null;
 }
 
 // Restore message from archive
-function restoreMessageFromArchive(msgId) {
+async function restoreMessageFromArchive(msgId) {
     const msgIndex = archivedMessages.findIndex(m => m.id === msgId);
     if (msgIndex !== -1) {
         const msg = archivedMessages[msgIndex];
@@ -443,13 +427,18 @@ function restoreMessageFromArchive(msgId) {
         messages.unshift(msg);
         archivedMessages.splice(msgIndex, 1);
         updateMessageBadge();
+        try {
+            await DashboardAPI.updateMessage(msgId, { isArchived: false, isDeleted: false });
+        } catch (error) {
+            console.warn('Failed to restore archived message:', error);
+        }
         return msg;
     }
     return null;
 }
 
 // Delete archived message (move to trash)
-function deleteArchivedMessage(msgId) {
+async function deleteArchivedMessage(msgId) {
     const msgIndex = archivedMessages.findIndex(m => m.id === msgId);
     if (msgIndex !== -1) {
         const msg = archivedMessages[msgIndex];
@@ -458,6 +447,11 @@ function deleteArchivedMessage(msgId) {
         messageTrash.push(msg);
         archivedMessages.splice(msgIndex, 1);
         updateHeaderTrashBadge();
+        try {
+            await DashboardAPI.updateMessage(msgId, { isArchived: false, isDeleted: true });
+        } catch (error) {
+            console.warn('Failed to delete archived message:', error);
+        }
         return msg;
     }
     return null;
@@ -470,12 +464,7 @@ window.restoreMessageFromArchive = restoreMessageFromArchive;
 window.deleteArchivedMessage = deleteArchivedMessage;
 
 // Customer Statistics
-const customerStats = {
-    active: 732,
-    newThisMonth: 48,
-    avgOrderValue: 52.80,
-    retentionRate: 78
-};
+const customerStats = { active: 0, newThisMonth: 0, avgOrderValue: 0, retentionRate: 0 };
 
 // ===== UTILITY FUNCTIONS =====
 
@@ -506,7 +495,7 @@ function getAvatarColor(name) {
 
 // Get avatar URL
 function getAvatarUrl(name) {
-    return `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=random&color=fff&size=128`;
+    return '/assets/icons/profile.svg';
 }
 
 // Get stock status
@@ -827,6 +816,7 @@ function createRevenueChart(canvasId, period = 'week') {
     if (!ctx) return;
 
     const periodData = chartDataByPeriod[period] || chartDataByPeriod.week;
+    if (!periodData) return;
 
     // Destroy existing chart if it exists
     if (revenueChartInstance) {
@@ -906,6 +896,7 @@ function createCategoryChart(canvasId, period = 'week') {
     if (!ctx) return;
 
     const periodData = chartDataByPeriod[period] || chartDataByPeriod.week;
+    if (!periodData) return;
 
     // Destroy existing chart if it exists
     if (categoryChartInstance) {
@@ -1153,6 +1144,10 @@ function renderRecentOrders(containerId) {
     if (!container) return;
 
     const recentOrders = orders.slice(0, 5);
+    if (!recentOrders.length) {
+        container.innerHTML = '<p style="color: var(--text-secondary); margin: 0;">No recent orders yet.</p>';
+        return;
+    }
 
     let html = `
         <table class="data-table">
@@ -1188,6 +1183,11 @@ function renderRecentOrders(containerId) {
 function renderTopProducts(containerId) {
     const container = document.getElementById(containerId);
     if (!container) return;
+
+    if (!topProducts.length) {
+        container.innerHTML = '<p style="color: var(--text-secondary); margin: 0;">No top products yet.</p>';
+        return;
+    }
 
     let html = '';
     topProducts.forEach(product => {
@@ -1470,7 +1470,7 @@ function addProduct(formData) {
         minStock: parseInt(formData.get('productMinStock')) || 20,
         status: formData.get('productStatus') || 'active',
         description: formData.get('productDescription'),
-        image: 'https://placehold.co/280x200/f1f5f9/64748b?text=New+Product'
+        image: ''
     };
 
     // Handle image if uploaded
@@ -1511,7 +1511,7 @@ function resetAddProductForm() {
         // Reset image preview
         const preview = document.getElementById('addImagePreview');
         if (preview) {
-            preview.src = 'https://placehold.co/200x150/f1f5f9/64748b?text=Product+Image';
+            preview.src = '/assets/icons/profile.svg';
         }
     }
 }
@@ -1541,9 +1541,9 @@ function editProduct(productId) {
 
     // Set image preview
     const imagePreview = document.getElementById('editImagePreview');
-    imagePreview.src = product.image || 'https://placehold.co/200x150/f1f5f9/64748b?text=No+Image';
+    imagePreview.src = product.image || '/assets/icons/profile.svg';
     imagePreview.onerror = function () {
-        this.src = 'https://placehold.co/200x150/f1f5f9/64748b?text=No+Image';
+        this.src = '/assets/icons/profile.svg';
     };
 
     // Open the modal
@@ -1734,13 +1734,7 @@ function viewOrder(orderId) {
                     <!-- Order Items -->
                     <div class="receipt-section">
                         <h4 class="receipt-section-title"><i class="fas fa-shopping-basket"></i> Order Items</h4>
-                        <div class="receipt-item">
-                            <div class="receipt-item-info">
-                                <span class="receipt-item-name">${order.product}</span>
-                                <span class="receipt-item-qty">× ${order.items}</span>
-                            </div>
-                            <span class="receipt-item-price">${formatCurrency(order.amount)}</span>
-                        </div>
+                        ${renderOrderItemsHTML(order)}
                     </div>
                     
                     <!-- Payment Info -->
@@ -1816,7 +1810,7 @@ function viewOrder(orderId) {
 }
 
 // Update Order Status
-function updateOrderStatus(orderId, newStatus) {
+async function updateOrderStatus(orderId, newStatus) {
     const order = orders.find(o => o.id === orderId);
     if (!order) return;
 
@@ -1827,11 +1821,24 @@ function updateOrderStatus(orderId, newStatus) {
 
     // If cancelling, move to trash
     if (newStatus === 'cancelled') {
+        try {
+            await DashboardAPI.updateOrder(parseInt(orderId, 10), { status: newStatus });
+        } catch (error) {
+            showAlert('error', `Failed to update order status.\n\n${error.message}`);
+            return;
+        }
         moveOrderToTrash(orderId);
         return;
     }
 
     order.status = newStatus;
+    try {
+        await DashboardAPI.updateOrder(parseInt(orderId, 10), { status: newStatus });
+    } catch (error) {
+        order.status = oldStatus;
+        showAlert('error', `Failed to update order status.\n\n${error.message}`);
+        return;
+    }
 
     // Update the receipt modal if open
     viewOrder(orderId);
@@ -1845,42 +1852,50 @@ function updateOrderStatus(orderId, newStatus) {
 
 // Handle Stock Change based on Order Status
 function handleOrderStockChange(order, oldStatus, newStatus) {
-    // Find the product by ID first, then by name
-    let product = null;
-    if (order.productId) {
-        product = products.find(p => p.id === order.productId);
-    }
-    if (!product) {
-        product = findProductByName(order.product);
-    }
+    const lineItems = order.lineItems?.length ? order.lineItems : [{
+        productId: order.productId,
+        productName: order.product,
+        quantity: order.quantity || order.items || 1
+    }];
 
-    if (!product) {
-        console.log(`Product not found for order: ${order.product}`);
-        return;
-    }
-
-    const quantity = order.quantity || order.items || 1;
+    const updateItemStock = (item, action) => {
+        let product = null;
+        if (item.productId) {
+            product = products.find(p => p.id === item.productId);
+        }
+        if (!product) {
+            product = findProductByName(item.productName);
+        }
+        if (!product) {
+            console.log(`Product not found for order item: ${item.productName}`);
+            return;
+        }
+        const quantity = item.quantity || 1;
+        if (action === 'deduct') {
+            deductStock(product, quantity, order.id);
+        } else {
+            restoreStock(product, quantity, order.id);
+        }
+    };
 
     // Stock should be deducted when order moves from pending to processing/shipped/delivered
     // Stock should be restored when order is cancelled
 
     // If order was cancelled and now is being reactivated
     if (oldStatus === 'cancelled' && newStatus !== 'cancelled') {
-        // Deduct stock
-        deductStock(product, quantity, order.id);
+        lineItems.forEach(item => updateItemStock(item, 'deduct'));
         order.stockDeducted = true;
     }
 
     // If order is being cancelled and stock was previously deducted
     if (oldStatus !== 'cancelled' && newStatus === 'cancelled' && order.stockDeducted) {
-        // Restore stock
-        restoreStock(product, quantity, order.id);
+        lineItems.forEach(item => updateItemStock(item, 'restore'));
         order.stockDeducted = false;
     }
 
     // If order moves from pending to processing (first time confirmation)
     if (oldStatus === 'pending' && !order.stockDeducted && (newStatus === 'processing' || newStatus === 'shipped')) {
-        deductStock(product, quantity, order.id);
+        lineItems.forEach(item => updateItemStock(item, 'deduct'));
         order.stockDeducted = true;
     }
 }
@@ -2812,37 +2827,10 @@ function showOrderDetailsModal(orderId) {
 }
 
 // Update Order Status from Modal
-function updateOrderStatusFromModal(orderId, newStatus) {
-    const orderIndex = orders.findIndex(o => o.id === orderId);
-    if (orderIndex !== -1) {
-        const order = orders[orderIndex];
-        const oldStatus = order.status;
-
-        // Handle stock changes
-        handleOrderStockChange(order, oldStatus, newStatus);
-
-        order.status = newStatus;
-        showOrderDetailsModal(orderId); // Refresh the modal
-
-        // Log employee activity
-        if (typeof logEmployeeActivity === 'function') {
-            logEmployeeActivity('order', `Updated order #${orderId} status from ${oldStatus} to ${newStatus}`);
-        }
-
-        // Find product for notification
-        let product = order.productId ? products.find(p => p.id === order.productId) : findProductByName(order.product);
-        const quantity = order.quantity || order.items || 1;
-
-        // Show stock change notification
-        if (product && oldStatus !== 'cancelled' && newStatus === 'cancelled') {
-            showAlert('info', `Order cancelled!\n\nStock restored: +${quantity} units\nProduct: ${product.name}\nNew stock level: ${product.stock} units`);
-        } else if (product && oldStatus === 'cancelled' && newStatus !== 'cancelled') {
-            showAlert('info', `Order reactivated!\n\nStock deducted: -${quantity} units\nProduct: ${product.name}\nNew stock level: ${product.stock} units`);
-        } else if (product && oldStatus === 'pending' && (newStatus === 'processing' || newStatus === 'shipped')) {
-            showAlert('success', `Order confirmed!\n\nStock deducted: -${quantity} units\nProduct: ${product.name}\nNew stock level: ${product.stock} units`);
-        } else {
-            showAlert('success', `Order status updated to ${newStatus}`);
-        }
+async function updateOrderStatusFromModal(orderId, newStatus) {
+    await updateOrderStatus(orderId, newStatus);
+    if (orders.find(o => o.id === orderId)) {
+        showOrderDetailsModal(orderId);
     }
 }
 
@@ -2953,7 +2941,7 @@ function editCustomer(customerId) {
 }
 
 // Save Edited Customer
-function saveEditedCustomer(event) {
+async function saveEditedCustomer(event) {
     event.preventDefault();
 
     const customerId = parseInt(document.getElementById('editCustomerId').value);
@@ -2964,14 +2952,24 @@ function saveEditedCustomer(event) {
         return;
     }
 
-    // Update customer data
-    customers[customerIndex].name = document.getElementById('editCustomerName').value;
-    customers[customerIndex].email = document.getElementById('editCustomerEmail').value;
-    customers[customerIndex].phone = document.getElementById('editCustomerPhone').value;
-    customers[customerIndex].address = document.getElementById('editCustomerAddress').value;
-    customers[customerIndex].city = document.getElementById('editCustomerCity').value;
-    customers[customerIndex].status = document.getElementById('editCustomerStatus').value;
-    customers[customerIndex].notes = document.getElementById('editCustomerNotes').value;
+    const updatedCustomer = {
+        name: document.getElementById('editCustomerName').value,
+        email: document.getElementById('editCustomerEmail').value,
+        phone: document.getElementById('editCustomerPhone').value,
+        address: document.getElementById('editCustomerAddress').value,
+        status: document.getElementById('editCustomerStatus').value
+    };
+
+    try {
+        await DashboardAPI.updateCustomer(customerId, updatedCustomer);
+        customers[customerIndex] = {
+            ...customers[customerIndex],
+            ...updatedCustomer
+        };
+    } catch (error) {
+        showAlert('error', `Failed to update customer.\n\n${error.message}`);
+        return;
+    }
 
     closeModal('editCustomerModal');
     renderFilteredCustomers();
@@ -2979,7 +2977,7 @@ function saveEditedCustomer(event) {
 }
 
 // Add New Customer
-function addNewCustomer(event) {
+async function addNewCustomer(event) {
     event.preventDefault();
 
     const name = document.getElementById('addCustomerName').value;
@@ -2992,23 +2990,21 @@ function addNewCustomer(event) {
         return;
     }
 
-    // Get the highest ID and add 1
-    const maxId = customers.reduce((max, c) => Math.max(max, c.id), 0);
-
     const newCustomer = {
-        id: maxId + 1,
         name: name,
         email: email,
         phone: phone,
         address: document.getElementById('addCustomerAddress').value,
-        city: document.getElementById('addCustomerCity').value,
-        status: document.getElementById('addCustomerStatus').value,
-        notes: document.getElementById('addCustomerNotes').value,
-        orders: 0,
-        spent: 0
+        status: document.getElementById('addCustomerStatus').value
     };
 
-    customers.push(newCustomer);
+    try {
+        await DashboardAPI.createCustomer(newCustomer);
+        await loadCustomersFromAPI(true);
+    } catch (error) {
+        showAlert('error', `Failed to add customer.\n\n${error.message}`);
+        return;
+    }
 
     // Log employee activity
     if (typeof logEmployeeActivity === 'function') {
@@ -3064,14 +3060,19 @@ function deleteCustomer(customerId) {
 }
 
 // Confirm Delete Customer
-function confirmDeleteCustomer(customerId) {
+async function confirmDeleteCustomer(customerId) {
     const index = customers.findIndex(c => c.id === customerId);
     if (index !== -1) {
         const customerName = customers[index].name;
-        customers.splice(index, 1);
-        closeModal('confirmDeleteCustomerModal');
-        renderFilteredCustomers();
-        showAlert('success', `Customer "${customerName}" has been deleted.`);
+        try {
+            await DashboardAPI.deleteCustomer(customerId);
+            customers.splice(index, 1);
+            closeModal('confirmDeleteCustomerModal');
+            renderFilteredCustomers();
+            showAlert('success', `Customer "${customerName}" has been deleted.`);
+        } catch (error) {
+            showAlert('error', `Failed to delete customer.\n\n${error.message}`);
+        }
     }
 }
 
@@ -3548,78 +3549,7 @@ function closeAlertModal() {
 
 // Show Notifications
 // Notifications Data
-let notifications = [
-    {
-        id: 1,
-        type: 'order',
-        title: 'New Order Received',
-        message: 'Order #ORD-2024-011 has been placed by Ahmed Hassan for EGP 125.50',
-        details: 'Customer: Ahmed Hassan\nEmail: ahmed@email.com\nItems: 3x Strawberry Freeze, 2x Chocolate Delight\nTotal: EGP 125.50\nPayment: Cash on Delivery',
-        icon: 'fa-shopping-cart',
-        iconBg: 'var(--success-light)',
-        iconColor: 'var(--success)',
-        time: '2 minutes ago',
-        read: false,
-        action: 'viewOrder',
-        actionData: 'ORD-2024-011'
-    },
-    {
-        id: 2,
-        type: 'stock',
-        title: 'Low Stock Alert',
-        message: 'Candy Mix is running low on stock (12 units remaining)',
-        details: 'Product: Candy Mix\nSKU: CND-001\nCurrent Stock: 12 units\nMinimum Stock: 20 units\n\nAction Required: Please restock this item soon to avoid stockouts.',
-        icon: 'fa-exclamation-triangle',
-        iconBg: 'var(--warning-light)',
-        iconColor: 'var(--warning)',
-        time: '15 minutes ago',
-        read: false,
-        action: 'viewInventory',
-        actionData: 5
-    },
-    {
-        id: 3,
-        type: 'feedback',
-        title: 'Customer Feedback',
-        message: 'New 5-star review from Sarah Davis',
-        details: 'Customer: Sarah Davis\nRating: ⭐⭐⭐⭐⭐ (5 stars)\n\nReview: "Amazing quality products! The Strawberry Freeze is absolutely delicious. Fast delivery and great customer service. Will definitely order again!"\n\nDate: Today at 10:30 AM',
-        icon: 'fa-star',
-        iconBg: 'var(--info-light)',
-        iconColor: 'var(--info)',
-        time: '1 hour ago',
-        read: false,
-        action: null,
-        actionData: null
-    },
-    {
-        id: 4,
-        type: 'payment',
-        title: 'Deposit Confirmed',
-        message: 'InstaPay deposit received for order #ORD-2024-008',
-        details: 'Order: #ORD-2024-008\nCustomer: Jennifer White\nDeposit Amount: EGP 30.00\nPayment Method: InstaPay\nReference: IP2024011015\n\nOrder total: EGP 89.99\nRemaining balance: EGP 59.99 (COD)',
-        icon: 'fa-check-circle',
-        iconBg: 'var(--success-light)',
-        iconColor: 'var(--success)',
-        time: '2 hours ago',
-        read: true,
-        action: 'viewOrder',
-        actionData: 'ORD-2024-008'
-    },
-    {
-        id: 5,
-        type: 'customer',
-        title: 'New Customer Registered',
-        message: 'Mohamed Ali just created an account',
-        details: 'Customer Name: Mohamed Ali\nEmail: mohamed.ali@email.com\nPhone: +20 100 123 4567\nRegistration Date: Today at 8:45 AM\n\nThis customer found us through: Social Media (Instagram)',
-        icon: 'fa-user-plus',
-        iconBg: '#ede9fe',
-        iconColor: 'var(--secondary)',
-        time: '3 hours ago',
-        read: true,
-        action: null,
-        actionData: null
-    }
-];
+let notifications = [];
 
 function showNotifications() {
     showNotificationModal();
@@ -3868,111 +3798,15 @@ function addNotification(type, title, message, details, action = null, actionDat
 
 // Show Messages
 // Messages Data
-let messages = [
-    {
-        id: 1,
-        sender: 'John Smith',
-        email: 'john@email.com',
-        subject: 'Question about my order',
-        preview: 'I have a question about my order...',
-        fullMessage: 'Hi,\n\nI placed an order yesterday (#ORD-2024-001) and I wanted to know if it\'s possible to add one more item to it before it ships?\n\nI\'d like to add 2x Blueberry Blast if possible.\n\nThank you!',
-        avatar: 'JS',
-        avatarColor: '#6366f1',
-        time: '10 minutes ago',
-        read: false
-    },
-    {
-        id: 2,
-        sender: 'Ahmed Corp.',
-        email: 'purchasing@ahmedcorp.com',
-        subject: 'Bulk Order Inquiry',
-        preview: 'Inquiry about bulk orders for events',
-        fullMessage: 'Dear Freezy Bite Team,\n\nWe are interested in placing a bulk order for our upcoming corporate event on February 15th.\n\nWe would need:\n- 50x Strawberry Freeze\n- 30x Chocolate Delight\n- 40x Mixed Candy Pack\n\nCould you please provide a quote with any available bulk discounts?\n\nBest regards,\nAhmed Corp. Purchasing Department',
-        avatar: 'AC',
-        avatarColor: '#10b981',
-        time: '1 hour ago',
-        read: false
-    },
-    {
-        id: 3,
-        sender: 'Premium Partners',
-        email: 'partnerships@premiumpartners.com',
-        subject: 'Partnership Proposal',
-        preview: 'Partnership proposal for distribution',
-        fullMessage: 'Hello,\n\nWe are Premium Partners, a distribution company specializing in frozen goods across Egypt.\n\nWe\'ve been impressed by your product quality and would like to discuss a potential partnership to distribute Freezy Bite products in the Alexandria and Delta regions.\n\nWould you be available for a call this week?\n\nLooking forward to hearing from you.\n\nBest,\nSarah Ahmed\nBusiness Development Manager',
-        avatar: 'PP',
-        avatarColor: '#f59e0b',
-        time: 'Yesterday',
-        read: true
-    },
-    {
-        id: 4,
-        sender: 'Fatima Hassan',
-        email: 'fatima.hassan@gmail.com',
-        subject: 'Delivery Issue - Need Help!',
-        preview: 'My order hasn\'t arrived yet and it\'s been 3 days...',
-        fullMessage: 'Hello Freezy Bite Support,\n\nI placed an order 3 days ago (Order #ORD-2024-008) but it still hasn\'t arrived. The tracking shows it\'s been "out for delivery" for 2 days now.\n\nCan you please check what\'s happening with my order? I\'m really looking forward to receiving my items.\n\nMy address is:\n123 Nile Street, Giza, Egypt\nPhone: +20 101 234 5678\n\nThank you for your help!\n\nFatima',
-        avatar: 'FH',
-        avatarColor: '#ec4899',
-        time: '2 days ago',
-        read: true
-    },
-    {
-        id: 5,
-        sender: 'Cairo Events Co.',
-        email: 'events@cairoevents.com',
-        subject: 'Catering Request for Wedding',
-        preview: 'We would like to discuss frozen desserts for a wedding...',
-        fullMessage: 'Dear Freezy Bite Team,\n\nWe are Cairo Events Co., a premier event planning company in Egypt.\n\nWe are organizing a wedding reception for 200 guests on March 20th and would love to include your frozen desserts in our menu.\n\nWe\'re interested in:\n- Ice cream bar setup\n- Frozen fruit platters\n- Chocolate desserts\n\nCould we schedule a tasting session and discuss bulk pricing?\n\nBest regards,\nMohamed Ali\nEvent Director\nCairo Events Co.',
-        avatar: 'CE',
-        avatarColor: '#8b5cf6',
-        time: '3 days ago',
-        read: true
-    },
-    {
-        id: 6,
-        sender: 'Omar Farouk',
-        email: 'omar.farouk@outlook.com',
-        subject: 'Product Suggestion',
-        preview: 'I have some ideas for new flavors you might like...',
-        fullMessage: 'Hi Freezy Bite!\n\nI\'m a regular customer and I absolutely love your products! I wanted to suggest some new flavors that I think would be amazing:\n\n1. Mango Tango - Fresh frozen mango with a hint of chili\n2. Egyptian Dates & Cream - Dates mixed with vanilla ice cream\n3. Guava Blast - Frozen guava with cream\n\nJust some ideas from a big fan! Keep up the great work!\n\nCheers,\nOmar',
-        avatar: 'OF',
-        avatarColor: '#3b82f6',
-        time: '4 days ago',
-        read: true
-    },
-    {
-        id: 7,
-        sender: 'Quality Supplies Ltd.',
-        email: 'supply@qualitysupplies.com',
-        subject: 'Re: Packaging Materials Quote',
-        preview: 'Here is the updated quote for eco-friendly packaging...',
-        fullMessage: 'Dear Freezy Bite Team,\n\nThank you for your inquiry about eco-friendly packaging materials.\n\nPlease find below our updated quote:\n\n- Biodegradable containers (500pcs): EGP 2,500\n- Eco-friendly bags (1000pcs): EGP 1,800\n- Recyclable cups (500pcs): EGP 1,200\n- Wooden spoons (1000pcs): EGP 800\n\nTotal: EGP 6,300 (10% discount applied)\n\nDelivery within 5 business days.\n\nLet us know if you\'d like to proceed!\n\nBest,\nSupply Team\nQuality Supplies Ltd.',
-        avatar: 'QS',
-        avatarColor: '#06b6d4',
-        time: '5 days ago',
-        read: true
-    },
-    {
-        id: 8,
-        sender: 'Layla Mohamed',
-        email: 'layla.m@yahoo.com',
-        subject: 'Thank you! Amazing service!',
-        preview: 'I just wanted to say thank you for the wonderful...',
-        fullMessage: 'Hello Freezy Bite!\n\nI just wanted to send a quick message to say THANK YOU!\n\nMy order arrived today and everything was perfect - the packaging was beautiful, the products were fresh, and the delivery was super fast.\n\nI ordered the Strawberry Freeze and Chocolate Delight for my daughter\'s birthday party and everyone loved them! The kids were so happy!\n\nYou\'ve definitely earned a loyal customer. I\'ll be ordering again soon!\n\nBest wishes,\nLayla',
-        avatar: 'LM',
-        avatarColor: '#ef4444',
-        time: '1 week ago',
-        read: true
-    }
-];
+let messages = [];
 
 function showMessages() {
     showMessagesModal();
 }
 
 // Show Messages Modal
-function showMessagesModal() {
+async function showMessagesModal() {
+    await loadMessagesFromAPI();
     // Remove existing modal
     const existingModal = document.getElementById('messagesModal');
     if (existingModal) existingModal.remove();
@@ -4052,13 +3886,18 @@ function showMessagesModal() {
 }
 
 // View single message
-function viewMessage(msgId) {
+async function viewMessage(msgId) {
     const msg = messages.find(m => m.id === msgId);
     if (!msg) return;
 
     // Mark as read
     msg.read = true;
     updateMessageBadge();
+    try {
+        await DashboardAPI.updateMessage(msgId, { isRead: true });
+    } catch (error) {
+        console.warn('Failed to mark message as read:', error);
+    }
 
     // Close messages modal
     closeModal('messagesModal');
@@ -4187,24 +4026,41 @@ function sendReply(msgId) {
 }
 
 // Mark all messages as read
-function markAllMessagesRead() {
+async function markAllMessagesRead() {
+    const unread = messages.filter(m => !m.read);
     messages.forEach(m => m.read = true);
     updateMessageBadge();
+    try {
+        await Promise.all(unread.map(msg => DashboardAPI.updateMessage(msg.id, { isRead: true })));
+    } catch (error) {
+        console.warn('Failed to mark all messages as read:', error);
+    }
     showMessagesModal();
     showAlert('success', 'All messages marked as read!');
 }
 
 // Clear all messages
-function clearAllMessages() {
+async function clearAllMessages() {
     if (messages.length === 0) {
         showAlert('info', 'No messages to clear.');
         return;
     }
 
-    messages = [];
+    const toClear = [...messages];
+    messages.length = 0;
+    toClear.forEach(msg => {
+        msg.deletedDate = new Date().toISOString();
+        messageTrash.push(msg);
+    });
     updateMessageBadge();
+    updateHeaderTrashBadge();
+    try {
+        await Promise.all(toClear.map(msg => DashboardAPI.updateMessage(msg.id, { isDeleted: true, isArchived: false })));
+    } catch (error) {
+        console.warn('Failed to clear messages:', error);
+    }
     showMessagesModal();
-    showAlert('success', 'All messages cleared!');
+    showAlert('success', 'All messages moved to trash!');
 }
 
 // Update message badge count
@@ -4399,7 +4255,7 @@ function permanentlyDeleteFromHeader(orderId) {
 }
 
 // Restore message from header trash modal
-function restoreMessageFromHeader(msgId) {
+async function restoreMessageFromHeader(msgId) {
     const msgIndex = messageTrash.findIndex(m => m.id === msgId);
     if (msgIndex !== -1) {
         const msg = messageTrash[msgIndex];
@@ -4407,6 +4263,11 @@ function restoreMessageFromHeader(msgId) {
         messages.push(msg);
         messageTrash.splice(msgIndex, 1);
 
+        try {
+            await DashboardAPI.updateMessage(msgId, { isDeleted: false, isArchived: false });
+        } catch (error) {
+            console.warn('Failed to restore message:', error);
+        }
         updateHeaderTrashBadge();
         updateMessageBadge();
         showTrashModal(); // Refresh the modal
@@ -4415,11 +4276,16 @@ function restoreMessageFromHeader(msgId) {
 }
 
 // Permanently delete message from header trash modal
-function permanentlyDeleteMessageFromHeader(msgId) {
+async function permanentlyDeleteMessageFromHeader(msgId) {
     if (confirm('Are you sure you want to permanently delete this message? This action cannot be undone.')) {
         const msgIndex = messageTrash.findIndex(m => m.id === msgId);
         if (msgIndex !== -1) {
             messageTrash.splice(msgIndex, 1);
+            try {
+                await DashboardAPI.deleteMessage(msgId);
+            } catch (error) {
+                console.warn('Failed to delete message:', error);
+            }
             updateHeaderTrashBadge();
             showTrashModal(); // Refresh the modal
             showAlert('success', 'Message permanently deleted.');
@@ -4428,7 +4294,7 @@ function permanentlyDeleteMessageFromHeader(msgId) {
 }
 
 // Move message to trash (instead of permanent delete)
-function moveMessageToTrash(msgId) {
+async function moveMessageToTrash(msgId) {
     const msgIndex = messages.findIndex(m => m.id === msgId);
     if (msgIndex !== -1) {
         const msg = messages[msgIndex];
@@ -4436,6 +4302,11 @@ function moveMessageToTrash(msgId) {
         messageTrash.push(msg);
         messages.splice(msgIndex, 1);
 
+        try {
+            await DashboardAPI.updateMessage(msgId, { isDeleted: true, isArchived: false });
+        } catch (error) {
+            console.warn('Failed to move message to trash:', error);
+        }
         updateHeaderTrashBadge();
         updateMessageBadge();
         return msg;
@@ -4517,7 +4388,9 @@ function setActiveDateFilter(button) {
 }
 
 // Update Dashboard Data based on time period
-function updateDashboardData(period) {
+async function updateDashboardData(period) {
+    await loadStatsFromAPI();
+    await loadAnalyticsFromAPI(period);
     const stats = dashboardStatsByPeriod[period];
     if (!stats) return;
 
@@ -4966,7 +4839,7 @@ function handleAddProductForm(event) {
 // ===== INITIALIZATION =====
 
 // Initialize Dashboard
-function initDashboard() {
+async function initDashboard() {
     // Set active navigation item
     setActiveNavItem();
 
@@ -4982,6 +4855,11 @@ function initDashboard() {
     // Update header trash badge
     updateHeaderTrashBadge();
 
+    // Load messages for header badge/trash
+    loadMessagesFromAPI().catch(error => {
+        console.warn('Failed to load messages:', error);
+    });
+
     // Initialize stats animation after a short delay
     setTimeout(initStatsAnimation, 500);
 
@@ -4991,45 +4869,51 @@ function initDashboard() {
     switch (currentPage) {
         case 'index.html':
         case '':
-            initOverviewPage();
+            await initOverviewPage();
             break;
         case 'products.html':
-            initProductsPage();
+            await initProductsPage();
             break;
         case 'orders.html':
-            initOrdersPage();
+            await initOrdersPage();
             break;
         case 'customers.html':
-            initCustomersPage();
+            await initCustomersPage();
             break;
         case 'analytics.html':
-            initAnalyticsPage();
+            await initAnalyticsPage();
             break;
         case 'inventory.html':
-            initInventoryPage();
+            await initInventoryPage();
             break;
         case 'settings.html':
-            initSettingsPage();
+            await initSettingsPage();
             break;
     }
 }
 
 // Initialize Overview Page
-function initOverviewPage() {
-    createRevenueChart('revenueChart');
-    createCategoryChart('categoryChart');
+async function initOverviewPage() {
+    await Promise.all([
+        loadStatsFromAPI(),
+        loadAnalyticsFromAPI('week'),
+        loadOrdersFromAPI()
+    ]);
+    createRevenueChart('revenueChart', 'week');
+    createCategoryChart('categoryChart', 'week');
     renderRecentOrders('recentOrdersTable');
     renderTopProducts('topProductsList');
 }
 
 // Initialize Products Page
-function initProductsPage() {
+async function initProductsPage() {
+    await loadProductsFromAPI();
     renderProductsGrid('productsGrid');
 }
 
 // Initialize Orders Page
-function initOrdersPage() {
-    // Render orders
+async function initOrdersPage() {
+    await Promise.all([loadOrdersFromAPI(), loadProductsFromAPI()]);
     renderFilteredOrders();
 
     // Update trash count
@@ -5043,7 +4927,8 @@ function initOrdersPage() {
 }
 
 // Initialize Customers Page
-function initCustomersPage() {
+async function initCustomersPage() {
+    await loadCustomersFromAPI();
     renderFilteredCustomers();
 
     // Add Customer Form
@@ -5060,14 +4945,17 @@ function initCustomersPage() {
 }
 
 // Initialize Analytics Page
-function initAnalyticsPage() {
+async function initAnalyticsPage() {
+    const analytics = await loadAnalyticsFromAPI('month');
+    syncAnalyticsToCharts(analytics);
     createSalesChart('salesChart');
     createCustomerGrowthChart('customerGrowthChart');
     createRevenueByCategoryChart('revenueCategoryChart');
 }
 
 // Initialize Inventory Page
-function initInventoryPage() {
+async function initInventoryPage() {
+    await loadProductsFromAPI();
     renderInventoryTable('inventoryTable');
     updateLowStockAlert();
 }
@@ -5242,7 +5130,7 @@ function restockAllLowStock() {
 }
 
 // Initialize Settings Page
-function initSettingsPage() {
+async function initSettingsPage() {
     // Load saved settings
     loadSavedSettings();
     console.log('Settings page initialized');
@@ -5412,7 +5300,7 @@ function renderProducts() {
     grid.innerHTML = products.map(product => `
         <div class="product-card" data-id="${product.id}">
             <div class="product-image-wrapper">
-                <img src="${product.image || product.images?.[0] || 'https://placehold.co/200x150/f1f5f9/64748b?text=No+Image'}" 
+                <img src="${product.image || product.images?.[0] || ''}" 
                      alt="${product.name}" 
                      class="product-image"
                      onerror="handleImageError(this)">
@@ -5540,7 +5428,9 @@ window.deleteProduct = deleteProduct;
 
 // DOM Content Loaded
 document.addEventListener('DOMContentLoaded', function () {
-    initDashboard();
+    initDashboard().catch(error => {
+        console.error('Failed to initialize dashboard:', error);
+    });
 
     // Sidebar toggle button
     const sidebarToggle = document.querySelector('.sidebar-toggle');
@@ -5635,109 +5525,13 @@ function calculateProgressWidth(value, max) {
 // ===== EMPLOYEE ACTIVITY TRACKING SYSTEM =====
 
 // Global employees data (shared across pages)
-let globalEmployees = JSON.parse(localStorage.getItem('freezyBiteEmployees')) || [
-    {
-        id: 'EMP-001',
-        name: 'Ahmed Hassan',
-        email: 'ahmed@freezybite.com',
-        phone: '+20 101 234 5678',
-        department: 'sales',
-        position: 'Senior Sales Associate',
-        status: 'active',
-        hireDate: '2023-06-15',
-        salary: 8500,
-        address: 'Cairo, Egypt',
-        avatar: null,
-        stats: { orders: 156, messages: 42, inventory: 8 }
-    },
-    {
-        id: 'EMP-002',
-        name: 'Fatima Ali',
-        email: 'fatima@freezybite.com',
-        phone: '+20 102 345 6789',
-        department: 'support',
-        position: 'Customer Support Lead',
-        status: 'active',
-        hireDate: '2023-03-20',
-        salary: 9000,
-        address: 'Giza, Egypt',
-        avatar: null,
-        stats: { orders: 23, messages: 234, inventory: 2 }
-    },
-    {
-        id: 'EMP-003',
-        name: 'Mohamed Ibrahim',
-        email: 'mohamed@freezybite.com',
-        phone: '+20 103 456 7890',
-        department: 'inventory',
-        position: 'Inventory Manager',
-        status: 'active',
-        hireDate: '2023-01-10',
-        salary: 10000,
-        address: 'Alexandria, Egypt',
-        avatar: null,
-        stats: { orders: 5, messages: 18, inventory: 312 }
-    },
-    {
-        id: 'EMP-004',
-        name: 'Sara Mahmoud',
-        email: 'sara@freezybite.com',
-        phone: '+20 104 567 8901',
-        department: 'sales',
-        position: 'Sales Associate',
-        status: 'on-leave',
-        hireDate: '2023-09-01',
-        salary: 6500,
-        address: 'Cairo, Egypt',
-        avatar: null,
-        stats: { orders: 89, messages: 15, inventory: 0 }
-    },
-    {
-        id: 'EMP-005',
-        name: 'Omar Khaled',
-        email: 'omar@freezybite.com',
-        phone: '+20 105 678 9012',
-        department: 'delivery',
-        position: 'Delivery Driver',
-        status: 'active',
-        hireDate: '2023-07-22',
-        salary: 5500,
-        address: 'Cairo, Egypt',
-        avatar: null,
-        stats: { orders: 245, messages: 8, inventory: 0 }
-    },
-    {
-        id: 'EMP-006',
-        name: 'Nour Ahmed',
-        email: 'nour@freezybite.com',
-        phone: '+20 106 789 0123',
-        department: 'support',
-        position: 'Support Agent',
-        status: 'inactive',
-        hireDate: '2023-04-15',
-        salary: 5000,
-        address: 'Mansoura, Egypt',
-        avatar: null,
-        stats: { orders: 0, messages: 156, inventory: 0 }
-    }
-];
+let globalEmployees = [];
 
 // Global activity log (shared across pages)
-let globalActivityLog = JSON.parse(localStorage.getItem('freezyBiteActivityLog')) || [
-    { id: 1, employeeId: 'EMP-001', employeeName: 'Ahmed Hassan', type: 'order', action: 'Created order #ORD-2024-015', timestamp: '2024-01-14 10:35:00' },
-    { id: 2, employeeId: 'EMP-002', employeeName: 'Fatima Ali', type: 'message', action: 'Replied to customer inquiry from John Smith', timestamp: '2024-01-14 10:20:00' },
-    { id: 3, employeeId: 'EMP-003', employeeName: 'Mohamed Ibrahim', type: 'inventory', action: 'Added 50 units of Strawberry Freeze', timestamp: '2024-01-14 09:45:00' },
-    { id: 4, employeeId: 'EMP-005', employeeName: 'Omar Khaled', type: 'order', action: 'Delivered order #ORD-2024-012', timestamp: '2024-01-14 09:30:00' },
-    { id: 5, employeeId: 'EMP-001', employeeName: 'Ahmed Hassan', type: 'customer', action: 'Added new customer: Premium Foods Inc.', timestamp: '2024-01-14 09:15:00' },
-    { id: 6, employeeId: 'EMP-003', employeeName: 'Mohamed Ibrahim', type: 'product', action: 'Updated price for Chocolate Delight', timestamp: '2024-01-14 09:00:00' },
-    { id: 7, employeeId: 'EMP-002', employeeName: 'Fatima Ali', type: 'message', action: 'Resolved support ticket #TKT-4521', timestamp: '2024-01-13 17:30:00' },
-    { id: 8, employeeId: 'EMP-001', employeeName: 'Ahmed Hassan', type: 'order', action: 'Processed payment for order #ORD-2024-011', timestamp: '2024-01-13 16:45:00' },
-    { id: 9, employeeId: 'EMP-005', employeeName: 'Omar Khaled', type: 'order', action: 'Picked up order #ORD-2024-010 for delivery', timestamp: '2024-01-13 15:20:00' },
-    { id: 10, employeeId: 'EMP-003', employeeName: 'Mohamed Ibrahim', type: 'inventory', action: 'Restocked Mixed Candy Pack - 100 units', timestamp: '2024-01-13 14:00:00' }
-];
+let globalActivityLog = [];
 
 // Current active employee (who is performing actions)
-let currentActiveEmployee = JSON.parse(localStorage.getItem('freezyBiteActiveEmployee')) || globalEmployees[0];
+let currentActiveEmployee = null;
 
 // Save employee data to localStorage
 function saveEmployeeData() {
@@ -5778,7 +5572,8 @@ function logEmployeeActivity(type, action) {
 }
 
 // Show employee selector modal
-function showEmployeeSelector(callback) {
+async function showEmployeeSelector(callback) {
+    await loadEmployeesFromAPI();
     const activeEmployees = globalEmployees.filter(e => e.status === 'active');
 
     let modalHTML = `
@@ -5795,7 +5590,7 @@ function showEmployeeSelector(callback) {
                     <div style="max-height: 300px; overflow-y: auto;">
                         ${activeEmployees.map(emp => `
                             <div class="employee-selector-item" onclick="selectEmployee('${emp.id}', ${callback ? 'true' : 'false'})" style="display: flex; align-items: center; gap: 1rem; padding: 0.75rem; border-radius: var(--border-radius-md); cursor: pointer; transition: background 0.2s; border: 2px solid ${currentActiveEmployee?.id === emp.id ? 'var(--primary)' : 'transparent'}; background: ${currentActiveEmployee?.id === emp.id ? 'var(--primary-light)' : 'var(--bg-secondary)'}; margin-bottom: 0.5rem;">
-                                <img src="${emp.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(emp.name)}&background=6366f1&color=fff&size=80`}" alt="${emp.name}" style="width: 45px; height: 45px; border-radius: 50%; object-fit: cover;">
+                                <img src="${emp.avatar || '/assets/icons/profile.svg'}" alt="${emp.name}" style="width: 45px; height: 45px; border-radius: 50%; object-fit: cover;">
                                 <div style="flex: 1;">
                                     <div style="font-weight: 600; color: var(--text-primary);">${emp.name}</div>
                                     <div style="font-size: 0.8rem; color: var(--text-secondary);">${emp.position}</div>

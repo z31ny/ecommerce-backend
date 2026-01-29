@@ -93,38 +93,9 @@
     toastTimer = setTimeout(function () { toast.classList.remove('is-show'); }, 1800);
   }
 
-  // Mood cards open/close
-  var cards = Array.prototype.slice.call(doc.querySelectorAll('.mood-card'));
-  function closeAll() { cards.forEach(function (c) { c.classList.remove('is-open'); }); }
-  cards.forEach(function (card) {
-    var openBtn = card.querySelector('.mood-open');
-    var closeBtn = card.querySelector('.mood-close');
-    if (openBtn) openBtn.addEventListener('click', function () { closeAll(); card.classList.add('is-open'); });
-    if (closeBtn) closeBtn.addEventListener('click', function () { card.classList.remove('is-open'); });
-  });
-
   // Add to cart buttons
   Array.prototype.slice.call(doc.querySelectorAll('.add-to-cart')).forEach(function (btn) {
     btn.addEventListener('click', function () { addToCart(btn.dataset.sku || 'unknown', 1, btn); });
-  });
-
-  // Mood scroller arrows
-  var track = doc.querySelector('.mood-track');
-  var prevBtn = doc.querySelector('.mood-arrow--prev');
-  var nextBtn = doc.querySelector('.mood-arrow--next');
-  function scrollByAmount(dir) {
-    if (!track) return;
-    var amount = Math.max(320, Math.round(track.clientWidth * 0.9));
-    track.scrollBy({ left: dir * amount, behavior: 'smooth' });
-  }
-  if (prevBtn) prevBtn.addEventListener('click', function () { scrollByAmount(-1); });
-  if (nextBtn) nextBtn.addEventListener('click', function () { scrollByAmount(1); });
-
-  // FAQ accordion
-  Array.prototype.slice.call(doc.querySelectorAll('.faq-item')).forEach(function (item) {
-    var q = item.querySelector('.faq-q');
-    if (!q) return;
-    q.addEventListener('click', function () { item.classList.toggle('is-open'); });
   });
 
   // Auth modal
@@ -416,30 +387,6 @@
     berry.addEventListener('touchend', function () { berry.setAttribute('src', originalSrc); }, { passive: true });
   }
 
-  // Testimonials arrows
-  var tTrack = doc.querySelector('.t-track');
-  var tPrev = doc.querySelector('.t-arrow--prev');
-  var tNext = doc.querySelector('.t-arrow--next');
-  function tScroll(dir) { if (!tTrack) return; var w = Math.max(320, Math.round(tTrack.clientWidth * 0.9)); tTrack.scrollBy({ left: dir * w, behavior: 'smooth' }); }
-  if (tPrev) tPrev.addEventListener('click', function () { tScroll(-1); });
-  if (tNext) tNext.addEventListener('click', function () { tScroll(1); });
-
-  // Inside (What's inside) arrows
-  var iTrack = doc.querySelector('.inside-track');
-  var iPrev = doc.querySelector('.inside-prev');
-  var iNext = doc.querySelector('.inside-next');
-  function iScroll(dir) { if (!iTrack) return; var w = Math.max(300, Math.round(iTrack.clientWidth * 0.9)); iTrack.scrollBy({ left: dir * w, behavior: 'smooth' }); }
-  if (iPrev) iPrev.addEventListener('click', function () { iScroll(-1); });
-  if (iNext) iNext.addEventListener('click', function () { iScroll(1); });
-
-  // Testimonial submit + hourly rotation
-  var STORAGE_TESTIMONIALS = 'fb_testimonials_user_v1';
-  var ROTATION_MS = 60 * 60 * 1000; // 1 hour
-  function readUserTestimonials() {
-    try { return JSON.parse(localStorage.getItem(STORAGE_TESTIMONIALS) || '[]'); } catch (e) { return []; }
-  }
-  function writeUserTestimonials(list) { localStorage.setItem(STORAGE_TESTIMONIALS, JSON.stringify(list)); }
-
   var defaultTestimonials = [
     { color: 't-pink', front: '“What’s @Dana verdict?”', back: '“Crunchy, sweet, and so cute! I buy 5 packs at a time.”' },
     { color: 't-yellow', front: '“A little banana love from @MamaFruit”', back: '“Crispy, sweet, and sooo satisfying! I keep a stash in my bag.”' },
@@ -559,6 +506,41 @@
     nl.addEventListener('submit', function (e) { e.preventDefault(); showToast('Thanks! You are subscribed.'); nl.reset && nl.reset(); });
   }
 
+  // Contact form (contact page)
+  var contactForm = doc.querySelector('.contact-form .tf-form');
+  if (contactForm) {
+    contactForm.addEventListener('submit', function (e) {
+      e.preventDefault();
+      var email = (contactForm.querySelector('[name=\"email\"]') || {}).value || '';
+      var name = (contactForm.querySelector('[name=\"name\"]') || {}).value || '';
+      var phone = (contactForm.querySelector('[name=\"phone\"]') || {}).value || '';
+      var message = (contactForm.querySelector('[name=\"message\"]') || {}).value || '';
+      if (!email || !name || !message) {
+        showToast('Please complete the required fields.');
+        return;
+      }
+
+      fetch('/api/admin/messages', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          senderName: name,
+          senderEmail: email,
+          subject: 'Contact form',
+          message: phone ? message + '\\n\\nPhone: ' + phone : message
+        })
+      }).then(function (res) {
+        if (!res.ok) return res.json().then(function (data) { throw new Error(data.error || 'Failed to send'); });
+        return res.json();
+      }).then(function () {
+        contactForm.reset();
+        showToast('Thanks! Your message was sent.');
+      }).catch(function (err) {
+        showToast(err.message || 'Failed to send message.');
+      });
+    });
+  }
+
   // Ensure checkout link navigates reliably
   var goCheckout = doc.querySelector('.go-checkout');
   if (goCheckout) {
@@ -591,7 +573,7 @@
 
           card.innerHTML =
             '<div class="offer-badge">-' + offer.discount + '%</div>' +
-            '<div class="offer-media"><img src="' + (offer.image || 'https://placehold.co/200x150/f1f5f9/64748b?text=No+Image') + '" alt="' + offer.name + '"></div>' +
+            '<div class="offer-media"><img src="' + (offer.image || '/assets/icons/profile.svg') + '" alt="' + offer.name + '"></div>' +
             '<h4 class="offer-title">' + offer.name + '</h4>' +
             '<div class="offer-prices">' +
             '<span class="offer-old">' + Math.round(offer.originalPrice) + ' EGP</span>' +
@@ -621,5 +603,4 @@
   loadOffers();
 
 })();
-
 

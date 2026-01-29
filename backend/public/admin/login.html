@@ -219,51 +219,8 @@
     </div>
 
     <script>
-        // Demo Users Data
-        const demoUsers = {
-            'super-admin': {
-                id: 1,
-                name: 'Sarah Johnson',
-                email: 'sarah@freezybite.com',
-                role: 'Super Admin',
-                avatar: 'https://ui-avatars.com/api/?name=Sarah+Johnson&background=ec4899&color=fff',
-                access: ['all'],
-                isOwner: true
-            },
-            'admin': {
-                id: 2,
-                name: 'Ahmed Hassan',
-                email: 'ahmed@freezybite.com',
-                role: 'Admin',
-                avatar: 'https://ui-avatars.com/api/?name=Ahmed+Hassan&background=8b5cf6&color=fff',
-                access: ['overview', 'content', 'products', 'orders', 'customers', 'messages', 'analytics', 'inventory', 'employees', 'users', 'trash', 'settings']
-            },
-            'manager': {
-                id: 3,
-                name: 'Mohamed Ali',
-                email: 'mohamed@freezybite.com',
-                role: 'Manager',
-                avatar: 'https://ui-avatars.com/api/?name=Mohamed+Ali&background=f59e0b&color=fff',
-                access: ['overview', 'content', 'products', 'orders', 'customers', 'messages', 'analytics', 'inventory', 'trash']
-            },
-            'staff': {
-                id: 4,
-                name: 'Fatima Ibrahim',
-                email: 'fatima@freezybite.com',
-                role: 'Staff',
-                avatar: 'https://ui-avatars.com/api/?name=Fatima+Ibrahim&background=10b981&color=fff',
-                access: ['products', 'orders', 'customers', 'inventory', 'messages', 'trash']
-            }
-        };
-
-        // Registered users (for regular login)
-        const registeredUsers = [
-            { email: 'sarah@freezybite.com', password: 'admin123', userData: demoUsers['super-admin'] },
-            { email: 'ahmed@freezybite.com', password: 'admin123', userData: demoUsers['admin'] },
-            { email: 'mohamed@freezybite.com', password: 'manager123', userData: demoUsers['manager'] },
-            { email: 'fatima@freezybite.com', password: 'staff123', userData: demoUsers['staff'] },
-            { email: 'admin@freezybite.com', password: 'password', userData: demoUsers['super-admin'] }
-        ];
+        // Demo users disabled; rely on backend auth only
+        const demoUsers = {};
 
         let selectedDemo = null;
 
@@ -371,6 +328,10 @@
         }
 
         function selectDemo(demo) {
+            if (!demoUsers[demo]) {
+                alert('Demo accounts are disabled. Please sign in with a real admin account.');
+                return;
+            }
             selectedDemo = demo;
 
             // Update UI
@@ -387,8 +348,12 @@
             if (!selectedDemo) return;
 
             const demo = demoUsers[selectedDemo];
+            if (!demo) {
+                alert('Demo accounts are disabled. Please sign in with a real admin account.');
+                return;
+            }
             const loginBtn = document.getElementById('loginDemoBtn');
-            const passwords = { 'super-admin': 'admin123', 'admin': 'admin123', 'manager': 'manager123', 'staff': 'staff123' };
+            const passwords = {};
 
             loginBtn.disabled = true;
             loginBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Logging in...';

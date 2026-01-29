@@ -464,7 +464,7 @@
         
         <div class="sidebar-footer">
             <div class="user-profile">
-                <img src="https://ui-avatars.com/api/?name=Admin+User&background=6366f1&color=fff" alt="Admin" class="user-avatar">
+                <img src="/assets/icons/profile.svg" alt="Admin" class="user-avatar">
                 <div class="user-info">
                     <h4>Admin User</h4>
                     <p>admin@freezybite.com</p>
@@ -503,7 +503,7 @@
                     <i class="fas fa-trash-alt"></i>
                     <span class="badge" id="headerTrashBadge">0</span>
                 </button>
-                <img src="https://ui-avatars.com/api/?name=Admin+User&background=6366f1&color=fff" alt="Admin" class="header-avatar" onclick="openEditProfileModal()">
+                <img src="/assets/icons/profile.svg" alt="Admin" class="header-avatar" onclick="openEditProfileModal()">
             </div>
         </header>
         
@@ -511,7 +511,7 @@
         <div class="dashboard-content">
             <!-- Current Admin Profile -->
             <div class="admin-profile-card" id="currentAdminProfile">
-                <img src="https://ui-avatars.com/api/?name=Admin+User&background=6366f1&color=fff&size=160" alt="Admin" class="admin-avatar" id="adminAvatar">
+                <img src="/assets/icons/profile.svg" alt="Admin" class="admin-avatar" id="adminAvatar">
                 <div class="admin-info">
                     <h2 id="adminName">Admin User</h2>
                     <p id="adminEmail"><i class="fas fa-envelope"></i> admin@freezybite.com</p>
@@ -618,7 +618,7 @@
                     <!-- Profile Picture Upload -->
                     <div class="form-group" style="text-align: center; margin-bottom: 1.5rem;">
                         <div style="position: relative; display: inline-block;">
-                            <img src="https://ui-avatars.com/api/?name=New+User&background=6366f1&color=fff&size=128" alt="Avatar" id="newUserAvatarPreview" style="width: 90px; height: 90px; border-radius: 50%; border: 3px solid var(--primary-light); object-fit: cover;">
+                            <img src="/assets/icons/profile.svg" alt="Avatar" id="newUserAvatarPreview" style="width: 90px; height: 90px; border-radius: 50%; border: 3px solid var(--primary-light); object-fit: cover;">
                             <button type="button" class="btn btn-sm btn-primary" onclick="document.getElementById('newUserAvatarInput').click()" style="position: absolute; bottom: 0; right: 0; width: 32px; height: 32px; padding: 0; border-radius: 50%;">
                                 <i class="fas fa-camera"></i>
                             </button>
@@ -739,7 +739,7 @@
             <form id="editProfileForm" onsubmit="updateProfile(event)">
                 <div class="modal-body">
                     <div class="form-group" style="text-align: center; margin-bottom: 1.5rem;">
-                        <img src="https://ui-avatars.com/api/?name=Admin+User&background=6366f1&color=fff&size=128" alt="Admin" id="profileAvatarPreview" style="width: 100px; height: 100px; border-radius: 50%; margin-bottom: 1rem;">
+                        <img src="/assets/icons/profile.svg" alt="Admin" id="profileAvatarPreview" style="width: 100px; height: 100px; border-radius: 50%; margin-bottom: 1rem;">
                         <div>
                             <input type="file" id="profileAvatarInput" accept="image/*" style="display: none;" onchange="previewProfileAvatar(event)">
                             <button type="button" class="btn btn-sm btn-secondary" onclick="document.getElementById('profileAvatarInput').click()">
@@ -860,7 +860,7 @@
             phone: '+20 109 396 1545',
             role: 'admin',
             status: 'active',
-            avatar: 'https://ui-avatars.com/api/?name=Admin+User&background=6366f1&color=fff'
+            avatar: '/assets/icons/profile.svg'
         };
         
         // All available pages/permissions
@@ -998,7 +998,7 @@
             `;
             
             filteredUsers.forEach(user => {
-                const defaultAvatarUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name)}&background=${user.role === 'admin' ? '6366f1' : user.role === 'manager' ? '10b981' : 'f59e0b'}&color=fff`;
+                const defaultAvatarUrl = `/assets/icons/profile.svg'admin' ? '6366f1' : user.role === 'manager' ? '10b981' : 'f59e0b'}&color=fff`;
                 const avatarUrl = user.avatar || defaultAvatarUrl;
                 const isCurrentAdmin = user.id === currentAdmin.id;
                 
@@ -1067,9 +1067,7 @@
             
             // Use custom avatar if exists, otherwise generate one
             const adminUser = users.find(u => u.id === currentAdmin.id);
-            const defaultAvatarUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(currentAdmin.name)}&background=6366f1&color=fff&size=160`;
-            const avatarUrl = (adminUser && adminUser.avatar) || currentAdmin.avatar || defaultAvatarUrl;
-            document.getElementById('adminAvatar').src = avatarUrl;
+            const defaultAvatarUrl = `/assets/icons/profile.svg'adminAvatar').src = avatarUrl;
         }
         
         // Filter users by role
@@ -1082,7 +1080,7 @@
             document.getElementById('addUserForm').reset();
             newUserAvatarData = null;
             // Reset avatar preview
-            document.getElementById('newUserAvatarPreview').src = 'https://ui-avatars.com/api/?name=New+User&background=6366f1&color=fff&size=128';
+            document.getElementById('newUserAvatarPreview').src = '/assets/icons/profile.svg';
             openModal('addUserModal');
         }
         
@@ -1105,12 +1103,7 @@
             const name = document.getElementById('newUserName').value || 'New User';
             const role = document.getElementById('newUserRole').value || 'admin';
             const bgColor = role === 'admin' ? '6366f1' : role === 'manager' ? '10b981' : 'f59e0b';
-            document.getElementById('newUserAvatarPreview').src = `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=${bgColor}&color=fff&size=128`;
-        }
-        
-        // Update new user avatar color based on role
-        function updateNewUserAvatarColor() {
-            if (newUserAvatarData) return; // Don't update if custom avatar is set
+            document.getElementById('newUserAvatarPreview').src = `/assets/icons/profile.svg't update if custom avatar is set
             updateNewUserAvatarPreview();
         }
         
@@ -1173,7 +1166,7 @@
             document.getElementById('editUserStatus').value = user.status;
             
             // Set avatar preview
-            const defaultAvatarUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name)}&background=${user.role === 'admin' ? '6366f1' : user.role === 'manager' ? '10b981' : 'f59e0b'}&color=fff&size=128`;
+            const defaultAvatarUrl = `/assets/icons/profile.svg'admin' ? '6366f1' : user.role === 'manager' ? '10b981' : 'f59e0b'}&color=fff&size=128`;
             document.getElementById('editUserAvatarPreview').src = user.avatar || defaultAvatarUrl;
             
             // Disable role change for current admin
@@ -1277,9 +1270,7 @@
             
             // Use custom avatar if exists
             const adminUser = users.find(u => u.id === currentAdmin.id);
-            const defaultAvatarUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(currentAdmin.name)}&background=6366f1&color=fff&size=128`;
-            const avatarUrl = (adminUser && adminUser.avatar) || currentAdmin.avatar || defaultAvatarUrl;
-            document.getElementById('profileAvatarPreview').src = avatarUrl;
+            const defaultAvatarUrl = `/assets/icons/profile.svg'profileAvatarPreview').src = avatarUrl;
             
             openModal('editProfileModal');
         }
@@ -1396,7 +1387,7 @@
             document.getElementById('permissionUserId').value = userId;
             
             // Render user info
-            const defaultAvatarUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name)}&background=${user.role === 'admin' ? '6366f1' : user.role === 'manager' ? '10b981' : 'f59e0b'}&color=fff`;
+            const defaultAvatarUrl = `/assets/icons/profile.svg'admin' ? '6366f1' : user.role === 'manager' ? '10b981' : 'f59e0b'}&color=fff`;
             const avatarUrl = user.avatar || defaultAvatarUrl;
             
             document.getElementById('permissionUserInfo').innerHTML = `

@@ -63,7 +63,6 @@
 
   <main>
     <section class="candy-hero">
-      <img class="hero-bg" src="./assets/candy-page-img/candy-hero-img.png" alt="" aria-hidden="true">
       <div class="container">
         <p class="hero-quote hero-quote--left">"Freeze–Dried Candy – A New Way to Crunch Your Favorite Sweets!"</p>
         <p class="hero-quote hero-quote--right">"Get the taste you love in a crunchy, airy twist!"</p>
@@ -242,11 +241,11 @@
     function renderProductCard(product) {
       const price = parseFloat(product.price) || 0;
       const weight = product.attributes?.weight || '200gm';
-      const image = product.images?.[0] || product.image || 'assets/candy-page-img/candy/candy1.png';
+      const image = product.images?.[0] || product.image || '/assets/icons/profile.svg';
 
       return `
         <article class="candies-card" data-sku="${product.sku}" data-price="${price}" data-cat="${product.category?.toLowerCase() || ''}">
-          <div class="candies-media"><img src="${image}" alt="${product.name}" onerror="this.src='assets/candy-page-img/candy/candy1.png'"></div>
+          <div class="candies-media"><img src="${image}" alt="${product.name}" onerror="this.src='/assets/icons/profile.svg'"></div>
           <h3 class="candies-name">${product.name}</h3>
           <p class="candies-desc">${product.description || 'Delicious freeze-dried treat.'}</p>
           <div class="candies-meta"><span class="candies-weight">${weight}</span><span class="candies-price">${price}L.E</span></div>
@@ -328,14 +327,14 @@
       grid.innerHTML = favorites.map(product => {
         const price = parseFloat(product.price) || 0;
         const weight = product.attributes?.weight || '280Gm';
-        const image = product.images?.[0] || product.image || 'assets/candy-page-img/coustmer-favorit/customer favorit1.png';
+        const image = product.images?.[0] || product.image || '/assets/icons/profile.svg';
+        const description = product.description || '';
 
         return `
           <article class="fav-card" data-sku="${product.sku}" data-price="${price}">
-            <div class="fav-media"><img src="${image}" alt="${product.name}" onerror="this.src='assets/candy-page-img/coustmer-favorit/customer favorit1.png'"></div>
-            <p class="fav-desc">"${product.description || 'Delicious freeze-dried treat with amazing flavor!'}"</p>
+            <div class="fav-media"><img src="${image}" alt="${product.name}" onerror="this.src='/assets/icons/profile.svg'"></div>
+            ${description ? `<p class="fav-desc">${description}</p>` : ''}
             <div class="fav-meta"><span class="fav-weight">${weight}</span><span class="fav-price">${price}L.E</span></div>
-            <div class="fav-rating" aria-label="rating 4.9">★★★★★ <span class="fav-score">(4.9)</span></div>
             <button class="fav-cart add-to-cart" data-sku="${product.sku}" aria-label="Add to cart"><img src="./assets/icons/cart.svg" alt="cart"></button>
           </article>
         `;
