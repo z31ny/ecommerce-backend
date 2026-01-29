@@ -38,25 +38,37 @@ export async function POST(request: NextRequest) {
             );
         }
 
+        // Handle images - convert empty array to null
+        let imageArray = null;
+        if (images && Array.isArray(images) && images.length > 0) {
+            imageArray = images;
+        } else if (image) {
+            imageArray = [image];
+        }
+
         const [newProduct] = await db
             .insert(products)
             .values({
                 sku: sku || `SKU-${Date.now()}`,
                 name,
-                description,
+                description: description || null,
                 price: price.toString(),
                 stock: stock ?? 0,
                 minStock: minStock ?? 10,
-                images: images || (image ? [image] : null),
-                category,
-                attributes,
+                images: imageArray,
+                category: category || null,
+                attributes: attributes || null,
                 status: status || 'active',
             })
             .returning();
 
         return NextResponse.json(newProduct, { status: 201 });
-    } catch (error) {
+    } catch (error: any) {
         console.error('Create product error:', error);
-        return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+        console.error('Error details:', error.message, error.code);
+        return NextResponse.json({
+            error: 'Internal server error',
+            details: error.message
+        }, { status: 500 });
     }
 }
