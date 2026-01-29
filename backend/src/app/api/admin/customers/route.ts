@@ -1,36 +1,43 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/db';
-import { customers } from '@/db/schema';
+import { users } from '@/db/schema';
 import { eq, desc, like, or } from 'drizzle-orm';
 
-// GET /api/admin/customers - List all customers
+// GET /api/admin/customers - List all customers (from users table)
 export async function GET(request: NextRequest) {
     try {
         const { searchParams } = new URL(request.url);
         const search = searchParams.get('search');
         const status = searchParams.get('status');
 
-        let query = db.select().from(customers);
-
-        // Apply filters
-        const conditions = [];
+        let conditions = [];
         if (search) {
             conditions.push(
                 or(
-                    like(customers.name, `%${search}%`),
-                    like(customers.email, `%${search}%`),
-                    like(customers.phone, `%${search}%`)
+                    like(users.fullName, `%${search}%`),
+                    like(users.email, `%${search}%`),
+                    like(users.phone, `%${search}%`)
                 )
             );
         }
         if (status) {
-            conditions.push(eq(customers.status, status));
+            conditions.push(eq(users.status, status));
         }
 
         const result = await db
-            .select()
-            .from(customers)
-            .orderBy(desc(customers.createdAt));
+            .select({
+                id: users.id,
+                name: users.fullName,
+                email: users.email,
+                phone: users.phone,
+                address: users.address,
+                totalOrders: users.totalOrders,
+                totalSpent: users.totalSpent,
+                status: users.status,
+                createdAt: users.createdAt,
+            })
+            .from(users)
+            .orderBy(desc(users.createdAt));
 
         return NextResponse.json(result);
     } catch (error) {
@@ -56,15 +63,25 @@ export async function POST(request: NextRequest) {
         }
 
         const [newCustomer] = await db
-            .insert(customers)
+            .insert(users)
             .values({
-                name,
+                fullName: name,
                 email: email.toLowerCase(),
                 phone,
                 address,
                 status: status || 'active',
             })
-            .returning();
+            .returning({
+                id: users.id,
+                name: users.fullName,
+                email: users.email,
+                phone: users.phone,
+                address: users.address,
+                totalOrders: users.totalOrders,
+                totalSpent: users.totalSpent,
+                status: users.status,
+                createdAt: users.createdAt,
+            });
 
         return NextResponse.json(newCustomer, { status: 201 });
     } catch (error: any) {

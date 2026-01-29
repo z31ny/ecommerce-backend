@@ -1,5 +1,5 @@
 import { db } from '@/db';
-import { orders, orderItems, cartItems, products, customers } from '@/db/schema';
+import { orders, orderItems, cartItems, products, users } from '@/db/schema';
 import { NextResponse, NextRequest } from 'next/server';
 import { eq, inArray } from 'drizzle-orm';
 
@@ -101,32 +101,33 @@ export async function POST(request: NextRequest) {
                 acc + (Number(item.price) * item.quantity), 0
             );
 
-            // Create or find customer for guest checkout
-            let customerId: number | null = null;
+            // Create or find user for guest checkout
+            let finalUserId: number | null = userId || null;
             if (guest && guest.email) {
-                // Check if customer already exists
-                const existingCustomers = await tx.select()
-                    .from(customers)
-                    .where(eq(customers.email, guest.email.toLowerCase()))
+                // Check if user already exists
+                const existingUsers = await tx.select()
+                    .from(users)
+                    .where(eq(users.email, guest.email.toLowerCase()))
                     .limit(1);
 
-                if (existingCustomers.length > 0 && existingCustomers[0]) {
-                    // Update existing customer's order count and total spent
-                    const customer = existingCustomers[0];
-                    customerId = customer.id;
-                    await tx.update(customers)
+                if (existingUsers.length > 0 && existingUsers[0]) {
+                    // Update existing user's order count and total spent
+                    const user = existingUsers[0];
+                    finalUserId = user.id;
+                    await tx.update(users)
                         .set({
-                            totalOrders: (customer.totalOrders ?? 0) + 1,
-                            totalSpent: ((Number(customer.totalSpent) || 0) + total).toString(),
-                            phone: guest.phone || customer.phone,
-                            address: guest.address || customer.address,
+                            totalOrders: (user.totalOrders ?? 0) + 1,
+                            totalSpent: ((Number(user.totalSpent) || 0) + total).toString(),
+                            phone: guest.phone || user.phone,
+                            address: guest.address || user.address,
+                            fullName: guest.name || user.fullName,
                         })
-                        .where(eq(customers.id, customerId));
+                        .where(eq(users.id, finalUserId));
                 } else {
-                    // Create new customer
-                    const insertedCustomers = await tx.insert(customers)
+                    // Create new user (guest - no password)
+                    const insertedUsers = await tx.insert(users)
                         .values({
-                            name: guest.name,
+                            fullName: guest.name,
                             email: guest.email.toLowerCase(),
                             phone: guest.phone || null,
                             address: guest.address || null,
@@ -135,16 +136,15 @@ export async function POST(request: NextRequest) {
                             status: 'active',
                         })
                         .returning();
-                    if (insertedCustomers[0]) {
-                        customerId = insertedCustomers[0].id;
+                    if (insertedUsers[0]) {
+                        finalUserId = insertedUsers[0].id;
                     }
                 }
             }
 
-            // Create Order (linked to customer)
+            // Create Order
             const insertedOrder = await tx.insert(orders).values({
-                userId: userId || null,
-                customerId: customerId,
+                userId: finalUserId,
                 totalAmount: total.toString(),
                 status: 'pending',
                 paymentMethod: 'COD',

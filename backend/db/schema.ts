@@ -15,19 +15,6 @@ export const adminUsers = pgTable('admin_users', {
     createdAt: timestamp('created_at').defaultNow(),
 });
 
-// Customers Table (for customer management in dashboard)
-export const customers = pgTable('customers', {
-    id: serial('id').primaryKey(),
-    name: text('name').notNull(),
-    email: text('email').notNull().unique(),
-    phone: text('phone'),
-    address: text('address'),
-    totalOrders: integer('total_orders').default(0),
-    totalSpent: decimal('total_spent', { precision: 10, scale: 2 }).default('0'),
-    status: text('status').default('active'), // active, inactive
-    createdAt: timestamp('created_at').defaultNow(),
-});
-
 // Employees Table
 export const employees = pgTable('employees', {
     id: serial('id').primaryKey(),
@@ -92,20 +79,24 @@ export const products = pgTable('products', {
     createdAt: timestamp('created_at').defaultNow(),
 });
 
-// 2. Users Table (storefront customers)
+// 2. Users Table (all customers - registered and guests)
 export const users = pgTable('users', {
     id: serial('id').primaryKey(),
     email: text('email').notNull().unique(),
-    passwordHash: text('password_hash').notNull(),
+    passwordHash: text('password_hash'), // Nullable for guest customers
     fullName: text('full_name'),
+    phone: text('phone'),
     address: text('address'),
+    totalOrders: integer('total_orders').default(0),
+    totalSpent: decimal('total_spent', { precision: 10, scale: 2 }).default('0'),
+    status: text('status').default('active'), // active, inactive
+    createdAt: timestamp('created_at').defaultNow(),
 });
 
 // 3. Orders Table
 export const orders = pgTable('orders', {
     id: serial('id').primaryKey(),
     userId: integer('user_id').references(() => users.id),
-    customerId: integer('customer_id').references(() => customers.id),
     status: text('status').default('pending'),
     totalAmount: decimal('total_amount', { precision: 10, scale: 2 }),
     stripeSessionId: text('stripe_session_id'),

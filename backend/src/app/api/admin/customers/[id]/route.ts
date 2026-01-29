@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/db';
-import { customers } from '@/db/schema';
+import { users } from '@/db/schema';
 import { eq } from 'drizzle-orm';
 
 interface RouteParams {
@@ -14,9 +14,19 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
         const customerId = parseInt(id);
 
         const [customer] = await db
-            .select()
-            .from(customers)
-            .where(eq(customers.id, customerId))
+            .select({
+                id: users.id,
+                name: users.fullName,
+                email: users.email,
+                phone: users.phone,
+                address: users.address,
+                totalOrders: users.totalOrders,
+                totalSpent: users.totalSpent,
+                status: users.status,
+                createdAt: users.createdAt,
+            })
+            .from(users)
+            .where(eq(users.id, customerId))
             .limit(1);
 
         if (!customer) {
@@ -44,9 +54,9 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
         const body = await request.json();
 
         const [updated] = await db
-            .update(customers)
+            .update(users)
             .set({
-                name: body.name,
+                fullName: body.name,
                 email: body.email?.toLowerCase(),
                 phone: body.phone,
                 address: body.address,
@@ -54,8 +64,18 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
                 totalOrders: body.totalOrders,
                 totalSpent: body.totalSpent,
             })
-            .where(eq(customers.id, customerId))
-            .returning();
+            .where(eq(users.id, customerId))
+            .returning({
+                id: users.id,
+                name: users.fullName,
+                email: users.email,
+                phone: users.phone,
+                address: users.address,
+                totalOrders: users.totalOrders,
+                totalSpent: users.totalSpent,
+                status: users.status,
+                createdAt: users.createdAt,
+            });
 
         if (!updated) {
             return NextResponse.json(
@@ -81,8 +101,8 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
         const customerId = parseInt(id);
 
         const [deleted] = await db
-            .delete(customers)
-            .where(eq(customers.id, customerId))
+            .delete(users)
+            .where(eq(users.id, customerId))
             .returning();
 
         if (!deleted) {

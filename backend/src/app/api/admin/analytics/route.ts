@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/db';
-import { products, orders, customers, orderItems } from '@/db/schema';
+import { products, orders, users, orderItems } from '@/db/schema';
 import { sql, eq, gte, and, count, sum } from 'drizzle-orm';
 
 // GET /api/admin/analytics - Get chart data for analytics page
@@ -88,13 +88,13 @@ export async function GET(request: NextRequest) {
         // Customer growth
         const customerGrowth = await db
             .select({
-                date: sql<string>`DATE(${customers.createdAt})`,
+                date: sql<string>`DATE(${users.createdAt})`,
                 count: count(),
             })
-            .from(customers)
-            .where(gte(customers.createdAt, startDate))
-            .groupBy(sql`DATE(${customers.createdAt})`)
-            .orderBy(sql`DATE(${customers.createdAt})`);
+            .from(users)
+            .where(gte(users.createdAt, startDate))
+            .groupBy(sql`DATE(${users.createdAt})`)
+            .orderBy(sql`DATE(${users.createdAt})`);
 
         return NextResponse.json({
             period,

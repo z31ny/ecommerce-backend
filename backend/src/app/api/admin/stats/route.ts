@@ -1,5 +1,5 @@
 import { db } from '@/db';
-import { products, orders, customers } from '@/db/schema';
+import { products, orders, users } from '@/db/schema';
 import { NextResponse } from 'next/server';
 import { count, eq, sql, gte } from 'drizzle-orm';
 
@@ -16,7 +16,7 @@ export async function GET() {
 
         // Total counts with null safety
         const productCountResult = await db.select({ count: count() }).from(products);
-        const customerCountResult = await db.select({ count: count() }).from(customers);
+        const customerCountResult = await db.select({ count: count() }).from(users);
         const orderCountResult = await db.select({ count: count() }).from(orders);
 
         const productCount = productCountResult[0]?.count ?? 0;
