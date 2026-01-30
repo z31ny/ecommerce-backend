@@ -1,5 +1,5 @@
 import { db } from './index';
-import { products, users, adminUsers, customers, employees, offers } from './schema';
+import { products, users, adminUsers, employees, offers } from './schema';
 import bcrypt from 'bcrypt';
 
 // Admin users for dashboard
@@ -11,13 +11,13 @@ const adminUsersData = [
     { email: 'admin@freezybite.com', password: 'password', name: 'Admin User', role: 'Super Admin', access: ['all'] }
 ];
 
-// Sample customers for dashboard
+// Sample customers (will be stored in users table)
 const customersData = [
-    { name: 'John Smith', email: 'john@email.com', phone: '+20 109 396 1545', status: 'active', totalOrders: 5, totalSpent: '247.98' },
-    { name: 'Emma Wilson', email: 'emma@email.com', phone: '+20 112 345 6789', status: 'active', totalOrders: 4, totalSpent: '161.99' },
-    { name: 'Michael Brown', email: 'michael@email.com', phone: '+20 100 123 4567', status: 'active', totalOrders: 6, totalSpent: '327.74' },
-    { name: 'Sarah Davis', email: 'sarah.d@email.com', phone: '+20 101 987 6543', status: 'active', totalOrders: 4, totalSpent: '130.49' },
-    { name: 'James Miller', email: 'james@email.com', phone: '+20 111 222 3333', status: 'active', totalOrders: 3, totalSpent: '100.89' },
+    { fullName: 'John Smith', email: 'john@email.com', phone: '+20 109 396 1545', status: 'active', totalOrders: 5, totalSpent: '247.98' },
+    { fullName: 'Emma Wilson', email: 'emma@email.com', phone: '+20 112 345 6789', status: 'active', totalOrders: 4, totalSpent: '161.99' },
+    { fullName: 'Michael Brown', email: 'michael@email.com', phone: '+20 100 123 4567', status: 'active', totalOrders: 6, totalSpent: '327.74' },
+    { fullName: 'Sarah Davis', email: 'sarah.d@email.com', phone: '+20 101 987 6543', status: 'active', totalOrders: 4, totalSpent: '130.49' },
+    { fullName: 'James Miller', email: 'james@email.com', phone: '+20 111 222 3333', status: 'active', totalOrders: 3, totalSpent: '100.89' },
 ];
 
 // Sample employees for dashboard
@@ -79,11 +79,11 @@ async function main() {
         if (result.length > 0) console.log(`  ✅ ${admin.name} (${admin.role})`);
     }
 
-    // Customers
+    // Customers (stored in users table)
     console.log('\nCreating sample customers...');
     for (const customer of customersData) {
-        const result = await db.insert(customers).values(customer).onConflictDoNothing().returning();
-        if (result.length > 0) console.log(`  ✅ ${customer.name}`);
+        const result = await db.insert(users).values(customer).onConflictDoNothing().returning();
+        if (result.length > 0) console.log(`  ✅ ${customer.fullName}`);
     }
 
     // Employees
