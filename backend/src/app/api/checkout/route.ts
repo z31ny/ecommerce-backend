@@ -187,6 +187,8 @@ export async function POST(request: NextRequest) {
             orderId: result.id
         });
     } catch (error: any) {
-        return NextResponse.json({ error: error.message }, { status: 400 });
+        console.error('Checkout error:', error);
+        console.error('Error details:', error.message, error.code);
+        return NextResponse.json({ error: error.message, details: error.code }, { status: 400 });
     }
 }

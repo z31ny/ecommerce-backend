@@ -38,7 +38,9 @@ export async function POST(request: NextRequest) {
             token,
             user: { id: newUser.id, email: newUser.email, name: newUser.fullName }
         });
-    } catch (error) {
-        return NextResponse.json({ error: "Signup failed" }, { status: 500 });
+    } catch (error: any) {
+        console.error('Signup error:', error);
+        console.error('Error details:', error.message, error.code);
+        return NextResponse.json({ error: "Signup failed", details: error.message }, { status: 500 });
     }
 }
