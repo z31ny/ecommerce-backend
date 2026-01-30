@@ -18,11 +18,16 @@ interface GuestInfo {
 export async function POST(request: NextRequest) {
     try {
         const body = await request.json();
+        console.log('[Checkout] Received body:', JSON.stringify(body, null, 2));
+
         const { userId, items, guest } = body as {
             userId?: number;
             items?: CartItem[];
             guest?: GuestInfo;
         };
+
+        console.log('[Checkout] Guest info:', guest);
+        console.log('[Checkout] Guest phone:', guest?.phone);
 
         // Determine checkout mode: user cart vs direct items
         const useDirectItems = items && items.length > 0;
