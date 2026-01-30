@@ -610,17 +610,16 @@
         window.deleteProduct = async function (productId) {
             if (confirm('Are you sure you want to delete this product?')) {
                 try {
-                    await DashboardAPI.deleteProduct(productId);
-                    showAlert('success', 'Product deleted!');
+                    const result = await DashboardAPI.deleteProduct(productId);
+                    if (result.type === 'soft_delete') {
+                        showAlert('success', 'Product marked as deleted (has order history)');
+                    } else {
+                        showAlert('success', 'Product deleted!');
+                    }
                     await loadProductsFromAPI();
                 } catch (err) {
                     console.error('Delete product error:', err);
-                    // Show actual error message
-                    if (err.message && err.message.includes('referenced by existing orders')) {
-                        showAlert('error', 'Cannot delete: Product has orders. Set status to "inactive" instead.');
-                    } else {
-                        showAlert('error', 'Delete failed: ' + (err.message || 'Unknown error'));
-                    }
+                    showAlert('error', 'Delete failed: ' + (err.message || 'Unknown error'));
                 }
             }
         };

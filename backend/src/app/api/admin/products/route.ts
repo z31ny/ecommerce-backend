@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/db';
 import { products } from '@/db/schema';
-import { desc, eq } from 'drizzle-orm';
+import { desc, eq, ne, and } from 'drizzle-orm';
 
 // GET /api/admin/products - List all products for admin
 export async function GET(request: NextRequest) {
@@ -9,12 +9,22 @@ export async function GET(request: NextRequest) {
         const { searchParams } = new URL(request.url);
         const category = searchParams.get('category');
         const limit = parseInt(searchParams.get('limit') || '100');
+        const showDeleted = searchParams.get('showDeleted') === 'true';
+
+        // Filter out deleted products by default
+        let conditions: any[] = [];
+        if (!showDeleted) {
+            conditions.push(ne(products.status, 'deleted'));
+        }
+        if (category && category !== 'all') {
+            conditions.push(eq(products.category, category));
+        }
 
         let query = db.select().from(products).orderBy(desc(products.createdAt)).limit(limit);
 
-        if (category && category !== 'all') {
+        if (conditions.length > 0) {
             // @ts-ignore
-            query = query.where(eq(products.category, category));
+            query = query.where(conditions.length === 1 ? conditions[0] : and(...conditions));
         }
 
         const result = await query;
