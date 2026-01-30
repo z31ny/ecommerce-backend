@@ -71,7 +71,7 @@ export async function PUT(
     }
 }
 
-// DELETE /api/admin/products/[id] - Delete product (or soft-delete if has orders)
+// DELETE /api/admin/products/[id] - Soft delete product (set status to 'deleted')
 export async function DELETE(
     request: NextRequest,
     { params }: { params: Promise<{ id: string }> }
@@ -80,48 +80,27 @@ export async function DELETE(
         const { id } = await params;
         const productId = parseInt(id);
 
-        console.log('[Delete Product] Attempting to delete product ID:', productId);
+        console.log('[Delete Product] Soft deleting product ID:', productId);
 
-        // Try hard delete first
-        try {
-            const [deleted] = await db
-                .delete(products)
-                .where(eq(products.id, productId))
-                .returning();
+        // Always soft delete - set status to 'deleted'
+        const [deleted] = await db
+            .update(products)
+            .set({ status: 'deleted' })
+            .where(eq(products.id, productId))
+            .returning();
 
-            if (!deleted) {
-                return NextResponse.json({ error: 'Product not found' }, { status: 404 });
-            }
-
-            console.log('[Delete Product] Hard deleted:', deleted);
-            return NextResponse.json({ success: true, deleted, type: 'hard_delete' });
-        } catch (deleteError: any) {
-            // If foreign key violation, soft delete instead
-            if (deleteError.code === '23503' || deleteError.message?.includes('violates foreign key')) {
-                console.log('[Delete Product] FK constraint, switching to soft delete');
-
-                const [softDeleted] = await db
-                    .update(products)
-                    .set({ status: 'deleted' })
-                    .where(eq(products.id, productId))
-                    .returning();
-
-                if (!softDeleted) {
-                    return NextResponse.json({ error: 'Product not found' }, { status: 404 });
-                }
-
-                console.log('[Delete Product] Soft deleted (status=deleted):', softDeleted);
-                return NextResponse.json({
-                    success: true,
-                    deleted: softDeleted,
-                    type: 'soft_delete',
-                    message: 'Product has orders - marked as deleted instead of removed'
-                });
-            }
-            throw deleteError;
+        if (!deleted) {
+            return NextResponse.json({ error: 'Product not found' }, { status: 404 });
         }
+
+        console.log('[Delete Product] Successfully soft deleted:', deleted.id);
+        return NextResponse.json({
+            success: true,
+            deleted,
+            message: 'Product deleted successfully'
+        });
     } catch (error: any) {
         console.error('Delete product error:', error);
-        return NextResponse.json({ error: error.message || 'Internal server error' }, { status: 500 });
+        return NextResponse.json({ error: error.message || 'Delete failed' }, { status: 500 });
     }
 }
