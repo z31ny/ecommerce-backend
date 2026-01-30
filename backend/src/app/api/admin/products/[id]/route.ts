@@ -80,6 +80,8 @@ export async function DELETE(
         const { id } = await params;
         const productId = parseInt(id);
 
+        console.log('[Delete Product] Attempting to delete product ID:', productId);
+
         const [deleted] = await db
             .delete(products)
             .where(eq(products.id, productId))
@@ -89,9 +91,21 @@ export async function DELETE(
             return NextResponse.json({ error: 'Product not found' }, { status: 404 });
         }
 
+        console.log('[Delete Product] Successfully deleted:', deleted);
         return NextResponse.json({ success: true, deleted });
-    } catch (error) {
+    } catch (error: any) {
         console.error('Delete product error:', error);
-        return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+        console.error('Error code:', error.code);
+        console.error('Error constraint:', error.constraint);
+
+        // Check for foreign key violation
+        if (error.code === '23503') {
+            return NextResponse.json({
+                error: 'Cannot delete product: it is referenced by existing orders. Set status to "inactive" instead.',
+                code: 'FOREIGN_KEY_VIOLATION'
+            }, { status: 409 });
+        }
+
+        return NextResponse.json({ error: error.message || 'Internal server error' }, { status: 500 });
     }
 }
