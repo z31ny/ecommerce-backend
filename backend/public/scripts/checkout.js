@@ -236,7 +236,10 @@
 
   // Initialize: fetch products then render
   fetchProducts().then(function (productList) {
+    console.log('[Checkout] Fetched products from API:', productList);
     buildSkuMap(productList);
+    console.log('[Checkout] Built SKU map:', skuToProduct);
+    console.log('[Checkout] SKU map keys:', Object.keys(skuToProduct));
     render();
   });
 
