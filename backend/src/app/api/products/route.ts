@@ -1,7 +1,7 @@
 import { db } from '@/db';
 import { products } from '@/db/schema';
 import { NextResponse, NextRequest } from 'next/server';
-import { eq } from 'drizzle-orm';
+import { eq, and, ne } from 'drizzle-orm';
 
 export async function GET(request: NextRequest) {
     try {
@@ -11,21 +11,31 @@ export async function GET(request: NextRequest) {
         const category = searchParams.get('category');
 
         // 2. Handle Pagination (e.g., /api/products?limit=10&page=1)
-        const limit = parseInt(searchParams.get('limit') || '10');
+        const limit = parseInt(searchParams.get('limit') || '100');
         const page = parseInt(searchParams.get('page') || '1');
         const offset = (page - 1) * limit;
 
-        let query = db.select().from(products).limit(limit).offset(offset);
+        // Build conditions - always filter out deleted/inactive products
+        let conditions: any[] = [
+            ne(products.status, 'deleted'),
+            ne(products.status, 'inactive')
+        ];
 
-        // If a category is provided, filter the results
+        // If a category is provided, add to filter
         if (category) {
-            // @ts-ignore - Simple filter for now
-            query = query.where(eq(products.category, category));
+            conditions.push(eq(products.category, category));
         }
 
-        const data = await query;
+        const data = await db
+            .select()
+            .from(products)
+            .where(and(...conditions))
+            .limit(limit)
+            .offset(offset);
+
         return NextResponse.json(data);
     } catch (error) {
+        console.error('Get products error:', error);
         return NextResponse.json({ error: "Failed to fetch products" }, { status: 500 });
     }
 }
