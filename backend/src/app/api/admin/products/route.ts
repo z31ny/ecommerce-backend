@@ -55,13 +55,26 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
     try {
         const body = await request.json();
-        console.log('[Create Product] Received:', JSON.stringify(body));
+        console.log('[Create Product] Raw body:', JSON.stringify(body, null, 2));
 
         const { sku, name, description, price, stock, minStock, images, image, category, attributes, status } = body;
 
-        if (!name || price === undefined || price === null) {
+        console.log('[Create Product] name:', name, '| price:', price, '| typeof price:', typeof price);
+
+        // Validate - name must exist and not be empty, price must be a number
+        if (!name || String(name).trim() === '') {
+            console.log('[Create Product] Validation failed: name missing or empty');
             return NextResponse.json(
-                { error: 'Name and price are required' },
+                { error: 'Product name is required' },
+                { status: 400 }
+            );
+        }
+
+        const priceNum = parseFloat(price);
+        if (isNaN(priceNum)) {
+            console.log('[Create Product] Validation failed: price is not a valid number');
+            return NextResponse.json(
+                { error: 'Price must be a valid number' },
                 { status: 400 }
             );
         }
@@ -82,7 +95,7 @@ export async function POST(request: NextRequest) {
             sku: sku || `SKU-${Date.now()}`,
             name: name.trim(),
             description: description ? description.trim() : null,
-            price: String(price),
+            price: String(priceNum),
             stock: typeof stock === 'number' ? stock : parseInt(stock) || 0,
             minStock: typeof minStock === 'number' ? minStock : parseInt(minStock) || 10,
             images: imageArray,
