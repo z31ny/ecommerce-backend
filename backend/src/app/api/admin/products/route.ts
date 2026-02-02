@@ -121,6 +121,15 @@ export async function POST(request: NextRequest) {
         console.error('[Create Product] Error:', error);
         console.error('[Create Product] Error message:', error.message);
         console.error('[Create Product] Error code:', error.code);
+
+        // Handle duplicate SKU error
+        if (error.code === '23505' || error.message?.includes('unique constraint') || error.message?.includes('duplicate key')) {
+            return NextResponse.json({
+                error: 'A product with this SKU already exists. Please use a different SKU.',
+                code: 'DUPLICATE_SKU'
+            }, { status: 409 });
+        }
+
         return NextResponse.json({
             error: 'Failed to create product',
             details: error.message
