@@ -1,42 +1,52 @@
 import { db } from '@/db';
 import { products } from '@/db/schema';
 import { NextResponse, NextRequest } from 'next/server';
-import { eq, and, ne } from 'drizzle-orm';
+import { eq, and, ne, or, isNull } from 'drizzle-orm';
 
 export async function GET(request: NextRequest) {
     try {
         const { searchParams } = new URL(request.url);
 
-        // 1. Handle Filtering (e.g., /api/products?category=Ice Cream)
+        // Handle Filtering
         const category = searchParams.get('category');
 
-        // 2. Handle Pagination (e.g., /api/products?limit=10&page=1)
+        // Handle Pagination
         const limit = parseInt(searchParams.get('limit') || '100');
         const page = parseInt(searchParams.get('page') || '1');
         const offset = (page - 1) * limit;
 
-        // Build conditions - always filter out deleted/inactive products
-        let conditions: any[] = [
-            ne(products.status, 'deleted'),
-            ne(products.status, 'inactive')
-        ];
+        // Only show active products (filter out deleted and inactive)
+        let data;
 
-        // If a category is provided, add to filter
         if (category) {
-            conditions.push(eq(products.category, category));
+            data = await db
+                .select()
+                .from(products)
+                .where(and(
+                    eq(products.category, category),
+                    or(
+                        eq(products.status, 'active'),
+                        isNull(products.status)
+                    )
+                ))
+                .limit(limit)
+                .offset(offset);
+        } else {
+            data = await db
+                .select()
+                .from(products)
+                .where(or(
+                    eq(products.status, 'active'),
+                    isNull(products.status)
+                ))
+                .limit(limit)
+                .offset(offset);
         }
 
-        const data = await db
-            .select()
-            .from(products)
-            .where(and(...conditions))
-            .limit(limit)
-            .offset(offset);
-
         return NextResponse.json(data);
-    } catch (error) {
+    } catch (error: any) {
         console.error('Get products error:', error);
-        return NextResponse.json({ error: "Failed to fetch products" }, { status: 500 });
+        return NextResponse.json({ error: "Failed to fetch products", details: error.message }, { status: 500 });
     }
 }
 
@@ -56,23 +66,31 @@ export async function POST(request: NextRequest) {
         // Generate SKU if not provided
         const sku = body.sku || `SKU-${Date.now()}`;
 
+        // Handle images
+        let imageArray: string[] | null = null;
+        if (body.images && Array.isArray(body.images) && body.images.length > 0) {
+            const filtered = body.images.filter((img: any) => img && String(img).trim() !== '');
+            imageArray = filtered.length > 0 ? filtered : null;
+        } else if (body.image && body.image.trim() !== '') {
+            imageArray = [body.image];
+        }
+
         const [newProduct] = await db.insert(products).values({
             sku,
             name: body.name,
             description: body.description || null,
-            price: body.price.toString(),
+            price: String(body.price),
             stock: body.stock ?? 0,
             minStock: body.minStock ?? 10,
-            images: body.images || body.image ? [body.image] : null,
+            images: imageArray,
             category: body.category || null,
             attributes: body.attributes || null,
             status: body.status || 'active',
         }).returning();
 
         return NextResponse.json(newProduct, { status: 201 });
-    } catch (error) {
+    } catch (error: any) {
         console.error('Create product error:', error);
-        return NextResponse.json({ error: "Failed to create product" }, { status: 500 });
+        return NextResponse.json({ error: "Failed to create product", details: error.message }, { status: 500 });
     }
 }
-
