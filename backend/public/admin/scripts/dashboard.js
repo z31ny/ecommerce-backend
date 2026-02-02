@@ -1729,6 +1729,10 @@ function viewOrder(orderId) {
                             <span class="receipt-label">Email</span>
                             <span class="receipt-value">${order.customer.email}</span>
                         </div>
+                        <div class="receipt-row">
+                            <span class="receipt-label">Address</span>
+                            <span class="receipt-value">${order.customer.address || 'N/A'}</span>
+                        </div>
                     </div>
                     
                     <!-- Order Items -->

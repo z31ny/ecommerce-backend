@@ -28,6 +28,7 @@ export async function GET(request: NextRequest) {
                 let customerName = 'Guest';
                 let customerEmail = '';
                 let customerPhone = '';
+                let customerAddress = '';
 
                 if (order.userId) {
                     const [user] = await db.select().from(users).where(eq(users.id, order.userId)).limit(1);
@@ -35,6 +36,7 @@ export async function GET(request: NextRequest) {
                         customerName = user.fullName || user.email;
                         customerEmail = user.email;
                         customerPhone = user.phone || '';
+                        customerAddress = user.address || '';
                     }
                 }
 
@@ -56,6 +58,7 @@ export async function GET(request: NextRequest) {
                         name: customerName,
                         email: customerEmail,
                         phone: customerPhone,
+                        address: customerAddress,
                     },
                     items,
                     date: order.createdAt?.toISOString().split('T')[0] || '',
