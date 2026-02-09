@@ -353,7 +353,6 @@
                 return;
             }
             const loginBtn = document.getElementById('loginDemoBtn');
-            const passwords = {};
 
             loginBtn.disabled = true;
             loginBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Logging in...';
@@ -362,7 +361,7 @@
                 const response = await fetch('/api/admin/auth/login', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email: demo.email, password: passwords[selectedDemo] }),
+                    body: JSON.stringify({ email: demo.email, password: '' }),
                 });
 
                 const data = await response.json();
@@ -373,7 +372,7 @@
                 localStorage.setItem('freezyBiteLoggedIn', 'true');
                 window.location.href = 'index.html';
             } catch (error) {
-                alert('Demo login failed: ' + error.message + '\n\nPlease ensure the database is seeded.');
+                alert('Demo login failed: ' + error.message + '\n\nPlease sign in with a real admin account.');
                 loginBtn.disabled = false;
                 loginBtn.innerHTML = `<i class="fas fa-sign-in-alt"></i> Login as ${demo.role}`;
             }

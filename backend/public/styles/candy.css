@@ -55,8 +55,8 @@
 .fav-price{color:#b24c63}
 .fav-rating{color:#b24c63;font-weight:700}
 .fav-score{color:#8a6a74;font-weight:400}
-.fav-cart{position:absolute;right:16px;bottom:16px;background:transparent;border:none;cursor:pointer}
-.fav-cart img{width:22px;height:22px}
+.fav-cart{position:absolute;right:16px;bottom:16px;background:#fff;border:none;cursor:pointer;z-index:2;border-radius:999px;padding:8px;box-shadow:0 6px 18px rgba(0,0,0,.12)}
+.fav-cart img{width:22px;height:22px;display:block}
 
 @media (max-width:960px){
   .fav-grid{grid-template-columns:1fr 1fr}

@@ -143,6 +143,20 @@
     return isNaN(fee) ? 0 : fee;
   }
 
+  function getShippingSettings() {
+    try {
+      return JSON.parse(localStorage.getItem('freezyBiteShippingSettings') || 'null');
+    } catch (e) {
+      return null;
+    }
+  }
+
+  function normalizeFee(value) {
+    if (value === '' || value === null || typeof value === 'undefined') return null;
+    var num = Number(value);
+    return isNaN(num) ? null : num;
+  }
+
   // Delivery mapping by governorate
   var DELIVERY_MAP = {
     'Cairo': { fee: 50, days: '1–2 days', zone: 'Cairo — 50 EGP' },
@@ -166,6 +180,21 @@
     if (!govSelect) return;
     var gov = govSelect.value;
     var info = DELIVERY_MAP[gov] || DELIVERY_MAP['Other'];
+    var settings = getShippingSettings();
+    if (settings) {
+      var byGov = settings.byGovernorate && settings.byGovernorate[gov];
+      var feeOverride = normalizeFee(byGov && byGov.fee);
+      var daysOverride = byGov && byGov.days;
+      var defaultFee = normalizeFee(settings.defaultFee);
+      var defaultDays = settings.defaultDays;
+      var fee = feeOverride !== null ? feeOverride : (defaultFee !== null ? defaultFee : info.fee);
+      var days = (daysOverride && String(daysOverride).trim()) ? daysOverride : (defaultDays && String(defaultDays).trim() ? defaultDays : info.days);
+      info = {
+        fee: fee,
+        days: days,
+        zone: (gov || 'Other') + ' — ' + fee + ' EGP'
+      };
+    }
 
     if (gov && deliveryZone) {
       deliveryZone.textContent = info.zone;

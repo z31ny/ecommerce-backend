@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/db';
 import { users } from '@/db/schema';
-import { eq, desc, like, or } from 'drizzle-orm';
+import { eq, desc, like, or, and } from 'drizzle-orm';
 
 // GET /api/admin/customers - List all customers (from users table)
 export async function GET(request: NextRequest) {
@@ -10,7 +10,7 @@ export async function GET(request: NextRequest) {
         const search = searchParams.get('search');
         const status = searchParams.get('status');
 
-        let conditions = [];
+        let conditions: any[] = [];
         if (search) {
             conditions.push(
                 or(
@@ -24,7 +24,7 @@ export async function GET(request: NextRequest) {
             conditions.push(eq(users.status, status));
         }
 
-        const result = await db
+        let query = db
             .select({
                 id: users.id,
                 name: users.fullName,
@@ -36,8 +36,13 @@ export async function GET(request: NextRequest) {
                 status: users.status,
                 createdAt: users.createdAt,
             })
-            .from(users)
-            .orderBy(desc(users.createdAt));
+            .from(users);
+
+        if (conditions.length > 0) {
+            query = query.where(and(...conditions)) as any;
+        }
+
+        const result = await query.orderBy(desc(users.createdAt));
 
         return NextResponse.json(result);
     } catch (error) {

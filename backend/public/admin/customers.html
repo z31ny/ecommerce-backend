@@ -139,15 +139,15 @@
             <div class="header-right">
                 <button class="header-btn" onclick="showNotifications()">
                     <i class="fas fa-bell"></i>
-                    <span class="badge">5</span>
+                    <span class="badge" style="display: none;"></span>
                 </button>
                 <button class="header-btn" onclick="showMessages()">
                     <i class="fas fa-envelope"></i>
-                    <span class="badge">3</span>
+                    <span class="badge" style="display: none;"></span>
                 </button>
                 <button class="header-btn" onclick="showTrashModal()" title="Trash">
                     <i class="fas fa-trash-alt"></i>
-                    <span class="badge" id="headerTrashBadge">0</span>
+                    <span class="badge" id="headerTrashBadge" style="display: none;"></span>
                 </button>
                 <img src="/assets/icons/profile.svg" alt="Admin" class="header-avatar">
             </div>
@@ -175,19 +175,19 @@
             <div class="customer-stats">
                 <div class="customer-stat-card">
                     <h4>Active Customers</h4>
-                    <div class="value">732</div>
+                    <div class="value">--</div>
                 </div>
                 <div class="customer-stat-card">
                     <h4>New This Month</h4>
-                    <div class="value">48</div>
+                    <div class="value">--</div>
                 </div>
                 <div class="customer-stat-card">
                     <h4>Avg. Order Value</h4>
-                    <div class="value">EGP 52.80</div>
+                    <div class="value">EGP --</div>
                 </div>
                 <div class="customer-stat-card">
                     <h4>Retention Rate</h4>
-                    <div class="value">78%</div>
+                    <div class="value">--</div>
                 </div>
             </div>
             
@@ -210,7 +210,7 @@
             <div class="data-card">
                 <div class="data-card-header">
                     <h3 class="data-card-title">All Customers</h3>
-                    <span class="data-card-count" id="customersCount">8 customers</span>
+                    <span class="data-card-count" id="customersCount">--</span>
                 </div>
                 <div class="table-wrapper" id="customersTableBody">
                     <!-- Rendered by JavaScript -->

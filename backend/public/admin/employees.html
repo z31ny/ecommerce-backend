@@ -479,15 +479,15 @@
             <div class="header-right">
                 <button class="header-btn" onclick="showNotifications()">
                     <i class="fas fa-bell"></i>
-                    <span class="badge">5</span>
+                    <span class="badge" style="display: none;"></span>
                 </button>
                 <button class="header-btn" onclick="showMessages()">
                     <i class="fas fa-envelope"></i>
-                    <span class="badge">3</span>
+                    <span class="badge" style="display: none;"></span>
                 </button>
                 <button class="header-btn" onclick="showTrashModal()" title="Trash">
                     <i class="fas fa-trash-alt"></i>
-                    <span class="badge" id="headerTrashBadge">0</span>
+                    <span class="badge" id="headerTrashBadge" style="display: none;"></span>
                 </button>
                 <img src="/assets/icons/profile.svg" alt="Admin" class="header-avatar">
             </div>
@@ -522,7 +522,7 @@
                         <i class="fas fa-users"></i>
                     </div>
                     <div class="info">
-                        <h4 id="totalEmployeesCount">0</h4>
+                        <h4 id="totalEmployeesCount">--</h4>
                         <p>Total Employees</p>
                     </div>
                 </div>
@@ -531,7 +531,7 @@
                         <i class="fas fa-user-check"></i>
                     </div>
                     <div class="info">
-                        <h4 id="activeEmployeesCount">0</h4>
+                        <h4 id="activeEmployeesCount">--</h4>
                         <p>Active</p>
                     </div>
                 </div>
@@ -540,7 +540,7 @@
                         <i class="fas fa-user-clock"></i>
                     </div>
                     <div class="info">
-                        <h4 id="onLeaveEmployeesCount">0</h4>
+                        <h4 id="onLeaveEmployeesCount">--</h4>
                         <p>On Leave</p>
                     </div>
                 </div>
@@ -549,7 +549,7 @@
                         <i class="fas fa-user-times"></i>
                     </div>
                     <div class="info">
-                        <h4 id="inactiveEmployeesCount">0</h4>
+                        <h4 id="inactiveEmployeesCount">--</h4>
                         <p>Inactive</p>
                     </div>
                 </div>

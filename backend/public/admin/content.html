@@ -772,9 +772,9 @@
                 </div>
             </div>
             <div class="header-right">
-                <button class="header-btn" onclick="showNotifications()"><i class="fas fa-bell"></i><span class="badge">5</span></button>
-                <button class="header-btn" onclick="showMessages()"><i class="fas fa-envelope"></i><span class="badge">3</span></button>
-                <button class="header-btn" onclick="showTrashModal()" title="Trash"><i class="fas fa-trash-alt"></i><span class="badge" id="headerTrashBadge">0</span></button>
+                <button class="header-btn" onclick="showNotifications()"><i class="fas fa-bell"></i><span class="badge" style="display: none;"></span></button>
+                <button class="header-btn" onclick="showMessages()"><i class="fas fa-envelope"></i><span class="badge" style="display: none;"></span></button>
+                <button class="header-btn" onclick="showTrashModal()" title="Trash"><i class="fas fa-trash-alt"></i><span class="badge" id="headerTrashBadge" style="display: none;"></span></button>
                 <img src="/assets/icons/profile.svg" alt="Admin" class="header-avatar">
             </div>
         </header>
@@ -799,22 +799,25 @@
             <!-- Content Tabs -->
             <div class="content-tabs">
                 <button class="content-tab active" onclick="switchContentTab('testimonials')">
-                    <i class="fas fa-quote-right"></i> Testimonials <span class="tab-count" id="testimonialCount">0</span>
+                    <i class="fas fa-quote-right"></i> Testimonials <span class="tab-count" id="testimonialCount">--</span>
                 </button>
                 <button class="content-tab" onclick="switchContentTab('faqs')">
-                    <i class="fas fa-question-circle"></i> FAQs <span class="tab-count" id="faqCount">0</span>
+                    <i class="fas fa-question-circle"></i> FAQs <span class="tab-count" id="faqCount">--</span>
                 </button>
                 <button class="content-tab" onclick="switchContentTab('moods')">
-                    <i class="fas fa-heart"></i> Pick Your Mood <span class="tab-count" id="moodCount">0</span>
+                    <i class="fas fa-heart"></i> Pick Your Mood <span class="tab-count" id="moodCount">--</span>
                 </button>
                 <button class="content-tab" onclick="switchContentTab('snacks')">
-                    <i class="fas fa-cookie-bite"></i> What's Inside <span class="tab-count" id="snackCount">0</span>
+                    <i class="fas fa-cookie-bite"></i> What's Inside <span class="tab-count" id="snackCount">--</span>
                 </button>
                 <button class="content-tab" onclick="switchContentTab('favorites')">
-                    <i class="fas fa-star"></i> Customer Favorites <span class="tab-count" id="favoriteCount">0</span>
+                    <i class="fas fa-star"></i> Customer Favorites <span class="tab-count" id="favoriteCount">--</span>
                 </button>
                 <button class="content-tab" onclick="switchContentTab('heroes')">
-                    <i class="fas fa-image"></i> Hero Images <span class="tab-count" id="heroCount">0</span>
+                    <i class="fas fa-image"></i> Hero Images <span class="tab-count" id="heroCount">--</span>
+                </button>
+                <button class="content-tab" onclick="switchContentTab('shipping')">
+                    <i class="fas fa-truck"></i> Shipping Fees
                 </button>
                 <button class="content-tab" onclick="switchContentTab('contact')">
                     <i class="fas fa-address-card"></i> Contact Page
@@ -919,6 +922,9 @@
                             <h3 style="margin-bottom: 0.25rem;">Hero Images</h3>
                             <p style="color: var(--text-secondary); font-size: 0.85rem;">Manage the main banner images for each page of your website.</p>
                         </div>
+                        <button class="btn btn-primary" onclick="openAddHeroModal()">
+                            <i class="fas fa-plus"></i> Add Hero Image
+                        </button>
                     </div>
                 </div>
                 <div class="hero-grid" id="heroesGrid"></div>
@@ -1070,7 +1076,7 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <!-- Preview Card -->
                 <div class="data-card" style="margin-top: 1.5rem;">
                     <div class="data-card-header">
@@ -1082,6 +1088,126 @@
                     <div style="padding: 1.5rem; background: linear-gradient(to bottom, #fce4ec, #fff); border-radius: var(--border-radius-md);">
                         <div id="contactPreview" style="font-family: 'Segoe UI', sans-serif;">
                             <!-- Preview will be rendered here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Shipping Fees Section -->
+            <div class="content-section" id="shippingSection">
+                <div class="data-card" style="margin-bottom: 1.5rem;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+                        <div>
+                            <h3 style="margin-bottom: 0.25rem;"><i class="fas fa-truck" style="color: var(--primary); margin-right: 0.5rem;"></i>Shipping Fees</h3>
+                            <p style="color: var(--text-secondary); font-size: 0.85rem;">Set default shipping and per-governorate fees used at checkout.</p>
+                        </div>
+                        <button class="btn btn-primary" onclick="saveShippingSettings()">
+                            <i class="fas fa-save"></i> Save Shipping
+                        </button>
+                    </div>
+                </div>
+                <div class="data-card">
+                    <div style="padding: 1.5rem;">
+                        <div class="settings-grid" style="margin-bottom: 1rem;">
+                            <div class="form-group">
+                                <label class="form-label">Default Fee (EGP)</label>
+                                <input type="number" class="form-input" id="shipDefaultFee" min="0" step="1" placeholder="e.g., 50">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Default Delivery Days</label>
+                                <input type="text" class="form-input" id="shipDefaultDays" placeholder="e.g., 2–4 days">
+                            </div>
+                        </div>
+                        <div class="settings-grid">
+                            <div class="form-group">
+                                <label class="form-label">Cairo Fee (EGP)</label>
+                                <input type="number" class="form-input" data-ship-fee="Cairo" min="0" step="1" placeholder="e.g., 50">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Cairo Days</label>
+                                <input type="text" class="form-input" data-ship-days="Cairo" placeholder="e.g., 1–2 days">
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Giza Fee (EGP)</label>
+                                <input type="number" class="form-input" data-ship-fee="Giza" min="0" step="1" placeholder="e.g., 50">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Giza Days</label>
+                                <input type="text" class="form-input" data-ship-days="Giza" placeholder="e.g., 1–2 days">
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Alexandria Fee (EGP)</label>
+                                <input type="number" class="form-input" data-ship-fee="Alexandria" min="0" step="1" placeholder="e.g., 60">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Alexandria Days</label>
+                                <input type="text" class="form-input" data-ship-days="Alexandria" placeholder="e.g., 2–3 days">
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Sharqia Fee (EGP)</label>
+                                <input type="number" class="form-input" data-ship-fee="Sharqia" min="0" step="1" placeholder="e.g., 70">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Sharqia Days</label>
+                                <input type="text" class="form-input" data-ship-days="Sharqia" placeholder="e.g., 2–5 days">
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Qalyubia Fee (EGP)</label>
+                                <input type="number" class="form-input" data-ship-fee="Qalyubia" min="0" step="1" placeholder="e.g., 60">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Qalyubia Days</label>
+                                <input type="text" class="form-input" data-ship-days="Qalyubia" placeholder="e.g., 2–3 days">
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Gharbia Fee (EGP)</label>
+                                <input type="number" class="form-input" data-ship-fee="Gharbia" min="0" step="1" placeholder="e.g., 70">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Gharbia Days</label>
+                                <input type="text" class="form-input" data-ship-days="Gharbia" placeholder="e.g., 2–5 days">
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Monufia Fee (EGP)</label>
+                                <input type="number" class="form-input" data-ship-fee="Monufia" min="0" step="1" placeholder="e.g., 70">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Monufia Days</label>
+                                <input type="text" class="form-input" data-ship-days="Monufia" placeholder="e.g., 2–5 days">
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Ismailia Fee (EGP)</label>
+                                <input type="number" class="form-input" data-ship-fee="Ismailia" min="0" step="1" placeholder="e.g., 70">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Ismailia Days</label>
+                                <input type="text" class="form-input" data-ship-days="Ismailia" placeholder="e.g., 2–5 days">
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Damietta Fee (EGP)</label>
+                                <input type="number" class="form-input" data-ship-fee="Damietta" min="0" step="1" placeholder="e.g., 70">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Damietta Days</label>
+                                <input type="text" class="form-input" data-ship-days="Damietta" placeholder="e.g., 2–5 days">
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Other Fee (EGP)</label>
+                                <input type="number" class="form-input" data-ship-fee="Other" min="0" step="1" placeholder="e.g., 80">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Other Days</label>
+                                <input type="text" class="form-input" data-ship-days="Other" placeholder="e.g., 3–7 days">
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -1665,18 +1791,51 @@
                         </div>
                         <input type="file" id="heroImage" accept="image/*" style="display: none;" onchange="previewHeroImage(event)">
                     </div>
-                    <div class="form-group">
-                        <label class="form-label">Hero Title (optional)</label>
-                        <input type="text" class="form-input" id="editHeroTitle" placeholder="Main heading text">
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Hero Subtitle (optional)</label>
-                        <input type="text" class="form-input" id="editHeroSubtitle" placeholder="Subtitle or tagline">
-                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" onclick="closeModal('editHeroModal')">Cancel</button>
                     <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Add Hero Image Modal -->
+    <div class="modal-overlay" id="addHeroModal">
+        <div class="modal" style="max-width: 550px;">
+            <div class="modal-header">
+                <h2 class="modal-title"><i class="fas fa-plus" style="color: var(--primary); margin-right: 0.5rem;"></i>Add Hero Image</h2>
+                <button class="modal-close" onclick="closeModal('addHeroModal')"><i class="fas fa-times"></i></button>
+            </div>
+            <form id="addHeroForm" onsubmit="addHero(event)">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label class="form-label">Page</label>
+                        <select class="form-select" id="addHeroPage" required>
+                            <option value="">Select page</option>
+                            <option value="fruits">Fruits</option>
+                            <option value="candy">Candy</option>
+                            <option value="about">About Us</option>
+                            <option value="contact">Contact Us</option>
+                            <option value="offers">Offers</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Hero Image</label>
+                        <div class="image-upload-area" onclick="document.getElementById('addHeroImage').click()" style="height: 200px;">
+                            <img id="addHeroImagePreview" src="" alt="Preview" style="max-height: 180px; display: none;">
+                            <div id="addHeroImagePlaceholder">
+                                <i class="fas fa-image" style="font-size: 3rem; color: var(--text-muted); margin-bottom: 0.5rem;"></i>
+                                <p style="color: var(--text-muted);">Click to upload hero image</p>
+                                <small style="color: var(--text-muted);">Recommended: 1920 x 600px</small>
+                            </div>
+                        </div>
+                        <input type="file" id="addHeroImage" accept="image/*" style="display: none;" onchange="previewAddHeroImage(event)">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('addHeroModal')">Cancel</button>
+                    <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Save Hero</button>
                 </div>
             </form>
         </div>
@@ -1687,75 +1846,46 @@
     <script src="scripts/dashboard.js"></script>
     <script>
         // ===== DATA =====
-        let testimonials = JSON.parse(localStorage.getItem('freezyBiteTestimonials2')) || [
-            { id: 1, author: '@Sarah M', teaser: 'left a sweet review!', fullReview: 'These freeze-dried strawberries are absolutely amazing! The texture is perfect and they taste so fresh. Will definitely order again!', bubbleColor: 'yellow', status: 'active' },
-            { id: 2, author: '@juicyluv', teaser: 'has something to say!', fullReview: 'Best snacks I\'ve ever tried! The mango is my favorite - it\'s like eating sunshine. My kids love them too!', bubbleColor: 'purple', status: 'active' },
-            { id: 3, author: '@fruitfan', teaser: 'See what they think!', fullReview: 'I was skeptical at first but these are genuinely delicious. Great for a healthy snack that still feels like a treat.', bubbleColor: 'pink', status: 'active' }
-        ];
+        let testimonials = JSON.parse(localStorage.getItem('freezyBiteTestimonials2')) || [];
         
-        let faqs = JSON.parse(localStorage.getItem('freezyBiteFaqs2')) || [
-            { id: 1, question: 'What kind of products do you offer?', answer: 'We offer freeze-dried fruits, candies, chocolates, and more delicious snacks.', status: 'active' },
-            { id: 2, question: 'Can I customize my order?', answer: 'Yes! Contact us for custom orders and bulk purchases.', status: 'active' },
-            { id: 3, question: 'Do you have a subscription option?', answer: 'Yes, we offer monthly subscription boxes with exclusive products.', status: 'active' },
-            { id: 4, question: 'Do you offer delivery?', answer: 'We deliver across Egypt. Delivery times vary by location.', status: 'active' },
-            { id: 5, question: 'Are your products specially curated for women?', answer: 'Our products are for everyone who loves delicious, healthy snacks!', status: 'active' },
-            { id: 6, question: 'Do you accept returns or exchanges?', answer: 'Due to the nature of food products, we do not accept returns. Please contact us if there is an issue.', status: 'active' }
-        ];
+        let faqs = JSON.parse(localStorage.getItem('freezyBiteFaqs2')) || [];
         
-        let moods = JSON.parse(localStorage.getItem('freezyBiteMoods2')) || [
-            { id: 1, title: 'Sweet & Flirty', description: 'Strawberries dipped in charm', buttonText: 'Explore Flavor', color: 'pink', backImage: '', backDescription: 'Our signature strawberry collection - freeze-dried to perfection with no added sugar.', buttonLink: '/fruits/strawberry', status: 'active' },
-            { id: 2, title: 'Bold & Bright', description: 'Sunshine you can snack on', buttonText: 'Get Zesty', color: 'yellow', backImage: '', backDescription: 'Tropical mango and citrus treats that bring the sunshine to every bite.', buttonLink: '/fruits/citrus', status: 'active' },
-            { id: 3, title: 'Cool & Crisp', description: "So fresh, it's unreal", buttonText: 'Stay Chill', color: 'green', backImage: '', backDescription: 'Refreshing apple and mint flavors for those who love a crisp, clean taste.', buttonLink: '/fruits/mint', status: 'active' }
-        ];
+        let moods = JSON.parse(localStorage.getItem('freezyBiteMoods2')) || [];
         
-        let snacks = JSON.parse(localStorage.getItem('freezyBiteSnacks2')) || [
-            { id: 1, title: 'Freeze Dried Strawberries', frontImage: '', backImage: '', frontLabel: 'Package Front', backLabel: 'Ingredients', status: 'active' },
-            { id: 2, title: 'Freeze Dried Marshmallows', frontImage: '', backImage: '', frontLabel: 'Package Front', backLabel: 'Nutrition Facts', status: 'active' },
-            { id: 3, title: 'Mango Slices', frontImage: '', backImage: '', frontLabel: 'Package Front', backLabel: 'Nutrition Info', status: 'active' }
-        ];
+        let snacks = JSON.parse(localStorage.getItem('freezyBiteSnacks2')) || [];
         
-        let favorites = JSON.parse(localStorage.getItem('freezyBiteFavorites2')) || [
-            { id: 1, name: 'Freeze Dried Strawberries', category: 'Summer', price: 120, rating: 5, reviewCount: 234, image: '', status: 'active' },
-            { id: 2, name: 'Freeze Dried Mango', category: 'Tropical', price: 140, rating: 4, reviewCount: 189, image: '', status: 'active' },
-            { id: 3, name: 'Freeze Dried Banana', category: 'Tropical', price: 110, rating: 5, reviewCount: 156, image: '', status: 'active' },
-            { id: 4, name: 'Mixed Berry Pack', category: 'Mixed Packs', price: 180, rating: 5, reviewCount: 201, image: '', status: 'active' },
-            { id: 5, name: 'Apple Slices', category: 'Fall', price: 95, rating: 4, reviewCount: 87, image: '', status: 'active' },
-            { id: 6, name: 'Snickers Bites', category: 'Chocolate', price: 175, rating: 5, reviewCount: 312, image: '', status: 'active' },
-            { id: 7, name: 'Marshmallow Pops', category: 'Marshmallow', price: 90, rating: 4, reviewCount: 98, image: '', status: 'active' },
-            { id: 8, name: 'Twix Crunch', category: 'Chocolate', price: 160, rating: 4, reviewCount: 145, image: '', status: 'active' },
-            { id: 9, name: 'Gummy Bears', category: 'Candies', price: 85, rating: 5, reviewCount: 256, image: '', status: 'active' },
-            { id: 10, name: 'Almond Clusters', category: 'Nuts', price: 130, rating: 4, reviewCount: 67, image: '', status: 'active' }
-        ];
+        let favorites = JSON.parse(localStorage.getItem('freezyBiteFavorites2')) || [];
         
         // Category type mapping
         const fruitCategories = ['Summer', 'Tropical', 'Winter', 'Fall', 'Mixed Packs', 'Veggies'];
         const candyCategories = ['Candies', 'Chocolate', 'Nuts', 'Marshmallow', 'Ice Cream', 'Lollipop'];
         
-        let heroImages = JSON.parse(localStorage.getItem('freezyBiteHeroes')) || [
-            { id: 'fruits', page: 'Fruits Page', image: '', title: 'Fresh Freeze-Dried Fruits', subtitle: 'Nature\'s candy, perfected' },
-            { id: 'candy', page: 'Candy Page', image: '', title: 'Sweet Treats', subtitle: 'Irresistible freeze-dried candy' },
-            { id: 'offers', page: 'Special Offers', image: '', title: 'Hot Deals', subtitle: 'Limited time offers you\'ll love' },
-            { id: 'about', page: 'About Us', image: '', title: 'Our Story', subtitle: 'Passion for freeze-dried goodness' },
-            { id: 'contact', page: 'Contact Us', image: '', title: 'Get in Touch', subtitle: 'We\'d love to hear from you' }
-        ];
+        let heroImages = JSON.parse(localStorage.getItem('freezyBiteHeroes')) || [];
 
         // Contact Page Content
         let contactContent = JSON.parse(localStorage.getItem('freezyBiteContactContent')) || {
-            mainTitle: 'Main Message',
-            mainDescription: "We're not just about crunchy, colorful freeze-dried goodies — we're about making people smile. Got a flavor request? Want to know when your order will land? Or maybe you just want to say hi? We're all ears (and taste buds).",
-            reachTitle: 'Ways to Reach Us',
-            visitLabel: 'Visit Us',
-            address: 'Candy HQ, Cairo, Egypt',
-            phoneLabel: 'Call or WhatsApp',
-            phone: '+20 109 019 6133',
-            emailLabel: 'Email',
-            email: 'hello@FreezyBite.com',
-            socialLabel: 'Follow Us',
-            socialDescription: 'Snack updates, flavor drops, and behind-the-scenes fun!',
-            tiktok: 'https://tiktok.com/@freezybite',
-            instagram: 'https://instagram.com/freezybite',
-            facebook: 'https://facebook.com/freezybite',
-            whatsapp: 'https://wa.me/201090196133'
+            mainTitle: '',
+            mainDescription: '',
+            reachTitle: '',
+            visitLabel: '',
+            address: '',
+            phoneLabel: '',
+            phone: '',
+            emailLabel: '',
+            email: '',
+            socialLabel: '',
+            socialDescription: '',
+            tiktok: '',
+            instagram: '',
+            facebook: '',
+            whatsapp: ''
+        };
+
+        const SHIPPING_GOVERNORATES = ['Cairo', 'Giza', 'Alexandria', 'Sharqia', 'Qalyubia', 'Gharbia', 'Monufia', 'Ismailia', 'Damietta', 'Other'];
+        let shippingSettings = JSON.parse(localStorage.getItem('freezyBiteShippingSettings')) || {
+            defaultFee: '',
+            defaultDays: '',
+            byGovernorate: {}
         };
 
         // Temp storage for images
@@ -1768,6 +1898,7 @@
         let addFavoriteImageData = null;
         let editFavoriteImageData = null;
         let editHeroImageData = null;
+        let addHeroImageData = null;
         let currentAddMoodColor = 'pink';
         let currentEditMoodColor = 'pink';
         let currentAddBubbleColor = 'yellow';
@@ -1818,6 +1949,7 @@
             renderFavorites();
             renderHeroes();
             loadContactContent();
+            loadShippingSettings();
         }
         
         // ===== TESTIMONIALS =====
@@ -2361,6 +2493,16 @@
         // ===== HERO IMAGES =====
         function renderHeroes() {
             const container = document.getElementById('heroesGrid');
+            if (!heroImages.length) {
+                container.innerHTML = `
+                    <div class="empty-state" style="grid-column: 1 / -1;">
+                        <i class="fas fa-image"></i>
+                        <h3>No hero images yet</h3>
+                        <p>Add a hero image for Fruits, Candy, About Us, Contact Us, or Offers.</p>
+                    </div>
+                `;
+                return;
+            }
             container.innerHTML = heroImages.map(h => `
                 <div class="hero-card">
                     <div class="hero-preview">
@@ -2368,8 +2510,6 @@
                         <span class="page-label">${h.page}</span>
                     </div>
                     <div class="hero-info">
-                        <h4>${h.title || 'No title set'}</h4>
-                        <p>${h.subtitle || 'No subtitle set'}</p>
                         <div class="hero-dimensions">
                             <span><i class="fas fa-arrows-alt-h"></i> 1920px</span>
                             <span><i class="fas fa-arrows-alt-v"></i> 600px</span>
@@ -2395,13 +2535,37 @@
             };
             reader.readAsDataURL(file);
         }
+
+        function openAddHeroModal() {
+            document.getElementById('addHeroForm').reset();
+            addHeroImageData = null;
+            const preview = document.getElementById('addHeroImagePreview');
+            const placeholder = document.getElementById('addHeroImagePlaceholder');
+            if (preview) preview.style.display = 'none';
+            if (placeholder) placeholder.style.display = 'block';
+            openModal('addHeroModal');
+        }
+
+        function previewAddHeroImage(event) {
+            const file = event.target.files[0]; if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                addHeroImageData = e.target.result;
+                const preview = document.getElementById('addHeroImagePreview');
+                const placeholder = document.getElementById('addHeroImagePlaceholder');
+                if (preview) {
+                    preview.src = e.target.result;
+                    preview.style.display = 'block';
+                }
+                if (placeholder) placeholder.style.display = 'none';
+            };
+            reader.readAsDataURL(file);
+        }
         
         function editHero(id) {
             const h = heroImages.find(x => x.id === id); if (!h) return;
             document.getElementById('editHeroId').value = h.id;
             document.getElementById('editHeroPage').value = h.page;
-            document.getElementById('editHeroTitle').value = h.title || '';
-            document.getElementById('editHeroSubtitle').value = h.subtitle || '';
             editHeroImageData = h.image;
             if (h.image) {
                 document.getElementById('heroImagePreview').src = h.image;
@@ -2417,10 +2581,38 @@
         function updateHero(event) {
             event.preventDefault();
             const h = heroImages.find(x => x.id === document.getElementById('editHeroId').value); if (!h) return;
-            h.title = document.getElementById('editHeroTitle').value;
-            h.subtitle = document.getElementById('editHeroSubtitle').value;
             if (editHeroImageData) h.image = editHeroImageData;
             saveAllData(); closeModal('editHeroModal'); renderHeroes(); showAlert('success', 'Hero image updated!');
+        }
+
+        function addHero(event) {
+            event.preventDefault();
+            const pageValue = document.getElementById('addHeroPage').value;
+            if (!pageValue) return;
+            const pageLabelMap = {
+                fruits: 'Fruits Page',
+                candy: 'Candy Page',
+                about: 'About Us Page',
+                contact: 'Contact Us Page',
+                offers: 'Offers Page'
+            };
+            const existing = heroImages.find(x => x.id === pageValue);
+
+            if (existing) {
+                if (addHeroImageData) existing.image = addHeroImageData;
+            } else {
+                heroImages.push({
+                    id: pageValue,
+                    page: pageLabelMap[pageValue] || 'Hero Page',
+                    image: addHeroImageData || ''
+                });
+            }
+
+            saveAllData();
+            closeModal('addHeroModal');
+            renderHeroes();
+            updateCounts();
+            showAlert('success', 'Hero image saved!');
         }
         
         // ===== CONTACT PAGE CONTENT =====
@@ -2471,6 +2663,45 @@
             refreshContactPreview();
             
             showAlert('success', 'Contact page content saved successfully!');
+        }
+
+        function loadShippingSettings() {
+            const defaultFeeInput = document.getElementById('shipDefaultFee');
+            const defaultDaysInput = document.getElementById('shipDefaultDays');
+            if (defaultFeeInput) defaultFeeInput.value = shippingSettings.defaultFee ?? '';
+            if (defaultDaysInput) defaultDaysInput.value = shippingSettings.defaultDays ?? '';
+
+            SHIPPING_GOVERNORATES.forEach(gov => {
+                const feeInput = document.querySelector(`[data-ship-fee="${gov}"]`);
+                const daysInput = document.querySelector(`[data-ship-days="${gov}"]`);
+                const entry = shippingSettings.byGovernorate?.[gov] || {};
+                if (feeInput) feeInput.value = entry.fee ?? '';
+                if (daysInput) daysInput.value = entry.days ?? '';
+            });
+        }
+
+        function saveShippingSettings() {
+            const defaultFeeInput = document.getElementById('shipDefaultFee');
+            const defaultDaysInput = document.getElementById('shipDefaultDays');
+            shippingSettings.defaultFee = defaultFeeInput ? defaultFeeInput.value : '';
+            shippingSettings.defaultDays = defaultDaysInput ? defaultDaysInput.value : '';
+            shippingSettings.byGovernorate = {};
+
+            SHIPPING_GOVERNORATES.forEach(gov => {
+                const feeInput = document.querySelector(`[data-ship-fee="${gov}"]`);
+                const daysInput = document.querySelector(`[data-ship-days="${gov}"]`);
+                const feeValue = feeInput ? feeInput.value : '';
+                const daysValue = daysInput ? daysInput.value : '';
+                if (feeValue !== '' || daysValue !== '') {
+                    shippingSettings.byGovernorate[gov] = {
+                        fee: feeValue,
+                        days: daysValue
+                    };
+                }
+            });
+
+            localStorage.setItem('freezyBiteShippingSettings', JSON.stringify(shippingSettings));
+            showAlert('success', 'Shipping fees saved successfully!');
         }
         
         function refreshContactPreview() {

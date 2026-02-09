@@ -142,15 +142,15 @@
             <div class="header-right">
                 <button class="header-btn" onclick="showNotifications()">
                     <i class="fas fa-bell"></i>
-                    <span class="badge">5</span>
+                    <span class="badge" style="display: none;"></span>
                 </button>
                 <button class="header-btn" onclick="showMessages()">
                     <i class="fas fa-envelope"></i>
-                    <span class="badge">3</span>
+                    <span class="badge" style="display: none;"></span>
                 </button>
                 <button class="header-btn" onclick="showTrashModal()" title="Trash">
                     <i class="fas fa-trash-alt"></i>
-                    <span class="badge" id="headerTrashBadge">0</span>
+                    <span class="badge" id="headerTrashBadge" style="display: none;"></span>
                 </button>
                 <img src="/assets/icons/profile.svg" alt="Admin"
                     class="header-avatar">
@@ -192,33 +192,33 @@
                     <i class="fas fa-info-circle" style="color: var(--primary);"></i>
                     <div class="alert-content">
                         <p style="color: #1e40af;"><strong>Payment Method:</strong> Cash on Delivery</p>
-                        <p style="color: #3730a3; font-size: 0.875rem;">To confirm orders faster, customers send a small
-                            deposit via <strong>InstaPay</strong> to: <strong>01093961545</strong></p>
+                        <p style="color: #3730a3; font-size: 0.875rem;">To confirm orders faster, customers can send a
+                            small deposit via <strong>InstaPay</strong>. Configure the number in Settings.</p>
                     </div>
                 </div>
 
                 <!-- Order Status Stats -->
                 <div class="order-stats">
                     <div class="order-stat-card pending" onclick="filterByStatus('pending')" style="cursor: pointer;">
-                        <div class="order-stat-count">24</div>
+                        <div class="order-stat-count">--</div>
                         <div class="order-stat-label">Pending</div>
                     </div>
                     <div class="order-stat-card processing" onclick="filterByStatus('processing')"
                         style="cursor: pointer;">
-                        <div class="order-stat-count">18</div>
+                        <div class="order-stat-count">--</div>
                         <div class="order-stat-label">Processing</div>
                     </div>
                     <div class="order-stat-card shipped" onclick="filterByStatus('shipped')" style="cursor: pointer;">
-                        <div class="order-stat-count">42</div>
+                        <div class="order-stat-count">--</div>
                         <div class="order-stat-label">Shipped</div>
                     </div>
                     <div class="order-stat-card delivered" onclick="filterByStatus('delivered')"
                         style="cursor: pointer;">
-                        <div class="order-stat-count">156</div>
+                        <div class="order-stat-count">--</div>
                         <div class="order-stat-label">Delivered</div>
                     </div>
                     <div class="order-stat-card cancelled" onclick="toggleTrashView()" style="cursor: pointer;">
-                        <div class="order-stat-count" id="cancelledCount">0</div>
+                        <div class="order-stat-count" id="cancelledCount">--</div>
                         <div class="order-stat-label">In Trash</div>
                     </div>
                 </div>
@@ -260,7 +260,7 @@
                 <div class="data-card">
                     <div class="data-card-header">
                         <h3 class="data-card-title">All Orders</h3>
-                        <span class="data-card-count" id="ordersCount">10 orders</span>
+                        <span class="data-card-count" id="ordersCount">--</span>
                     </div>
                     <div class="table-wrapper" id="ordersTableBody">
                         <!-- Rendered by JavaScript -->

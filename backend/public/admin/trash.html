@@ -588,15 +588,15 @@
             <div class="header-right">
                 <button class="header-btn" onclick="showNotifications()">
                     <i class="fas fa-bell"></i>
-                    <span class="badge">5</span>
+                    <span class="badge" style="display: none;"></span>
                 </button>
                 <button class="header-btn" onclick="showMessages()">
                     <i class="fas fa-envelope"></i>
-                    <span class="badge">3</span>
+                    <span class="badge" style="display: none;"></span>
                 </button>
                 <button class="header-btn" onclick="showTrashModal()" title="Trash">
                     <i class="fas fa-trash-alt"></i>
-                    <span class="badge" id="headerTrashBadge">0</span>
+                    <span class="badge" id="headerTrashBadge" style="display: none;"></span>
                 </button>
                 <img src="/assets/icons/profile.svg" alt="Admin" class="header-avatar">
             </div>
@@ -627,7 +627,7 @@
                         <i class="fas fa-archive"></i>
                     </div>
                     <div class="info">
-                        <h4 id="totalTrashCount">0</h4>
+                        <h4 id="totalTrashCount">--</h4>
                         <p>Total Items in Trash</p>
                     </div>
                 </div>
@@ -636,7 +636,7 @@
                         <i class="fas fa-shopping-cart"></i>
                     </div>
                     <div class="info">
-                        <h4 id="ordersTrashCount">0</h4>
+                        <h4 id="ordersTrashCount">--</h4>
                         <p>Cancelled Orders</p>
                     </div>
                 </div>
@@ -645,7 +645,7 @@
                         <i class="fas fa-envelope"></i>
                     </div>
                     <div class="info">
-                        <h4 id="messagesTrashCount">0</h4>
+                        <h4 id="messagesTrashCount">--</h4>
                         <p>Deleted Messages</p>
                     </div>
                 </div>
@@ -656,17 +656,17 @@
                 <button class="trash-tab active" onclick="switchTrashTab('all')">
                     <i class="fas fa-archive"></i>
                     <span class="tab-text">All Items</span>
-                    <span class="tab-count" id="tabCountAll">0</span>
+                    <span class="tab-count" id="tabCountAll">--</span>
                 </button>
                 <button class="trash-tab" onclick="switchTrashTab('orders')">
                     <i class="fas fa-shopping-cart"></i>
                     <span class="tab-text">Orders</span>
-                    <span class="tab-count" id="tabCountOrders">0</span>
+                    <span class="tab-count" id="tabCountOrders">--</span>
                 </button>
                 <button class="trash-tab" onclick="switchTrashTab('messages')">
                     <i class="fas fa-envelope"></i>
                     <span class="tab-text">Messages</span>
-                    <span class="tab-count" id="tabCountMessages">0</span>
+                    <span class="tab-count" id="tabCountMessages">--</span>
                 </button>
             </div>
             

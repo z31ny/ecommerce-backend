@@ -3810,7 +3810,14 @@ function showMessages() {
 
 // Show Messages Modal
 async function showMessagesModal() {
-    await loadMessagesFromAPI();
+    try {
+        await loadMessagesFromAPI();
+    } catch (error) {
+        console.warn('Failed to load messages:', error);
+        // Keep modal functional even if API is unavailable
+        messages.length = 0;
+        updateMessageBadge();
+    }
     // Remove existing modal
     const existingModal = document.getElementById('messagesModal');
     if (existingModal) existingModal.remove();
@@ -5402,6 +5409,8 @@ window.showAlert = showAlert;
 window.viewCustomer = viewCustomer;
 window.editCustomer = editCustomer;
 window.deleteCustomer = deleteCustomer;
+window.confirmDeleteCustomer = confirmDeleteCustomer;
+window.applyCustomerFilters = applyCustomerFilters;
 window.viewOrderFromCustomer = viewOrderFromCustomer;
 window.filterCustomerOrders = filterCustomerOrders;
 window.updateOrderStatusFromModal = updateOrderStatusFromModal;

@@ -466,15 +466,15 @@
             <div class="header-right">
                 <button class="header-btn" onclick="showNotifications()">
                     <i class="fas fa-bell"></i>
-                    <span class="badge">5</span>
+                    <span class="badge" style="display: none;"></span>
                 </button>
                 <button class="header-btn" onclick="showMessages()">
                     <i class="fas fa-envelope"></i>
-                    <span class="badge">3</span>
+                    <span class="badge" style="display: none;"></span>
                 </button>
                 <button class="header-btn" onclick="showTrashModal()" title="Trash">
                     <i class="fas fa-trash-alt"></i>
-                    <span class="badge" id="headerTrashBadge">0</span>
+                    <span class="badge" id="headerTrashBadge" style="display: none;"></span>
                 </button>
                 <img src="/assets/icons/profile.svg" alt="Admin"
                     class="header-avatar">
@@ -521,7 +521,7 @@
                         <i class="fas fa-tags"></i>
                     </div>
                     <div class="info">
-                        <h4 id="totalOffersCount">0</h4>
+                        <h4 id="totalOffersCount">--</h4>
                         <p>Total Offers</p>
                     </div>
                 </div>
@@ -530,7 +530,7 @@
                         <i class="fas fa-check-circle"></i>
                     </div>
                     <div class="info">
-                        <h4 id="activeOffersCount">0</h4>
+                        <h4 id="activeOffersCount">--</h4>
                         <p>Active Offers</p>
                     </div>
                 </div>
@@ -539,7 +539,7 @@
                         <i class="fas fa-piggy-bank"></i>
                     </div>
                     <div class="info">
-                        <h4 id="avgDiscountCount">0%</h4>
+                        <h4 id="avgDiscountCount">--</h4>
                         <p>Average Discount</p>
                     </div>
                 </div>
@@ -548,7 +548,7 @@
                         <i class="fas fa-eye-slash"></i>
                     </div>
                     <div class="info">
-                        <h4 id="inactiveOffersCount">0</h4>
+                        <h4 id="inactiveOffersCount">--</h4>
                         <p>Inactive</p>
                     </div>
                 </div>

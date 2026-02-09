@@ -493,15 +493,15 @@
             <div class="header-right">
                 <button class="header-btn" onclick="showNotifications()">
                     <i class="fas fa-bell"></i>
-                    <span class="badge">5</span>
+                    <span class="badge" style="display: none;"></span>
                 </button>
                 <button class="header-btn" onclick="showMessages()">
                     <i class="fas fa-envelope"></i>
-                    <span class="badge">3</span>
+                    <span class="badge" style="display: none;"></span>
                 </button>
                 <button class="header-btn" onclick="showTrashModal()" title="Trash">
                     <i class="fas fa-trash-alt"></i>
-                    <span class="badge" id="headerTrashBadge">0</span>
+                    <span class="badge" id="headerTrashBadge" style="display: none;"></span>
                 </button>
                 <img src="/assets/icons/profile.svg" alt="Admin" class="header-avatar" onclick="openEditProfileModal()">
             </div>
@@ -551,7 +551,7 @@
                         <i class="fas fa-users"></i>
                     </div>
                     <div class="info">
-                        <h4 id="totalUsersCount">0</h4>
+                        <h4 id="totalUsersCount">--</h4>
                         <p>Total Users</p>
                     </div>
                 </div>
@@ -560,7 +560,7 @@
                         <i class="fas fa-user-shield"></i>
                     </div>
                     <div class="info">
-                        <h4 id="adminsCount">0</h4>
+                        <h4 id="adminsCount">--</h4>
                         <p>Admins</p>
                     </div>
                 </div>
@@ -569,7 +569,7 @@
                         <i class="fas fa-user-tie"></i>
                     </div>
                     <div class="info">
-                        <h4 id="managersCount">0</h4>
+                        <h4 id="managersCount">--</h4>
                         <p>Managers</p>
                     </div>
                 </div>
@@ -578,7 +578,7 @@
                         <i class="fas fa-user"></i>
                     </div>
                     <div class="info">
-                        <h4 id="staffCount">0</h4>
+                        <h4 id="staffCount">--</h4>
                         <p>Staff</p>
                     </div>
                 </div>
@@ -854,10 +854,10 @@
     <script>
         // Current admin user
         let currentAdmin = {
-            id: 1,
-            name: 'Admin User',
-            email: 'admin@freezybite.com',
-            phone: '+20 109 396 1545',
+            id: null,
+            name: '',
+            email: '',
+            phone: '',
             role: 'admin',
             status: 'active',
             avatar: '/assets/icons/profile.svg'
@@ -889,68 +889,7 @@
         };
 
         // Users data - load from localStorage or use defaults
-        let users = JSON.parse(localStorage.getItem('freezyBiteUsers')) || [
-            {
-                id: 1,
-                name: 'Admin User',
-                email: 'admin@freezybite.com',
-                phone: '+20 109 396 1545',
-                role: 'admin',
-                status: 'active',
-                avatar: null,
-                access: ['overview', 'content', 'products', 'orders', 'customers', 'messages', 'analytics', 'inventory', 'offers', 'employees', 'users', 'trash', 'settings'],
-                createdAt: '2024-01-01',
-                lastLogin: '2024-01-14'
-            },
-            {
-                id: 2,
-                name: 'Sarah Manager',
-                email: 'sarah@freezybite.com',
-                phone: '+20 101 234 5678',
-                role: 'manager',
-                status: 'active',
-                avatar: null,
-                access: ['overview', 'content', 'products', 'orders', 'customers', 'messages', 'analytics', 'inventory', 'offers', 'trash'],
-                createdAt: '2024-01-05',
-                lastLogin: '2024-01-13'
-            },
-            {
-                id: 3,
-                name: 'Ahmed Staff',
-                email: 'ahmed@freezybite.com',
-                phone: '+20 102 345 6789',
-                role: 'staff',
-                status: 'active',
-                avatar: null,
-                access: ['products', 'orders', 'customers', 'inventory', 'messages', 'trash'],
-                createdAt: '2024-01-08',
-                lastLogin: '2024-01-14'
-            },
-            {
-                id: 4,
-                name: 'Mohamed Admin',
-                email: 'mohamed@freezybite.com',
-                phone: '+20 103 456 7890',
-                role: 'admin',
-                status: 'active',
-                avatar: null,
-                access: ['overview', 'content', 'products', 'orders', 'customers', 'messages', 'analytics', 'inventory', 'offers', 'employees', 'users', 'trash', 'settings'],
-                createdAt: '2024-01-10',
-                lastLogin: '2024-01-12'
-            },
-            {
-                id: 5,
-                name: 'Fatima Staff',
-                email: 'fatima@freezybite.com',
-                phone: '+20 104 567 8901',
-                role: 'staff',
-                status: 'inactive',
-                avatar: null,
-                access: ['products', 'orders', 'customers', 'inventory', 'messages', 'trash'],
-                createdAt: '2024-01-03',
-                lastLogin: '2024-01-08'
-            }
-        ];
+        let users = JSON.parse(localStorage.getItem('freezyBiteUsers')) || [];
         
         // Temporary avatar storage for new/edit user
         let newUserAvatarData = null;
