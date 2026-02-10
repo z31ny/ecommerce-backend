@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,10 +8,11 @@
     <link rel="stylesheet" href="styles/dashboard.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
+
 <body>
     <!-- Sidebar Overlay (for mobile) -->
     <div class="sidebar-overlay"></div>
-    
+
     <!-- Sidebar -->
     <aside class="sidebar">
         <div class="sidebar-header">
@@ -24,7 +26,7 @@
                 <i class="fas fa-bars"></i>
             </button>
         </div>
-        
+
         <nav class="sidebar-nav">
             <ul class="nav-list">
                 <li>
@@ -107,7 +109,7 @@
                 </li>
             </ul>
         </nav>
-        
+
         <div class="sidebar-footer">
             <div class="user-profile">
                 <img src="/assets/icons/profile.svg" alt="Admin" class="user-avatar">
@@ -122,7 +124,7 @@
             </button>
         </div>
     </aside>
-    
+
     <!-- Main Content -->
     <main class="main-content">
         <!-- Top Header -->
@@ -152,7 +154,7 @@
                 <img src="/assets/icons/profile.svg" alt="Admin" class="header-avatar">
             </div>
         </header>
-        
+
         <!-- Dashboard Content -->
         <div class="dashboard-content">
             <!-- Section Header -->
@@ -160,11 +162,12 @@
                 <div class="section-header">
                     <div>
                         <h1 class="section-title">Settings</h1>
-                        <p class="section-subtitle">Configure your store settings, notifications, payments, and security.</p>
+                        <p class="section-subtitle">Configure your store settings, notifications, payments, and
+                            security.</p>
                     </div>
                 </div>
             </div>
-            
+
             <!-- Settings Grid -->
             <div class="settings-grid">
                 <!-- Branding & Logo Settings -->
@@ -179,29 +182,41 @@
                         <div class="form-group">
                             <label class="form-label">Store Logo</label>
                             <div style="display: flex; align-items: center; gap: 1.5rem; margin-bottom: 1rem;">
-                                <div id="logoPreview" style="width: 100px; height: 100px; border-radius: 12px; background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%); display: flex; align-items: center; justify-content: center; overflow: hidden; border: 3px solid var(--bg-secondary);">
-                                    <img id="currentLogo" src="" alt="Logo" style="width: 100%; height: 100%; object-fit: contain; display: none;">
-                                    <i class="fas fa-snowflake" id="defaultLogoIcon" style="font-size: 2.5rem; color: white;"></i>
+                                <div id="logoPreview"
+                                    style="width: 100px; height: 100px; border-radius: 12px; background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%); display: flex; align-items: center; justify-content: center; overflow: hidden; border: 3px solid var(--bg-secondary);">
+                                    <img id="currentLogo" src="" alt="Logo"
+                                        style="width: 100%; height: 100%; object-fit: contain; display: none;">
+                                    <i class="fas fa-snowflake" id="defaultLogoIcon"
+                                        style="font-size: 2.5rem; color: white;"></i>
                                 </div>
                                 <div>
-                                    <p style="font-weight: 600; color: var(--text-primary); margin-bottom: 0.5rem;">Current Logo</p>
-                                    <p style="font-size: 0.75rem; color: var(--text-secondary);">Recommended: 200x200px, PNG or JPG</p>
+                                    <p style="font-weight: 600; color: var(--text-primary); margin-bottom: 0.5rem;">
+                                        Current Logo</p>
+                                    <p style="font-size: 0.75rem; color: var(--text-secondary);">Recommended: 200x200px,
+                                        PNG or JPG</p>
                                 </div>
                             </div>
-                            <div class="logo-upload-area" onclick="document.getElementById('logoUpload').click()" style="border: 2px dashed var(--primary); border-radius: 12px; padding: 1.5rem; text-align: center; cursor: pointer; transition: all 0.3s; background: var(--bg-secondary);" onmouseover="this.style.background='var(--primary-light)'" onmouseout="this.style.background='var(--bg-secondary)'">
-                                <i class="fas fa-cloud-upload-alt" style="font-size: 2rem; color: var(--primary); margin-bottom: 0.5rem;"></i>
+                            <div class="logo-upload-area" onclick="document.getElementById('logoUpload').click()"
+                                style="border: 2px dashed var(--primary); border-radius: 12px; padding: 1.5rem; text-align: center; cursor: pointer; transition: all 0.3s; background: var(--bg-secondary);"
+                                onmouseover="this.style.background='var(--primary-light)'"
+                                onmouseout="this.style.background='var(--bg-secondary)'">
+                                <i class="fas fa-cloud-upload-alt"
+                                    style="font-size: 2rem; color: var(--primary); margin-bottom: 0.5rem;"></i>
                                 <p style="color: var(--primary); font-weight: 600;">Click to upload new logo</p>
                                 <p style="font-size: 0.75rem; color: var(--text-secondary);">or drag and drop</p>
-                                <input type="file" id="logoUpload" accept="image/*" style="display: none;" onchange="previewLogo(event)">
+                                <input type="file" id="logoUpload" accept="image/*" style="display: none;"
+                                    onchange="previewLogo(event)">
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="form-label">Store Name</label>
-                            <input type="text" class="form-input" id="storeName" value="Freezy Bite" placeholder="Enter store name">
+                            <input type="text" class="form-input" id="storeName" value="Freezy Bite"
+                                placeholder="Enter store name">
                         </div>
                         <div class="form-group">
                             <label class="form-label">Tagline</label>
-                            <input type="text" class="form-input" id="storeTagline" value="Fresh Frozen Delights" placeholder="Enter store tagline">
+                            <input type="text" class="form-input" id="storeTagline" value="Fresh Frozen Delights"
+                                placeholder="Enter store tagline">
                         </div>
                         <button type="button" class="btn btn-primary" onclick="saveBrandingSettings()">
                             <i class="fas fa-save"></i>
@@ -209,7 +224,7 @@
                         </button>
                     </form>
                 </div>
-                
+
                 <!-- General Settings -->
                 <div class="settings-card">
                     <div class="settings-card-header">
@@ -221,15 +236,18 @@
                     <form id="generalSettingsForm">
                         <div class="form-group">
                             <label class="form-label">Store Email</label>
-                            <input type="email" class="form-input" id="storeEmail" value="info@freezybite.com" placeholder="Enter store email">
+                            <input type="email" class="form-input" id="storeEmail" value="info@freezybite.com"
+                                placeholder="Enter store email">
                         </div>
                         <div class="form-group">
                             <label class="form-label">Store Phone</label>
-                            <input type="tel" class="form-input" id="storePhone" value="+20 109 396 1545" placeholder="Enter store phone">
+                            <input type="tel" class="form-input" id="storePhone" value="+20 109 396 1545"
+                                placeholder="Enter store phone">
                         </div>
                         <div class="form-group">
                             <label class="form-label">Store Address</label>
-                            <textarea class="form-input" id="storeAddress" rows="2" placeholder="Enter store address">Cairo, Egypt</textarea>
+                            <textarea class="form-input" id="storeAddress" rows="2"
+                                placeholder="Enter store address">Cairo, Egypt</textarea>
                         </div>
                         <div class="form-group">
                             <label class="form-label">Currency</label>
@@ -245,7 +263,7 @@
                         </button>
                     </form>
                 </div>
-                
+
                 <!-- Notification Settings -->
                 <div class="settings-card">
                     <div class="settings-card-header">
@@ -291,7 +309,7 @@
                         </button>
                     </form>
                 </div>
-                
+
                 <!-- Payment Info (COD Only) -->
                 <div class="settings-card">
                     <div class="settings-card-header">
@@ -302,9 +320,11 @@
                     </div>
                     <div style="padding: 0;">
                         <!-- COD Banner -->
-                        <div style="background: linear-gradient(135deg, var(--success) 0%, #059669 100%); padding: 1.5rem; border-radius: 12px; margin-bottom: 1rem; color: white;">
+                        <div
+                            style="background: linear-gradient(135deg, var(--success) 0%, #059669 100%); padding: 1.5rem; border-radius: 12px; margin-bottom: 1rem; color: white;">
                             <div style="display: flex; align-items: center; gap: 1rem;">
-                                <div style="width: 50px; height: 50px; background: rgba(255,255,255,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                                <div
+                                    style="width: 50px; height: 50px; background: rgba(255,255,255,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center;">
                                     <i class="fas fa-hand-holding-usd" style="font-size: 1.5rem;"></i>
                                 </div>
                                 <div>
@@ -313,29 +333,32 @@
                                 </div>
                             </div>
                         </div>
-                        
+
                         <!-- InstaPay Info -->
-                        <div style="background: var(--bg-secondary); padding: 1rem; border-radius: 8px; margin-bottom: 1rem;">
+                        <div
+                            style="background: var(--bg-secondary); padding: 1rem; border-radius: 8px; margin-bottom: 1rem;">
                             <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.75rem;">
                                 <i class="fas fa-mobile-alt" style="color: var(--primary); font-size: 1.25rem;"></i>
-                                <span style="font-weight: 600; color: var(--text-primary);">InstaPay Deposit Option</span>
+                                <span style="font-weight: 600; color: var(--text-primary);">InstaPay Deposit
+                                    Option</span>
                             </div>
                             <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 0.75rem;">
                                 Customers can send a small deposit via InstaPay for faster order confirmation.
                             </p>
                             <div class="form-group" style="margin-bottom: 0;">
                                 <label class="form-label">InstaPay Number</label>
-                                <input type="tel" class="form-input" id="instapayNumber" value="01093961545" placeholder="Enter InstaPay number">
+                                <input type="tel" class="form-input" id="instapayNumber" value="01093961545"
+                                    placeholder="Enter InstaPay number">
                             </div>
                         </div>
-                        
+
                         <button type="button" class="btn btn-primary" onclick="savePaymentSettings()">
                             <i class="fas fa-save"></i>
                             Save Payment Info
                         </button>
                     </div>
                 </div>
-                
+
                 <!-- Security Settings -->
                 <div class="settings-card">
                     <div class="settings-card-header">
@@ -347,7 +370,8 @@
                     <form id="securityForm">
                         <div class="form-group">
                             <label class="form-label">Current Password</label>
-                            <input type="password" class="form-input" id="currentPassword" placeholder="Enter current password">
+                            <input type="password" class="form-input" id="currentPassword"
+                                placeholder="Enter current password">
                         </div>
                         <div class="form-group">
                             <label class="form-label">New Password</label>
@@ -355,7 +379,8 @@
                         </div>
                         <div class="form-group">
                             <label class="form-label">Confirm Password</label>
-                            <input type="password" class="form-input" id="confirmPassword" placeholder="Confirm new password">
+                            <input type="password" class="form-input" id="confirmPassword"
+                                placeholder="Confirm new password">
                         </div>
                         <button type="button" class="btn btn-primary" onclick="updatePassword()">
                             <i class="fas fa-key"></i>
@@ -364,7 +389,7 @@
                     </form>
                 </div>
             </div>
-            
+
             <!-- Danger Zone -->
             <div class="section" style="margin-top: 2rem;">
                 <div class="data-card" style="border-left: 4px solid var(--danger);">
@@ -375,7 +400,8 @@
                         </h3>
                     </div>
                     <div style="padding: 1.5rem;">
-                        <p class="text-secondary mb-4">Once you delete your account, there is no going back. Please be certain.</p>
+                        <p class="text-secondary mb-4">Once you delete your account, there is no going back. Please be
+                            certain.</p>
                         <button class="btn btn-danger" onclick="alert('This action is disabled in demo mode.')">
                             <i class="fas fa-trash"></i>
                             Delete Account
@@ -385,10 +411,183 @@
             </div>
         </div>
     </main>
-    
+
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="scripts/auth.js"></script>
     <script src="scripts/dashboard.js"></script>
-</body>
-</html>
+    <script>
+        // ===== Settings API Helper =====
+        async function settingsAPI(method, body) {
+            const opts = { method, headers: { 'Content-Type': 'application/json' } };
+            if (body) opts.body = JSON.stringify(body);
+            const res = await fetch('/api/admin/settings', opts);
+            return res.json();
+        }
 
+        async function saveSettingsSection(sectionKey, content) {
+            try {
+                await settingsAPI('PUT', { sectionKey, content });
+            } catch (error) {
+                console.error(`Failed to save ${sectionKey}:`, error);
+                throw error;
+            }
+        }
+
+        // ===== Load Settings on Page Load =====
+        document.addEventListener('DOMContentLoaded', async function () {
+            try {
+                const data = await settingsAPI('GET');
+
+                // Branding
+                if (data.branding) {
+                    if (data.branding.storeName) document.getElementById('storeName').value = data.branding.storeName;
+                    if (data.branding.storeTagline) document.getElementById('storeTagline').value = data.branding.storeTagline;
+                    if (data.branding.logo) {
+                        const logoImg = document.getElementById('currentLogo');
+                        const defaultIcon = document.getElementById('defaultLogoIcon');
+                        logoImg.src = data.branding.logo;
+                        logoImg.style.display = 'block';
+                        if (defaultIcon) defaultIcon.style.display = 'none';
+                    }
+                }
+
+                // Store Info
+                if (data.store) {
+                    if (data.store.email) document.getElementById('storeEmail').value = data.store.email;
+                    if (data.store.phone) document.getElementById('storePhone').value = data.store.phone;
+                    if (data.store.address) document.getElementById('storeAddress').value = data.store.address;
+                    if (data.store.currency) document.getElementById('storeCurrency').value = data.store.currency;
+                }
+
+                // Notifications
+                if (data.notifications) {
+                    const checkboxes = document.querySelectorAll('#notificationSettingsForm .toggle-switch input[type="checkbox"]');
+                    if (checkboxes[0] && data.notifications.emailNotifications !== undefined) checkboxes[0].checked = data.notifications.emailNotifications;
+                    if (checkboxes[1] && data.notifications.orderNotifications !== undefined) checkboxes[1].checked = data.notifications.orderNotifications;
+                    if (checkboxes[2] && data.notifications.lowStockAlerts !== undefined) checkboxes[2].checked = data.notifications.lowStockAlerts;
+                }
+
+                // Payment
+                if (data.payment) {
+                    if (data.payment.instapayNumber) document.getElementById('instapayNumber').value = data.payment.instapayNumber;
+                }
+            } catch (error) {
+                console.warn('Failed to load settings from API:', error);
+            }
+        });
+
+        // ===== Logo Preview =====
+        let logoImageData = null;
+
+        function previewLogo(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                logoImageData = e.target.result;
+                const logoImg = document.getElementById('currentLogo');
+                const defaultIcon = document.getElementById('defaultLogoIcon');
+                logoImg.src = e.target.result;
+                logoImg.style.display = 'block';
+                if (defaultIcon) defaultIcon.style.display = 'none';
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // ===== Save Functions =====
+        async function saveBrandingSettings() {
+            const content = {
+                storeName: document.getElementById('storeName').value,
+                storeTagline: document.getElementById('storeTagline').value,
+                logo: logoImageData || document.getElementById('currentLogo').src || ''
+            };
+            try {
+                await saveSettingsSection('branding', content);
+                showAlert('success', 'Branding settings saved!');
+            } catch (e) {
+                showAlert('error', 'Failed to save branding settings.');
+            }
+        }
+
+        async function saveGeneralSettings() {
+            const content = {
+                email: document.getElementById('storeEmail').value,
+                phone: document.getElementById('storePhone').value,
+                address: document.getElementById('storeAddress').value,
+                currency: document.getElementById('storeCurrency').value
+            };
+            try {
+                await saveSettingsSection('store', content);
+                showAlert('success', 'Store information saved!');
+            } catch (e) {
+                showAlert('error', 'Failed to save store information.');
+            }
+        }
+
+        async function saveNotificationSettings() {
+            const checkboxes = document.querySelectorAll('#notificationSettingsForm .toggle-switch input[type="checkbox"]');
+            const content = {
+                emailNotifications: checkboxes[0] ? checkboxes[0].checked : true,
+                orderNotifications: checkboxes[1] ? checkboxes[1].checked : true,
+                lowStockAlerts: checkboxes[2] ? checkboxes[2].checked : true
+            };
+            try {
+                await saveSettingsSection('notifications', content);
+                showAlert('success', 'Notification settings saved!');
+            } catch (e) {
+                showAlert('error', 'Failed to save notification settings.');
+            }
+        }
+
+        async function savePaymentSettings() {
+            const content = {
+                method: 'COD',
+                instapayNumber: document.getElementById('instapayNumber').value
+            };
+            try {
+                await saveSettingsSection('payment', content);
+                showAlert('success', 'Payment settings saved!');
+            } catch (e) {
+                showAlert('error', 'Failed to save payment settings.');
+            }
+        }
+
+        async function updatePassword() {
+            const currentPassword = document.getElementById('currentPassword').value;
+            const newPassword = document.getElementById('newPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+
+            if (!currentPassword || !newPassword || !confirmPassword) {
+                showAlert('error', 'Please fill in all password fields.');
+                return;
+            }
+            if (newPassword !== confirmPassword) {
+                showAlert('error', 'New passwords do not match.');
+                return;
+            }
+            if (newPassword.length < 6) {
+                showAlert('error', 'Password must be at least 6 characters.');
+                return;
+            }
+
+            try {
+                const res = await fetch('/api/admin/auth/password', {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ currentPassword, newPassword })
+                });
+                const data = await res.json();
+                if (res.ok) {
+                    showAlert('success', 'Password updated successfully!');
+                    document.getElementById('securityForm').reset();
+                } else {
+                    showAlert('error', data.error || 'Failed to update password.');
+                }
+            } catch (e) {
+                showAlert('error', 'Failed to update password.');
+            }
+        }
+    </script>
+</body>
+
+</html>
