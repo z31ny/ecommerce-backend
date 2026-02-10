@@ -60,6 +60,14 @@ export const offers = pgTable('offers', {
     createdAt: timestamp('created_at').defaultNow(),
 });
 
+// Website Content Table (key-value store for CMS content sections)
+export const websiteContent = pgTable('website_content', {
+    id: serial('id').primaryKey(),
+    sectionKey: text('section_key').notNull().unique(),
+    content: jsonb('content').notNull().default('[]'),
+    updatedAt: timestamp('updated_at').defaultNow(),
+});
+
 
 // ===== CORE E-COMMERCE TABLES =====
 
