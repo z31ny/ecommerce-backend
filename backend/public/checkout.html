@@ -169,33 +169,7 @@
 
   <script src="./scripts/api.js"></script>
   <script src="./scripts/checkout.js" defer></script>
-  <script>
-    // Load store settings dynamically
-    document.addEventListener('DOMContentLoaded', async function () {
-      try {
-        const res = await fetch('/api/settings');
-        const data = await res.json();
-
-        // Update InstaPay number in checkout note
-        if (data.payment && data.payment.instapayNumber) {
-          const noteEl = document.querySelector('.co-note');
-          if (noteEl) {
-            noteEl.innerHTML = `Payment method: Cash on Delivery. To confirm your order faster, send a small deposit via InstaPay to <strong>${data.payment.instapayNumber}</strong> — our team will contact you to confirm.`;
-          }
-        }
-
-        // Update footer contact info
-        if (data.store) {
-          const phoneSpan = document.querySelector('.footer-contact .fc-row:first-child span');
-          const emailSpan = document.querySelector('.footer-contact .fc-row:last-child span');
-          if (phoneSpan && data.store.phone) phoneSpan.textContent = data.store.phone;
-          if (emailSpan && data.store.email) emailSpan.textContent = data.store.email;
-        }
-      } catch (e) {
-        console.warn('Failed to load settings:', e);
-      }
-    });
-  </script>
+  <script src="./scripts/site-settings.js" defer></script>
 </body>
 
 </html>

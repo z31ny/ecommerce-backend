@@ -146,41 +146,7 @@
   </footer>
 
   <script src="./scripts/home.js" defer></script>
-  <script>
-    // Load contact info from settings API
-    document.addEventListener('DOMContentLoaded', async function () {
-      try {
-        const res = await fetch('/api/settings');
-        const data = await res.json();
-
-        // Update contact card with settings
-        if (data.store || data.contact) {
-          const card = document.querySelector('.contact-card');
-          if (card) {
-            const ps = card.querySelectorAll('p');
-            const store = data.store || {};
-            const contact = data.contact || {};
-            // Address
-            if (ps[0] && store.address) ps[0].innerHTML = `<strong>Visit Us</strong><br> ${store.address}`;
-            // Phone
-            if (ps[1] && store.phone) ps[1].innerHTML = `<strong>Call or WhatsApp</strong><br> ${store.phone}`;
-            // Email
-            if (ps[2] && store.email) ps[2].innerHTML = `<strong>Email</strong><br> ${store.email}`;
-          }
-        }
-
-        // Update footer contact info
-        if (data.store) {
-          const phoneSpan = document.querySelector('.footer-contact .fc-row:first-child span');
-          const emailSpan = document.querySelector('.footer-contact .fc-row:last-child span');
-          if (phoneSpan && data.store.phone) phoneSpan.textContent = data.store.phone;
-          if (emailSpan && data.store.email) emailSpan.textContent = data.store.email;
-        }
-      } catch (e) {
-        console.warn('Failed to load settings:', e);
-      }
-    });
-  </script>
+  <script src="./scripts/site-settings.js" defer></script>
 </body>
 
 </html>
