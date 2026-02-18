@@ -335,6 +335,39 @@ body {
   text-align: center
 }
 
+.hero-swap {
+  position: relative;
+  width: min(200px, 40vw);
+  height: min(200px, 40vw);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  justify-self: center
+}
+
+.hero-swap-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  transition: opacity .25s ease
+}
+
+.hero-swap-img.is-hover {
+  opacity: 0
+}
+
+.hero-swap:hover .hero-swap-img.is-default,
+.hero-swap:focus-within .hero-swap-img.is-default {
+  opacity: 0
+}
+
+.hero-swap:hover .hero-swap-img.is-hover,
+.hero-swap:focus-within .hero-swap-img.is-hover {
+  opacity: 1
+}
+
 .hero-image-wrap {
   display: grid;
   place-items: center
@@ -373,6 +406,39 @@ body {
   max-width: 560px;
   margin: 14px auto;
   color: #7a2f43
+}
+
+.legal-card {
+  background: #ffe8ef;
+  border: 1px solid #ffd6de;
+  border-radius: 18px;
+  box-shadow: var(--shadow);
+  padding: 22px;
+  max-width: 900px;
+  margin: 14px auto;
+  color: #7a2f43
+}
+
+.legal-card h3 {
+  color: #c55468;
+  margin: 14px 0 6px 0
+}
+
+.legal-card p {
+  margin: 8px 0
+}
+
+.legal-list {
+  margin: 12px 0 0 18px;
+  padding: 0
+}
+
+.legal-list li {
+  margin: 10px 0
+}
+
+.legal-list li p {
+  margin: 6px 0
 }
 
 .contact-card p {
@@ -439,6 +505,21 @@ body {
   gap: 16px;
   padding: 28px 0;
   min-height: 180px
+}
+
+.tagline-model {
+  width: 140px;
+  height: 140px;
+  min-width: 140px;
+  display: block
+}
+
+.tagline p {
+  order: 1
+}
+
+.tagline-model {
+  order: 2
 }
 
 .masthead .topbar {
@@ -823,6 +904,33 @@ body {
   padding: 24px;
   z-index: 1;
   width: min(520px, 92vw)
+}
+
+.policy-modal .modal-dialog {
+  width: min(900px, 92vw);
+  max-height: 82vh;
+  overflow: auto
+}
+
+.policy-body {
+  margin-top: 10px
+}
+
+.policy-section {
+  display: none
+}
+
+.policy-section.is-active {
+  display: block
+}
+
+.policy-section h3 {
+  color: #c55468;
+  margin: 14px 0 6px 0
+}
+
+.policy-section p {
+  margin: 8px 0
 }
 
 .modal-close {
@@ -1803,5 +1911,44 @@ body {
   .footer-links {
     justify-content: flex-start;
     text-align: left
+  }
+}
+
+/* Dynamic content sections */
+.testimonials,
+.faqs {
+  padding: 32px 0
+}
+
+.section-header {
+  text-align: center;
+  margin-bottom: 24px
+}
+
+.section-header h2 {
+  color: var(--accent);
+  margin: 0 0 6px
+}
+
+.section-header p {
+  color: #ad6873;
+  margin: 0
+}
+
+.testimonials-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px
+}
+
+@media (max-width:960px) {
+  .testimonials-grid {
+    grid-template-columns: repeat(2, 1fr)
+  }
+}
+
+@media (max-width:640px) {
+  .testimonials-grid {
+    grid-template-columns: 1fr
   }
 }

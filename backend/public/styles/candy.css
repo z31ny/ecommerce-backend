@@ -97,7 +97,6 @@
 /* Center a single card in the middle column */
 .ice-section .candies-grid > .candies-card:only-child{grid-column:2}
 .mellow-section .candies-grid > .candies-card:only-child{grid-column:2}
-.
 .nuts-section .nuts-wrap{display:grid;place-items:center}
 .candies-card{
   position:relative;background:#fff;border-radius:24px;

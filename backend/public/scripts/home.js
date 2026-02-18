@@ -387,57 +387,6 @@
     berry.addEventListener('touchend', function () { berry.setAttribute('src', originalSrc); }, { passive: true });
   }
 
-  var defaultTestimonials = [
-    { color: 't-pink', front: '“What’s @Dana verdict?”', back: '“Crunchy, sweet, and so cute! I buy 5 packs at a time.”' },
-    { color: 't-yellow', front: '“A little banana love from @MamaFruit”', back: '“Crispy, sweet, and sooo satisfying! I keep a stash in my bag.”' },
-    { color: 't-purple', front: '“@juicyluv left a juicy review!”', back: '“It’s candy… but it’s fruit?! Obsessed.”' },
-    { color: 't-yellow', front: '“@Sarah M left a sweet review!”', back: '“Tastes like a fruit explosion!”' },
-    { color: 't-purple', front: '“@juicyluv has something to say!”', back: '“It’s candy… but it’s fruit?! Obsessed.”' },
-    { color: 't-pink', front: '“See what @fruitlover88 thinks about us”', back: '“So crunchy and sweet — I’m obsessed!”' }
-  ];
-
-  function renderTestimonials() {
-    var trackEl = doc.querySelector('.t-track');
-    if (!trackEl) return;
-    var users = readUserTestimonials();
-    var merged = users.map(function (u) { return { color: 't-pink', front: '“' + u.name + ' says:”', back: '“' + u.message + '”' }; }).concat(defaultTestimonials);
-    if (merged.length === 0) return;
-    var offset = Math.floor(Date.now() / ROTATION_MS) % merged.length;
-    var ordered = merged.slice(offset).concat(merged.slice(0, offset));
-    trackEl.innerHTML = '';
-    ordered.forEach(function (item) {
-      var card = doc.createElement('article');
-      card.className = 't-card';
-      var front = doc.createElement('div'); front.className = 'bubble ' + item.color + ' front'; front.innerHTML = '<p>' + item.front + '</p>';
-      var back = doc.createElement('div'); back.className = 'bubble ' + item.color + ' back'; back.innerHTML = '<p>' + item.back + '</p>';
-      card.appendChild(front); card.appendChild(back);
-      trackEl.appendChild(card);
-    });
-  }
-  renderTestimonials();
-  // schedule next rotation at the top of the next hour
-  (function schedule() {
-    var now = Date.now();
-    var next = (Math.floor(now / ROTATION_MS) + 1) * ROTATION_MS;
-    setTimeout(function () { renderTestimonials(); schedule(); }, next - now);
-  })();
-
-  var form = doc.querySelector('.tf-form');
-  if (form) {
-    form.addEventListener('submit', function (e) {
-      e.preventDefault();
-      var name = (form.querySelector('[name="name"]').value || '').trim();
-      var message = (form.querySelector('[name="message"]').value || '').trim();
-      if (!name || !message) return;
-      var list = readUserTestimonials();
-      list.unshift({ name: name, message: message });
-      writeUserTestimonials(list);
-      form.reset();
-      showToast('Thanks for your testimonial!');
-      renderTestimonials();
-    });
-  }
-
   // Cart drawer open/close and render
   var CART = {
     openBtn: doc.querySelector('.cart-open'),

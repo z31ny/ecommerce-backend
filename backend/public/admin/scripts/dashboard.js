@@ -4526,58 +4526,9 @@ function initStatsAnimation() {
     });
 }
 
-// ===== SETTINGS FUNCTIONS =====
+// Settings save functions are now handled by the inline script in settings.html
+// which saves to the API instead of localStorage
 
-// Save General Settings
-function saveGeneralSettings(event) {
-    event.preventDefault();
-    showAlert('success', 'General settings saved successfully!');
-}
-
-// Save Notification Settings
-function saveNotificationSettings(event) {
-    event.preventDefault();
-    showAlert('success', 'Notification settings saved successfully!');
-}
-
-// Save Payment Settings
-function savePaymentSettings(event) {
-    event.preventDefault();
-    showAlert('success', 'Payment settings saved successfully!');
-}
-
-// Update Password
-function updatePassword(event) {
-    event.preventDefault();
-
-    const currentPassword = document.getElementById('currentPassword')?.value;
-    const newPassword = document.getElementById('newPassword')?.value;
-    const confirmPassword = document.getElementById('confirmPassword')?.value;
-
-    if (!currentPassword || !newPassword || !confirmPassword) {
-        showAlert('error', 'Please fill in all password fields.');
-        return;
-    }
-
-    if (newPassword !== confirmPassword) {
-        showAlert('error', 'New passwords do not match.');
-        return;
-    }
-
-    if (newPassword.length < 8) {
-        showAlert('error', 'Password must be at least 8 characters long.');
-        return;
-    }
-
-    showAlert('success', 'Password updated successfully!');
-
-    // Clear form
-    document.getElementById('currentPassword').value = '';
-    document.getElementById('newPassword').value = '';
-    document.getElementById('confirmPassword').value = '';
-}
-
-// ===== ORDER FILTER FUNCTIONS =====
 
 // Current order filters
 let currentOrderFilters = {
@@ -4900,6 +4851,15 @@ async function initDashboard() {
         case 'settings.html':
             await initSettingsPage();
             break;
+        case 'messages.html':
+            await loadMessagesFromAPI();
+            break;
+        case 'users.html':
+            await loadAdminUsersFromAPI();
+            break;
+        case 'employees.html':
+            await loadEmployeesFromAPI();
+            break;
     }
 }
 
@@ -5140,153 +5100,36 @@ function restockAllLowStock() {
     }
 }
 
-// Initialize Settings Page
+// Initialize Settings Page — settings are loaded by the inline script in settings.html
 async function initSettingsPage() {
-    // Load saved settings
-    loadSavedSettings();
+    // The inline script on settings.html handles loading from /api/admin/settings
+    // We just need to update the sidebar branding from the API
+    await updateSidebarBranding();
     console.log('Settings page initialized');
 }
 
-// Load saved settings from localStorage
-function loadSavedSettings() {
-    // Load logo
-    const savedLogo = localStorage.getItem('freezyBiteLogo');
-    if (savedLogo) {
-        const logoImg = document.getElementById('currentLogo');
-        const defaultIcon = document.getElementById('defaultLogoIcon');
-        if (logoImg && defaultIcon) {
-            logoImg.src = savedLogo;
-            logoImg.style.display = 'block';
-            defaultIcon.style.display = 'none';
-        }
-    }
+// Update sidebar branding from API
+async function updateSidebarBranding() {
+    try {
+        const res = await fetch('/api/settings');
+        if (!res.ok) return;
+        const data = await res.json();
 
-    // Load store settings
-    const storeName = localStorage.getItem('freezyBiteStoreName');
-    const storeTagline = localStorage.getItem('freezyBiteTagline');
-    const storeEmail = localStorage.getItem('freezyBiteEmail');
-    const storePhone = localStorage.getItem('freezyBitePhone');
-    const storeAddress = localStorage.getItem('freezyBiteAddress');
-    const instapayNumber = localStorage.getItem('freezyBiteInstaPay');
-
-    if (storeName) document.getElementById('storeName')?.setAttribute('value', storeName);
-    if (storeTagline) document.getElementById('storeTagline')?.setAttribute('value', storeTagline);
-    if (storeEmail) document.getElementById('storeEmail')?.setAttribute('value', storeEmail);
-    if (storePhone) document.getElementById('storePhone')?.setAttribute('value', storePhone);
-    if (storeAddress && document.getElementById('storeAddress')) document.getElementById('storeAddress').value = storeAddress;
-    if (instapayNumber) document.getElementById('instapayNumber')?.setAttribute('value', instapayNumber);
-}
-
-// Preview logo before upload
-function previewLogo(event) {
-    const file = event.target.files[0];
-    if (file) {
-        const reader = new FileReader();
-        reader.onload = function (e) {
-            const logoImg = document.getElementById('currentLogo');
-            const defaultIcon = document.getElementById('defaultLogoIcon');
-            if (logoImg && defaultIcon) {
-                logoImg.src = e.target.result;
-                logoImg.style.display = 'block';
-                defaultIcon.style.display = 'none';
+        if (data.branding) {
+            // Update logo in sidebar
+            const sidebarLogoIcon = document.querySelector('.sidebar-logo .logo-icon');
+            if (sidebarLogoIcon && data.branding.logo) {
+                sidebarLogoIcon.innerHTML = `<img src="${data.branding.logo}" alt="Logo" style="width: 100%; height: 100%; object-fit: contain; border-radius: 8px;">`;
             }
-        };
-        reader.readAsDataURL(file);
-    }
-}
 
-// Save branding settings
-function saveBrandingSettings() {
-    const logoImg = document.getElementById('currentLogo');
-    const storeName = document.getElementById('storeName')?.value;
-    const storeTagline = document.getElementById('storeTagline')?.value;
-
-    // Save logo to localStorage
-    if (logoImg && logoImg.src && logoImg.style.display !== 'none') {
-        localStorage.setItem('freezyBiteLogo', logoImg.src);
-    }
-
-    if (storeName) localStorage.setItem('freezyBiteStoreName', storeName);
-    if (storeTagline) localStorage.setItem('freezyBiteTagline', storeTagline);
-
-    // Update sidebar logo if needed
-    updateSidebarBranding();
-
-    showAlert('success', 'Branding settings saved successfully!');
-}
-
-// Save general settings
-function saveGeneralSettings() {
-    const storeEmail = document.getElementById('storeEmail')?.value;
-    const storePhone = document.getElementById('storePhone')?.value;
-    const storeAddress = document.getElementById('storeAddress')?.value;
-    const storeCurrency = document.getElementById('storeCurrency')?.value;
-
-    if (storeEmail) localStorage.setItem('freezyBiteEmail', storeEmail);
-    if (storePhone) localStorage.setItem('freezyBitePhone', storePhone);
-    if (storeAddress) localStorage.setItem('freezyBiteAddress', storeAddress);
-    if (storeCurrency) localStorage.setItem('freezyBiteCurrency', storeCurrency);
-
-    showAlert('success', 'Store information saved successfully!');
-}
-
-// Save notification settings
-function saveNotificationSettings() {
-    showAlert('success', 'Notification settings saved successfully!');
-}
-
-// Save payment settings
-function savePaymentSettings() {
-    const instapayNumber = document.getElementById('instapayNumber')?.value;
-    if (instapayNumber) localStorage.setItem('freezyBiteInstaPay', instapayNumber);
-
-    showAlert('success', 'Payment settings saved successfully!\n\nInstaPay: ' + instapayNumber);
-}
-
-// Update password
-function updatePassword() {
-    const currentPassword = document.getElementById('currentPassword')?.value;
-    const newPassword = document.getElementById('newPassword')?.value;
-    const confirmPassword = document.getElementById('confirmPassword')?.value;
-
-    if (!currentPassword || !newPassword || !confirmPassword) {
-        showAlert('error', 'Please fill in all password fields.');
-        return;
-    }
-
-    if (newPassword !== confirmPassword) {
-        showAlert('error', 'New passwords do not match!');
-        return;
-    }
-
-    if (newPassword.length < 6) {
-        showAlert('error', 'Password must be at least 6 characters long.');
-        return;
-    }
-
-    // Clear fields
-    document.getElementById('currentPassword').value = '';
-    document.getElementById('newPassword').value = '';
-    document.getElementById('confirmPassword').value = '';
-
-    showAlert('success', 'Password updated successfully!');
-}
-
-// Update sidebar branding
-function updateSidebarBranding() {
-    const savedLogo = localStorage.getItem('freezyBiteLogo');
-    const savedName = localStorage.getItem('freezyBiteStoreName');
-
-    // Update logo in sidebar
-    const sidebarLogoIcon = document.querySelector('.sidebar-logo .logo-icon');
-    if (sidebarLogoIcon && savedLogo) {
-        sidebarLogoIcon.innerHTML = `<img src="${savedLogo}" alt="Logo" style="width: 100%; height: 100%; object-fit: contain; border-radius: 8px;">`;
-    }
-
-    // Update store name in sidebar
-    const sidebarLogoText = document.querySelector('.sidebar-logo span');
-    if (sidebarLogoText && savedName) {
-        sidebarLogoText.textContent = savedName;
+            // Update store name in sidebar
+            const sidebarLogoText = document.querySelector('.sidebar-logo span');
+            if (sidebarLogoText && data.branding.storeName) {
+                sidebarLogoText.textContent = data.branding.storeName;
+            }
+        }
+    } catch (e) {
+        // Silently fail
     }
 }
 
@@ -5417,12 +5260,8 @@ window.updateOrderStatusFromModal = updateOrderStatusFromModal;
 window.handleOrderStockChange = handleOrderStockChange;
 window.deductStock = deductStock;
 window.restoreStock = restoreStock;
-window.previewLogo = previewLogo;
-window.saveBrandingSettings = saveBrandingSettings;
-window.saveGeneralSettings = saveGeneralSettings;
-window.saveNotificationSettings = saveNotificationSettings;
-window.savePaymentSettings = savePaymentSettings;
-window.updatePassword = updatePassword;
+// Settings functions are now defined in settings.html inline script
+// and save to the API instead of localStorage
 window.viewNotification = viewNotification;
 window.markAllNotificationsRead = markAllNotificationsRead;
 window.clearAllNotifications = clearAllNotifications;
@@ -5483,26 +5322,8 @@ document.addEventListener('DOMContentLoaded', function () {
         editProductForm.addEventListener('submit', saveEditedProduct);
     }
 
-    // Settings forms
-    const generalSettingsForm = document.getElementById('generalSettingsForm');
-    if (generalSettingsForm) {
-        generalSettingsForm.addEventListener('submit', saveGeneralSettings);
-    }
 
-    const notificationSettingsForm = document.getElementById('notificationSettingsForm');
-    if (notificationSettingsForm) {
-        notificationSettingsForm.addEventListener('submit', saveNotificationSettings);
-    }
-
-    const paymentSettingsForm = document.getElementById('paymentSettingsForm');
-    if (paymentSettingsForm) {
-        paymentSettingsForm.addEventListener('submit', savePaymentSettings);
-    }
-
-    const securityForm = document.getElementById('securityForm');
-    if (securityForm) {
-        securityForm.addEventListener('submit', updatePassword);
-    }
+    // Settings forms are now handled by the inline script in settings.html
 });
 
 // Window Resize Handler

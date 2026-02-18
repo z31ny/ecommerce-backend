@@ -67,6 +67,8 @@
     </header>
 
     <section class="tagline container">
+      <model-viewer class="tagline-model" src="./assets/3d/strawberry.glb" alt="Freeze-dried snack 3D model"
+        camera-controls auto-rotate></model-viewer>
       <p>Freeze It … Bite It … Love It.</p>
     </section>
   </div>
@@ -76,6 +78,10 @@
       <div class="container hero-centered-grid">
         <div class="hero-left">
           <h1 class="hero-heading hero-heading--left">Ready For New</h1>
+        </div>
+        <div class="hero-swap" tabindex="0" aria-label="Hero image swap on hover">
+          <img class="hero-swap-img is-default" src="assets/home-page-img/blueberry1.png" alt="Ready for new experience">
+          <img class="hero-swap-img is-hover" src="assets/home-page-img/blueberry2.png" alt="Ready for new experience">
         </div>
         <div class="hero-right">
           <h1 class="hero-heading hero-heading--right">Experience</h1>
@@ -88,12 +94,7 @@
         <h2>Special Offers</h2>
         <p>Limited-time sweet deals — crunch them before they're gone!</p>
       </header>
-      <div class="offers-grid" id="offers-grid">
-        <!-- Offers will be loaded dynamically from the API -->
-        <div class="loading-offers" style="grid-column: 1/-1; text-align: center; padding: 2rem; color: #888;">
-          Loading offers...
-        </div>
-      </div>
+      <div class="offers-grid" id="offers-grid"></div>
     </section>
 
     <section class="why container" id="why">
@@ -117,16 +118,31 @@
       </div>
     </section>
 
+    <section class="inside container" id="inside">
+      <header class="section-header fade-up">
+        <h2>What’s Inside Our Snack</h2>
+        <p>Pure fruit, no extras — just crunchy goodness.</p>
+      </header>
+      <div class="inside-wrapper">
+        <div class="inside-track"></div>
+      </div>
+    </section>
 
+    <section class="testimonials container" id="testimonials">
+      <header class="section-header fade-up">
+        <h2>What Our Customers Say</h2>
+        <p>Real reviews from real snack lovers</p>
+      </header>
+      <div class="testimonials-grid" id="testimonials-grid"></div>
+    </section>
 
-
-
-
-
-
-
-
-
+    <section class="faqs container" id="faqs">
+      <header class="section-header fade-up">
+        <h2>Frequently Asked Questions</h2>
+        <p>Got questions? We've got answers!</p>
+      </header>
+      <div class="faq-list" id="faq-list"></div>
+    </section>
 
   </main>
 
@@ -267,10 +283,10 @@
 
     <div class="footer-bottom container">
       <ul class="policy-list">
-        <li><a href="#refund">Refund policy</a></li>
-        <li><a href="#terms">Terms & Condition</a></li>
-        <li><a href="#privacy">Privacy Policy</a></li>
-        <li><a href="#shipping">Shipping Info</a></li>
+        <li><a href="#" data-policy-open="returns">Refund policy</a></li>
+        <li><a href="#" data-policy-open="terms">Terms & Conditions</a></li>
+        <li><a href="#" data-policy-open="privacy">Privacy Policy</a></li>
+        <li><a href="#" data-policy-open="shipping">Shipping Info</a></li>
       </ul>
       <p class="copyright">© 2025 Freezy Bite<br>All rights reserved.</p>
     </div>
