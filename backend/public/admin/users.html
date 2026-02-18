@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -14,7 +15,7 @@
             gap: 1rem;
             margin-bottom: 1.5rem;
         }
-        
+
         .user-stat-card {
             background: var(--bg-card);
             padding: 1.25rem;
@@ -24,7 +25,7 @@
             align-items: center;
             gap: 1rem;
         }
-        
+
         .user-stat-card .icon {
             width: 50px;
             height: 50px;
@@ -34,38 +35,38 @@
             justify-content: center;
             font-size: 1.25rem;
         }
-        
+
         .user-stat-card .icon.admins {
             background: linear-gradient(135deg, #6366f1, #4f46e5);
             color: white;
         }
-        
+
         .user-stat-card .icon.managers {
             background: linear-gradient(135deg, #10b981, #059669);
             color: white;
         }
-        
+
         .user-stat-card .icon.staff {
             background: linear-gradient(135deg, #f59e0b, #d97706);
             color: white;
         }
-        
+
         .user-stat-card .icon.total {
             background: linear-gradient(135deg, #3b82f6, #2563eb);
             color: white;
         }
-        
+
         .user-stat-card .info h4 {
             font-size: 1.75rem;
             font-weight: 700;
             color: var(--text-primary);
         }
-        
+
         .user-stat-card .info p {
             font-size: 0.85rem;
             color: var(--text-secondary);
         }
-        
+
         /* Current Admin Profile Card */
         .admin-profile-card {
             background: linear-gradient(135deg, #6366f1, #4f46e5);
@@ -78,112 +79,112 @@
             gap: 1.5rem;
             box-shadow: var(--shadow-lg);
         }
-        
+
         .admin-profile-card .admin-avatar {
             width: 80px;
             height: 80px;
             border-radius: 50%;
-            border: 4px solid rgba(255,255,255,0.3);
+            border: 4px solid rgba(255, 255, 255, 0.3);
             object-fit: cover;
         }
-        
+
         .admin-profile-card .admin-info h2 {
             font-size: 1.5rem;
             font-weight: 700;
             margin-bottom: 0.25rem;
         }
-        
+
         .admin-profile-card .admin-info p {
             opacity: 0.9;
             font-size: 0.9rem;
             margin-bottom: 0.5rem;
         }
-        
+
         .admin-profile-card .admin-info .role-badge {
             display: inline-block;
-            background: rgba(255,255,255,0.2);
+            background: rgba(255, 255, 255, 0.2);
             padding: 0.35rem 0.75rem;
             border-radius: 20px;
             font-size: 0.75rem;
             font-weight: 600;
         }
-        
+
         .admin-profile-card .admin-actions {
             margin-left: auto;
             display: flex;
             gap: 0.5rem;
         }
-        
+
         .admin-profile-card .admin-actions .btn {
-            background: rgba(255,255,255,0.2);
+            background: rgba(255, 255, 255, 0.2);
             border: none;
             color: white;
         }
-        
+
         .admin-profile-card .admin-actions .btn:hover {
-            background: rgba(255,255,255,0.3);
+            background: rgba(255, 255, 255, 0.3);
         }
-        
+
         /* Users Table */
         .user-row {
             display: flex;
             align-items: center;
             gap: 1rem;
         }
-        
+
         .user-row .user-avatar {
             width: 40px;
             height: 40px;
             border-radius: 50%;
             object-fit: cover;
         }
-        
+
         .user-row .user-details {
             flex: 1;
         }
-        
+
         .user-row .user-details .name {
             font-weight: 600;
             color: var(--text-primary);
         }
-        
+
         .user-row .user-details .email {
             font-size: 0.8rem;
             color: var(--text-secondary);
         }
-        
+
         .role-badge {
             padding: 0.35rem 0.75rem;
             border-radius: 20px;
             font-size: 0.75rem;
             font-weight: 600;
         }
-        
+
         .role-badge.admin {
             background: var(--primary-light);
             color: var(--primary);
         }
-        
+
         .role-badge.manager {
             background: rgba(16, 185, 129, 0.1);
             color: #10b981;
         }
-        
+
         .role-badge.staff {
             background: rgba(245, 158, 11, 0.1);
             color: #f59e0b;
         }
-        
+
         .status-badge.active {
             background: rgba(16, 185, 129, 0.1);
             color: #10b981;
         }
-        
+
         .status-badge.inactive {
             background: rgba(239, 68, 68, 0.1);
             color: #ef4444;
         }
-        
+
         /* Permissions Modal Styles */
         .permission-user-info {
             display: flex;
@@ -194,37 +195,37 @@
             border-radius: var(--border-radius-md);
             margin-bottom: 1rem;
         }
-        
+
         .permission-user-info .user-avatar {
             width: 50px;
             height: 50px;
             border-radius: 50%;
             object-fit: cover;
         }
-        
+
         .permission-user-info .user-details .name {
             font-weight: 600;
             color: var(--text-primary);
         }
-        
+
         .permission-user-info .user-details .role {
             font-size: 0.8rem;
             color: var(--text-secondary);
         }
-        
+
         .permission-quick-actions {
             display: flex;
             gap: 0.5rem;
             margin-bottom: 1rem;
             flex-wrap: wrap;
         }
-        
+
         .permissions-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
             gap: 0.75rem;
         }
-        
+
         .permission-item {
             display: flex;
             align-items: center;
@@ -236,17 +237,17 @@
             cursor: pointer;
             transition: all 0.2s ease;
         }
-        
+
         .permission-item:hover {
             background: var(--bg-card);
             border-color: var(--primary-light);
         }
-        
+
         .permission-item.active {
             background: var(--primary-light);
             border-color: var(--primary);
         }
-        
+
         .permission-item .permission-icon {
             width: 36px;
             height: 36px;
@@ -258,19 +259,19 @@
             color: var(--text-secondary);
             font-size: 0.9rem;
         }
-        
+
         .permission-item.active .permission-icon {
             background: var(--primary);
             color: white;
         }
-        
+
         .permission-item .permission-label {
             flex: 1;
             font-size: 0.9rem;
             font-weight: 500;
             color: var(--text-primary);
         }
-        
+
         .permission-item .permission-check {
             width: 20px;
             height: 20px;
@@ -283,7 +284,7 @@
             color: transparent;
             transition: all 0.2s;
         }
-        
+
         .permission-item.active .permission-check {
             background: var(--success);
             border-color: var(--success);
@@ -297,63 +298,63 @@
                 text-align: center;
                 padding: 1.5rem;
             }
-            
+
             .admin-profile-card .admin-avatar {
                 width: 70px;
                 height: 70px;
             }
-            
+
             .admin-profile-card .admin-info h2 {
                 font-size: 1.25rem;
             }
-            
+
             .admin-profile-card .admin-actions {
                 margin-left: 0;
                 margin-top: 1rem;
             }
-            
+
             .user-stats {
                 grid-template-columns: repeat(2, 1fr);
                 gap: 0.75rem;
             }
-            
+
             .user-stat-card {
                 padding: 1rem;
                 flex-direction: column;
                 text-align: center;
                 gap: 0.5rem;
             }
-            
+
             .user-stat-card .icon {
                 width: 40px;
                 height: 40px;
                 font-size: 1rem;
             }
-            
+
             .user-stat-card .info h4 {
                 font-size: 1.25rem;
             }
-            
+
             .user-stat-card .info p {
                 font-size: 0.75rem;
             }
-            
+
             .section-header {
                 flex-direction: column;
                 align-items: flex-start;
                 gap: 1rem;
             }
-            
+
             .section-actions {
                 width: 100%;
             }
-            
+
             .section-actions .btn {
                 width: 100%;
                 justify-content: center;
             }
         }
-        
+
         @media (max-width: 480px) {
             .user-stats {
                 grid-template-columns: 1fr 1fr;
@@ -361,10 +362,11 @@
         }
     </style>
 </head>
+
 <body>
     <!-- Sidebar Overlay (for mobile) -->
     <div class="sidebar-overlay"></div>
-    
+
     <!-- Sidebar -->
     <aside class="sidebar">
         <div class="sidebar-header">
@@ -378,7 +380,7 @@
                 <i class="fas fa-bars"></i>
             </button>
         </div>
-        
+
         <nav class="sidebar-nav">
             <ul class="nav-list">
                 <li>
@@ -461,7 +463,7 @@
                 </li>
             </ul>
         </nav>
-        
+
         <div class="sidebar-footer">
             <div class="user-profile">
                 <img src="/assets/icons/profile.svg" alt="Admin" class="user-avatar">
@@ -476,7 +478,7 @@
             </button>
         </div>
     </aside>
-    
+
     <!-- Main Content -->
     <main class="main-content">
         <!-- Top Header -->
@@ -506,7 +508,7 @@
                 <img src="/assets/icons/profile.svg" alt="Admin" class="header-avatar" onclick="openEditProfileModal()">
             </div>
         </header>
-        
+
         <!-- Dashboard Content -->
         <div class="dashboard-content">
             <!-- Current Admin Profile -->
@@ -527,12 +529,13 @@
                     </button>
                 </div>
             </div>
-            
+
             <!-- Section Header -->
             <div class="section">
                 <div class="section-header">
                     <div>
-                        <h1 class="section-title"><i class="fas fa-user-shield" style="color: var(--primary); margin-right: 0.5rem;"></i>User Management</h1>
+                        <h1 class="section-title"><i class="fas fa-user-shield"
+                                style="color: var(--primary); margin-right: 0.5rem;"></i>User Management</h1>
                         <p class="section-subtitle">Manage administrators, managers, and staff accounts.</p>
                     </div>
                     <div class="section-actions">
@@ -543,7 +546,7 @@
                     </div>
                 </div>
             </div>
-            
+
             <!-- User Stats -->
             <div class="user-stats">
                 <div class="user-stat-card">
@@ -583,13 +586,14 @@
                     </div>
                 </div>
             </div>
-            
+
             <!-- Users Table -->
             <div class="data-card">
                 <div class="data-card-header">
                     <h3 class="data-card-title">All Users</h3>
                     <div class="data-card-actions">
-                        <select class="form-select" id="roleFilter" onchange="filterUsersByRole(this.value)" style="min-width: 120px;">
+                        <select class="form-select" id="roleFilter" onchange="filterUsersByRole(this.value)"
+                            style="min-width: 120px;">
                             <option value="">All Roles</option>
                             <option value="admin">Admins</option>
                             <option value="manager">Managers</option>
@@ -603,12 +607,13 @@
             </div>
         </div>
     </main>
-    
+
     <!-- Add User Modal -->
     <div class="modal-overlay" id="addUserModal">
         <div class="modal" style="max-width: 500px;">
             <div class="modal-header">
-                <h2 class="modal-title"><i class="fas fa-user-plus" style="color: var(--primary); margin-right: 0.5rem;"></i>Add New User</h2>
+                <h2 class="modal-title"><i class="fas fa-user-plus"
+                        style="color: var(--primary); margin-right: 0.5rem;"></i>Add New User</h2>
                 <button class="modal-close" onclick="closeModal('addUserModal')">
                     <i class="fas fa-times"></i>
                 </button>
@@ -618,21 +623,28 @@
                     <!-- Profile Picture Upload -->
                     <div class="form-group" style="text-align: center; margin-bottom: 1.5rem;">
                         <div style="position: relative; display: inline-block;">
-                            <img src="/assets/icons/profile.svg" alt="Avatar" id="newUserAvatarPreview" style="width: 90px; height: 90px; border-radius: 50%; border: 3px solid var(--primary-light); object-fit: cover;">
-                            <button type="button" class="btn btn-sm btn-primary" onclick="document.getElementById('newUserAvatarInput').click()" style="position: absolute; bottom: 0; right: 0; width: 32px; height: 32px; padding: 0; border-radius: 50%;">
+                            <img src="/assets/icons/profile.svg" alt="Avatar" id="newUserAvatarPreview"
+                                style="width: 90px; height: 90px; border-radius: 50%; border: 3px solid var(--primary-light); object-fit: cover;">
+                            <button type="button" class="btn btn-sm btn-primary"
+                                onclick="document.getElementById('newUserAvatarInput').click()"
+                                style="position: absolute; bottom: 0; right: 0; width: 32px; height: 32px; padding: 0; border-radius: 50%;">
                                 <i class="fas fa-camera"></i>
                             </button>
                         </div>
-                        <input type="file" id="newUserAvatarInput" accept="image/*" style="display: none;" onchange="previewNewUserAvatar(event)">
-                        <p style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.5rem;">Click camera to upload photo</p>
+                        <input type="file" id="newUserAvatarInput" accept="image/*" style="display: none;"
+                            onchange="previewNewUserAvatar(event)">
+                        <p style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.5rem;">Click camera to
+                            upload photo</p>
                     </div>
                     <div class="form-group">
                         <label class="form-label">Full Name <span class="required">*</span></label>
-                        <input type="text" class="form-input" id="newUserName" placeholder="Enter full name" required oninput="updateNewUserAvatarPreview()">
+                        <input type="text" class="form-input" id="newUserName" placeholder="Enter full name" required
+                            oninput="updateNewUserAvatarPreview()">
                     </div>
                     <div class="form-group">
                         <label class="form-label">Email <span class="required">*</span></label>
-                        <input type="email" class="form-input" id="newUserEmail" placeholder="Enter email address" required>
+                        <input type="email" class="form-input" id="newUserEmail" placeholder="Enter email address"
+                            required>
                     </div>
                     <div class="form-group">
                         <label class="form-label">Phone</label>
@@ -649,11 +661,13 @@
                     </div>
                     <div class="form-group">
                         <label class="form-label">Password <span class="required">*</span></label>
-                        <input type="password" class="form-input" id="newUserPassword" placeholder="Enter password" required minlength="6">
+                        <input type="password" class="form-input" id="newUserPassword" placeholder="Enter password"
+                            required minlength="6">
                     </div>
                     <div class="form-group">
                         <label class="form-label">Confirm Password <span class="required">*</span></label>
-                        <input type="password" class="form-input" id="newUserConfirmPassword" placeholder="Confirm password" required>
+                        <input type="password" class="form-input" id="newUserConfirmPassword"
+                            placeholder="Confirm password" required>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -665,12 +679,13 @@
             </form>
         </div>
     </div>
-    
+
     <!-- Edit User Modal -->
     <div class="modal-overlay" id="editUserModal">
         <div class="modal" style="max-width: 500px;">
             <div class="modal-header">
-                <h2 class="modal-title"><i class="fas fa-user-edit" style="color: var(--primary); margin-right: 0.5rem;"></i>Edit User</h2>
+                <h2 class="modal-title"><i class="fas fa-user-edit"
+                        style="color: var(--primary); margin-right: 0.5rem;"></i>Edit User</h2>
                 <button class="modal-close" onclick="closeModal('editUserModal')">
                     <i class="fas fa-times"></i>
                 </button>
@@ -681,13 +696,18 @@
                     <!-- Profile Picture Upload -->
                     <div class="form-group" style="text-align: center; margin-bottom: 1.5rem;">
                         <div style="position: relative; display: inline-block;">
-                            <img src="" alt="Avatar" id="editUserAvatarPreview" style="width: 90px; height: 90px; border-radius: 50%; border: 3px solid var(--primary-light); object-fit: cover;">
-                            <button type="button" class="btn btn-sm btn-primary" onclick="document.getElementById('editUserAvatarInput').click()" style="position: absolute; bottom: 0; right: 0; width: 32px; height: 32px; padding: 0; border-radius: 50%;">
+                            <img src="" alt="Avatar" id="editUserAvatarPreview"
+                                style="width: 90px; height: 90px; border-radius: 50%; border: 3px solid var(--primary-light); object-fit: cover;">
+                            <button type="button" class="btn btn-sm btn-primary"
+                                onclick="document.getElementById('editUserAvatarInput').click()"
+                                style="position: absolute; bottom: 0; right: 0; width: 32px; height: 32px; padding: 0; border-radius: 50%;">
                                 <i class="fas fa-camera"></i>
                             </button>
                         </div>
-                        <input type="file" id="editUserAvatarInput" accept="image/*" style="display: none;" onchange="previewEditUserAvatar(event)">
-                        <p style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.5rem;">Click camera to change photo</p>
+                        <input type="file" id="editUserAvatarInput" accept="image/*" style="display: none;"
+                            onchange="previewEditUserAvatar(event)">
+                        <p style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.5rem;">Click camera to
+                            change photo</p>
                     </div>
                     <div class="form-group">
                         <label class="form-label">Full Name <span class="required">*</span></label>
@@ -695,7 +715,8 @@
                     </div>
                     <div class="form-group">
                         <label class="form-label">Email <span class="required">*</span></label>
-                        <input type="email" class="form-input" id="editUserEmail" placeholder="Enter email address" required>
+                        <input type="email" class="form-input" id="editUserEmail" placeholder="Enter email address"
+                            required>
                     </div>
                     <div class="form-group">
                         <label class="form-label">Phone</label>
@@ -718,7 +739,8 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" onclick="closeModal('editUserModal')">Cancel</button>
+                    <button type="button" class="btn btn-secondary"
+                        onclick="closeModal('editUserModal')">Cancel</button>
                     <button type="submit" class="btn btn-primary">
                         <i class="fas fa-save"></i> Save Changes
                     </button>
@@ -726,12 +748,13 @@
             </form>
         </div>
     </div>
-    
+
     <!-- Edit Profile Modal -->
     <div class="modal-overlay" id="editProfileModal">
         <div class="modal" style="max-width: 500px;">
             <div class="modal-header">
-                <h2 class="modal-title"><i class="fas fa-user-circle" style="color: var(--primary); margin-right: 0.5rem;"></i>Edit My Profile</h2>
+                <h2 class="modal-title"><i class="fas fa-user-circle"
+                        style="color: var(--primary); margin-right: 0.5rem;"></i>Edit My Profile</h2>
                 <button class="modal-close" onclick="closeModal('editProfileModal')">
                     <i class="fas fa-times"></i>
                 </button>
@@ -739,10 +762,13 @@
             <form id="editProfileForm" onsubmit="updateProfile(event)">
                 <div class="modal-body">
                     <div class="form-group" style="text-align: center; margin-bottom: 1.5rem;">
-                        <img src="/assets/icons/profile.svg" alt="Admin" id="profileAvatarPreview" style="width: 100px; height: 100px; border-radius: 50%; margin-bottom: 1rem;">
+                        <img src="/assets/icons/profile.svg" alt="Admin" id="profileAvatarPreview"
+                            style="width: 100px; height: 100px; border-radius: 50%; margin-bottom: 1rem;">
                         <div>
-                            <input type="file" id="profileAvatarInput" accept="image/*" style="display: none;" onchange="previewProfileAvatar(event)">
-                            <button type="button" class="btn btn-sm btn-secondary" onclick="document.getElementById('profileAvatarInput').click()">
+                            <input type="file" id="profileAvatarInput" accept="image/*" style="display: none;"
+                                onchange="previewProfileAvatar(event)">
+                            <button type="button" class="btn btn-sm btn-secondary"
+                                onclick="document.getElementById('profileAvatarInput').click()">
                                 <i class="fas fa-camera"></i> Change Photo
                             </button>
                         </div>
@@ -761,7 +787,8 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" onclick="closeModal('editProfileModal')">Cancel</button>
+                    <button type="button" class="btn btn-secondary"
+                        onclick="closeModal('editProfileModal')">Cancel</button>
                     <button type="submit" class="btn btn-primary">
                         <i class="fas fa-save"></i> Save Profile
                     </button>
@@ -769,12 +796,13 @@
             </form>
         </div>
     </div>
-    
+
     <!-- Change Password Modal -->
     <div class="modal-overlay" id="changePasswordModal">
         <div class="modal" style="max-width: 400px;">
             <div class="modal-header">
-                <h2 class="modal-title"><i class="fas fa-key" style="color: var(--warning); margin-right: 0.5rem;"></i>Change Password</h2>
+                <h2 class="modal-title"><i class="fas fa-key"
+                        style="color: var(--warning); margin-right: 0.5rem;"></i>Change Password</h2>
                 <button class="modal-close" onclick="closeModal('changePasswordModal')">
                     <i class="fas fa-times"></i>
                 </button>
@@ -783,19 +811,23 @@
                 <div class="modal-body">
                     <div class="form-group">
                         <label class="form-label">Current Password <span class="required">*</span></label>
-                        <input type="password" class="form-input" id="currentPassword" placeholder="Enter current password" required>
+                        <input type="password" class="form-input" id="currentPassword"
+                            placeholder="Enter current password" required>
                     </div>
                     <div class="form-group">
                         <label class="form-label">New Password <span class="required">*</span></label>
-                        <input type="password" class="form-input" id="newPassword" placeholder="Enter new password" required minlength="6">
+                        <input type="password" class="form-input" id="newPassword" placeholder="Enter new password"
+                            required minlength="6">
                     </div>
                     <div class="form-group">
                         <label class="form-label">Confirm New Password <span class="required">*</span></label>
-                        <input type="password" class="form-input" id="confirmNewPassword" placeholder="Confirm new password" required>
+                        <input type="password" class="form-input" id="confirmNewPassword"
+                            placeholder="Confirm new password" required>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" onclick="closeModal('changePasswordModal')">Cancel</button>
+                    <button type="button" class="btn btn-secondary"
+                        onclick="closeModal('changePasswordModal')">Cancel</button>
                     <button type="submit" class="btn btn-warning">
                         <i class="fas fa-key"></i> Change Password
                     </button>
@@ -803,12 +835,13 @@
             </form>
         </div>
     </div>
-    
+
     <!-- Manage Permissions Modal -->
     <div class="modal-overlay" id="permissionsModal">
         <div class="modal" style="max-width: 600px;">
             <div class="modal-header">
-                <h2 class="modal-title"><i class="fas fa-shield-alt" style="color: var(--primary); margin-right: 0.5rem;"></i>Manage Permissions</h2>
+                <h2 class="modal-title"><i class="fas fa-shield-alt"
+                        style="color: var(--primary); margin-right: 0.5rem;"></i>Manage Permissions</h2>
                 <button class="modal-close" onclick="closeModal('permissionsModal')">
                     <i class="fas fa-times"></i>
                 </button>
@@ -818,7 +851,7 @@
                 <div class="permission-user-info" id="permissionUserInfo">
                     <!-- Filled by JS -->
                 </div>
-                
+
                 <!-- Quick Actions -->
                 <div class="permission-quick-actions">
                     <button type="button" class="btn btn-sm btn-secondary" onclick="selectAllPermissions()">
@@ -831,12 +864,12 @@
                         <i class="fas fa-undo"></i> Reset to Role Default
                     </button>
                 </div>
-                
+
                 <!-- Permissions Grid -->
                 <div class="permissions-grid" id="permissionsGrid">
                     <!-- Filled by JS -->
                 </div>
-                
+
                 <input type="hidden" id="permissionUserId">
             </div>
             <div class="modal-footer">
@@ -862,7 +895,7 @@
             status: 'active',
             avatar: '/assets/icons/profile.svg'
         };
-        
+
         // All available pages/permissions
         const allPages = [
             { key: 'overview', label: 'Overview', icon: 'fas fa-home' },
@@ -888,30 +921,50 @@
             'staff': ['products', 'orders', 'customers', 'inventory', 'messages', 'trash']
         };
 
-        // Users data - load from localStorage or use defaults
-        let users = JSON.parse(localStorage.getItem('freezyBiteUsers')) || [];
-        
+        // Users data - loaded from API
+        let users = [];
+
         // Temporary avatar storage for new/edit user
         let newUserAvatarData = null;
         let editUserAvatarData = null;
-        
+
+        // Load users from API
+        async function loadUsersFromAPI() {
+            try {
+                const res = await fetch('/api/admin/users', { cache: 'no-store' });
+                if (res.ok) {
+                    users = await res.json();
+                    // Normalize fields for frontend compatibility
+                    users = users.map(u => ({
+                        ...u,
+                        role: (u.role || 'staff').toLowerCase(),
+                        status: u.isActive !== false ? 'active' : 'inactive',
+                        lastLogin: u.createdAt ? new Date(u.createdAt).toLocaleDateString() : '-'
+                    }));
+                }
+            } catch (err) {
+                console.error('Failed to load users:', err);
+            }
+        }
+
         // Initialize page
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', async function () {
+            await loadUsersFromAPI();
             renderUsersTable();
             updateUserStats();
             loadAdminProfile();
         });
-        
+
         // Render users table
         function renderUsersTable(filter = '') {
             const container = document.getElementById('usersTableBody');
             if (!container) return;
-            
+
             let filteredUsers = users;
             if (filter) {
                 filteredUsers = users.filter(u => u.role === filter);
             }
-            
+
             if (filteredUsers.length === 0) {
                 container.innerHTML = `
                     <div style="text-align: center; padding: 3rem; color: var(--text-muted);">
@@ -921,7 +974,7 @@
                 `;
                 return;
             }
-            
+
             let html = `
                 <table class="data-table">
                     <thead>
@@ -935,12 +988,12 @@
                     </thead>
                     <tbody>
             `;
-            
+
             filteredUsers.forEach(user => {
-                const defaultAvatarUrl = `/assets/icons/profile.svg'admin' ? '6366f1' : user.role === 'manager' ? '10b981' : 'f59e0b'}&color=fff`;
+                const defaultAvatarUrl = `/assets/icons/profile.svg`;
                 const avatarUrl = user.avatar || defaultAvatarUrl;
                 const isCurrentAdmin = user.id === currentAdmin.id;
-                
+
                 html += `
                     <tr>
                         <td>
@@ -979,41 +1032,43 @@
                     </tr>
                 `;
             });
-            
+
             html += '</tbody></table>';
             container.innerHTML = html;
         }
-        
+
         // Update user stats
         function updateUserStats() {
             const total = users.length;
             const admins = users.filter(u => u.role === 'admin').length;
             const managers = users.filter(u => u.role === 'manager').length;
             const staff = users.filter(u => u.role === 'staff').length;
-            
+
             document.getElementById('totalUsersCount').textContent = total;
             document.getElementById('adminsCount').textContent = admins;
             document.getElementById('managersCount').textContent = managers;
             document.getElementById('staffCount').textContent = staff;
         }
-        
+
         // Load admin profile
         function loadAdminProfile() {
             document.getElementById('adminName').textContent = currentAdmin.name;
             document.getElementById('adminEmail').innerHTML = `<i class="fas fa-envelope"></i> ${currentAdmin.email}`;
             document.getElementById('adminPhone').innerHTML = `<i class="fas fa-phone"></i> ${currentAdmin.phone}`;
             document.getElementById('adminRole').textContent = 'Super Admin';
-            
+
             // Use custom avatar if exists, otherwise generate one
             const adminUser = users.find(u => u.id === currentAdmin.id);
-            const defaultAvatarUrl = `/assets/icons/profile.svg'adminAvatar').src = avatarUrl;
+            const defaultAvatarUrl = `/assets/icons/profile.svg`;
+            const avatarUrl = (adminUser && adminUser.avatar) || defaultAvatarUrl;
+            document.getElementById('adminAvatar').src = avatarUrl;
         }
-        
+
         // Filter users by role
         function filterUsersByRole(role) {
             renderUsersTable(role);
         }
-        
+
         // Open add user modal
         function openAddUserModal() {
             document.getElementById('addUserForm').reset();
@@ -1022,229 +1077,233 @@
             document.getElementById('newUserAvatarPreview').src = '/assets/icons/profile.svg';
             openModal('addUserModal');
         }
-        
+
         // Preview new user avatar
         function previewNewUserAvatar(event) {
             const file = event.target.files[0];
             if (file) {
                 const reader = new FileReader();
-                reader.onload = function(e) {
+                reader.onload = function (e) {
                     newUserAvatarData = e.target.result;
                     document.getElementById('newUserAvatarPreview').src = e.target.result;
                 };
                 reader.readAsDataURL(file);
             }
         }
-        
+
         // Update new user avatar preview based on name
         function updateNewUserAvatarPreview() {
             if (newUserAvatarData) return; // Don't update if custom avatar is set
-            const name = document.getElementById('newUserName').value || 'New User';
-            const role = document.getElementById('newUserRole').value || 'admin';
-            const bgColor = role === 'admin' ? '6366f1' : role === 'manager' ? '10b981' : 'f59e0b';
-            document.getElementById('newUserAvatarPreview').src = `/assets/icons/profile.svg't update if custom avatar is set
+            document.getElementById('newUserAvatarPreview').src = `/assets/icons/profile.svg`;
+        }
+
+        // Update new user avatar color based on role
+        function updateNewUserAvatarColor() {
+            if (newUserAvatarData) return; // Don't update if custom avatar is set
             updateNewUserAvatarPreview();
         }
-        
+
         // Add new user
-        function addNewUser(event) {
+        async function addNewUser(event) {
             event.preventDefault();
-            
+
             const name = document.getElementById('newUserName').value;
             const email = document.getElementById('newUserEmail').value;
             const phone = document.getElementById('newUserPhone').value;
             const role = document.getElementById('newUserRole').value;
             const password = document.getElementById('newUserPassword').value;
             const confirmPassword = document.getElementById('newUserConfirmPassword').value;
-            
+
             if (password !== confirmPassword) {
                 showAlert('error', 'Passwords do not match!');
                 return;
             }
-            
-            // Check if email exists
-            if (users.some(u => u.email.toLowerCase() === email.toLowerCase())) {
-                showAlert('error', 'A user with this email already exists!');
-                return;
+
+            try {
+                const res = await fetch('/api/admin/users', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password, name, role, avatar: newUserAvatarData })
+                });
+                const data = await res.json();
+
+                if (!res.ok) {
+                    showAlert('error', data.error || 'Failed to add user');
+                    return;
+                }
+
+                newUserAvatarData = null;
+                closeModal('addUserModal');
+                await loadUsersFromAPI();
+                renderUsersTable(document.getElementById('roleFilter').value);
+                updateUserStats();
+                showAlert('success', `User "${name}" added successfully!`);
+            } catch (err) {
+                console.error('Add user error:', err);
+                showAlert('error', 'Failed to add user. Please try again.');
             }
-            
-            const newUser = {
-                id: Date.now(),
-                name: name,
-                email: email,
-                phone: phone,
-                role: role,
-                status: 'active',
-                avatar: newUserAvatarData, // Store custom avatar if uploaded
-                createdAt: new Date().toISOString().split('T')[0],
-                lastLogin: '-'
-            };
-            
-            users.push(newUser);
-            newUserAvatarData = null; // Reset
-            
-            closeModal('addUserModal');
-            renderUsersTable(document.getElementById('roleFilter').value);
-            updateUserStats();
-            
-            showAlert('success', `User "${name}" added successfully!`);
         }
-        
+
         // Edit user
         function editUser(userId) {
             const user = users.find(u => u.id === userId);
             if (!user) return;
-            
+
             editUserAvatarData = null; // Reset
-            
+
             document.getElementById('editUserId').value = user.id;
             document.getElementById('editUserName').value = user.name;
             document.getElementById('editUserEmail').value = user.email;
             document.getElementById('editUserPhone').value = user.phone || '';
             document.getElementById('editUserRole').value = user.role;
             document.getElementById('editUserStatus').value = user.status;
-            
+
             // Set avatar preview
-            const defaultAvatarUrl = `/assets/icons/profile.svg'admin' ? '6366f1' : user.role === 'manager' ? '10b981' : 'f59e0b'}&color=fff&size=128`;
+            const defaultAvatarUrl = `/assets/icons/profile.svg`;
             document.getElementById('editUserAvatarPreview').src = user.avatar || defaultAvatarUrl;
-            
+
             // Disable role change for current admin
             document.getElementById('editUserRole').disabled = user.id === currentAdmin.id;
             document.getElementById('editUserStatus').disabled = user.id === currentAdmin.id;
-            
+
             openModal('editUserModal');
         }
-        
+
         // Preview edit user avatar
         function previewEditUserAvatar(event) {
             const file = event.target.files[0];
             if (file) {
                 const reader = new FileReader();
-                reader.onload = function(e) {
+                reader.onload = function (e) {
                     editUserAvatarData = e.target.result;
                     document.getElementById('editUserAvatarPreview').src = e.target.result;
                 };
                 reader.readAsDataURL(file);
             }
         }
-        
+
         // Update user
-        function updateUser(event) {
+        async function updateUser(event) {
             event.preventDefault();
-            
+
             const userId = parseInt(document.getElementById('editUserId').value);
-            const user = users.find(u => u.id === userId);
-            if (!user) return;
-            
-            const newEmail = document.getElementById('editUserEmail').value;
-            
-            // Check if email exists (for other users)
-            if (users.some(u => u.id !== userId && u.email.toLowerCase() === newEmail.toLowerCase())) {
-                showAlert('error', 'A user with this email already exists!');
-                return;
-            }
-            
-            user.name = document.getElementById('editUserName').value;
-            user.email = newEmail;
-            user.phone = document.getElementById('editUserPhone').value;
-            user.role = document.getElementById('editUserRole').value;
-            user.status = document.getElementById('editUserStatus').value;
-            
-            // Update avatar if new one was uploaded
-            if (editUserAvatarData) {
-                user.avatar = editUserAvatarData;
-            }
-            
-            // Update current admin if editing self
-            if (userId === currentAdmin.id) {
-                currentAdmin.name = user.name;
-                currentAdmin.email = user.email;
-                currentAdmin.phone = user.phone;
-                if (editUserAvatarData) {
-                    currentAdmin.avatar = editUserAvatarData;
+
+            const updateData = {
+                name: document.getElementById('editUserName').value,
+                email: document.getElementById('editUserEmail').value,
+                role: document.getElementById('editUserRole').value,
+                isActive: document.getElementById('editUserStatus').value === 'active',
+                avatar: editUserAvatarData || undefined
+            };
+
+            try {
+                const res = await fetch(`/api/admin/users/${userId}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(updateData)
+                });
+                const data = await res.json();
+
+                if (!res.ok) {
+                    showAlert('error', data.error || 'Failed to update user');
+                    return;
                 }
+
+                editUserAvatarData = null;
+                closeModal('editUserModal');
+                await loadUsersFromAPI();
+                renderUsersTable(document.getElementById('roleFilter').value);
+                updateUserStats();
                 loadAdminProfile();
+                showAlert('success', `User "${updateData.name}" updated successfully!`);
+            } catch (err) {
+                console.error('Update user error:', err);
+                showAlert('error', 'Failed to update user. Please try again.');
             }
-            
-            editUserAvatarData = null; // Reset
-            
-            closeModal('editUserModal');
-            renderUsersTable(document.getElementById('roleFilter').value);
-            updateUserStats();
-            
-            showAlert('success', `User "${user.name}" updated successfully!`);
         }
-        
+
         // Delete user
-        function deleteUser(userId) {
+        async function deleteUser(userId) {
             const user = users.find(u => u.id === userId);
             if (!user) return;
-            
+
             if (user.id === currentAdmin.id) {
                 showAlert('error', 'You cannot delete your own account!');
                 return;
             }
-            
+
             if (!confirm(`Are you sure you want to delete "${user.name}"? This action cannot be undone.`)) {
                 return;
             }
-            
-            users = users.filter(u => u.id !== userId);
-            
-            renderUsersTable(document.getElementById('roleFilter').value);
-            updateUserStats();
-            
-            showAlert('success', `User "${user.name}" deleted successfully!`);
+
+            try {
+                const res = await fetch(`/api/admin/users/${userId}`, { method: 'DELETE' });
+                if (!res.ok) {
+                    const data = await res.json();
+                    showAlert('error', data.error || 'Failed to delete user');
+                    return;
+                }
+
+                await loadUsersFromAPI();
+                renderUsersTable(document.getElementById('roleFilter').value);
+                updateUserStats();
+                showAlert('success', `User "${user.name}" deleted successfully!`);
+            } catch (err) {
+                console.error('Delete user error:', err);
+                showAlert('error', 'Failed to delete user. Please try again.');
+            }
         }
-        
+
         // Temporary storage for profile avatar
         let profileAvatarData = null;
-        
+
         // Open edit profile modal
         function openEditProfileModal() {
             profileAvatarData = null; // Reset
             document.getElementById('profileName').value = currentAdmin.name;
             document.getElementById('profileEmail').value = currentAdmin.email;
             document.getElementById('profilePhone').value = currentAdmin.phone || '';
-            
+
             // Use custom avatar if exists
             const adminUser = users.find(u => u.id === currentAdmin.id);
-            const defaultAvatarUrl = `/assets/icons/profile.svg'profileAvatarPreview').src = avatarUrl;
-            
+            const defaultAvatarUrl = `/assets/icons/profile.svg`;
+            const avatarUrl = (adminUser && adminUser.avatar) || defaultAvatarUrl;
+            document.getElementById('profileAvatarPreview').src = avatarUrl;
+
             openModal('editProfileModal');
         }
-        
+
         // Preview profile avatar
         function previewProfileAvatar(event) {
             const file = event.target.files[0];
             if (file) {
                 const reader = new FileReader();
-                reader.onload = function(e) {
+                reader.onload = function (e) {
                     profileAvatarData = e.target.result;
                     document.getElementById('profileAvatarPreview').src = e.target.result;
                 };
                 reader.readAsDataURL(file);
             }
         }
-        
+
         // Update profile
         function updateProfile(event) {
             event.preventDefault();
-            
+
             const name = document.getElementById('profileName').value;
             const email = document.getElementById('profileEmail').value;
             const phone = document.getElementById('profilePhone').value;
-            
+
             // Update current admin
             currentAdmin.name = name;
             currentAdmin.email = email;
             currentAdmin.phone = phone;
-            
+
             // Update avatar if new one was uploaded
             if (profileAvatarData) {
                 currentAdmin.avatar = profileAvatarData;
             }
-            
+
             // Update in users array
             const userIndex = users.findIndex(u => u.id === currentAdmin.id);
             if (userIndex !== -1) {
@@ -1255,80 +1314,80 @@
                     users[userIndex].avatar = profileAvatarData;
                 }
             }
-            
+
             profileAvatarData = null; // Reset
-            
+
             loadAdminProfile();
             renderUsersTable(document.getElementById('roleFilter').value);
-            
+
             closeModal('editProfileModal');
             showAlert('success', 'Profile updated successfully!');
         }
-        
+
         // Open change password modal
         function openChangePasswordModal() {
             document.getElementById('changePasswordForm').reset();
             openModal('changePasswordModal');
         }
-        
+
         // Change password
         function changePassword(event) {
             event.preventDefault();
-            
+
             const currentPassword = document.getElementById('currentPassword').value;
             const newPassword = document.getElementById('newPassword').value;
             const confirmNewPassword = document.getElementById('confirmNewPassword').value;
-            
+
             // Simple validation (in real app, would verify current password)
             if (currentPassword.length < 6) {
                 showAlert('error', 'Current password is incorrect!');
                 return;
             }
-            
+
             if (newPassword !== confirmNewPassword) {
                 showAlert('error', 'New passwords do not match!');
                 return;
             }
-            
+
             if (newPassword.length < 6) {
                 showAlert('error', 'New password must be at least 6 characters!');
                 return;
             }
-            
+
             closeModal('changePasswordModal');
             showAlert('success', 'Password changed successfully!');
         }
-        
+
         // ===== PERMISSION MANAGEMENT =====
-        
+
         // Check if current user is Super Admin
         function isSuperAdmin() {
             const currentUser = JSON.parse(localStorage.getItem('freezyBiteCurrentUser'));
             return currentUser && (currentUser.isOwner || currentUser.role === 'Super Admin');
         }
-        
+
         // Save users to localStorage
         function saveUsers() {
             localStorage.setItem('freezyBiteUsers', JSON.stringify(users));
         }
-        
+
         // Open permissions modal
         function openPermissionsModal(userId) {
             if (!isSuperAdmin()) {
                 showAlert('error', 'Only Super Admin can manage permissions!');
                 return;
             }
-            
+
             const user = users.find(u => u.id === userId);
             if (!user) return;
-            
+
             // Set user ID
             document.getElementById('permissionUserId').value = userId;
-            
+
             // Render user info
-            const defaultAvatarUrl = `/assets/icons/profile.svg'admin' ? '6366f1' : user.role === 'manager' ? '10b981' : 'f59e0b'}&color=fff`;
+            const defaultAvatarUrl = `/assets/icons/profile.svg`;
             const avatarUrl = user.avatar || defaultAvatarUrl;
-            
+
             document.getElementById('permissionUserInfo').innerHTML = `
                 <img src="${avatarUrl}" alt="${user.name}" class="user-avatar">
                 <div class="user-details">
@@ -1336,22 +1395,22 @@
                     <div class="role">${user.role.charAt(0).toUpperCase() + user.role.slice(1)} • ${user.email}</div>
                 </div>
             `;
-            
+
             // Render permissions grid
             renderPermissionsGrid(user);
-            
+
             openModal('permissionsModal');
         }
-        
+
         // Render permissions grid
         function renderPermissionsGrid(user) {
             const container = document.getElementById('permissionsGrid');
             const userAccess = user.access || [];
-            
+
             container.innerHTML = allPages.map(page => {
                 const hasAccess = userAccess.includes(page.key);
                 return `
-                    <div class="permission-item ${hasAccess ? 'active' : ''}" onclick="togglePermission('${page.key}', this)">
+            < div class="permission-item ${hasAccess ? 'active' : ''}" onclick = "togglePermission('${page.key}', this)" >
                         <div class="permission-icon">
                             <i class="${page.icon}"></i>
                         </div>
@@ -1359,38 +1418,38 @@
                         <div class="permission-check">
                             <i class="fas fa-check"></i>
                         </div>
-                    </div>
-                `;
+                    </div >
+            `;
             }).join('');
         }
-        
+
         // Toggle permission
         function togglePermission(key, element) {
             element.classList.toggle('active');
         }
-        
+
         // Select all permissions
         function selectAllPermissions() {
             document.querySelectorAll('.permission-item').forEach(item => {
                 item.classList.add('active');
             });
         }
-        
+
         // Deselect all permissions
         function deselectAllPermissions() {
             document.querySelectorAll('.permission-item').forEach(item => {
                 item.classList.remove('active');
             });
         }
-        
+
         // Reset to default permissions based on role
         function resetToDefaultPermissions() {
             const userId = parseInt(document.getElementById('permissionUserId').value);
             const user = users.find(u => u.id === userId);
             if (!user) return;
-            
+
             const defaultAccess = defaultAccessByRole[user.role] || defaultAccessByRole['staff'];
-            
+
             document.querySelectorAll('.permission-item').forEach(item => {
                 const key = item.querySelector('.permission-label').textContent;
                 const page = allPages.find(p => p.label === key);
@@ -1400,16 +1459,16 @@
                     item.classList.remove('active');
                 }
             });
-            
+
             showAlert('info', 'Permissions reset to role defaults');
         }
-        
+
         // Save permissions
-        function savePermissions() {
+        async function savePermissions() {
             const userId = parseInt(document.getElementById('permissionUserId').value);
             const user = users.find(u => u.id === userId);
             if (!user) return;
-            
+
             // Collect selected permissions
             const selectedPermissions = [];
             document.querySelectorAll('.permission-item.active').forEach(item => {
@@ -1419,21 +1478,32 @@
                     selectedPermissions.push(page.key);
                 }
             });
-            
-            // Update user access
-            user.access = selectedPermissions;
-            
-            // Save to localStorage
-            saveUsers();
-            
-            // Also update in registered users if they're logged in with this user
-            updateRegisteredUserAccess(user);
-            
-            closeModal('permissionsModal');
-            renderUsersTable(document.getElementById('roleFilter').value);
-            showAlert('success', `Permissions updated for ${user.name}!`);
+
+            try {
+                const res = await fetch(`/ api / admin / users / ${userId} `, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ access: selectedPermissions })
+                });
+
+                if (!res.ok) {
+                    showAlert('error', 'Failed to save permissions');
+                    return;
+                }
+
+                // Also update in registered users if they're logged in with this user
+                updateRegisteredUserAccess({ ...user, access: selectedPermissions });
+
+                await loadUsersFromAPI();
+                closeModal('permissionsModal');
+                renderUsersTable(document.getElementById('roleFilter').value);
+                showAlert('success', `Permissions updated for ${user.name}!`);
+            } catch (err) {
+                console.error('Save permissions error:', err);
+                showAlert('error', 'Failed to save permissions. Please try again.');
+            }
         }
-        
+
         // Update registered user access (for login sync)
         function updateRegisteredUserAccess(user) {
             // Check if this user is currently logged in
@@ -1445,5 +1515,5 @@
         }
     </script>
 </body>
-</html>
 
+</html>

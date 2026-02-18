@@ -2,6 +2,10 @@ import { NextResponse } from 'next/server';
 import { db } from '@/db';
 import { websiteContent } from '@/db/schema';
 
+// Disable Next.js caching — storefront must always get fresh data
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 // GET /api/settings — public route for storefront to read settings + content
 // Returns all website_content entries (settings + content sections)
 export async function GET() {

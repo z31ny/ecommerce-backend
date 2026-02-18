@@ -3,6 +3,9 @@ import { db } from '@/db';
 import { websiteContent } from '@/db/schema';
 import { eq } from 'drizzle-orm';
 
+// Disable Next.js caching — admin must always get fresh data
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 // Settings section keys (stored in the same website_content table)
 const SETTINGS_SECTIONS = [
     'settings_branding',

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -14,7 +15,7 @@
             gap: 1rem;
             margin-bottom: 1.5rem;
         }
-        
+
         .employee-stat-card {
             background: var(--bg-card);
             padding: 1.25rem;
@@ -24,7 +25,7 @@
             align-items: center;
             gap: 1rem;
         }
-        
+
         .employee-stat-card .icon {
             width: 50px;
             height: 50px;
@@ -34,30 +35,45 @@
             justify-content: center;
             font-size: 1.25rem;
         }
-        
-        .employee-stat-card .icon.total { background: linear-gradient(135deg, #3b82f6, #2563eb); color: white; }
-        .employee-stat-card .icon.active { background: linear-gradient(135deg, #10b981, #059669); color: white; }
-        .employee-stat-card .icon.on-leave { background: linear-gradient(135deg, #f59e0b, #d97706); color: white; }
-        .employee-stat-card .icon.inactive { background: linear-gradient(135deg, #ef4444, #dc2626); color: white; }
-        
+
+        .employee-stat-card .icon.total {
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            color: white;
+        }
+
+        .employee-stat-card .icon.active {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+        }
+
+        .employee-stat-card .icon.on-leave {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: white;
+        }
+
+        .employee-stat-card .icon.inactive {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            color: white;
+        }
+
         .employee-stat-card .info h4 {
             font-size: 1.5rem;
             font-weight: 700;
             color: var(--text-primary);
         }
-        
+
         .employee-stat-card .info p {
             font-size: 0.8rem;
             color: var(--text-secondary);
         }
-        
+
         /* Employee Cards Grid */
         .employees-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
             gap: 1.5rem;
         }
-        
+
         .employee-card {
             background: var(--bg-card);
             border-radius: var(--border-radius-lg);
@@ -65,44 +81,55 @@
             overflow: hidden;
             transition: all 0.3s ease;
         }
-        
+
         .employee-card:hover {
             box-shadow: var(--shadow-lg);
             transform: translateY(-4px);
         }
-        
+
         .employee-card-header {
             background: linear-gradient(135deg, var(--primary), var(--primary-dark));
             padding: 1.5rem;
             text-align: center;
             position: relative;
         }
-        
-        .employee-card-header.sales { background: linear-gradient(135deg, #10b981, #059669); }
-        .employee-card-header.support { background: linear-gradient(135deg, #3b82f6, #2563eb); }
-        .employee-card-header.inventory { background: linear-gradient(135deg, #f59e0b, #d97706); }
-        .employee-card-header.delivery { background: linear-gradient(135deg, #8b5cf6, #7c3aed); }
-        
+
+        .employee-card-header.sales {
+            background: linear-gradient(135deg, #10b981, #059669);
+        }
+
+        .employee-card-header.support {
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+        }
+
+        .employee-card-header.inventory {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+        }
+
+        .employee-card-header.delivery {
+            background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+        }
+
         .employee-avatar {
             width: 80px;
             height: 80px;
             border-radius: 50%;
-            border: 4px solid rgba(255,255,255,0.3);
+            border: 4px solid rgba(255, 255, 255, 0.3);
             margin-bottom: 0.75rem;
             object-fit: cover;
         }
-        
+
         .employee-card-header h3 {
             color: white;
             font-size: 1.1rem;
             margin-bottom: 0.25rem;
         }
-        
+
         .employee-card-header p {
-            color: rgba(255,255,255,0.8);
+            color: rgba(255, 255, 255, 0.8);
             font-size: 0.85rem;
         }
-        
+
         .employee-status-badge {
             position: absolute;
             top: 1rem;
@@ -112,15 +139,26 @@
             font-size: 0.7rem;
             font-weight: 600;
         }
-        
-        .employee-status-badge.active { background: rgba(16, 185, 129, 0.9); color: white; }
-        .employee-status-badge.on-leave { background: rgba(245, 158, 11, 0.9); color: white; }
-        .employee-status-badge.inactive { background: rgba(239, 68, 68, 0.9); color: white; }
-        
+
+        .employee-status-badge.active {
+            background: rgba(16, 185, 129, 0.9);
+            color: white;
+        }
+
+        .employee-status-badge.on-leave {
+            background: rgba(245, 158, 11, 0.9);
+            color: white;
+        }
+
+        .employee-status-badge.inactive {
+            background: rgba(239, 68, 68, 0.9);
+            color: white;
+        }
+
         .employee-card-body {
             padding: 1.25rem;
         }
-        
+
         .employee-info-row {
             display: flex;
             align-items: center;
@@ -128,21 +166,21 @@
             padding: 0.5rem 0;
             border-bottom: 1px solid var(--bg-secondary);
         }
-        
+
         .employee-info-row:last-child {
             border-bottom: none;
         }
-        
+
         .employee-info-row i {
             width: 20px;
             color: var(--text-muted);
         }
-        
+
         .employee-info-row span {
             font-size: 0.85rem;
             color: var(--text-secondary);
         }
-        
+
         .employee-stats-mini {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -151,42 +189,42 @@
             padding-top: 1rem;
             border-top: 1px solid var(--bg-secondary);
         }
-        
+
         .employee-stat-mini {
             text-align: center;
         }
-        
+
         .employee-stat-mini .value {
             font-size: 1.25rem;
             font-weight: 700;
             color: var(--text-primary);
         }
-        
+
         .employee-stat-mini .label {
             font-size: 0.7rem;
             color: var(--text-muted);
             text-transform: uppercase;
         }
-        
+
         .employee-card-footer {
             padding: 1rem 1.25rem;
             background: var(--bg-secondary);
             display: flex;
             gap: 0.5rem;
         }
-        
+
         .employee-card-footer .btn {
             flex: 1;
             justify-content: center;
             font-size: 0.8rem;
         }
-        
+
         /* Activity Log Styles */
         .activity-log {
             max-height: 400px;
             overflow-y: auto;
         }
-        
+
         .activity-item {
             display: flex;
             gap: 1rem;
@@ -194,11 +232,11 @@
             border-bottom: 1px solid var(--bg-secondary);
             transition: background 0.2s;
         }
-        
+
         .activity-item:hover {
             background: var(--bg-secondary);
         }
-        
+
         .activity-icon {
             width: 40px;
             height: 40px;
@@ -208,28 +246,47 @@
             justify-content: center;
             flex-shrink: 0;
         }
-        
-        .activity-icon.order { background: var(--primary-light); color: var(--primary); }
-        .activity-icon.message { background: rgba(59, 130, 246, 0.1); color: #3b82f6; }
-        .activity-icon.inventory { background: rgba(245, 158, 11, 0.1); color: #f59e0b; }
-        .activity-icon.customer { background: rgba(16, 185, 129, 0.1); color: #10b981; }
-        .activity-icon.product { background: rgba(139, 92, 246, 0.1); color: #8b5cf6; }
-        
+
+        .activity-icon.order {
+            background: var(--primary-light);
+            color: var(--primary);
+        }
+
+        .activity-icon.message {
+            background: rgba(59, 130, 246, 0.1);
+            color: #3b82f6;
+        }
+
+        .activity-icon.inventory {
+            background: rgba(245, 158, 11, 0.1);
+            color: #f59e0b;
+        }
+
+        .activity-icon.customer {
+            background: rgba(16, 185, 129, 0.1);
+            color: #10b981;
+        }
+
+        .activity-icon.product {
+            background: rgba(139, 92, 246, 0.1);
+            color: #8b5cf6;
+        }
+
         .activity-content {
             flex: 1;
         }
-        
+
         .activity-content p {
             font-size: 0.9rem;
             color: var(--text-primary);
             margin-bottom: 0.25rem;
         }
-        
+
         .activity-content .activity-time {
             font-size: 0.75rem;
             color: var(--text-muted);
         }
-        
+
         /* Employee Profile Modal */
         .employee-profile-header {
             background: linear-gradient(135deg, var(--primary), var(--primary-dark));
@@ -238,53 +295,53 @@
             color: white;
             margin: -1.5rem -1.5rem 1.5rem -1.5rem;
         }
-        
+
         .employee-profile-header img {
             width: 100px;
             height: 100px;
             border-radius: 50%;
-            border: 4px solid rgba(255,255,255,0.3);
+            border: 4px solid rgba(255, 255, 255, 0.3);
             margin-bottom: 1rem;
             object-fit: cover;
         }
-        
+
         .employee-profile-header h2 {
             margin-bottom: 0.25rem;
         }
-        
+
         .employee-profile-header p {
             opacity: 0.9;
         }
-        
+
         .profile-stats-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
             gap: 1rem;
             margin-bottom: 1.5rem;
         }
-        
+
         .profile-stat {
             background: var(--bg-secondary);
             padding: 1rem;
             border-radius: var(--border-radius-md);
             text-align: center;
         }
-        
+
         .profile-stat .value {
             font-size: 1.5rem;
             font-weight: 700;
             color: var(--primary);
         }
-        
+
         .profile-stat .label {
             font-size: 0.75rem;
             color: var(--text-secondary);
         }
-        
+
         .profile-section {
             margin-bottom: 1.5rem;
         }
-        
+
         .profile-section h4 {
             font-size: 0.9rem;
             color: var(--text-secondary);
@@ -292,54 +349,54 @@
             padding-bottom: 0.5rem;
             border-bottom: 1px solid var(--bg-secondary);
         }
-        
+
         .profile-info-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
             gap: 1rem;
         }
-        
+
         .profile-info-item {
             display: flex;
             flex-direction: column;
         }
-        
+
         .profile-info-item .label {
             font-size: 0.75rem;
             color: var(--text-muted);
             margin-bottom: 0.25rem;
         }
-        
+
         .profile-info-item .value {
             font-size: 0.9rem;
             color: var(--text-primary);
             font-weight: 500;
         }
-        
+
         /* Mobile Responsive */
         @media (max-width: 768px) {
             .employee-stats {
                 grid-template-columns: repeat(2, 1fr);
             }
-            
+
             .employees-grid {
                 grid-template-columns: 1fr;
             }
-            
+
             .profile-stats-grid {
                 grid-template-columns: repeat(2, 1fr);
             }
-            
+
             .profile-info-grid {
                 grid-template-columns: 1fr;
             }
-            
+
             .employee-stat-card {
                 flex-direction: column;
                 text-align: center;
                 padding: 1rem;
             }
-            
+
             .employee-stat-card .icon {
                 width: 40px;
                 height: 40px;
@@ -347,10 +404,11 @@
         }
     </style>
 </head>
+
 <body>
     <!-- Sidebar Overlay (for mobile) -->
     <div class="sidebar-overlay"></div>
-    
+
     <!-- Sidebar -->
     <aside class="sidebar">
         <div class="sidebar-header">
@@ -364,7 +422,7 @@
                 <i class="fas fa-bars"></i>
             </button>
         </div>
-        
+
         <nav class="sidebar-nav">
             <ul class="nav-list">
                 <li>
@@ -447,7 +505,7 @@
                 </li>
             </ul>
         </nav>
-        
+
         <div class="sidebar-footer">
             <div class="user-profile">
                 <img src="/assets/icons/profile.svg" alt="Admin" class="user-avatar">
@@ -462,7 +520,7 @@
             </button>
         </div>
     </aside>
-    
+
     <!-- Main Content -->
     <main class="main-content">
         <!-- Top Header -->
@@ -473,7 +531,8 @@
                 </button>
                 <div class="search-bar">
                     <i class="fas fa-search"></i>
-                    <input type="text" placeholder="Search employees..." id="employeeSearchInput" oninput="searchEmployees(this.value)">
+                    <input type="text" placeholder="Search employees..." id="employeeSearchInput"
+                        oninput="searchEmployees(this.value)">
                 </div>
             </div>
             <div class="header-right">
@@ -492,14 +551,15 @@
                 <img src="/assets/icons/profile.svg" alt="Admin" class="header-avatar">
             </div>
         </header>
-        
+
         <!-- Dashboard Content -->
         <div class="dashboard-content">
             <!-- Section Header -->
             <div class="section">
                 <div class="section-header">
                     <div>
-                        <h1 class="section-title"><i class="fas fa-id-badge" style="color: var(--primary); margin-right: 0.5rem;"></i>Employee Management</h1>
+                        <h1 class="section-title"><i class="fas fa-id-badge"
+                                style="color: var(--primary); margin-right: 0.5rem;"></i>Employee Management</h1>
                         <p class="section-subtitle">Track employee activities, performance, and manage team members.</p>
                     </div>
                     <div class="section-actions">
@@ -514,7 +574,7 @@
                     </div>
                 </div>
             </div>
-            
+
             <!-- Employee Stats -->
             <div class="employee-stats">
                 <div class="employee-stat-card">
@@ -554,7 +614,7 @@
                     </div>
                 </div>
             </div>
-            
+
             <!-- Department Filter -->
             <div class="data-card" style="margin-bottom: 1.5rem; padding: 1rem;">
                 <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
@@ -565,27 +625,30 @@
                     <button class="btn btn-sm btn-secondary" onclick="filterByDepartment('support')" id="filterSupport">
                         <i class="fas fa-headset"></i> Support
                     </button>
-                    <button class="btn btn-sm btn-secondary" onclick="filterByDepartment('inventory')" id="filterInventory">
+                    <button class="btn btn-sm btn-secondary" onclick="filterByDepartment('inventory')"
+                        id="filterInventory">
                         <i class="fas fa-warehouse"></i> Inventory
                     </button>
-                    <button class="btn btn-sm btn-secondary" onclick="filterByDepartment('delivery')" id="filterDelivery">
+                    <button class="btn btn-sm btn-secondary" onclick="filterByDepartment('delivery')"
+                        id="filterDelivery">
                         <i class="fas fa-truck"></i> Delivery
                     </button>
                 </div>
             </div>
-            
+
             <!-- Employees Grid -->
             <div class="employees-grid" id="employeesGrid">
                 <!-- Employee cards will be rendered here -->
             </div>
         </div>
     </main>
-    
+
     <!-- Add Employee Modal -->
     <div class="modal-overlay" id="addEmployeeModal">
         <div class="modal" style="max-width: 550px;">
             <div class="modal-header">
-                <h2 class="modal-title"><i class="fas fa-user-plus" style="color: var(--primary); margin-right: 0.5rem;"></i>Add New Employee</h2>
+                <h2 class="modal-title"><i class="fas fa-user-plus"
+                        style="color: var(--primary); margin-right: 0.5rem;"></i>Add New Employee</h2>
                 <button class="modal-close" onclick="closeModal('addEmployeeModal')">
                     <i class="fas fa-times"></i>
                 </button>
@@ -595,32 +658,40 @@
                     <!-- Avatar Upload -->
                     <div class="form-group" style="text-align: center; margin-bottom: 1.5rem;">
                         <div style="position: relative; display: inline-block;">
-                            <img src="/assets/icons/profile.svg" alt="Avatar" id="newEmployeeAvatarPreview" style="width: 80px; height: 80px; border-radius: 50%; border: 3px solid var(--primary-light); object-fit: cover;">
-                            <button type="button" class="btn btn-sm btn-primary" onclick="document.getElementById('newEmployeeAvatarInput').click()" style="position: absolute; bottom: 0; right: 0; width: 28px; height: 28px; padding: 0; border-radius: 50%;">
+                            <img src="/assets/icons/profile.svg" alt="Avatar" id="newEmployeeAvatarPreview"
+                                style="width: 80px; height: 80px; border-radius: 50%; border: 3px solid var(--primary-light); object-fit: cover;">
+                            <button type="button" class="btn btn-sm btn-primary"
+                                onclick="document.getElementById('newEmployeeAvatarInput').click()"
+                                style="position: absolute; bottom: 0; right: 0; width: 28px; height: 28px; padding: 0; border-radius: 50%;">
                                 <i class="fas fa-camera" style="font-size: 0.7rem;"></i>
                             </button>
                         </div>
-                        <input type="file" id="newEmployeeAvatarInput" accept="image/*" style="display: none;" onchange="previewNewEmployeeAvatar(event)">
+                        <input type="file" id="newEmployeeAvatarInput" accept="image/*" style="display: none;"
+                            onchange="previewNewEmployeeAvatar(event)">
                     </div>
-                    
+
                     <div class="form-row">
                         <div class="form-group">
                             <label class="form-label">Full Name <span class="required">*</span></label>
-                            <input type="text" class="form-input" id="newEmployeeName" placeholder="Enter full name" required oninput="updateNewEmployeeAvatarPreview()">
+                            <input type="text" class="form-input" id="newEmployeeName" placeholder="Enter full name"
+                                required oninput="updateNewEmployeeAvatarPreview()">
                         </div>
                         <div class="form-group">
                             <label class="form-label">Employee ID <span class="required">*</span></label>
-                            <input type="text" class="form-input" id="newEmployeeId" placeholder="e.g., EMP-001" required>
+                            <input type="text" class="form-input" id="newEmployeeId" placeholder="e.g., EMP-001"
+                                required>
                         </div>
                     </div>
                     <div class="form-row">
                         <div class="form-group">
                             <label class="form-label">Email <span class="required">*</span></label>
-                            <input type="email" class="form-input" id="newEmployeeEmail" placeholder="Enter email" required>
+                            <input type="email" class="form-input" id="newEmployeeEmail" placeholder="Enter email"
+                                required>
                         </div>
                         <div class="form-group">
                             <label class="form-label">Phone <span class="required">*</span></label>
-                            <input type="tel" class="form-input" id="newEmployeePhone" placeholder="+20 1XX XXX XXXX" required>
+                            <input type="tel" class="form-input" id="newEmployeePhone" placeholder="+20 1XX XXX XXXX"
+                                required>
                         </div>
                     </div>
                     <div class="form-row">
@@ -636,7 +707,8 @@
                         </div>
                         <div class="form-group">
                             <label class="form-label">Position <span class="required">*</span></label>
-                            <input type="text" class="form-input" id="newEmployeePosition" placeholder="e.g., Sales Associate" required>
+                            <input type="text" class="form-input" id="newEmployeePosition"
+                                placeholder="e.g., Sales Associate" required>
                         </div>
                     </div>
                     <div class="form-row">
@@ -655,7 +727,8 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" onclick="closeModal('addEmployeeModal')">Cancel</button>
+                    <button type="button" class="btn btn-secondary"
+                        onclick="closeModal('addEmployeeModal')">Cancel</button>
                     <button type="submit" class="btn btn-primary">
                         <i class="fas fa-user-plus"></i> Add Employee
                     </button>
@@ -663,12 +736,13 @@
             </form>
         </div>
     </div>
-    
+
     <!-- Edit Employee Modal -->
     <div class="modal-overlay" id="editEmployeeModal">
         <div class="modal" style="max-width: 550px;">
             <div class="modal-header">
-                <h2 class="modal-title"><i class="fas fa-user-edit" style="color: var(--primary); margin-right: 0.5rem;"></i>Edit Employee</h2>
+                <h2 class="modal-title"><i class="fas fa-user-edit"
+                        style="color: var(--primary); margin-right: 0.5rem;"></i>Edit Employee</h2>
                 <button class="modal-close" onclick="closeModal('editEmployeeModal')">
                     <i class="fas fa-times"></i>
                 </button>
@@ -679,14 +753,18 @@
                     <!-- Avatar Upload -->
                     <div class="form-group" style="text-align: center; margin-bottom: 1.5rem;">
                         <div style="position: relative; display: inline-block;">
-                            <img src="" alt="Avatar" id="editEmployeeAvatarPreview" style="width: 80px; height: 80px; border-radius: 50%; border: 3px solid var(--primary-light); object-fit: cover;">
-                            <button type="button" class="btn btn-sm btn-primary" onclick="document.getElementById('editEmployeeAvatarInput').click()" style="position: absolute; bottom: 0; right: 0; width: 28px; height: 28px; padding: 0; border-radius: 50%;">
+                            <img src="" alt="Avatar" id="editEmployeeAvatarPreview"
+                                style="width: 80px; height: 80px; border-radius: 50%; border: 3px solid var(--primary-light); object-fit: cover;">
+                            <button type="button" class="btn btn-sm btn-primary"
+                                onclick="document.getElementById('editEmployeeAvatarInput').click()"
+                                style="position: absolute; bottom: 0; right: 0; width: 28px; height: 28px; padding: 0; border-radius: 50%;">
                                 <i class="fas fa-camera" style="font-size: 0.7rem;"></i>
                             </button>
                         </div>
-                        <input type="file" id="editEmployeeAvatarInput" accept="image/*" style="display: none;" onchange="previewEditEmployeeAvatar(event)">
+                        <input type="file" id="editEmployeeAvatarInput" accept="image/*" style="display: none;"
+                            onchange="previewEditEmployeeAvatar(event)">
                     </div>
-                    
+
                     <div class="form-row">
                         <div class="form-group">
                             <label class="form-label">Full Name <span class="required">*</span></label>
@@ -742,7 +820,8 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" onclick="closeModal('editEmployeeModal')">Cancel</button>
+                    <button type="button" class="btn btn-secondary"
+                        onclick="closeModal('editEmployeeModal')">Cancel</button>
                     <button type="submit" class="btn btn-primary">
                         <i class="fas fa-save"></i> Save Changes
                     </button>
@@ -750,7 +829,7 @@
             </form>
         </div>
     </div>
-    
+
     <!-- Employee Profile Modal -->
     <div class="modal-overlay" id="employeeProfileModal">
         <div class="modal" style="max-width: 700px;">
@@ -763,19 +842,21 @@
             </div>
         </div>
     </div>
-    
+
     <!-- Activity Log Modal -->
     <div class="modal-overlay" id="activityLogModal">
         <div class="modal" style="max-width: 600px;">
             <div class="modal-header">
-                <h2 class="modal-title"><i class="fas fa-history" style="color: var(--primary); margin-right: 0.5rem;"></i>Activity Log</h2>
+                <h2 class="modal-title"><i class="fas fa-history"
+                        style="color: var(--primary); margin-right: 0.5rem;"></i>Activity Log</h2>
                 <button class="modal-close" onclick="closeModal('activityLogModal')">
                     <i class="fas fa-times"></i>
                 </button>
             </div>
             <div class="modal-body" style="padding: 0;">
                 <div style="padding: 1rem; border-bottom: 1px solid var(--bg-secondary);">
-                    <select class="form-select" id="activityFilterEmployee" onchange="filterActivityLog()" style="width: 100%;">
+                    <select class="form-select" id="activityFilterEmployee" onchange="filterActivityLog()"
+                        style="width: 100%;">
                         <option value="">All Employees</option>
                     </select>
                 </div>
@@ -785,48 +866,67 @@
             </div>
         </div>
     </div>
-    
+
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="scripts/auth.js"></script>
     <script src="scripts/dashboard.js"></script>
     <script>
-        // Use global employees data from dashboard.js (synced via localStorage)
-        // This ensures consistency across all pages
-        let employees = window.globalEmployees || [];
+        // Employees data - loaded from API
+        let employees = [];
         let activityLog = window.globalActivityLog || [];
-        
+
         // Temporary avatar storage
         let newEmployeeAvatarData = null;
         let editEmployeeAvatarData = null;
         let currentDepartmentFilter = '';
-        
+
+        // Load employees from API
+        async function loadEmployeesFromAPI() {
+            try {
+                const res = await fetch('/api/admin/employees', { cache: 'no-store' });
+                if (res.ok) {
+                    employees = await res.json();
+                    // Normalize: ensure stats exist for frontend compatibility
+                    employees = employees.map(e => ({
+                        ...e,
+                        stats: e.stats || { orders: 0, messages: 0, inventory: 0 },
+                        hireDate: e.hireDate ? new Date(e.hireDate).toISOString().split('T')[0] : '-'
+                    }));
+                    window.globalEmployees = employees;
+                }
+            } catch (err) {
+                console.error('Failed to load employees:', err);
+            }
+        }
+
         // Initialize page
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', async function () {
+            await loadEmployeesFromAPI();
             renderEmployeesGrid();
             updateEmployeeStats();
         });
-        
+
         // Render employees grid
         function renderEmployeesGrid(filter = '', search = '') {
             const container = document.getElementById('employeesGrid');
             if (!container) return;
-            
+
             let filteredEmployees = employees;
-            
+
             if (filter) {
                 filteredEmployees = filteredEmployees.filter(e => e.department === filter);
             }
-            
+
             if (search) {
                 const term = search.toLowerCase();
-                filteredEmployees = filteredEmployees.filter(e => 
+                filteredEmployees = filteredEmployees.filter(e =>
                     e.name.toLowerCase().includes(term) ||
                     e.id.toLowerCase().includes(term) ||
                     e.email.toLowerCase().includes(term) ||
                     e.position.toLowerCase().includes(term)
                 );
             }
-            
+
             if (filteredEmployees.length === 0) {
                 container.innerHTML = `
                     <div style="grid-column: 1 / -1; text-align: center; padding: 4rem; color: var(--text-muted);">
@@ -837,9 +937,12 @@
                 `;
                 return;
             }
-            
+
             container.innerHTML = filteredEmployees.map((emp, index) => {
-                const defaultAvatar = `/assets/icons/profile.svg"employee-card">
+                const defaultAvatar = `/assets/icons/profile.svg`;
+                const avatar = emp.avatar || defaultAvatar;
+                return `
+                    <div class="employee-card">
                         <div class="employee-card-header ${emp.department}">
                             <span class="employee-status-badge ${emp.status}">${formatStatus(emp.status)}</span>
                             <img src="${avatar}" alt="${emp.name}" class="employee-avatar">
@@ -893,20 +996,20 @@
                 `;
             }).join('');
         }
-        
+
         // Update employee stats
         function updateEmployeeStats() {
             const total = employees.length;
             const active = employees.filter(e => e.status === 'active').length;
             const onLeave = employees.filter(e => e.status === 'on-leave').length;
             const inactive = employees.filter(e => e.status === 'inactive').length;
-            
+
             document.getElementById('totalEmployeesCount').textContent = total;
             document.getElementById('activeEmployeesCount').textContent = active;
             document.getElementById('onLeaveEmployeesCount').textContent = onLeave;
             document.getElementById('inactiveEmployeesCount').textContent = inactive;
         }
-        
+
         // Helper functions
         function getDepartmentColor(dept) {
             const colors = {
@@ -917,7 +1020,7 @@
             };
             return colors[dept] || '6366f1';
         }
-        
+
         function formatDepartment(dept) {
             const names = {
                 'sales': 'Sales',
@@ -927,7 +1030,7 @@
             };
             return names[dept] || dept;
         }
-        
+
         function formatStatus(status) {
             const names = {
                 'active': 'Active',
@@ -936,37 +1039,44 @@
             };
             return names[status] || status;
         }
-        
+
         // Filter by department
         function filterByDepartment(dept) {
             currentDepartmentFilter = dept;
-            
+
             // Update button states
             document.querySelectorAll('[id^="filter"]').forEach(btn => {
                 btn.classList.remove('btn-primary');
                 btn.classList.add('btn-secondary');
             });
-            
+
             const activeBtn = dept ? document.getElementById(`filter${dept.charAt(0).toUpperCase() + dept.slice(1)}`) : document.getElementById('filterAll');
             if (activeBtn) {
                 activeBtn.classList.remove('btn-secondary');
                 activeBtn.classList.add('btn-primary');
             }
-            
+
             renderEmployeesGrid(dept, document.getElementById('employeeSearchInput')?.value || '');
         }
-        
+
         // Search employees
         function searchEmployees(term) {
             renderEmployeesGrid(currentDepartmentFilter, term);
         }
-        
+
         // View employee profile
         function viewEmployeeProfile(index) {
             const emp = employees[index];
             if (!emp) return;
-            
-            const defaultAvatar = `/assets/icons/profile.svg"employee-profile-header" style="background: linear-gradient(135deg, ${getGradientColors(emp.department)});">
+
+            const defaultAvatar = `/assets/icons/profile.svg`;
+            const avatar = emp.avatar || defaultAvatar;
+
+            const empActivities = activityLog.filter(a => a.employeeId === emp.id);
+            const totalActions = emp.stats.orders + emp.stats.messages + emp.stats.inventory;
+
+            const content = `
+                <div class="employee-profile-header" style="background: linear-gradient(135deg, ${getGradientColors(emp.department)});">
                     <button class="modal-close" onclick="closeModal('employeeProfileModal')" style="position: absolute; top: 1rem; right: 1rem; background: rgba(255,255,255,0.2); border: none; color: white; width: 32px; height: 32px; border-radius: 50%; cursor: pointer;">
                         <i class="fas fa-times"></i>
                     </button>
@@ -1047,11 +1157,11 @@
                     </div>
                 </div>
             `;
-            
+
             document.getElementById('employeeProfileContent').innerHTML = content;
             openModal('employeeProfileModal');
         }
-        
+
         function getGradientColors(dept) {
             const gradients = {
                 'sales': '#10b981, #059669',
@@ -1061,7 +1171,7 @@
             };
             return gradients[dept] || '#6366f1, #4f46e5';
         }
-        
+
         function getActivityIcon(type) {
             const icons = {
                 'order': 'shopping-cart',
@@ -1072,41 +1182,49 @@
             };
             return icons[type] || 'check';
         }
-        
+
         // Open add employee modal
         function openAddEmployeeModal() {
             document.getElementById('addEmployeeForm').reset();
             newEmployeeAvatarData = null;
             document.getElementById('newEmployeeAvatarPreview').src = '/assets/icons/profile.svg';
-            
+
             // Set default hire date to today
             document.getElementById('newEmployeeHireDate').value = new Date().toISOString().split('T')[0];
-            
+
             // Generate next employee ID
             const lastId = employees.length > 0 ? parseInt(employees[employees.length - 1].id.split('-')[1]) : 0;
             document.getElementById('newEmployeeId').value = `EMP-${String(lastId + 1).padStart(3, '0')}`;
-            
+
             openModal('addEmployeeModal');
         }
-        
+
         // Preview new employee avatar
         function previewNewEmployeeAvatar(event) {
             const file = event.target.files[0];
             if (file) {
                 const reader = new FileReader();
-                reader.onload = function(e) {
+                reader.onload = function (e) {
                     newEmployeeAvatarData = e.target.result;
                     document.getElementById('newEmployeeAvatarPreview').src = e.target.result;
                 };
                 reader.readAsDataURL(file);
             }
         }
-        
+
         // Update avatar preview based on name
         function updateNewEmployeeAvatarPreview() {
             if (newEmployeeAvatarData) return;
             const name = document.getElementById('newEmployeeName').value || 'New Employee';
-            document.getElementById('newEmployeeAvatarPreview').src = `/assets/icons/profile.svg'newEmployeeId').value,
+            document.getElementById('newEmployeeAvatarPreview').src = `/assets/icons/profile.svg`;
+        }
+
+        // Add new employee
+        async function addEmployee(event) {
+            event.preventDefault();
+
+            const newEmployee = {
+                id: document.getElementById('newEmployeeId').value,
                 name: document.getElementById('newEmployeeName').value,
                 email: document.getElementById('newEmployeeEmail').value,
                 phone: document.getElementById('newEmployeePhone').value,
@@ -1119,36 +1237,39 @@
                 avatar: newEmployeeAvatarData,
                 stats: { orders: 0, messages: 0, inventory: 0 }
             };
-            
-            // Check for duplicate ID
-            if (employees.some(e => e.id === newEmployee.id)) {
-                showAlert('error', 'Employee ID already exists!');
-                return;
+
+            try {
+                const res = await fetch('/api/admin/employees', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(newEmployee)
+                });
+                const data = await res.json();
+
+                if (!res.ok) {
+                    showAlert('error', data.error || 'Failed to add employee');
+                    return;
+                }
+
+                newEmployeeAvatarData = null;
+                closeModal('addEmployeeModal');
+                await loadEmployeesFromAPI();
+                renderEmployeesGrid(currentDepartmentFilter);
+                updateEmployeeStats();
+                showAlert('success', `Employee "${newEmployee.name}" added successfully!`);
+            } catch (err) {
+                console.error('Add employee error:', err);
+                showAlert('error', 'Failed to add employee. Please try again.');
             }
-            
-            employees.push(newEmployee);
-            newEmployeeAvatarData = null;
-            
-            // Log the activity
-            logActivity(newEmployee.id, newEmployee.name, 'customer', `New employee ${newEmployee.name} was added to the system`);
-            
-            // Sync to localStorage
-            syncEmployeeData();
-            
-            closeModal('addEmployeeModal');
-            renderEmployeesGrid(currentDepartmentFilter);
-            updateEmployeeStats();
-            
-            showAlert('success', `Employee "${newEmployee.name}" added successfully!`);
         }
-        
+
         // Edit employee
         function editEmployee(index) {
             const emp = employees[index];
             if (!emp) return;
-            
+
             editEmployeeAvatarData = null;
-            
+
             document.getElementById('editEmployeeIndex').value = index;
             document.getElementById('editEmployeeName').value = emp.name;
             document.getElementById('editEmployeeIdField').value = emp.id;
@@ -1159,118 +1280,135 @@
             document.getElementById('editEmployeeStatus').value = emp.status;
             document.getElementById('editEmployeeSalary').value = emp.salary || '';
             document.getElementById('editEmployeeAddress').value = emp.address || '';
-            
-            const defaultAvatar = `/assets/icons/profile.svg'editEmployeeAvatarPreview').src = emp.avatar || defaultAvatar;
-            
+
+            const defaultAvatar = `/assets/icons/profile.svg`;
+            document.getElementById('editEmployeeAvatarPreview').src = emp.avatar || defaultAvatar;
+
             openModal('editEmployeeModal');
         }
-        
+
         // Preview edit employee avatar
         function previewEditEmployeeAvatar(event) {
             const file = event.target.files[0];
             if (file) {
                 const reader = new FileReader();
-                reader.onload = function(e) {
+                reader.onload = function (e) {
                     editEmployeeAvatarData = e.target.result;
                     document.getElementById('editEmployeeAvatarPreview').src = e.target.result;
                 };
                 reader.readAsDataURL(file);
             }
         }
-        
+
         // Update employee
-        function updateEmployee(event) {
+        async function updateEmployee(event) {
             event.preventDefault();
-            
+
             const index = parseInt(document.getElementById('editEmployeeIndex').value);
             const emp = employees[index];
             if (!emp) return;
-            
-            emp.name = document.getElementById('editEmployeeName').value;
-            emp.email = document.getElementById('editEmployeeEmail').value;
-            emp.phone = document.getElementById('editEmployeePhone').value;
-            emp.department = document.getElementById('editEmployeeDepartment').value;
-            emp.position = document.getElementById('editEmployeePosition').value;
-            emp.status = document.getElementById('editEmployeeStatus').value;
-            emp.salary = parseInt(document.getElementById('editEmployeeSalary').value) || 0;
-            emp.address = document.getElementById('editEmployeeAddress').value;
-            
-            if (editEmployeeAvatarData) {
-                emp.avatar = editEmployeeAvatarData;
+
+            const updateData = {
+                name: document.getElementById('editEmployeeName').value,
+                email: document.getElementById('editEmployeeEmail').value,
+                phone: document.getElementById('editEmployeePhone').value,
+                department: document.getElementById('editEmployeeDepartment').value,
+                position: document.getElementById('editEmployeePosition').value,
+                status: document.getElementById('editEmployeeStatus').value,
+                salary: parseInt(document.getElementById('editEmployeeSalary').value) || 0,
+                avatar: editEmployeeAvatarData || undefined
+            };
+
+            try {
+                const res = await fetch(`/ api / admin / employees / ${emp.id}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(updateData)
+                });
+                const data = await res.json();
+
+                if (!res.ok) {
+                    showAlert('error', data.error || 'Failed to update employee');
+                    return;
+                }
+
+                editEmployeeAvatarData = null;
+                closeModal('editEmployeeModal');
+                await loadEmployeesFromAPI();
+                renderEmployeesGrid(currentDepartmentFilter);
+                updateEmployeeStats();
+                showAlert('success', `Employee "${updateData.name}" updated successfully!`);
+            } catch (err) {
+                console.error('Update employee error:', err);
+                showAlert('error', 'Failed to update employee. Please try again.');
             }
-            
-            editEmployeeAvatarData = null;
-            
-            // Sync to localStorage
-            syncEmployeeData();
-            
-            closeModal('editEmployeeModal');
-            renderEmployeesGrid(currentDepartmentFilter);
-            updateEmployeeStats();
-            
-            showAlert('success', `Employee "${emp.name}" updated successfully!`);
         }
-        
+
         // Delete employee
-        function deleteEmployee(index) {
+        async function deleteEmployee(index) {
             const emp = employees[index];
             if (!emp) return;
-            
-            if (!confirm(`Are you sure you want to delete "${emp.name}"? This action cannot be undone.`)) {
+
+            if (!confirm(`Are you sure you want to delete "${emp.name}" ? This action cannot be undone.`)) {
                 return;
             }
-            
-            employees.splice(index, 1);
-            
-            // Sync to localStorage
-            syncEmployeeData();
-            
-            renderEmployeesGrid(currentDepartmentFilter);
-            updateEmployeeStats();
-            
-            showAlert('success', `Employee "${emp.name}" deleted successfully!`);
+
+            try {
+                const res = await fetch(`/ api / admin / employees / ${emp.id} `, { method: 'DELETE' });
+                if (!res.ok) {
+                    const data = await res.json();
+                    showAlert('error', data.error || 'Failed to delete employee');
+                    return;
+                }
+
+                await loadEmployeesFromAPI();
+                renderEmployeesGrid(currentDepartmentFilter);
+                updateEmployeeStats();
+                showAlert('success', `Employee "${emp.name}" deleted successfully!`);
+            } catch (err) {
+                console.error('Delete employee error:', err);
+                showAlert('error', 'Failed to delete employee. Please try again.');
+            }
         }
-        
-        // Sync employee data to localStorage
+
+        // Sync employee data to globals (for cross-page consistency)
         function syncEmployeeData() {
             window.globalEmployees = employees;
             window.globalActivityLog = activityLog;
-            localStorage.setItem('freezyBiteEmployees', JSON.stringify(employees));
-            localStorage.setItem('freezyBiteActivityLog', JSON.stringify(activityLog));
         }
-        
+
         // Open activity log modal
         function openActivityLogModal() {
             // Populate employee filter
             const filterSelect = document.getElementById('activityFilterEmployee');
             filterSelect.innerHTML = '<option value="">All Employees</option>' +
-                employees.map(e => `<option value="${e.id}">${e.name}</option>`).join('');
-            
+                employees.map(e => `< option value = "${e.id}" > ${e.name}</option > `).join('');
+
             renderActivityLog();
             openModal('activityLogModal');
         }
-        
+
         // Render activity log
         function renderActivityLog(employeeId = '') {
             const container = document.getElementById('activityLogContent');
-            
+
             let filteredActivities = activityLog;
             if (employeeId) {
                 filteredActivities = activityLog.filter(a => a.employeeId === employeeId);
             }
-            
+
             if (filteredActivities.length === 0) {
                 container.innerHTML = `
-                    <div style="text-align: center; padding: 3rem; color: var(--text-muted);">
+                < div style = "text-align: center; padding: 3rem; color: var(--text-muted);" >
                         <i class="fas fa-history" style="font-size: 3rem; margin-bottom: 1rem; opacity: 0.3;"></i>
                         <p>No activities found</p>
-                    </div>
+                    </div >
                 `;
                 return;
             }
-            
+
             container.innerHTML = filteredActivities.map(activity => `
-                <div class="activity-item">
+                < div class="activity-item" >
                     <div class="activity-icon ${activity.type}">
                         <i class="fas fa-${getActivityIcon(activity.type)}"></i>
                     </div>
@@ -1278,16 +1416,16 @@
                         <p><strong>${activity.employeeName}</strong> ${activity.action}</p>
                         <span class="activity-time">${activity.timestamp}</span>
                     </div>
-                </div>
+                </div >
             `).join('');
         }
-        
+
         // Filter activity log
         function filterActivityLog() {
             const employeeId = document.getElementById('activityFilterEmployee').value;
             renderActivityLog(employeeId);
         }
-        
+
         // Log activity (can be called from other pages)
         function logActivity(employeeId, employeeName, type, action) {
             const newActivity = {
@@ -1298,9 +1436,9 @@
                 action: action,
                 timestamp: new Date().toLocaleString()
             };
-            
+
             activityLog.unshift(newActivity);
-            
+
             // Update employee stats
             const emp = employees.find(e => e.id === employeeId);
             if (emp) {
@@ -1308,11 +1446,11 @@
                 if (type === 'message') emp.stats.messages++;
                 if (type === 'inventory') emp.stats.inventory++;
             }
-            
+
             // Sync to localStorage
             syncEmployeeData();
         }
-        
+
         // Make functions globally available
         window.logActivity = logActivity;
         window.employees = employees;
@@ -1320,5 +1458,5 @@
         window.syncEmployeeData = syncEmployeeData;
     </script>
 </body>
-</html>
 
+</html>

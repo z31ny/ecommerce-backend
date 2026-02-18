@@ -3,6 +3,10 @@ import { db } from '@/db';
 import { websiteContent } from '@/db/schema';
 import { eq } from 'drizzle-orm';
 
+// Disable Next.js caching — admin must always get fresh data
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 // Valid section keys
 const VALID_SECTIONS = [
     'testimonials', 'faqs', 'moods', 'snacks',
