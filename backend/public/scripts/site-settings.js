@@ -119,6 +119,25 @@
             if (e.key === 'Escape') closePolicy();
         });
 
+        // Helper to trigger animations for dynamically added content
+        function observeNewElements(container) {
+            if (!container) return;
+            var targets = container.querySelectorAll('.fade-up');
+            if ('IntersectionObserver' in window) {
+                var io = new IntersectionObserver(function (entries) {
+                    entries.forEach(function (e) {
+                        if (e.isIntersecting) {
+                            e.target.classList.add('is-in');
+                            io.unobserve(e.target);
+                        }
+                    });
+                }, { rootMargin: '0px 0px -10% 0px', threshold: 0.15 });
+                targets.forEach(function (el) { io.observe(el); });
+            } else {
+                targets.forEach(function (el) { el.classList.add('is-in'); });
+            }
+        }
+
         try {
             const res = await fetch('/api/settings', { cache: 'no-store' });
             if (!res.ok) return;
@@ -199,6 +218,7 @@
                                 '<p style="font-size:0.85rem;color:#6b7280;">— ' + (t.author || 'Customer') + '</p>' +
                                 '</div>';
                         }).join('');
+                        observeNewElements(grid);
                     }
                 }
             }
@@ -220,6 +240,7 @@
                                 '<p style="margin-top:0.75rem;color:#4b5563;line-height:1.6;">' + f.answer + '</p>' +
                                 '</details>';
                         }).join('');
+                        observeNewElements(faqList);
                     }
                 }
             }
@@ -258,6 +279,7 @@
                                 '</div>' +
                                 '</div>';
                         }).join('');
+                        observeNewElements(moodsGrid);
                     }
                 }
             }
@@ -286,6 +308,7 @@
                                 '</div>' +
                                 '</div>';
                         }).join('');
+                        observeNewElements(insideTrack);
                     }
                 }
             }
@@ -315,6 +338,7 @@
                                 '</div>' +
                                 '</div>';
                         }).join('');
+                        observeNewElements(favGrid);
                     }
                 }
             }
