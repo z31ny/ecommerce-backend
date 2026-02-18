@@ -223,6 +223,158 @@
                     }
                 }
             }
+
+            // === Moods (flip cards) ===
+            if (data.moods && Array.isArray(data.moods)) {
+                var moodsGrid = document.getElementById('moods-grid');
+                if (moodsGrid) {
+                    var activeMoods = data.moods.filter(function (m) { return m.status === 'active'; });
+                    if (activeMoods.length === 0) {
+                        moodsGrid.innerHTML = '';
+                        var moodsSection = document.getElementById('moods');
+                        if (moodsSection) moodsSection.style.display = 'none';
+                    } else {
+                        var moodColorMap = {
+                            pink: { bg: 'linear-gradient(135deg,#fce4ec,#f8bbd0)', text: '#880e4f' },
+                            blue: { bg: 'linear-gradient(135deg,#e3f2fd,#bbdefb)', text: '#0d47a1' },
+                            green: { bg: 'linear-gradient(135deg,#e8f5e9,#c8e6c9)', text: '#1b5e20' },
+                            yellow: { bg: 'linear-gradient(135deg,#fff8e1,#ffecb3)', text: '#f57f17' },
+                            purple: { bg: 'linear-gradient(135deg,#f3e5f5,#e1bee7)', text: '#4a148c' },
+                            orange: { bg: 'linear-gradient(135deg,#fff3e0,#ffe0b2)', text: '#e65100' }
+                        };
+                        moodsGrid.innerHTML = activeMoods.map(function (m) {
+                            var colors = moodColorMap[m.color] || moodColorMap.pink;
+                            return '<div class="mood-card fade-up" tabindex="0">' +
+                                '<div class="mood-card-inner">' +
+                                '  <div class="mood-card-front" style="background:' + colors.bg + ';color:' + colors.text + ';">' +
+                                '    <h3>' + (m.title || '') + '</h3>' +
+                                '    <p>' + (m.description || '') + '</p>' +
+                                (m.buttonText ? '    <span class="mood-btn">' + m.buttonText + '</span>' : '') +
+                                '  </div>' +
+                                '  <div class="mood-card-back" style="' + (m.backImage ? 'background-image:url(' + m.backImage + ');background-size:cover;background-position:center;' : 'background:' + colors.bg + ';') + '">' +
+                                (m.backDescription ? '    <p class="mood-back-text">' + m.backDescription + '</p>' : '') +
+                                (m.buttonLink ? '    <a href="' + m.buttonLink + '" class="mood-btn mood-btn-link">Shop Now</a>' : '') +
+                                '  </div>' +
+                                '</div>' +
+                                '</div>';
+                        }).join('');
+                    }
+                }
+            }
+
+            // === Snacks (inside our snack section) ===
+            if (data.snacks && Array.isArray(data.snacks)) {
+                var insideTrack = document.getElementById('inside-track');
+                if (insideTrack) {
+                    var activeSnacks = data.snacks.filter(function (s) { return s.status === 'active'; });
+                    if (activeSnacks.length === 0) {
+                        insideTrack.innerHTML = '';
+                        var insideSection = document.getElementById('inside');
+                        if (insideSection) insideSection.style.display = 'none';
+                    } else {
+                        insideTrack.innerHTML = activeSnacks.map(function (s) {
+                            return '<div class="snack-card fade-up" tabindex="0">' +
+                                '<div class="snack-card-inner">' +
+                                '  <div class="snack-card-front">' +
+                                (s.frontImage ? '    <img src="' + s.frontImage + '" alt="' + (s.title || 'Snack') + '">' : '') +
+                                '    <span class="snack-label">' + (s.frontLabel || s.title || '') + '</span>' +
+                                '  </div>' +
+                                '  <div class="snack-card-back">' +
+                                (s.backImage ? '    <img src="' + s.backImage + '" alt="' + (s.title || 'Snack') + ' back">' : '') +
+                                '    <span class="snack-label">' + (s.backLabel || 'Back') + '</span>' +
+                                '  </div>' +
+                                '</div>' +
+                                '</div>';
+                        }).join('');
+                    }
+                }
+            }
+
+            // === Favorites (product cards) ===
+            if (data.favorites && Array.isArray(data.favorites)) {
+                var favGrid = document.getElementById('favorites-grid');
+                if (favGrid) {
+                    var activeFavs = data.favorites.filter(function (f) { return f.status === 'active'; });
+                    if (activeFavs.length === 0) {
+                        favGrid.innerHTML = '';
+                        var favSection = document.getElementById('favorites');
+                        if (favSection) favSection.style.display = 'none';
+                    } else {
+                        favGrid.innerHTML = activeFavs.map(function (f) {
+                            var stars = '';
+                            for (var i = 1; i <= 5; i++) {
+                                stars += '<span class="fav-star' + (i <= (f.rating || 5) ? ' filled' : '') + '">★</span>';
+                            }
+                            return '<div class="favorite-card fade-up">' +
+                                (f.image ? '<div class="fav-img"><img src="' + f.image + '" alt="' + (f.name || '') + '"></div>' : '') +
+                                '<div class="fav-info">' +
+                                '  <h3 class="fav-name">' + (f.name || '') + '</h3>' +
+                                '  <div class="fav-rating">' + stars + '<span class="fav-count">(' + (f.reviewCount || 0) + ')</span></div>' +
+                                '  <p class="fav-price">' + (f.price || 0) + ' EGP</p>' +
+                                '  <span class="fav-category">' + (f.category || '') + '</span>' +
+                                '</div>' +
+                                '</div>';
+                        }).join('');
+                    }
+                }
+            }
+
+            // === Hero Images (page-specific backgrounds) ===
+            if (data.heroes && Array.isArray(data.heroes)) {
+                var pageName = window.location.pathname.split('/').pop().replace('.html', '');
+                var heroMap = { fruits: 'fruits', candy: 'candy', about: 'about', contact: 'contact', offers: 'offers' };
+                var heroKey = heroMap[pageName];
+                if (heroKey) {
+                    var hero = data.heroes.find(function (h) { return h.id === heroKey; });
+                    if (hero && hero.image) {
+                        var heroEl = document.querySelector('.candy-hero, .contact-hero, .fruits-hero, .about-hero, .offers-hero');
+                        if (heroEl) {
+                            heroEl.style.backgroundImage = 'url(' + hero.image + ')';
+                            heroEl.style.backgroundSize = 'cover';
+                            heroEl.style.backgroundPosition = 'center';
+                        }
+                    }
+                }
+            }
+
+            // === Contact Page Content (dynamic) ===
+            if (data.contact && typeof data.contact === 'object') {
+                var cc = data.contact;
+                var contactCard = document.querySelector('.contact-card');
+                if (contactCard) {
+                    var html = '';
+                    if (cc.address) html += '<p><strong>' + (cc.visitLabel || 'Visit Us') + '</strong><br> ' + cc.address + '</p>';
+                    if (cc.phone) html += '<p><strong>' + (cc.phoneLabel || 'Call or WhatsApp') + '</strong><br> ' + cc.phone + '</p>';
+                    if (cc.email) html += '<p><strong>' + (cc.emailLabel || 'Email') + '</strong><br> ' + cc.email + '</p>';
+                    var socialLinks = [];
+                    if (cc.tiktok) socialLinks.push('<a href="' + cc.tiktok + '" target="_blank" rel="noopener noreferrer">TikTok</a>');
+                    if (cc.instagram) socialLinks.push('<a href="' + cc.instagram + '" target="_blank" rel="noopener noreferrer">Instagram</a>');
+                    if (cc.facebook) socialLinks.push('<a href="' + cc.facebook + '" target="_blank" rel="noopener noreferrer">Facebook</a>');
+                    if (cc.whatsapp) socialLinks.push('<a href="https://wa.me/' + cc.whatsapp.replace(/[^0-9]/g, '') + '" target="_blank" rel="noopener noreferrer">WhatsApp</a>');
+                    if (socialLinks.length > 0) {
+                        html += '<p><strong>' + (cc.socialLabel || 'Follow Us') + '</strong><br>' + socialLinks.join(' · ') + '</p>';
+                    }
+                    if (cc.socialDescription) html += '<p style="opacity:.85">' + cc.socialDescription + '</p>';
+                    if (html) contactCard.innerHTML = html;
+                }
+                // Also update footer social links if contact has social data
+                if (cc.tiktok || cc.instagram || cc.facebook) {
+                    var socialBadges = document.querySelectorAll('.footer-social .social-badge');
+                    socialBadges.forEach(function (badge) {
+                        var label = badge.getAttribute('aria-label');
+                        if (label === 'TikTok' && cc.tiktok) badge.href = cc.tiktok;
+                        if (label === 'Facebook' && cc.facebook) badge.href = cc.facebook;
+                        if (label === 'Instagram' && cc.instagram) badge.href = cc.instagram;
+                    });
+                }
+            }
+
+            // === Shipping Settings (update checkout delivery map) ===
+            if (data.shipping && typeof data.shipping === 'object') {
+                var ss = data.shipping;
+                // Store shipping settings globally for checkout.js to pick up
+                window.__freezyShipping = ss;
+            }
         } catch (e) {
             // Silently fail — pages still work with hardcoded values
         }

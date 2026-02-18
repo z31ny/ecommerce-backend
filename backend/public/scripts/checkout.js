@@ -144,6 +144,8 @@
   }
 
   function getShippingSettings() {
+    // Prefer API-loaded settings from site-settings.js
+    if (window.__freezyShipping) return window.__freezyShipping;
     try {
       return JSON.parse(localStorage.getItem('freezyBiteShippingSettings') || 'null');
     } catch (e) {
