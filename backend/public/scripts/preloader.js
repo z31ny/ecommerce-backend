@@ -15,7 +15,7 @@
   var prefersReduced = false;
   try {
     prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  } catch (e) {}
+  } catch (e) { }
 
   // Skip button
   var skip = preloader.querySelector('.skip-btn');
