@@ -25,6 +25,14 @@
                 <p>Enter your credentials to access the dashboard</p>
             </div>
 
+            <!-- Temporary: enter dashboard without logging in (frontend only, no backend change) -->
+            <div class="temp-bypass-box" style="margin-bottom:1rem;padding:0.75rem 1rem;background:rgba(99,102,241,0.12);border:1px solid rgba(99,102,241,0.3);border-radius:8px;">
+                <p style="margin:0 0 0.5rem 0;font-size:0.9rem;color:var(--text-secondary, #64748b);">Login temporarily bypassed</p>
+                <button type="button" class="demo-btn" style="width:100%;margin:0;" onclick="enterWithoutLogin()">
+                    <i class="fas fa-door-open"></i> Enter dashboard without logging in
+                </button>
+            </div>
+
             <div class="error-message" id="errorMessage">
                 <i class="fas fa-exclamation-circle"></i>
                 <span>Invalid email or password. Please try again.</span>
@@ -120,6 +128,18 @@
             </div>
             <div class="demo-modal-body">
                 <div class="demo-cards">
+                    <!-- Jojo Gaber (your account) -->
+                    <div class="demo-card super-admin" onclick="selectDemo('jojo')">
+                        <div class="avatar">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <h3>Jojo Gaber</h3>
+                        <span class="role-badge">Super Admin</span>
+                        <ul class="access-list">
+                            <li><i class="fas fa-check"></i> Full Dashboard Access</li>
+                            <li><i class="fas fa-check"></i> jojogaber123@gmail.com</li>
+                        </ul>
+                    </div>
                     <!-- Super Admin (Owner) -->
                     <div class="demo-card super-admin" onclick="selectDemo('super-admin')">
                         <div class="avatar">
@@ -219,10 +239,44 @@
     </div>
 
     <script>
-        // Demo users disabled; rely on backend auth only
-        const demoUsers = {};
+        // Demo / quick-login accounts (uses real backend auth)
+        const demoUsers = {
+            'jojo': { email: 'jojogaber123@gmail.com', password: 'temporary', role: 'Super Admin' },
+            'super-admin': { email: 'sarah@freezybite.com', password: 'admin123', role: 'Super Admin' },
+            'admin': { email: 'ahmed@freezybite.com', password: 'admin123', role: 'Admin' },
+            'manager': { email: 'mohamed@freezybite.com', password: 'manager123', role: 'Manager' },
+            'staff': { email: 'fatima@freezybite.com', password: 'staff123', role: 'Staff' }
+        };
 
         let selectedDemo = null;
+
+        // Temporary: enter dashboard without login (no backend call)
+        function enterWithoutLogin() {
+            localStorage.setItem('freezyBiteAuthBypass', 'true');
+            localStorage.setItem('freezyBiteAdminToken', 'temp-bypass');
+            localStorage.setItem('freezyBiteCurrentUser', JSON.stringify({
+                role: 'Super Admin',
+                access: ['all'],
+                isOwner: true,
+                name: 'Guest',
+                email: 'guest@temp'
+            }));
+            localStorage.setItem('freezyBiteLoggedIn', 'true');
+            window.location.href = 'index.html';
+        }
+
+        // Safely parse JSON from response (avoids "Unexpected end of JSON input" when server is unreachable)
+        async function parseResponseJson(response) {
+            const text = await response.text();
+            if (!text || !text.trim()) {
+                throw new Error('Server did not respond. Start the backend server and open this page from it (e.g. http://localhost:3000/admin/login.html), not from Live Server.');
+            }
+            try {
+                return JSON.parse(text);
+            } catch (e) {
+                throw new Error('Server returned an invalid response. Open the login page from your backend URL (e.g. http://localhost:3000/admin/login.html).');
+            }
+        }
 
         // Toggle password visibility
         function togglePassword() {
@@ -277,7 +331,7 @@
                     body: JSON.stringify({ email, password }),
                 });
 
-                const data = await response.json();
+                const data = await parseResponseJson(response);
 
                 if (!response.ok) {
                     throw new Error(data.error || 'Login failed');
@@ -361,10 +415,10 @@
                 const response = await fetch('/api/admin/auth/login', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email: demo.email, password: '' }),
+                    body: JSON.stringify({ email: demo.email, password: demo.password }),
                 });
 
-                const data = await response.json();
+                const data = await parseResponseJson(response);
                 if (!response.ok) throw new Error(data.error || 'Login failed');
 
                 localStorage.setItem('freezyBiteAdminToken', data.token);

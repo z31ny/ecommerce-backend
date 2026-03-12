@@ -1539,12 +1539,20 @@ function editProduct(productId) {
         statusSelect.value = product.status || 'active';
     }
 
-    // Set image preview
-    const imagePreview = document.getElementById('editImagePreview');
-    imagePreview.src = product.image || '/assets/icons/profile.svg';
-    imagePreview.onerror = function () {
-        this.src = '/assets/icons/profile.svg';
-    };
+    // Set product images list (up to 10)
+    if (window.setEditProductImages) {
+        window.setEditProductImages(product.images || (product.image ? [product.image] : []));
+    }
+
+    // Sizes/grams from localStorage
+    const sizesEl = document.getElementById('editProductSizes');
+    if (sizesEl) {
+        try {
+            const sizesObj = JSON.parse(localStorage.getItem('fb_product_sizes') || '{}');
+            sizesEl.value = sizesObj[String(product.sku || '').toLowerCase()] || '';
+        } catch (e) { sizesEl.value = ''; }
+    }
+    if (window.syncEditSizesFromInput) window.syncEditSizesFromInput();
 
     // Open the modal
     openModal('editProductModal');
@@ -5199,6 +5207,21 @@ function editProduct(productId) {
     document.getElementById('editProductMinStock').value = product.minStock || 20;
     document.getElementById('editProductStatus').value = product.status || 'active';
     document.getElementById('editProductDescription').value = product.description || '';
+
+    // Sizes/grams from localStorage (fb_product_sizes)
+    const sizesEl = document.getElementById('editProductSizes');
+    if (sizesEl) {
+        try {
+            const sizesObj = JSON.parse(localStorage.getItem('fb_product_sizes') || '{}');
+            sizesEl.value = sizesObj[String(product.sku || '').toLowerCase()] || '';
+        } catch (e) { sizesEl.value = ''; }
+    }
+    if (window.syncEditSizesFromInput) window.syncEditSizesFromInput();
+
+    // Set product images list (up to 10)
+    if (window.setEditProductImages) {
+        window.setEditProductImages(product.images || (product.image ? [product.image] : []));
+    }
 
     openModal('editProductModal');
 }

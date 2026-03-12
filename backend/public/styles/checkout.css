@@ -9,12 +9,15 @@
 }
 
 .co-card {
-  background: #fff;
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  border: 1px solid var(--glass-border);
   border-radius: 24px;
-  box-shadow: var(--shadow);
+  box-shadow: var(--glass-shadow), var(--glow);
   padding: 14px;
   display: flex;
-  flex-direction: column
+  flex-direction: column;
 }
 
 .co-title {
@@ -35,9 +38,12 @@
   grid-template-columns: 1fr 100px 96px;
   gap: 8px;
   align-items: center;
-  border: 1px solid #f3e6ea;
+  background: rgba(255, 255, 255, 0.4);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid var(--glass-border);
   border-radius: 12px;
-  padding: 10px
+  padding: 10px;
 }
 
 .co-qty {
@@ -48,12 +54,18 @@
 }
 
 .co-qty button {
-  border: 1px solid #f0e1e5;
-  background: #fff;
+  border: 1px solid var(--glass-border);
+  background: var(--glass-bg);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   border-radius: 8px;
   width: 28px;
   height: 28px;
-  cursor: pointer
+  cursor: pointer;
+  transition: box-shadow 0.2s ease;
+}
+.co-qty button:hover {
+  box-shadow: var(--glow);
 }
 
 .co-remove {
@@ -142,11 +154,14 @@
 
 /* Auto-selected delivery info */
 .co-delivery-info {
-  background: #fff4f6;
-  border: 1px dashed #f0d5da;
+  background: rgba(255, 244, 246, 0.7);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid var(--glass-border);
   border-radius: 12px;
   padding: 12px;
-  margin: 8px 0
+  margin: 8px 0;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
 }
 
 .co-delivery-info p {

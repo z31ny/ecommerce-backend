@@ -11,13 +11,20 @@
   function sendConfirmationEmail(orderId, customerName, customerEmail, itemSkus, cart, gov, city, address) {
     var subtotal = 0;
     var delivery = getDeliveryFee();
-    var itemsData = itemSkus.map(function (sku) {
-      var price = getPrice(sku);
-      var qty = cart[sku] || 1;
+    var cartKeyDisplayFn = (function () {
+      return function (key) {
+        if (key.indexOf('__') === -1) return key.replace(/-/g, ' ');
+        var parts = key.split('__');
+        return parts[0].replace(/-/g, ' ') + ' (' + parts.slice(1).join(' ') + ')';
+      };
+    })();
+    var itemsData = itemSkus.map(function (cartKey) {
+      var price = getPrice(cartKey);
+      var qty = cart[cartKey] || 1;
       subtotal += price * qty;
       return {
-        sku: sku,
-        name: sku.replace(/-/g, ' '),
+        sku: cartKey,
+        name: cartKeyDisplayFn(cartKey),
         quantity: qty,
         price: price * qty
       };
@@ -218,7 +225,16 @@
 
   function money(n) { return (Number(n) || 0).toFixed(0) + ' EGP'; }
 
-  function getPrice(sku) {
+  function cartKeyBaseSku(key) {
+    return key.indexOf('__') === -1 ? key : key.split('__')[0];
+  }
+  function cartKeyDisplay(key) {
+    if (key.indexOf('__') === -1) return key.replace(/-/g, ' ');
+    var parts = key.split('__');
+    return parts[0].replace(/-/g, ' ') + ' (' + parts.slice(1).join(' ') + ')';
+  }
+  function getPrice(cartKey) {
+    var sku = cartKeyBaseSku(cartKey);
     if (skuToProduct[sku]) return skuToProduct[sku].price;
     return PRICE_EGP[sku] || 0;
   }
@@ -238,14 +254,16 @@
     empty.hidden = true;
     var totalItems = 0;
     var subtotal = 0;
-    items.forEach(function (sku) {
-      var qty = cart[sku]; totalItems += qty; subtotal += getPrice(sku) * qty;
+    items.forEach(function (cartKey) {
+      var qty = cart[cartKey]; totalItems += qty; subtotal += getPrice(cartKey) * qty;
+      var display = cartKeyDisplay(cartKey);
+      var safeKey = cartKey.replace(/"/g, '&quot;');
       var li = document.createElement('li');
-      li.innerHTML = '<strong>' + sku.replace(/-/g, ' ') + '</strong>' +
+      li.innerHTML = '<strong>' + display + '</strong>' +
         '<div class="co-qty">' +
-        '<button data-dec="' + sku + '">-</button><span>' + qty + '</span><button data-inc="' + sku + '">+</button>' +
+        '<button data-dec="' + safeKey + '">-</button><span>' + qty + '</span><button data-inc="' + safeKey + '">+</button>' +
         '</div>' +
-        '<button class="co-remove" data-del="' + sku + '">Remove</button>';
+        '<button class="co-remove" data-del="' + safeKey + '">Remove</button>';
       list.appendChild(li);
     });
     count.textContent = String(totalItems);

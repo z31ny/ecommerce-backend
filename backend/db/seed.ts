@@ -8,7 +8,8 @@ const adminUsersData = [
     { email: 'ahmed@freezybite.com', password: 'admin123', name: 'Ahmed Hassan', role: 'Admin', access: ['all'] },
     { email: 'mohamed@freezybite.com', password: 'manager123', name: 'Mohamed Ali', role: 'Manager', access: ['overview', 'content', 'products', 'orders', 'customers', 'messages', 'analytics', 'inventory', 'trash', 'offers'] },
     { email: 'fatima@freezybite.com', password: 'staff123', name: 'Fatima Ibrahim', role: 'Staff', access: ['products', 'orders', 'customers', 'inventory', 'messages', 'trash'] },
-    { email: 'admin@freezybite.com', password: 'password', name: 'Admin User', role: 'Super Admin', access: ['all'] }
+    { email: 'admin@freezybite.com', password: 'password', name: 'Admin User', role: 'Super Admin', access: ['all'] },
+    { email: 'jojogaber123@gmail.com', password: 'temporary', name: 'Jojo Gaber', role: 'Super Admin', access: ['all'] }
 ];
 
 // Sample customers (will be stored in users table)
@@ -114,8 +115,9 @@ async function main() {
         if (result.length > 0) count++;
     }
 
-    // Offers
+    // Offers (clear old rows first so re-seeding doesn't duplicate)
     console.log('\nCreating offers...');
+    await db.delete(offers);
     for (const offer of offersData) {
         const result = await db.insert(offers).values({
             ...offer,

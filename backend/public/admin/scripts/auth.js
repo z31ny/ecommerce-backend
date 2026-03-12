@@ -33,6 +33,10 @@ async function apiFetch(endpoint, options = {}) {
     });
 
     if (response.status === 401) {
+        // Temporary bypass: don't redirect so dashboard can be used without login
+        if (localStorage.getItem('freezyBiteAuthBypass') === 'true') {
+            return response;
+        }
         // Token expired or invalid
         removeToken();
         localStorage.removeItem('freezyBiteCurrentUser');
@@ -131,8 +135,27 @@ async function login(email, password) {
     }
 }
 
+// Temporary bypass: enter dashboard without logging in (no backend change)
+function isAuthBypass() {
+    return localStorage.getItem('freezyBiteAuthBypass') === 'true';
+}
+
 // Check authentication and redirect if needed
 async function checkAuth() {
+    // Temporary: allow bypass so login can be skipped without backend changes
+    if (isAuthBypass()) {
+        if (!getCurrentUser()) {
+            localStorage.setItem('freezyBiteCurrentUser', JSON.stringify({
+                role: 'Super Admin',
+                access: ['all'],
+                isOwner: true,
+                name: 'Guest',
+                email: 'guest@temp'
+            }));
+        }
+        return true;
+    }
+
     if (!isLoggedIn()) {
         window.location.href = 'login.html';
         return false;
@@ -181,6 +204,7 @@ function logout() {
     removeToken();
     localStorage.removeItem('freezyBiteCurrentUser');
     localStorage.removeItem('freezyBiteLoggedIn');
+    localStorage.removeItem('freezyBiteAuthBypass');
     window.location.href = 'login.html';
 }
 

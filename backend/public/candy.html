@@ -7,6 +7,7 @@
   <title>Freezy Bite — Candy</title>
   <link rel="stylesheet" href="./styles/home.css">
   <link rel="stylesheet" href="./styles/candy.css">
+  <link rel="stylesheet" href="./styles/sidebar.css">
 </head>
 
 <body>
@@ -42,7 +43,7 @@
           <a href="./contact.html">Contact Us</a>
           <a href="./about.html">About Us</a>
           <a href="./home.html#home">Home</a>
-          <a href="./fruits.html">Fruits</a>
+          <a href="./fruits.html">Fruits & Vegetables</a>
           <a href="./candy.html" aria-current="page">Candy</a>
           <a href="./offers.html">Offers</a>
         </nav>
@@ -53,6 +54,7 @@
         </button>
         <button class="icon-btn cart-open" aria-label="Open cart">
           <img src="./assets/icons/cart.svg" alt="Cart">
+          <span class="cart-badge">0</span>
         </button>
         <button class="icon-btn burger" aria-label="Menu" aria-expanded="false">
           <img src="./assets/icons/menu.svg" alt="menu">
@@ -227,23 +229,31 @@
   <script src="./scripts/candy.js" defer></script>
   <script>
     // ===== DYNAMIC PRODUCTS LOADING =====
-    const candyCategories = ['Candies', 'Chocolate', 'Lollipop', 'Ice Cream', 'Marshmallow', 'Nuts'];
+    const candyCategories = ['Candy', 'Candies', 'Chocolate', 'Lollipop', 'Ice Cream', 'Marshmallow', 'Nuts'];
     let allProducts = [];
     let currentFilter = 'all';
 
-    // Render a product card
+    function getSizes(sku) {
+      return typeof window.getProductSizesForSku === 'function' ? window.getProductSizesForSku(sku) : [];
+    }
+    function sizeSelectHtml(sku) {
+      const sizes = getSizes(sku);
+      const opts = sizes.map(s => `<option value="${s.replace(/"/g, '&quot;')}">${s}</option>`).join('');
+      return `<label class="offer-size-label">Size</label><select class="product-size-select form-select"><option value="">Choose size</option>${opts}</select>`;
+    }
     function renderProductCard(product) {
       const price = parseFloat(product.price) || 0;
-      const weight = product.attributes?.weight || '200gm';
       const image = product.images?.[0] || product.image || '/assets/icons/profile.svg';
 
       return `
-        <article class="candies-card" data-sku="${product.sku}" data-price="${price}" data-cat="${product.category?.toLowerCase() || ''}">
-          <div class="candies-media"><img src="${image}" alt="${product.name}" onerror="this.src='/assets/icons/profile.svg'"></div>
-          <h3 class="candies-name">${product.name}</h3>
-          <p class="candies-desc">${product.description || 'Delicious freeze-dried treat.'}</p>
-          <div class="candies-meta"><span class="candies-weight">${weight}</span><span class="candies-price">${price}L.E</span></div>
-          <button class="candies-cart add-to-cart" data-sku="${product.sku}" aria-label="Add to cart"><img src="./assets/icons/cart.svg" alt="cart"></button>
+        <article class="offer-card fade-up is-in" data-sku="${product.sku}" data-price="${price}" data-cat="${product.category?.toLowerCase() || ''}">
+          <div class="offer-media"><img src="${image}" alt="${product.name}" onerror="this.src='/assets/icons/profile.svg'"></div>
+          <h4 class="offer-title">${product.name}</h4>
+          <div class="offer-prices">
+            <span class="offer-new">${Math.round(price)} EGP</span>
+          </div>
+          ${sizeSelectHtml(product.sku)}
+          <button type="button" class="offer-cart add-to-cart" data-sku="${product.sku}" aria-label="Add to cart"><img src="./assets/icons/cart.svg" alt=""></button>
         </article>
       `;
     }
@@ -260,17 +270,16 @@
       let filteredProducts = products;
       if (currentFilter !== 'all') {
         filteredProducts = products.filter(p =>
-          p.category?.toLowerCase() === currentFilter.toLowerCase() ||
-          p.category?.toLowerCase().includes(currentFilter.toLowerCase())
+          (p.category || '').toLowerCase() === currentFilter.toLowerCase()
         );
       }
 
-      // Group by category
+      // Group by matching category key from candyCategories
       const grouped = {};
       filteredProducts.forEach(p => {
-        const cat = p.category || 'Other';
-        if (!grouped[cat]) grouped[cat] = [];
-        grouped[cat].push(p);
+        const matched = candyCategories.find(c => c.toLowerCase() === (p.category || '').toLowerCase()) || 'Other';
+        if (!grouped[matched]) grouped[matched] = [];
+        grouped[matched].push(p);
       });
 
       // Render sections
@@ -279,9 +288,9 @@
         const catProducts = grouped[cat];
         if (catProducts && catProducts.length > 0) {
           html += `
-            <section class="container candies-section">
+            <section class="offers container">
               <header class="section-header"><h2>${cat}</h2></header>
-              <div class="candies-grid">
+              <div class="offers-grid">
                 ${catProducts.map(renderProductCard).join('')}
               </div>
             </section>
@@ -289,12 +298,11 @@
         }
       });
 
-      // Handle "Other" category
       if (grouped['Other'] && grouped['Other'].length > 0) {
         html += `
-          <section class="container candies-section">
+          <section class="offers container">
             <header class="section-header"><h2>Other Treats</h2></header>
-            <div class="candies-grid">
+            <div class="offers-grid">
               ${grouped['Other'].map(renderProductCard).join('')}
             </div>
           </section>
@@ -320,7 +328,7 @@
       const favorites = products.slice(0, 4);
       grid.innerHTML = favorites.map(product => {
         const price = parseFloat(product.price) || 0;
-        const weight = product.attributes?.weight || '280Gm';
+        const weight = product.attributes?.weight;
         const image = product.images?.[0] || product.image || '/assets/icons/profile.svg';
         const description = product.description || '';
 
@@ -328,7 +336,7 @@
           <article class="fav-card" data-sku="${product.sku}" data-price="${price}">
             <div class="fav-media"><img src="${image}" alt="${product.name}" onerror="this.src='/assets/icons/profile.svg'"></div>
             ${description ? `<p class="fav-desc">${description}</p>` : ''}
-            <div class="fav-meta"><span class="fav-weight">${weight}</span><span class="fav-price">${price}L.E</span></div>
+            <div class="fav-meta">${weight ? `<span class="fav-weight">${weight}</span>` : ''}<span class="fav-price">${price} L.E</span></div>
             <button class="fav-cart add-to-cart" data-sku="${product.sku}" aria-label="Add to cart"><img src="./assets/icons/cart.svg" alt="cart"></button>
           </article>
         `;
@@ -337,21 +345,24 @@
       bindAddToCartButtons();
     }
 
-    // Bind add to cart buttons
+    // Bind add to cart buttons (with optional size from .product-size-select)
     function bindAddToCartButtons() {
       document.querySelectorAll('.add-to-cart').forEach(btn => {
         btn.addEventListener('click', function () {
-          const sku = this.dataset.sku;
+          const card = this.closest('[data-sku]');
+          const sku = (card && card.getAttribute('data-sku')) || this.dataset.sku;
+          const sizeSelect = card ? card.querySelector('.product-size-select') : null;
+          const size = sizeSelect && sizeSelect.value ? sizeSelect.value : null;
+          const cartKey = size ? sku + '__' + size : sku;
           const toast = document.querySelector('.toast');
           if (toast) {
             toast.textContent = 'Added to cart!';
             toast.classList.add('is-show');
             setTimeout(() => toast.classList.remove('is-show'), 1800);
           }
-          // Use localStorage cart
           try {
             const cart = JSON.parse(localStorage.getItem('fb_cart_v1') || '{}');
-            cart[sku] = (cart[sku] || 0) + 1;
+            cart[cartKey] = (cart[cartKey] || 0) + 1;
             localStorage.setItem('fb_cart_v1', JSON.stringify(cart));
           } catch (e) { }
         });
@@ -388,13 +399,12 @@
         const response = await fetch('/api/products?limit=100');
         const products = await response.json();
 
-        // Filter for candy-related categories
-        allProducts = products.filter(p =>
-          candyCategories.some(cat =>
-            p.category?.toLowerCase().includes(cat.toLowerCase()) ||
-            cat.toLowerCase().includes(p.category?.toLowerCase() || '')
-          ) || !p.category
-        );
+        // Filter for candy-related categories (case-insensitive exact match)
+        var candySet = candyCategories.map(c => c.toLowerCase());
+        allProducts = products.filter(p => {
+          if (!p.category) return false;
+          return candySet.includes(p.category.toLowerCase());
+        });
 
         renderFavorites(allProducts);
         renderProducts(allProducts);
@@ -412,7 +422,9 @@
       loadProducts();
     });
   </script>
+  <script src="./scripts/home.js?v=3" defer></script>
   <script src="./scripts/site-settings.js" defer></script>
+  <script src="./scripts/sidebar.js" defer></script>
 </body>
 
 </html>

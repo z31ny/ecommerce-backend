@@ -28,21 +28,7 @@
     });
   });
 
-  // Burger menu toggle (mobile)
-  var burger = document.querySelector('.burger');
-  if (burger){
-    var header = burger.closest('.site-header');
-    var scopedNav = header ? header.querySelector('.nav') : document.querySelector('.nav');
-    function positionNav(){ if (!scopedNav) return; var r = burger.getBoundingClientRect(); var rect = scopedNav.getBoundingClientRect(); var width = rect.width || 240; var left = Math.min(r.right - width, window.innerWidth - width - 8); left = Math.max(8, left); scopedNav.style.position='fixed'; scopedNav.style.left=Math.round(left)+'px'; scopedNav.style.top=Math.round(r.bottom+8)+'px'; scopedNav.style.right='auto'; scopedNav.style.minWidth='240px'; scopedNav.style.zIndex='9999'; scopedNav.style.background='#fff'; scopedNav.style.border='1px solid #f0e1e5'; scopedNav.style.borderRadius='12px'; scopedNav.style.padding='12px'; scopedNav.style.boxShadow='0 18px 40px rgba(0,0,0,.08)'; scopedNav.style.flexDirection='column'; scopedNav.style.alignItems='stretch'; }
-    function toggleMenu(){ if (!scopedNav) return; var open = scopedNav.classList.toggle('is-open'); if (open){ positionNav(); scopedNav.style.display='flex'; } else { scopedNav.style.display='none'; } burger.setAttribute('aria-expanded', open ? 'true' : 'false'); }
-    burger.addEventListener('click', function(e){ toggleMenu(); e.stopPropagation(); });
-    // Delegated fallback (in case of dynamic headers or icons capturing clicks)
-    document.addEventListener('click', function(e){ var btn = e.target.closest('.burger'); if (btn === burger){ toggleMenu(); } });
-    // Close when clicking outside
-    document.addEventListener('click', function(e){ if (!scopedNav || !scopedNav.classList.contains('is-open')) return; var withinMenu = e.target.closest('.nav'); var withinBurger = e.target.closest('.burger'); if (!withinMenu && !withinBurger){ scopedNav.classList.remove('is-open'); scopedNav.style.display='none'; burger.setAttribute('aria-expanded','false'); } });
-    window.addEventListener('resize', function(){ if (scopedNav && scopedNav.classList.contains('is-open')) { positionNav(); scopedNav.style.display='flex'; } });
-    window.addEventListener('scroll', function(){ if (scopedNav && scopedNav.classList.contains('is-open')) positionNav(); }, { passive: true });
-  }
+  // Burger menu handled by home.js (shared across all pages)
 
   // Profile modal
   var modal = document.getElementById('auth-modal');

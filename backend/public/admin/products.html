@@ -168,7 +168,7 @@
                         </p>
                     </div>
                     <div class="section-actions">
-                        <button class="btn btn-primary" onclick="openModal('addProductModal')">
+                        <button class="btn btn-primary" onclick="clearAddSizesList(); clearAddImagesList(); openModal('addProductModal')">
                             <i class="fas fa-plus"></i>
                             Add New Product
                         </button>
@@ -229,25 +229,23 @@
             </div>
             <form id="addProductForm">
                 <div class="modal-body">
-                    <!-- Image Upload -->
+                    <!-- Product Images (up to 10) -->
                     <div class="form-group">
-                        <label class="form-label">Product Image</label>
-                        <div style="display: flex; gap: 10px; align-items: center; margin-bottom: 0.5rem;">
-                            <button type="button" class="btn btn-secondary"
-                                onclick="openCloudinaryWidget('addProductImageUrl', 'addImagePreview')"
-                                style="flex-shrink: 0;">
+                        <label class="form-label">Product Images (up to 10)</label>
+                        <div style="display: flex; gap: 10px; align-items: center; margin-bottom: 0.5rem; flex-wrap: wrap;">
+                            <button type="button" class="btn btn-secondary" id="addProductUploadBtn"
+                                onclick="openCloudinaryWidget('add')" style="flex-shrink: 0;">
                                 <i class="fas fa-cloud-upload-alt"></i> Upload Image
                             </button>
-                            <input type="text" class="form-input" name="productImageUrl" id="addProductImageUrl"
-                                placeholder="Or paste image URL here..."
-                                onchange="document.getElementById('addImagePreview').src = this.value || '/assets/icons/profile.svg'"
-                                style="flex: 1;">
+                            <input type="text" class="form-input" id="addProductImageUrlInput"
+                                placeholder="Or paste image URL and click Add..."
+                                style="flex: 1; min-width: 180px;">
+                            <button type="button" class="btn btn-secondary" onclick="addProductImageByUrl()">
+                                <i class="fas fa-plus"></i> Add URL
+                            </button>
                         </div>
-                        <div class="image-preview-container" style="margin-top: 0.5rem;">
-                            <img id="addImagePreview" src="/assets/icons/profile.svg" alt="Preview"
-                                class="image-preview"
-                                style="max-height: 120px; border-radius: 8px; border: 2px dashed #ddd;">
-                        </div>
+                        <div id="addProductImagesList" class="product-images-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(72px, 1fr)); gap: 8px; margin-top: 0.5rem;"></div>
+                        <small class="form-hint" style="display:block; margin-top:6px; color:#6b7280;">Add up to 10 images. First image is the main one.</small>
                     </div>
 
                     <div class="form-group">
@@ -315,6 +313,19 @@
                     </div>
 
                     <div class="form-group">
+                        <label class="form-label">Sizes / Grams (optional)</label>
+                        <div class="sizes-add-row" style="display:flex;gap:8px;margin-bottom:8px;">
+                            <input type="text" class="form-input" id="addProductSizesInput" placeholder="e.g. 50g, 100g, 250g"
+                                style="flex:1;">
+                            <button type="button" class="btn btn-primary" onclick="addSizeOption('add')">
+                                <i class="fas fa-plus"></i> Add option
+                            </button>
+                        </div>
+                        <div id="addProductSizesList" class="sizes-options-list" style="display:flex;flex-wrap:wrap;gap:6px;min-height:24px;"></div>
+                        <input type="hidden" name="productSizes" id="addProductSizes" value="">
+                        <small class="form-hint" style="display:block; margin-top:6px; color:#6b7280;">Add each size option one by one. Customers can choose on the website. Stored locally only.</small>
+                    </div>
+                    <div class="form-group">
                         <label class="form-label">Description</label>
                         <textarea class="form-input" name="productDescription" id="addProductDescription" rows="4"
                             placeholder="Enter product description..."></textarea>
@@ -343,18 +354,23 @@
             <form id="editProductForm">
                 <input type="hidden" name="productId" id="editProductId">
                 <div class="modal-body">
-                    <!-- Image Preview -->
+                    <!-- Product Images (up to 10) -->
                     <div class="form-group">
-                        <label class="form-label">Product Image</label>
-                        <div class="image-preview-container">
-                            <img id="editImagePreview" src="" alt="Preview" class="image-preview">
+                        <label class="form-label">Product Images (up to 10)</label>
+                        <div style="display: flex; gap: 10px; align-items: center; margin-bottom: 0.5rem; flex-wrap: wrap;">
+                            <button type="button" class="btn btn-secondary" id="editProductUploadBtn"
+                                onclick="openCloudinaryWidget('edit')" style="flex-shrink: 0;">
+                                <i class="fas fa-cloud-upload-alt"></i> Upload Image
+                            </button>
+                            <input type="text" class="form-input" id="editProductImageUrlInput"
+                                placeholder="Or paste image URL and click Add..."
+                                style="flex: 1; min-width: 180px;">
+                            <button type="button" class="btn btn-secondary" onclick="addProductImageByUrl('edit')">
+                                <i class="fas fa-plus"></i> Add URL
+                            </button>
                         </div>
-                        <div class="file-upload" style="margin-top: 0.5rem;">
-                            <input type="file" name="productImage" id="editProductImage" accept="image/*"
-                                onchange="previewImage(this, 'editImagePreview')">
-                            <i class="fas fa-cloud-upload-alt"></i>
-                            <span>Click to upload new image</span>
-                        </div>
+                        <div id="editProductImagesList" class="product-images-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(72px, 1fr)); gap: 8px; margin-top: 0.5rem;"></div>
+                        <small class="form-hint" style="display:block; margin-top:6px; color:#6b7280;">Add up to 10 images. First image is the main one.</small>
                     </div>
 
                     <div class="form-group">
@@ -423,6 +439,19 @@
                     </div>
 
                     <div class="form-group">
+                        <label class="form-label">Sizes / Grams (optional)</label>
+                        <div class="sizes-add-row" style="display:flex;gap:8px;margin-bottom:8px;">
+                            <input type="text" class="form-input" id="editProductSizesInput" placeholder="e.g. 50g, 100g, 250g"
+                                style="flex:1;">
+                            <button type="button" class="btn btn-primary" onclick="addSizeOption('edit')">
+                                <i class="fas fa-plus"></i> Add option
+                            </button>
+                        </div>
+                        <div id="editProductSizesList" class="sizes-options-list" style="display:flex;flex-wrap:wrap;gap:6px;min-height:24px;"></div>
+                        <input type="hidden" name="productSizes" id="editProductSizes" value="">
+                        <small class="form-hint" style="display:block; margin-top:6px; color:#6b7280;">Add each size option one by one. Customers can choose on the website. Stored locally only.</small>
+                    </div>
+                    <div class="form-group">
                         <label class="form-label">Description</label>
                         <textarea class="form-input" name="productDescription" id="editProductDescription" rows="4"
                             placeholder="Enter product description..."></textarea>
@@ -455,12 +484,20 @@
         const CLOUDINARY_CLOUD_NAME = 'dphrxuhfc'; // Your Cloudinary cloud name
         const CLOUDINARY_UPLOAD_PRESET = 'freezy_products'; // Replace with your preset name
 
-        function openCloudinaryWidget(inputId, previewId) {
+        const MAX_PRODUCT_IMAGES = 10;
+        let addProductImagesList = [];
+        let editProductImagesList = [];
+
+        function openCloudinaryWidget(mode) {
             if (typeof cloudinary === 'undefined') {
                 showAlert('error', 'Upload widget not loaded. Please refresh the page.');
                 return;
             }
-
+            const list = mode === 'edit' ? editProductImagesList : addProductImagesList;
+            if (list.length >= MAX_PRODUCT_IMAGES) {
+                showAlert('warning', 'Maximum ' + MAX_PRODUCT_IMAGES + ' images allowed.');
+                return;
+            }
             const widget = cloudinary.createUploadWidget({
                 cloudName: CLOUDINARY_CLOUD_NAME,
                 uploadPreset: CLOUDINARY_UPLOAD_PRESET,
@@ -489,8 +526,11 @@
             }, (error, result) => {
                 if (!error && result && result.event === 'success') {
                     const imageUrl = result.info.secure_url;
-                    document.getElementById(inputId).value = imageUrl;
-                    document.getElementById(previewId).src = imageUrl;
+                    if (mode === 'edit') {
+                        if (editProductImagesList.length < MAX_PRODUCT_IMAGES) { editProductImagesList.push(imageUrl); renderProductImagesList('edit'); }
+                    } else {
+                        if (addProductImagesList.length < MAX_PRODUCT_IMAGES) { addProductImagesList.push(imageUrl); renderProductImagesList('add'); }
+                    }
                     showAlert('success', 'Image uploaded successfully!');
                 }
                 if (error) {
@@ -498,8 +538,159 @@
                     showAlert('error', 'Upload failed: ' + error.message);
                 }
             });
-
             widget.open();
+        }
+
+        function addProductImageByUrl(which) {
+            which = which || 'add';
+            const inputId = which === 'add' ? 'addProductImageUrlInput' : 'editProductImageUrlInput';
+            const list = which === 'add' ? addProductImagesList : editProductImagesList;
+            const input = document.getElementById(inputId);
+            const url = (input && input.value || '').trim();
+            if (!url) return;
+            if (list.length >= MAX_PRODUCT_IMAGES) {
+                showAlert('warning', 'Maximum ' + MAX_PRODUCT_IMAGES + ' images allowed.');
+                return;
+            }
+            list.push(url);
+            if (input) input.value = '';
+            renderProductImagesList(which);
+        }
+
+        function removeProductImage(which, index) {
+            const list = which === 'add' ? addProductImagesList : editProductImagesList;
+            list.splice(index, 1);
+            renderProductImagesList(which);
+        }
+
+        function renderProductImagesList(which) {
+            const list = which === 'add' ? addProductImagesList : editProductImagesList;
+            const containerId = which === 'add' ? 'addProductImagesList' : 'editProductImagesList';
+            const container = document.getElementById(containerId);
+            if (!container) return;
+            container.innerHTML = list.map(function (url, i) {
+                var safe = (url || '').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+                return '<div class="product-image-thumb" style="position:relative;aspect-ratio:1;border-radius:8px;overflow:hidden;border:2px solid var(--bg-secondary,#e2e8f0);"><img src="' + safe + '" alt="" style="width:100%;height:100%;object-fit:cover;" onerror="this.src=\'/assets/icons/profile.svg\'"><button type="button" class="sizes-chip-remove" onclick="removeProductImage(\'' + which + '\',' + i + ')" aria-label="Remove" style="position:absolute;top:2px;right:2px;width:22px;height:22px;border-radius:50%;background:rgba(0,0,0,0.6);color:#fff;border:none;cursor:pointer;font-size:14px;line-height:1;display:flex;align-items:center;justify-content:center;">&times;</button></div>';
+            }).join('');
+            var addBtn = document.getElementById('addProductUploadBtn');
+            var editBtn = document.getElementById('editProductUploadBtn');
+            if (addBtn) addBtn.disabled = addProductImagesList.length >= MAX_PRODUCT_IMAGES;
+            if (editBtn) editBtn.disabled = editProductImagesList.length >= MAX_PRODUCT_IMAGES;
+        }
+
+        function setEditProductImages(arr) {
+            editProductImagesList = Array.isArray(arr) ? arr.slice(0, MAX_PRODUCT_IMAGES) : [];
+            renderProductImagesList('edit');
+        }
+        window.setEditProductImages = setEditProductImages;
+
+        function clearAddImagesList() {
+            addProductImagesList = [];
+            renderProductImagesList('add');
+            var inp = document.getElementById('addProductImageUrlInput');
+            if (inp) inp.value = '';
+        }
+        window.clearAddImagesList = clearAddImagesList;
+
+        // Sizes/grams stored in localStorage only (no backend change)
+        const STORAGE_PRODUCT_SIZES = 'fb_product_sizes';
+        let addProductSizesList = [];
+        let editProductSizesList = [];
+
+        function getProductSizes() {
+            try {
+                return JSON.parse(localStorage.getItem(STORAGE_PRODUCT_SIZES) || '{}');
+            } catch (e) { return {}; }
+        }
+        function setProductSizes(sizesObj) {
+            localStorage.setItem(STORAGE_PRODUCT_SIZES, JSON.stringify(sizesObj));
+        }
+        function saveSizesForSku(sku, sizesStr) {
+            if (!sku) return;
+            const s = (sizesStr || '').trim();
+            const obj = getProductSizes();
+            if (s) obj[String(sku).toLowerCase()] = s;
+            else delete obj[String(sku).toLowerCase()];
+            setProductSizes(obj);
+        }
+        function getSizesForSku(sku) {
+            const obj = getProductSizes();
+            return obj[String(sku).toLowerCase()] || '';
+        }
+
+        // Size options UI: add one by one (no comma-separated typing)
+        function addSizeOption(which) {
+            const inputId = which === 'add' ? 'addProductSizesInput' : 'editProductSizesInput';
+            const listId = which === 'add' ? 'addProductSizesList' : 'editProductSizesList';
+            const hiddenId = which === 'add' ? 'addProductSizes' : 'editProductSizes';
+            const list = which === 'add' ? addProductSizesList : editProductSizesList;
+            const input = document.getElementById(inputId);
+            const val = (input && input.value || '').trim();
+            if (!val) return;
+            list.push(val);
+            if (input) input.value = '';
+            updateSizesHidden(hiddenId, list);
+            renderSizesList(listId, list, which);
+        }
+        function removeSizeOption(which, index) {
+            const list = which === 'add' ? addProductSizesList : editProductSizesList;
+            const listId = which === 'add' ? 'addProductSizesList' : 'editProductSizesList';
+            const hiddenId = which === 'add' ? 'addProductSizes' : 'editProductSizes';
+            list.splice(index, 1);
+            updateSizesHidden(hiddenId, list);
+            renderSizesList(listId, list, which);
+        }
+        function updateSizesHidden(hiddenId, list) {
+            const el = document.getElementById(hiddenId);
+            if (el) el.value = list.join(', ');
+        }
+        function renderSizesList(containerId, list, which) {
+            const container = document.getElementById(containerId);
+            if (!container) return;
+            container.innerHTML = list.map(function (s, i) {
+                return '<span class="sizes-chip" style="display:inline-flex;align-items:center;gap:4px;padding:4px 8px;background:var(--bg-secondary, #f1f5f9);border-radius:6px;font-size:0.875rem;"><span>' + String(s).replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</span><button type="button" class="sizes-chip-remove" data-which="' + which + '" data-index="' + i + '" aria-label="Remove" style="background:none;border:none;cursor:pointer;padding:0 2px;color:var(--text-secondary);font-size:1.1rem;line-height:1;">&times;</button></span>';
+            }).join('');
+            container.querySelectorAll('.sizes-chip-remove').forEach(function (btn) {
+                btn.addEventListener('click', function () {
+                    var w = this.getAttribute('data-which');
+                    var idx = parseInt(this.getAttribute('data-index'), 10);
+                    removeSizeOption(w, idx);
+                });
+            });
+        }
+        // When edit modal is opened, sync list from hidden input (set by dashboard.js)
+        function syncEditSizesFromInput() {
+            const hidden = document.getElementById('editProductSizes');
+            const str = (hidden && hidden.value || '').trim();
+            editProductSizesList = str ? str.split(',').map(function (x) { return x.trim(); }).filter(Boolean) : [];
+            updateSizesHidden('editProductSizes', editProductSizesList);
+            renderSizesList('editProductSizesList', editProductSizesList, 'edit');
+        }
+        window.syncEditSizesFromInput = syncEditSizesFromInput;
+        // Clear add-modal sizes when opening add modal
+        function clearAddSizesList() {
+            addProductSizesList = [];
+            updateSizesHidden('addProductSizes', addProductSizesList);
+            renderSizesList('addProductSizesList', addProductSizesList, 'add');
+            var inp = document.getElementById('addProductSizesInput');
+            if (inp) inp.value = '';
+        }
+        window.clearAddSizesList = clearAddSizesList;
+        // Sample sizes so you can see the feature (only if empty)
+        function ensureSampleSizes() {
+            const obj = getProductSizes();
+            if (Object.keys(obj).length > 0) return;
+            const sample = {
+                'mango-250': '100g, 250g, 500g',
+                'strawberries-250': '100g, 250g',
+                'strawberry-fav': '50g, 100g, 250g',
+                'banana-250': '100g, 250g',
+                'blueberries-250': '100g, 250g',
+                'marshmallow-pack': '1 pack, 3 packs',
+                'fd-gummies': '50g, 100g'
+            };
+            Object.assign(obj, sample);
+            setProductSizes(obj);
         }
 
         // Load products from API on page load
@@ -525,6 +716,7 @@
                             minStock: p.minStock || 10,
                             status: p.status || 'active',
                             image: p.images?.[0] || '',
+                            images: Array.isArray(p.images) ? p.images : (p.images ? [p.images] : []),
                             description: p.description || ''
                         });
                     });
@@ -544,7 +736,6 @@
         document.getElementById('addProductForm')?.addEventListener('submit', async function (e) {
             e.preventDefault();
 
-            const imageUrl = document.getElementById('addProductImageUrl').value;
             const productData = {
                 name: document.getElementById('addProductName').value,
                 sku: document.getElementById('addProductSku').value,
@@ -554,7 +745,7 @@
                 minStock: parseInt(document.getElementById('addProductMinStock').value) || 20,
                 status: document.getElementById('addProductStatus').value || 'active',
                 description: document.getElementById('addProductDescription').value || '',
-                images: imageUrl ? [imageUrl] : []
+                images: addProductImagesList.length ? addProductImagesList.slice(0, MAX_PRODUCT_IMAGES) : []
             };
 
             console.log('Creating product:', productData);
@@ -562,8 +753,11 @@
             try {
                 const newProduct = await DashboardAPI.createProduct(productData);
                 console.log('Product created:', newProduct);
+                const sizesStr = document.getElementById('addProductSizes').value;
+                saveSizesForSku(productData.sku, sizesStr);
                 showAlert('success', 'Product added successfully!');
                 closeModal('addProductModal');
+                clearAddImagesList();
                 await loadProductsFromAPI();
                 this.reset();
             } catch (err) {
@@ -585,8 +779,12 @@
                 stock: parseInt(document.getElementById('editProductStock').value),
                 minStock: parseInt(document.getElementById('editProductMinStock').value) || 20,
                 status: document.getElementById('editProductStatus').value,
-                description: document.getElementById('editProductDescription').value
+                description: document.getElementById('editProductDescription').value,
+                images: editProductImagesList.length ? editProductImagesList.slice(0, MAX_PRODUCT_IMAGES) : []
             };
+
+            const sizesStr = document.getElementById('editProductSizes').value;
+            saveSizesForSku(productData.sku, sizesStr);
 
             try {
                 await DashboardAPI.updateProduct(productId, productData);
@@ -624,8 +822,26 @@
             }
         };
 
-        // Load from API on page load
-        document.addEventListener('DOMContentLoaded', loadProductsFromAPI);
+        // Enter key in size input adds option (don't submit form)
+        document.getElementById('addProductSizesInput')?.addEventListener('keydown', function (e) {
+            if (e.key === 'Enter') { e.preventDefault(); addSizeOption('add'); }
+        });
+        document.getElementById('editProductSizesInput')?.addEventListener('keydown', function (e) {
+            if (e.key === 'Enter') { e.preventDefault(); addSizeOption('edit'); }
+        });
+        // Enter in image URL input adds image
+        document.getElementById('addProductImageUrlInput')?.addEventListener('keydown', function (e) {
+            if (e.key === 'Enter') { e.preventDefault(); addProductImageByUrl('add'); }
+        });
+        document.getElementById('editProductImageUrlInput')?.addEventListener('keydown', function (e) {
+            if (e.key === 'Enter') { e.preventDefault(); addProductImageByUrl('edit'); }
+        });
+
+        // Load from API on page load and ensure sample sizes exist
+        document.addEventListener('DOMContentLoaded', function () {
+            ensureSampleSizes();
+            loadProductsFromAPI();
+        });
     </script>
 
 </body>

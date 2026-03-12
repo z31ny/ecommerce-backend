@@ -7,7 +7,31 @@
  * - Copyright store name
  */
 (function () {
+    // Product sizes/grams (stored in localStorage, set from dashboard) — no backend
+    var STORAGE_PRODUCT_SIZES = 'fb_product_sizes';
+    function getProductSizesRaw() {
+        try { return JSON.parse(localStorage.getItem(STORAGE_PRODUCT_SIZES) || '{}'); } catch (e) { return {}; }
+    }
+    function ensureSampleSizes() {
+        var obj = getProductSizesRaw();
+        if (Object.keys(obj).length > 0) return;
+        var sample = { 'mango-250': '100g, 250g, 500g', 'strawberries-250': '100g, 250g', 'strawberry-fav': '50g, 100g, 250g', 'banana-250': '100g, 250g', 'blueberries-250': '100g, 250g', 'marshmallow-pack': '1 pack, 3 packs', 'fd-gummies': '50g, 100g' };
+        Object.keys(sample).forEach(function (k) { obj[k] = sample[k]; });
+        try { localStorage.setItem(STORAGE_PRODUCT_SIZES, JSON.stringify(obj)); } catch (e) {}
+    }
+    function getProductSizesForSku(sku) {
+        if (!sku) return [];
+        var obj = getProductSizesRaw();
+        var s = obj[String(sku).toLowerCase()];
+        if (!s || typeof s !== 'string') return [];
+        return s.split(',').map(function (x) { return x.trim(); }).filter(Boolean);
+    }
+    window.getProductSizesForSku = getProductSizesForSku;
+    window.ensureProductSizesSample = ensureSampleSizes;
+
     document.addEventListener('DOMContentLoaded', async function () {
+        ensureSampleSizes();
+
         function ensurePolicyModal() {
             if (document.getElementById('policy-modal')) return;
             var wrapper = document.createElement('div');
@@ -265,6 +289,14 @@
                         };
                         moodsGrid.innerHTML = activeMoods.map(function (m) {
                             var colors = moodColorMap[m.color] || moodColorMap.pink;
+                            var sizesHtml = '';
+                            if (m.sizes && m.sizes.length > 0) {
+                                sizesHtml = '<label class="offer-size-label" style="color:' + colors.text + ';">Size</label>' +
+                                    '<select class="product-size-select form-select mood-size-select">' +
+                                    '<option value="">Choose size</option>' +
+                                    m.sizes.map(function (s) { return '<option value="' + s.replace(/"/g, '&quot;') + '">' + s + '</option>'; }).join('') +
+                                    '</select>';
+                            }
                             return '<div class="mood-card fade-up" tabindex="0">' +
                                 '<div class="mood-card-inner">' +
                                 '  <div class="mood-card-front" style="background:' + colors.bg + ';color:' + colors.text + ';">' +
@@ -274,6 +306,7 @@
                                 '  </div>' +
                                 '  <div class="mood-card-back" style="' + (m.backImage ? 'background-image:url(' + m.backImage + ');background-size:cover;background-position:center;' : 'background:' + colors.bg + ';') + '">' +
                                 (m.backDescription ? '    <p class="mood-back-text">' + m.backDescription + '</p>' : '') +
+                                sizesHtml +
                                 (m.buttonLink ? '    <a href="' + m.buttonLink + '" class="mood-btn mood-btn-link">Shop Now</a>' : '') +
                                 '  </div>' +
                                 '</div>' +

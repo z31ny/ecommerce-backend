@@ -1628,6 +1628,16 @@
                         <label class="form-label">Product Link</label>
                         <input type="text" class="form-input" id="moodButtonLink" placeholder="/products/strawberry">
                     </div>
+                    <div class="form-group">
+                        <label class="form-label">Sizes / Grams (optional)</label>
+                        <div class="sizes-add-row" style="display:flex;gap:8px;margin-bottom:8px;">
+                            <input type="text" class="form-input" id="moodSizesInput" placeholder="e.g. 50g, 100g, 250g" style="flex:1;">
+                            <button type="button" class="btn btn-primary" onclick="addMoodSizeOption('add')">
+                                <i class="fas fa-plus"></i> Add option
+                            </button>
+                        </div>
+                        <div id="addMoodSizesList" class="sizes-options-list" style="display:flex;flex-wrap:wrap;gap:6px;min-height:24px;"></div>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" onclick="closeModal('addMoodModal')">Cancel</button>
@@ -1700,6 +1710,16 @@
                     <div class="form-group">
                         <label class="form-label">Product Link</label>
                         <input type="text" class="form-input" id="editMoodButtonLink">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Sizes / Grams (optional)</label>
+                        <div class="sizes-add-row" style="display:flex;gap:8px;margin-bottom:8px;">
+                            <input type="text" class="form-input" id="editMoodSizesInput" placeholder="e.g. 50g, 100g, 250g" style="flex:1;">
+                            <button type="button" class="btn btn-primary" onclick="addMoodSizeOption('edit')">
+                                <i class="fas fa-plus"></i> Add option
+                            </button>
+                        </div>
+                        <div id="editMoodSizesList" class="sizes-options-list" style="display:flex;flex-wrap:wrap;gap:6px;min-height:24px;"></div>
                     </div>
                     <div class="form-group">
                         <label class="form-label">Status</label>
@@ -2468,12 +2488,47 @@
             reader.readAsDataURL(file);
         }
 
+        var addMoodSizesList = [];
+        var editMoodSizesList = [];
+
+        function addMoodSizeOption(which) {
+            var inputId = which === 'add' ? 'moodSizesInput' : 'editMoodSizesInput';
+            var listId = which === 'add' ? 'addMoodSizesList' : 'editMoodSizesList';
+            var list = which === 'add' ? addMoodSizesList : editMoodSizesList;
+            var input = document.getElementById(inputId);
+            var val = (input && input.value || '').trim();
+            if (!val) return;
+            list.push(val);
+            if (input) input.value = '';
+            renderMoodSizesList(listId, list, which);
+        }
+        function removeMoodSizeOption(which, index) {
+            var list = which === 'add' ? addMoodSizesList : editMoodSizesList;
+            var listId = which === 'add' ? 'addMoodSizesList' : 'editMoodSizesList';
+            list.splice(index, 1);
+            renderMoodSizesList(listId, list, which);
+        }
+        function renderMoodSizesList(containerId, list, which) {
+            var container = document.getElementById(containerId);
+            if (!container) return;
+            container.innerHTML = list.map(function (s, i) {
+                return '<span class="sizes-chip" style="display:inline-flex;align-items:center;gap:4px;padding:4px 8px;background:var(--bg-secondary, #f1f5f9);border-radius:6px;font-size:0.875rem;"><span>' + String(s).replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</span><button type="button" class="sizes-chip-remove" data-which="' + which + '" data-index="' + i + '" aria-label="Remove" style="background:none;border:none;cursor:pointer;padding:0 2px;color:var(--text-secondary);font-size:1.1rem;line-height:1;">&times;</button></span>';
+            }).join('');
+            container.querySelectorAll('.sizes-chip-remove').forEach(function (btn) {
+                btn.addEventListener('click', function () {
+                    removeMoodSizeOption(this.getAttribute('data-which'), parseInt(this.getAttribute('data-index'), 10));
+                });
+            });
+        }
+
         function openAddMoodModal() {
             document.getElementById('addMoodForm').reset();
             document.querySelectorAll('#addMoodModal .color-option').forEach(c => c.classList.remove('selected'));
             document.querySelector('#addMoodModal .color-option[data-color="pink"]').classList.add('selected');
             currentAddMoodColor = 'pink';
             addMoodBackImageData = null;
+            addMoodSizesList = [];
+            renderMoodSizesList('addMoodSizesList', addMoodSizesList, 'add');
             document.getElementById('moodBackImagePreview').style.display = 'none';
             document.getElementById('moodBackImagePlaceholder').style.display = 'block';
             openModal('addMoodModal');
@@ -2490,6 +2545,7 @@
                 backImage: addMoodBackImageData || '',
                 backDescription: document.getElementById('moodBackDescription').value,
                 buttonLink: document.getElementById('moodButtonLink').value,
+                sizes: addMoodSizesList.slice(),
                 status: 'active'
             });
             saveAllData(); closeModal('addMoodModal'); renderMoods(); updateCounts(); showAlert('success', 'Mood card added!');
@@ -2504,6 +2560,8 @@
             document.getElementById('editMoodColor').value = m.color;
             document.getElementById('editMoodBackDescription').value = m.backDescription || '';
             document.getElementById('editMoodButtonLink').value = m.buttonLink || '';
+            editMoodSizesList = (m.sizes || []).slice();
+            renderMoodSizesList('editMoodSizesList', editMoodSizesList, 'edit');
             document.getElementById('editMoodStatus').value = m.status;
             document.getElementById('editMoodBackImagePreview').src = m.backImage || '/assets/icons/profile.svg';
             editMoodBackImageData = m.backImage;
@@ -2522,6 +2580,7 @@
             m.color = currentEditMoodColor;
             m.backDescription = document.getElementById('editMoodBackDescription').value;
             m.buttonLink = document.getElementById('editMoodButtonLink').value;
+            m.sizes = editMoodSizesList.slice();
             m.status = document.getElementById('editMoodStatus').value;
             if (editMoodBackImageData) m.backImage = editMoodBackImageData;
             saveAllData(); closeModal('editMoodModal'); renderMoods(); showAlert('success', 'Mood card updated!');
@@ -2531,6 +2590,13 @@
             if (!confirm('Delete this mood card?')) return;
             moods = moods.filter(m => m.id !== id); saveAllData(); renderMoods(); updateCounts(); showAlert('success', 'Mood card deleted!');
         }
+
+        document.getElementById('moodSizesInput')?.addEventListener('keydown', function (e) {
+            if (e.key === 'Enter') { e.preventDefault(); addMoodSizeOption('add'); }
+        });
+        document.getElementById('editMoodSizesInput')?.addEventListener('keydown', function (e) {
+            if (e.key === 'Enter') { e.preventDefault(); addMoodSizeOption('edit'); }
+        });
 
         // ===== SNACKS =====
         function renderSnacks() {

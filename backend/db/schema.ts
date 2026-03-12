@@ -46,7 +46,7 @@ export const messages = pgTable('messages', {
 // Offers Table (special offers/discounts)
 export const offers = pgTable('offers', {
     id: serial('id').primaryKey(),
-    productSku: text('product_sku').notNull(),
+    productSku: text('product_sku').notNull().unique(),
     name: text('name').notNull(),
     image: text('image'),
     originalPrice: decimal('original_price', { precision: 10, scale: 2 }).notNull(),

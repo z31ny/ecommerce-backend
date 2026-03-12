@@ -51,7 +51,15 @@ export async function POST(request: NextRequest) {
                 endDate: endDate ? new Date(endDate) : undefined,
                 isActive: isActive !== false,
             })
+            .onConflictDoNothing()
             .returning();
+
+        if (!newOffer) {
+            return NextResponse.json(
+                { error: 'An offer for this product SKU already exists' },
+                { status: 409 }
+            );
+        }
 
         return NextResponse.json(newOffer, { status: 201 });
     } catch (error) {

@@ -6,6 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Freezy Bite — Offers</title>
   <link rel="stylesheet" href="./styles/home.css">
+  <link rel="stylesheet" href="./styles/sidebar.css">
 </head>
 
 <body>
@@ -25,7 +26,7 @@
           <a href="./contact.html">Contact Us</a>
           <a href="./about.html">About Us</a>
           <a href="./home.html">Home</a>
-          <a href="./fruits.html">Fruits</a>
+          <a href="./fruits.html">Fruits & Vegetables</a>
           <a href="./candy.html">Candy</a>
           <a href="./offers.html" aria-current="page">Offers</a>
         </nav>
@@ -36,6 +37,7 @@
         </button>
         <button class="icon-btn cart-open" aria-label="Open cart">
           <img src="./assets/icons/cart.svg" alt="Cart">
+          <span class="cart-badge">0</span>
         </button>
         <button class="icon-btn burger" aria-label="Menu" aria-expanded="false">
           <img src="./assets/icons/menu.svg" alt="menu">
@@ -63,72 +65,81 @@
   </main>
 
   <script>
-    // Fetch and render offers from API
-    async function loadOffers() {
-      const grid = document.getElementById('offersGrid');
-      try {
-        const response = await fetch('/api/offers');
-        const offers = await response.json();
+    (function () {
+      function loadOffers() {
+        var grid = document.getElementById('offersGrid');
+        if (!grid) return;
 
-        if (!offers || offers.length === 0) {
-          grid.innerHTML = `
-            <div style="grid-column: 1 / -1; text-align: center; padding: 3rem;">
-              <p style="color: #666;">No offers available at the moment. Check back soon!</p>
-            </div>
-          `;
-          return;
-        }
-
-        grid.innerHTML = offers.map(offer => `
-          <article class="offer-card" data-sku="${offer.productSku || ''}">
-            <div class="offer-badge">-${offer.discount}%</div>
-            <div class="offer-media">
-              <img src="${offer.image || '/assets/icons/profile.svg'}" alt="${offer.name}" onerror="this.src='/assets/icons/profile.svg'">
-            </div>
-            <h4 class="offer-title">${offer.name}</h4>
-            <div class="offer-prices">
-              <span class="offer-old">${parseFloat(offer.originalPrice).toFixed(0)} EGP</span>
-              <span class="offer-new">${parseFloat(offer.salePrice).toFixed(0)} EGP</span>
-            </div>
-            <button class="btn btn-primary add-to-cart" data-sku="${offer.productSku || ''}" data-name="${offer.name}" data-price="${offer.salePrice}">
-              <img class="btn-icon" src="./assets/icons/cart.svg" alt=""> Add to Cart
-            </button>
-          </article>
-        `).join('');
-
-        // Re-attach cart event listeners for dynamically loaded offers
-        grid.querySelectorAll('.add-to-cart').forEach(btn => {
-          btn.addEventListener('click', function () {
-            const sku = this.dataset.sku;
-            const name = this.dataset.name;
-            const price = parseFloat(this.dataset.price);
-            // Use the existing cart functionality from home.js if available
-            if (typeof addToCart === 'function') {
-              addToCart({ sku, name, price, qty: 1 });
-            } else {
-              // Fallback: show a toast notification
-              const toast = document.querySelector('.toast');
-              if (toast) {
-                toast.textContent = `${name} added to cart!`;
-                toast.classList.add('show');
-                setTimeout(() => toast.classList.remove('show'), 2000);
-              }
+        fetch('/api/offers')
+          .then(function (res) { return res.json(); })
+          .then(function (offers) {
+            if (!offers || offers.length === 0) {
+              grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:3rem;color:#888;">No offers available at the moment. Check back soon!</div>';
+              return;
             }
+
+            grid.innerHTML = '';
+            var getSizes = typeof window.getProductSizesForSku === 'function' ? window.getProductSizesForSku : function () { return []; };
+
+            offers.forEach(function (offer) {
+              var sku = offer.productSku || '';
+              var card = document.createElement('article');
+              card.className = 'offer-card fade-up is-in';
+              card.setAttribute('data-sku', sku);
+
+              var sizes = getSizes(sku);
+              var sizeSelectHtml =
+                '<label class="offer-size-label">Size</label>' +
+                '<select class="product-size-select form-select">' +
+                '<option value="">Choose size</option>' +
+                sizes.map(function (s) { return '<option value="' + s.replace(/"/g, '&quot;') + '">' + s + '</option>'; }).join('') +
+                '</select>';
+
+              card.innerHTML =
+                (offer.discount ? '<div class="offer-badge">-' + offer.discount + '%</div>' : '') +
+                '<div class="offer-media"><img src="' + (offer.image || '/assets/icons/profile.svg') + '" alt="' + offer.name + '" onerror="this.src=\'/assets/icons/profile.svg\'"></div>' +
+                '<h4 class="offer-title">' + offer.name + '</h4>' +
+                '<div class="offer-prices">' +
+                (offer.originalPrice ? '<span class="offer-old">' + Math.round(parseFloat(offer.originalPrice)) + ' EGP</span>' : '') +
+                '<span class="offer-new">' + Math.round(parseFloat(offer.salePrice)) + ' EGP</span>' +
+                '</div>' +
+                sizeSelectHtml +
+                '<button type="button" class="offer-cart add-to-cart" data-sku="' + sku + '" aria-label="Add to cart">' +
+                '<img src="./assets/icons/cart.svg" alt="">' +
+                '</button>';
+
+              grid.appendChild(card);
+            });
+
+            Array.prototype.slice.call(grid.querySelectorAll('.add-to-cart')).forEach(function (btn) {
+              btn.addEventListener('click', function () {
+                var card = btn.closest('[data-sku]');
+                var sku = (card && card.getAttribute('data-sku')) || btn.dataset.sku || '';
+                var sizeSelect = card ? card.querySelector('.product-size-select') : null;
+                var size = sizeSelect && sizeSelect.value ? sizeSelect.value : null;
+                if (typeof addToCart === 'function') {
+                  addToCart(sku, 1, size, btn);
+                } else {
+                  var cartKey = size ? sku + '__' + size : sku;
+                  try {
+                    var cart = JSON.parse(localStorage.getItem('fb_cart_v1') || '{}');
+                    cart[cartKey] = (cart[cartKey] || 0) + 1;
+                    localStorage.setItem('fb_cart_v1', JSON.stringify(cart));
+                  } catch (e) {}
+                  var toast = document.querySelector('.toast');
+                  if (toast) { toast.textContent = 'Added to cart!'; toast.classList.add('is-show'); setTimeout(function () { toast.classList.remove('is-show'); }, 1800); }
+                }
+              });
+            });
+          })
+          .catch(function (err) {
+            console.error('Failed to load offers:', err);
+            grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:3rem;color:#888;">Unable to load offers. Please try again later.</div>';
           });
-        });
-
-      } catch (error) {
-        console.error('Failed to load offers:', error);
-        grid.innerHTML = `
-          <div style="grid-column: 1 / -1; text-align: center; padding: 3rem;">
-            <p style="color: #666;">Unable to load offers. Please try again later.</p>
-          </div>
-        `;
       }
-    }
 
-    // Load offers when page loads
-    document.addEventListener('DOMContentLoaded', loadOffers);
+      document.addEventListener('DOMContentLoaded', loadOffers);
+    })();
   </script>
 
   <!-- Cart Drawer -->
@@ -247,8 +258,9 @@
     </div>
   </footer>
 
-  <script src="./scripts/home.js" defer></script>
+  <script src="./scripts/home.js?v=3" defer></script>
   <script src="./scripts/site-settings.js" defer></script>
+  <script src="./scripts/sidebar.js" defer></script>
 </body>
 
 </html>
