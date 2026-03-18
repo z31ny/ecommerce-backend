@@ -7,30 +7,52 @@
  * - Copyright store name
  */
 (function () {
-    // Product sizes/grams (stored in localStorage, set from dashboard) — no backend
+    // Product sizes/grams:
+    // Prefer DB-backed sizes from /api/products (product.attributes.sizes), fallback to localStorage for older data.
     var STORAGE_PRODUCT_SIZES = 'fb_product_sizes';
     function getProductSizesRaw() {
         try { return JSON.parse(localStorage.getItem(STORAGE_PRODUCT_SIZES) || '{}'); } catch (e) { return {}; }
     }
-    function ensureSampleSizes() {
-        var obj = getProductSizesRaw();
-        if (Object.keys(obj).length > 0) return;
-        var sample = { 'mango-250': '100g, 250g, 500g', 'strawberries-250': '100g, 250g', 'strawberry-fav': '50g, 100g, 250g', 'banana-250': '100g, 250g', 'blueberries-250': '100g, 250g', 'marshmallow-pack': '1 pack, 3 packs', 'fd-gummies': '50g, 100g' };
-        Object.keys(sample).forEach(function (k) { obj[k] = sample[k]; });
-        try { localStorage.setItem(STORAGE_PRODUCT_SIZES, JSON.stringify(obj)); } catch (e) {}
+    function normalizeSizes(val) {
+        if (!val) return [];
+        if (Array.isArray(val)) return val.map(function (s) { return String(s).trim(); }).filter(Boolean);
+        if (typeof val === 'string') return val.split(',').map(function (x) { return x.trim(); }).filter(Boolean);
+        return [];
     }
     function getProductSizesForSku(sku) {
         if (!sku) return [];
+        var key = String(sku).toLowerCase();
+        // 1) DB-backed sizes map (loaded below)
+        if (window.__productSizesBySku && window.__productSizesBySku[key]) {
+            return normalizeSizes(window.__productSizesBySku[key]);
+        }
+        // 2) localStorage fallback
         var obj = getProductSizesRaw();
-        var s = obj[String(sku).toLowerCase()];
-        if (!s || typeof s !== 'string') return [];
-        return s.split(',').map(function (x) { return x.trim(); }).filter(Boolean);
+        var s = obj[key];
+        return normalizeSizes(s);
     }
     window.getProductSizesForSku = getProductSizesForSku;
-    window.ensureProductSizesSample = ensureSampleSizes;
 
     document.addEventListener('DOMContentLoaded', async function () {
-        ensureSampleSizes();
+        // Load sizes from DB so all visitors see the same sizes
+        try {
+            var resProducts = await fetch('/api/products?limit=200', { cache: 'no-store' });
+            if (resProducts.ok) {
+                var list = await resProducts.json();
+                var map = {};
+                if (Array.isArray(list)) {
+                    list.forEach(function (p) {
+                        var sku = p && p.sku ? String(p.sku).toLowerCase() : '';
+                        if (!sku) return;
+                        var sizes = p.attributes && p.attributes.sizes ? p.attributes.sizes : null;
+                        if (sizes) map[sku] = sizes;
+                    });
+                }
+                window.__productSizesBySku = map;
+            }
+        } catch (e) {
+            // Ignore — fallback to localStorage
+        }
 
         function ensurePolicyModal() {
             if (document.getElementById('policy-modal')) return;

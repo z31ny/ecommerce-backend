@@ -2345,6 +2345,101 @@ body {
   gap: 1.5rem;
 }
 
+/* New (used by fruits.html + candy.html): .fav-card layout */
+.fav-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  border: 1px solid var(--glass-border);
+  border-radius: 1.25rem;
+  overflow: hidden;
+  box-shadow: var(--glass-shadow), var(--glow);
+  transition: transform 0.3s, box-shadow 0.3s;
+  min-height: 330px; /* keeps cards consistent even with short text */
+}
+.fav-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--glass-shadow), var(--glow-strong);
+}
+
+.fav-media {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  background: #f9f3f3;
+}
+.fav-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s;
+}
+.fav-card:hover .fav-media img {
+  transform: scale(1.05);
+}
+
+.fav-desc {
+  padding: 0.9rem 1.1rem 0;
+  color: #374151;
+  font-size: 0.9rem;
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  min-height: calc(1.4em * 3); /* fixed text area height */
+}
+
+.fav-meta {
+  padding: 0.75rem 1.1rem 1.1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-top: auto;
+}
+.fav-weight {
+  display: inline-flex;
+  padding: 0.2rem 0.65rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--purple, #6a35b3);
+  background: rgba(106, 53, 179, 0.08);
+  border-radius: 1rem;
+}
+.fav-meta .fav-price {
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: var(--berry, #6c2b47);
+}
+
+.fav-cart {
+  position: absolute;
+  right: 12px;
+  top: 12px;
+  width: 44px;
+  height: 44px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.85);
+  border: 1px solid rgba(17, 24, 39, 0.08);
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.12);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s, background 0.2s;
+}
+.fav-cart:hover {
+  transform: translateY(-1px);
+  background: rgba(255, 255, 255, 0.95);
+}
+.fav-cart img {
+  width: 20px;
+  height: 20px;
+}
+
 .favorite-card {
   background: var(--glass-bg);
   backdrop-filter: blur(var(--glass-blur));

@@ -618,7 +618,14 @@
                     <div class="form-group">
                         <label class="form-label">Product Name <span class="required">*</span></label>
                         <input type="text" class="form-input" id="addOfferName" placeholder="e.g., Snickers Pack"
+                            required oninput="syncOfferSkuFromName('add')">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Product SKU <span class="required">*</span></label>
+                        <input type="text" class="form-input" id="addOfferSku" placeholder="e.g., snickers-pack"
                             required>
+                        <small class="form-hint" style="display:block; margin-top:6px; color:#6b7280;">This SKU links the offer to the product and its sizes on the website.</small>
                     </div>
 
                     <div class="form-row">
@@ -647,6 +654,22 @@
                     <div class="form-group">
                         <label class="form-label">Product Link (optional)</label>
                         <input type="text" class="form-input" id="addOfferLink" placeholder="/products/snickers-pack">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Sizes / Grams (optional)</label>
+                        <div class="sizes-add-row" style="display:flex;gap:8px;margin-bottom:8px;">
+                            <input type="text" class="form-input" id="addOfferSizesInput" placeholder="e.g. 50g, 100g, 250g"
+                                style="flex:1;">
+                            <button type="button" class="btn btn-primary" onclick="addOfferSizeOption('add')"
+                                style="background:#a31545;">
+                                <i class="fas fa-plus"></i> Add option
+                            </button>
+                        </div>
+                        <div id="addOfferSizesList" class="sizes-options-list"
+                            style="display:flex;flex-wrap:wrap;gap:6px;min-height:24px;"></div>
+                        <input type="hidden" id="addOfferSizes" value="">
+                        <small class="form-hint" style="display:block; margin-top:6px; color:#6b7280;">Sizes are saved locally (used by the public offers page size selector).</small>
                     </div>
 
                     <div class="form-group">
@@ -695,7 +718,12 @@
 
                     <div class="form-group">
                         <label class="form-label">Product Name <span class="required">*</span></label>
-                        <input type="text" class="form-input" id="editOfferName" required>
+                        <input type="text" class="form-input" id="editOfferName" required oninput="syncOfferSkuFromName('edit')">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Product SKU <span class="required">*</span></label>
+                        <input type="text" class="form-input" id="editOfferSku" required>
                     </div>
 
                     <div class="form-row">
@@ -724,6 +752,22 @@
                     <div class="form-group">
                         <label class="form-label">Product Link (optional)</label>
                         <input type="text" class="form-input" id="editOfferLink">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Sizes / Grams (optional)</label>
+                        <div class="sizes-add-row" style="display:flex;gap:8px;margin-bottom:8px;">
+                            <input type="text" class="form-input" id="editOfferSizesInput" placeholder="e.g. 50g, 100g, 250g"
+                                style="flex:1;">
+                            <button type="button" class="btn btn-primary" onclick="addOfferSizeOption('edit')"
+                                style="background:#a31545;">
+                                <i class="fas fa-plus"></i> Add option
+                            </button>
+                        </div>
+                        <div id="editOfferSizesList" class="sizes-options-list"
+                            style="display:flex;flex-wrap:wrap;gap:6px;min-height:24px;"></div>
+                        <input type="hidden" id="editOfferSizes" value="">
+                        <small class="form-hint" style="display:block; margin-top:6px; color:#6b7280;">Sizes are saved locally (used by the public offers page size selector).</small>
                     </div>
 
                     <div class="form-group">
@@ -809,6 +853,105 @@
     <script>
         // Offers Data - now loaded from API
         let specialOffers = [];
+
+        // Sizes/grams storage (shared with public site via site-settings.js)
+        const STORAGE_PRODUCT_SIZES = 'fb_product_sizes';
+        let addOfferSizesList = [];
+        let editOfferSizesList = [];
+
+        function getProductSizesRaw() {
+            try { return JSON.parse(localStorage.getItem(STORAGE_PRODUCT_SIZES) || '{}'); } catch (e) { return {}; }
+        }
+        function setProductSizesRaw(obj) {
+            try { localStorage.setItem(STORAGE_PRODUCT_SIZES, JSON.stringify(obj || {})); } catch (e) { }
+        }
+        function saveSizesForSku(sku, sizesStr) {
+            const key = String(sku || '').trim().toLowerCase();
+            if (!key) return;
+            const s = (sizesStr || '').trim();
+            const obj = getProductSizesRaw();
+            if (s) obj[key] = s;
+            else delete obj[key];
+            setProductSizesRaw(obj);
+        }
+        function getSizesForSku(sku) {
+            const key = String(sku || '').trim().toLowerCase();
+            if (!key) return [];
+            const obj = getProductSizesRaw();
+            const s = obj[key];
+            if (!s || typeof s !== 'string') return [];
+            return s.split(',').map(x => x.trim()).filter(Boolean);
+        }
+
+        function slugifySku(input) {
+            return String(input || '')
+                .toLowerCase()
+                .trim()
+                .replace(/\s+/g, '-')
+                .replace(/[^a-z0-9-]/g, '');
+        }
+
+        function syncOfferSkuFromName(mode) {
+            const nameId = mode === 'add' ? 'addOfferName' : 'editOfferName';
+            const skuId = mode === 'add' ? 'addOfferSku' : 'editOfferSku';
+            const nameEl = document.getElementById(nameId);
+            const skuEl = document.getElementById(skuId);
+            if (!nameEl || !skuEl) return;
+            if ((skuEl.value || '').trim()) return; // don't overwrite if user set it
+            skuEl.value = slugifySku(nameEl.value);
+        }
+
+        function updateOfferSizesHidden(hiddenId, list) {
+            const hidden = document.getElementById(hiddenId);
+            if (!hidden) return;
+            hidden.value = (list || []).join(', ');
+        }
+        function renderOfferSizesList(containerId, list, which) {
+            const container = document.getElementById(containerId);
+            if (!container) return;
+            container.innerHTML = (list || []).map((s, i) => {
+                const safe = String(s).replace(/</g, '&lt;').replace(/>/g, '&gt;');
+                return '<span class="sizes-chip" style="display:inline-flex;align-items:center;gap:4px;padding:4px 8px;background:var(--bg-secondary, #f1f5f9);border-radius:6px;font-size:0.875rem;">' +
+                    '<span>' + safe + '</span>' +
+                    '<button type="button" class="sizes-chip-remove" data-which="' + which + '" data-index="' + i + '" aria-label="Remove" style="background:none;border:none;cursor:pointer;padding:0 2px;color:var(--text-secondary);font-size:1.1rem;line-height:1;">&times;</button>' +
+                    '</span>';
+            }).join('');
+            container.querySelectorAll('.sizes-chip-remove').forEach(function (btn) {
+                btn.addEventListener('click', function () {
+                    const w = btn.getAttribute('data-which');
+                    const idx = parseInt(btn.getAttribute('data-index') || '0', 10);
+                    removeOfferSizeOption(w, idx);
+                });
+            });
+        }
+        function addOfferSizeOption(which) {
+            const inputId = which === 'add' ? 'addOfferSizesInput' : 'editOfferSizesInput';
+            const listId = which === 'add' ? 'addOfferSizesList' : 'editOfferSizesList';
+            const hiddenId = which === 'add' ? 'addOfferSizes' : 'editOfferSizes';
+            const list = which === 'add' ? addOfferSizesList : editOfferSizesList;
+            const input = document.getElementById(inputId);
+            if (!input) return;
+            const v = String(input.value || '').trim();
+            if (!v) return;
+            if (list.indexOf(v) !== -1) { input.value = ''; return; }
+            list.push(v);
+            input.value = '';
+            updateOfferSizesHidden(hiddenId, list);
+            renderOfferSizesList(listId, list, which);
+        }
+        function removeOfferSizeOption(which, index) {
+            const list = which === 'add' ? addOfferSizesList : editOfferSizesList;
+            const listId = which === 'add' ? 'addOfferSizesList' : 'editOfferSizesList';
+            const hiddenId = which === 'add' ? 'addOfferSizes' : 'editOfferSizes';
+            list.splice(index, 1);
+            updateOfferSizesHidden(hiddenId, list);
+            renderOfferSizesList(listId, list, which);
+        }
+        function clearAddOfferSizesList() {
+            addOfferSizesList = [];
+            updateOfferSizesHidden('addOfferSizes', addOfferSizesList);
+            renderOfferSizesList('addOfferSizesList', addOfferSizesList, 'add');
+        }
 
         let pageSettings = {
             title: 'Special Offers',
@@ -1105,6 +1248,7 @@
             document.getElementById('addOfferImagePlaceholder').style.display = 'block';
             document.getElementById('addDiscountPreview').textContent = '-0%';
             addOfferImageData = null;
+            clearAddOfferSizesList();
             openModal('addOfferModal');
         }
 
@@ -1113,15 +1257,24 @@
             event.preventDefault();
 
             const name = document.getElementById('addOfferName').value;
+            const productSkuInput = document.getElementById('addOfferSku').value;
             const originalPrice = parseInt(document.getElementById('addOfferOriginalPrice').value);
             const salePrice = parseInt(document.getElementById('addOfferSalePrice').value);
             const status = document.getElementById('addOfferStatus').value;
             const discount = Math.round((1 - salePrice / originalPrice) * 100);
+            const sizesStr = (document.getElementById('addOfferSizes')?.value || '').trim();
 
-            // Generate SKU from name
-            const productSku = name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+            // Normalize SKU
+            const productSku = slugifySku(productSkuInput);
+            if (!productSku) {
+                showAlert('error', 'Product SKU is required');
+                return;
+            }
 
             try {
+                // Save sizes locally so public offers page can show them
+                saveSizesForSku(productSku, sizesStr);
+
                 const newOffer = await apiCall('/offers', {
                     method: 'POST',
                     body: JSON.stringify({
@@ -1151,6 +1304,7 @@
 
             document.getElementById('editOfferId').value = offer.id;
             document.getElementById('editOfferName').value = offer.name;
+            document.getElementById('editOfferSku').value = offer.productSku || '';
             document.getElementById('editOfferOriginalPrice').value = offer.originalPrice;
             document.getElementById('editOfferSalePrice').value = offer.salePrice;
             document.getElementById('editOfferLink').value = offer.link || '';
@@ -1167,6 +1321,11 @@
 
             editOfferImageData = offer.image;
 
+            // Load sizes from localStorage for this SKU
+            editOfferSizesList = getSizesForSku(offer.productSku || '');
+            updateOfferSizesHidden('editOfferSizes', editOfferSizesList);
+            renderOfferSizesList('editOfferSizesList', editOfferSizesList, 'edit');
+
             openModal('editOfferModal');
         }
 
@@ -1179,15 +1338,26 @@
             if (!offer) return;
 
             const name = document.getElementById('editOfferName').value;
+            const productSkuInput = document.getElementById('editOfferSku').value;
             const originalPrice = parseInt(document.getElementById('editOfferOriginalPrice').value);
             const salePrice = parseInt(document.getElementById('editOfferSalePrice').value);
             const status = document.getElementById('editOfferStatus').value;
             const discount = Math.round((1 - salePrice / originalPrice) * 100);
+            const sizesStr = (document.getElementById('editOfferSizes')?.value || '').trim();
+
+            const productSku = slugifySku(productSkuInput);
+            if (!productSku) {
+                showAlert('error', 'Product SKU is required');
+                return;
+            }
 
             try {
+                saveSizesForSku(productSku, sizesStr);
+
                 await apiCall(`/offers/${id}`, {
                     method: 'PUT',
                     body: JSON.stringify({
+                        productSku,
                         name,
                         originalPrice,
                         salePrice,

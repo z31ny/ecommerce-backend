@@ -592,7 +592,8 @@
         }
         window.clearAddImagesList = clearAddImagesList;
 
-        // Sizes/grams stored in localStorage only (no backend change)
+        // Sizes/grams: now persisted in DB inside product.attributes.sizes (array of strings).
+        // We keep localStorage helpers as a fallback for older data, but the admin now saves sizes to the API.
         const STORAGE_PRODUCT_SIZES = 'fb_product_sizes';
         let addProductSizesList = [];
         let editProductSizesList = [];
@@ -717,7 +718,8 @@
                             status: p.status || 'active',
                             image: p.images?.[0] || '',
                             images: Array.isArray(p.images) ? p.images : (p.images ? [p.images] : []),
-                            description: p.description || ''
+                            description: p.description || '',
+                            attributes: p.attributes || null,
                         });
                     });
                     console.log('Loaded', products.length, 'products from database');
@@ -736,6 +738,11 @@
         document.getElementById('addProductForm')?.addEventListener('submit', async function (e) {
             e.preventDefault();
 
+            const sizesStr = (document.getElementById('addProductSizes')?.value || '').trim();
+            const sizes = sizesStr
+                ? sizesStr.split(',').map(s => s.trim()).filter(Boolean)
+                : [];
+
             const productData = {
                 name: document.getElementById('addProductName').value,
                 sku: document.getElementById('addProductSku').value,
@@ -745,7 +752,8 @@
                 minStock: parseInt(document.getElementById('addProductMinStock').value) || 20,
                 status: document.getElementById('addProductStatus').value || 'active',
                 description: document.getElementById('addProductDescription').value || '',
-                images: addProductImagesList.length ? addProductImagesList.slice(0, MAX_PRODUCT_IMAGES) : []
+                images: addProductImagesList.length ? addProductImagesList.slice(0, MAX_PRODUCT_IMAGES) : [],
+                attributes: { sizes }
             };
 
             console.log('Creating product:', productData);
@@ -753,8 +761,6 @@
             try {
                 const newProduct = await DashboardAPI.createProduct(productData);
                 console.log('Product created:', newProduct);
-                const sizesStr = document.getElementById('addProductSizes').value;
-                saveSizesForSku(productData.sku, sizesStr);
                 showAlert('success', 'Product added successfully!');
                 closeModal('addProductModal');
                 clearAddImagesList();
@@ -771,6 +777,13 @@
             e.preventDefault();
 
             const productId = parseInt(document.getElementById('editProductId').value);
+            const existing = products.find(p => p.id === productId);
+
+            const sizesStr = (document.getElementById('editProductSizes')?.value || '').trim();
+            const sizes = sizesStr
+                ? sizesStr.split(',').map(s => s.trim()).filter(Boolean)
+                : [];
+
             const productData = {
                 name: document.getElementById('editProductName').value,
                 sku: document.getElementById('editProductSku').value,
@@ -780,11 +793,9 @@
                 minStock: parseInt(document.getElementById('editProductMinStock').value) || 20,
                 status: document.getElementById('editProductStatus').value,
                 description: document.getElementById('editProductDescription').value,
-                images: editProductImagesList.length ? editProductImagesList.slice(0, MAX_PRODUCT_IMAGES) : []
+                images: editProductImagesList.length ? editProductImagesList.slice(0, MAX_PRODUCT_IMAGES) : [],
+                attributes: { ...(existing?.attributes || {}), sizes }
             };
-
-            const sizesStr = document.getElementById('editProductSizes').value;
-            saveSizesForSku(productData.sku, sizesStr);
 
             try {
                 await DashboardAPI.updateProduct(productId, productData);
@@ -837,9 +848,8 @@
             if (e.key === 'Enter') { e.preventDefault(); addProductImageByUrl('edit'); }
         });
 
-        // Load from API on page load and ensure sample sizes exist
+        // Load from API on page load
         document.addEventListener('DOMContentLoaded', function () {
-            ensureSampleSizes();
             loadProductsFromAPI();
         });
     </script>

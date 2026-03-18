@@ -308,7 +308,8 @@ async function loadProductsFromAPI(force = false) {
             status: p.status || 'active',
             image: p.images?.[0] || '',
             images: p.images || [],
-            description: p.description || ''
+            description: p.description || '',
+            attributes: p.attributes || null,
         });
     });
     dataLoadState.products = true;
@@ -1544,13 +1545,18 @@ function editProduct(productId) {
         window.setEditProductImages(product.images || (product.image ? [product.image] : []));
     }
 
-    // Sizes/grams from localStorage
+    // Sizes/grams from DB (product.attributes.sizes). Fallback to localStorage for old data.
     const sizesEl = document.getElementById('editProductSizes');
     if (sizesEl) {
-        try {
-            const sizesObj = JSON.parse(localStorage.getItem('fb_product_sizes') || '{}');
-            sizesEl.value = sizesObj[String(product.sku || '').toLowerCase()] || '';
-        } catch (e) { sizesEl.value = ''; }
+        const sizesFromDb = Array.isArray(product.attributes?.sizes) ? product.attributes.sizes : null;
+        if (sizesFromDb && sizesFromDb.length) {
+            sizesEl.value = sizesFromDb.join(', ');
+        } else {
+            try {
+                const sizesObj = JSON.parse(localStorage.getItem('fb_product_sizes') || '{}');
+                sizesEl.value = sizesObj[String(product.sku || '').toLowerCase()] || '';
+            } catch (e) { sizesEl.value = ''; }
+        }
     }
     if (window.syncEditSizesFromInput) window.syncEditSizesFromInput();
 
