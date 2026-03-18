@@ -4904,34 +4904,44 @@ async function initDashboard() {
 
     switch (currentPage) {
         case 'index.html':
+        case 'index':
         case '':
             await initOverviewPage();
             break;
         case 'products.html':
+        case 'products':
             await initProductsPage();
             break;
         case 'orders.html':
+        case 'orders':
             await initOrdersPage();
             break;
         case 'customers.html':
+        case 'customers':
             await initCustomersPage();
             break;
         case 'analytics.html':
+        case 'analytics':
             await initAnalyticsPage();
             break;
         case 'inventory.html':
+        case 'inventory':
             await initInventoryPage();
             break;
         case 'settings.html':
+        case 'settings':
             await initSettingsPage();
             break;
         case 'messages.html':
+        case 'messages':
             await loadMessagesFromAPI();
             break;
         case 'users.html':
+        case 'users':
             await loadAdminUsersFromAPI();
             break;
         case 'employees.html':
+        case 'employees':
             await loadEmployeesFromAPI();
             break;
     }
@@ -5287,15 +5297,25 @@ function editProduct(productId) {
     document.getElementById('editProductStatus').value = product.status || 'active';
     document.getElementById('editProductDescription').value = product.description || '';
 
-    // Sizes/grams from localStorage (fb_product_sizes)
+    // Sizes/grams from DB (product.attributes.sizes) with localStorage fallback for old data.
     const sizesEl = document.getElementById('editProductSizes');
     if (sizesEl) {
-        try {
-            const sizesObj = JSON.parse(localStorage.getItem('fb_product_sizes') || '{}');
-            sizesEl.value = sizesObj[String(product.sku || '').toLowerCase()] || '';
-        } catch (e) { sizesEl.value = ''; }
+        const sizesFromDb = Array.isArray(product.attributes?.sizes) ? product.attributes.sizes : null;
+        if (sizesFromDb && sizesFromDb.length) {
+            sizesEl.value = sizesFromDb.join(', ');
+        } else {
+            try {
+                const sizesObj = JSON.parse(localStorage.getItem('fb_product_sizes') || '{}');
+                sizesEl.value = sizesObj[String(product.sku || '').toLowerCase()] || '';
+            } catch (e) { sizesEl.value = ''; }
+        }
     }
+
+    // Sync hidden inputs that the form submits (editProductSizes + editProductSizePricesJson)
     if (window.syncEditSizesFromInput) window.syncEditSizesFromInput();
+    if (window.setEditSizePrices) {
+        window.setEditSizePrices(product.attributes && product.attributes.sizePrices ? product.attributes.sizePrices : null);
+    }
 
     // Set product images list (up to 10)
     if (window.setEditProductImages) {
