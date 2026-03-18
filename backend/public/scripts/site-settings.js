@@ -33,26 +33,30 @@
     }
     window.getProductSizesForSku = getProductSizesForSku;
 
-    document.addEventListener('DOMContentLoaded', async function () {
-        // Load sizes from DB so all visitors see the same sizes
+    // Start loading sizes ASAP (do not wait for DOMContentLoaded)
+    // Other scripts can wait on window.__productSizesReady if needed.
+    window.__productSizesReady = (async function () {
         try {
-            var resProducts = await fetch('/api/products?limit=200', { cache: 'no-store' });
-            if (resProducts.ok) {
-                var list = await resProducts.json();
-                var map = {};
-                if (Array.isArray(list)) {
-                    list.forEach(function (p) {
-                        var sku = p && p.sku ? String(p.sku).toLowerCase() : '';
-                        if (!sku) return;
-                        var sizes = p.attributes && p.attributes.sizes ? p.attributes.sizes : null;
-                        if (sizes) map[sku] = sizes;
-                    });
-                }
-                window.__productSizesBySku = map;
+            var resProducts = await fetch('/api/products?limit=500', { cache: 'no-store' });
+            if (!resProducts.ok) return false;
+            var list = await resProducts.json();
+            var map = {};
+            if (Array.isArray(list)) {
+                list.forEach(function (p) {
+                    var sku = p && p.sku ? String(p.sku).toLowerCase() : '';
+                    if (!sku) return;
+                    var sizes = p.attributes && p.attributes.sizes ? p.attributes.sizes : null;
+                    if (sizes) map[sku] = sizes;
+                });
             }
+            window.__productSizesBySku = map;
+            return true;
         } catch (e) {
-            // Ignore — fallback to localStorage
+            return false;
         }
+    })();
+
+    document.addEventListener('DOMContentLoaded', async function () {
 
         function ensurePolicyModal() {
             if (document.getElementById('policy-modal')) return;

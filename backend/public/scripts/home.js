@@ -508,7 +508,12 @@
       });
   }
 
-  // Load offers on page load
-  loadOffers();
+  // Load offers on page load (wait for product sizes map if available)
+  var sizesReady = window.__productSizesReady;
+  if (sizesReady && typeof sizesReady.then === 'function') {
+    sizesReady.finally(loadOffers);
+  } else {
+    loadOffers();
+  }
 
 })();

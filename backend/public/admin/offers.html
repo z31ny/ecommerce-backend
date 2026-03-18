@@ -984,6 +984,46 @@
             return response.json();
         }
 
+        function parseSizesString(sizesStr) {
+            return String(sizesStr || '')
+                .split(',')
+                .map(s => s.trim())
+                .filter(Boolean);
+        }
+
+        // Persist sizes to the product record so the public site can load them from /api/products.
+        // Public pages prefer DB-backed sizes; localStorage is just a fallback for older data.
+        async function persistSizesToProductBySku(productSku, sizesStr) {
+            const skuKey = String(productSku || '').trim().toLowerCase();
+            if (!skuKey) return false;
+
+            const sizes = parseSizesString(sizesStr);
+
+            try {
+                const productsList = await apiCall('/products?limit=500&showDeleted=true');
+                const product = Array.isArray(productsList)
+                    ? productsList.find(p => String(p?.sku || '').trim().toLowerCase() === skuKey)
+                    : null;
+
+                if (!product || !product.id) return false;
+
+                const currentAttrs = (product.attributes && typeof product.attributes === 'object') ? product.attributes : {};
+                const attrs = { ...currentAttrs };
+
+                if (sizes.length > 0) attrs.sizes = sizes;
+                else delete attrs.sizes;
+
+                await apiCall(`/products/${product.id}`, {
+                    method: 'PUT',
+                    body: JSON.stringify({ attributes: attrs })
+                });
+                return true;
+            } catch (e) {
+                console.warn('Failed to persist sizes to product:', e);
+                return false;
+            }
+        }
+
         // Initialize - load from API
         document.addEventListener('DOMContentLoaded', async function () {
             await loadOffersFromAPI();
@@ -1274,6 +1314,8 @@
             try {
                 // Save sizes locally so public offers page can show them
                 saveSizesForSku(productSku, sizesStr);
+                // Also persist sizes to DB so all visitors get them (preferred by site-settings.js)
+                await persistSizesToProductBySku(productSku, sizesStr);
 
                 const newOffer = await apiCall('/offers', {
                     method: 'POST',
@@ -1353,6 +1395,7 @@
 
             try {
                 saveSizesForSku(productSku, sizesStr);
+                await persistSizesToProductBySku(productSku, sizesStr);
 
                 await apiCall(`/offers/${id}`, {
                     method: 'PUT',
