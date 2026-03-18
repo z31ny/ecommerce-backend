@@ -108,11 +108,22 @@
 
   // Add to cart: use size from .product-size-select on same card when present
   Array.prototype.slice.call(doc.querySelectorAll('.add-to-cart')).forEach(function (btn) {
-    btn.addEventListener('click', function () {
+    btn.addEventListener('click', function (e) {
       var card = btn.closest('[data-sku]');
       var sku = (card && card.getAttribute('data-sku')) || btn.dataset.sku || 'unknown';
       var sizeSelect = card ? card.querySelector('.product-size-select') : null;
+      var hasSizeOptions = !!(sizeSelect && sizeSelect.options && sizeSelect.options.length > 1);
       var size = sizeSelect && sizeSelect.value ? sizeSelect.value : null;
+
+      // If product has sizes, user must choose one
+      if (hasSizeOptions && !size) {
+        if (typeof e?.preventDefault === 'function') e.preventDefault();
+        if (typeof e?.stopImmediatePropagation === 'function') e.stopImmediatePropagation();
+        else if (typeof e?.stopPropagation === 'function') e.stopPropagation();
+        showToast('Please choose a size first');
+        return;
+      }
+
       addToCart(sku, 1, size, btn);
     });
   });
