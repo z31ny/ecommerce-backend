@@ -2358,7 +2358,8 @@ body {
   overflow: hidden;
   box-shadow: var(--glass-shadow), var(--glow);
   transition: transform 0.3s, box-shadow 0.3s;
-  min-height: 330px; /* keeps cards consistent even with short text */
+  /* Avoid huge empty cards on deployed pages (fruits/candy) */
+  min-height: 0;
 }
 .fav-card:hover {
   transform: translateY(-4px);
