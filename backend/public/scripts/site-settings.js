@@ -485,13 +485,16 @@
                             for (var i = 1; i <= 5; i++) {
                                 stars += '<span class="fav-star' + (i <= (f.rating || 5) ? ' filled' : '') + '">★</span>';
                             }
+                            var cat = String(f.category || '');
+                            if (cat.toLowerCase() === 'candies' || cat.toLowerCase() === 'candy') cat = 'Candies';
+                            else cat = 'Fruits';
                             return '<div class="favorite-card fade-up">' +
                                 (f.image ? '<div class="fav-img"><img src="' + f.image + '" alt="' + (f.name || '') + '"></div>' : '') +
                                 '<div class="fav-info">' +
                                 '  <h3 class="fav-name">' + (f.name || '') + '</h3>' +
                                 '  <div class="fav-rating">' + stars + '<span class="fav-count">(' + (f.reviewCount || 0) + ')</span></div>' +
                                 '  <p class="fav-price">' + (f.price || 0) + ' EGP</p>' +
-                                '  <span class="fav-category">' + (f.category || '') + '</span>' +
+                                '  <span class="fav-category">' + cat + '</span>' +
                                 '</div>' +
                                 '</div>';
                         }).join('');

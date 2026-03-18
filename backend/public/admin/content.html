@@ -1890,22 +1890,8 @@
                     <div class="form-group">
                         <label class="form-label">Category <span class="required">*</span></label>
                         <select class="form-select" id="favoriteCategory" required>
-                            <optgroup label="🍓 Fruits">
-                                <option value="Summer">Summer</option>
-                                <option value="Tropical">Tropical</option>
-                                <option value="Winter">Winter</option>
-                                <option value="Fall">Fall</option>
-                                <option value="Mixed Packs">Mixed Packs</option>
-                                <option value="Veggies">Veggies</option>
-                            </optgroup>
-                            <optgroup label="🍬 Candy">
-                                <option value="Candies">Candies</option>
-                                <option value="Chocolate">Chocolate</option>
-                                <option value="Nuts">Nuts</option>
-                                <option value="Marshmallow">Marshmallow</option>
-                                <option value="Ice Cream">Ice Cream</option>
-                                <option value="Lollipop">Lollipop</option>
-                            </optgroup>
+                            <option value="Fruits">Fruits</option>
+                            <option value="Candies">Candies</option>
                         </select>
                     </div>
                     <div class="form-row">
@@ -1983,22 +1969,8 @@
                     <div class="form-group">
                         <label class="form-label">Category <span class="required">*</span></label>
                         <select class="form-select" id="editFavoriteCategory" required>
-                            <optgroup label="🍓 Fruits">
-                                <option value="Summer">Summer</option>
-                                <option value="Tropical">Tropical</option>
-                                <option value="Winter">Winter</option>
-                                <option value="Fall">Fall</option>
-                                <option value="Mixed Packs">Mixed Packs</option>
-                                <option value="Veggies">Veggies</option>
-                            </optgroup>
-                            <optgroup label="🍬 Candy">
-                                <option value="Candies">Candies</option>
-                                <option value="Chocolate">Chocolate</option>
-                                <option value="Nuts">Nuts</option>
-                                <option value="Marshmallow">Marshmallow</option>
-                                <option value="Ice Cream">Ice Cream</option>
-                                <option value="Lollipop">Lollipop</option>
-                            </optgroup>
+                            <option value="Fruits">Fruits</option>
+                            <option value="Candies">Candies</option>
                         </select>
                     </div>
                     <div class="form-row">
@@ -2151,8 +2123,9 @@
         let favoritesByPage = { fruits: [], candy: [] };
 
         // Category type mapping
-        const fruitCategories = ['Summer', 'Tropical', 'Winter', 'Fall', 'Mixed Packs', 'Veggies'];
-        const candyCategories = ['Candies', 'Chocolate', 'Nuts', 'Marshmallow', 'Ice Cream', 'Lollipop'];
+        // Only allowed categories for Customer Favorites
+        const fruitCategories = ['Fruits'];
+        const candyCategories = ['Candies'];
 
         let heroImages = [];
 
@@ -2219,14 +2192,21 @@
                 // - old format: favorites: Favorite[]
                 // - new format: favorites: { fruits: Favorite[], candy: Favorite[] }
                 if (data.favorites && Array.isArray(data.favorites)) {
+                    // Old data used detailed categories. Map them into Fruits/Candies buckets.
                     favoritesByPage = {
-                        fruits: data.favorites.filter(f => fruitCategories.includes(f.category)),
-                        candy: data.favorites.filter(f => candyCategories.includes(f.category)),
+                        fruits: data.favorites.filter(f => true).map(f => ({
+                            ...f,
+                            category: String(f.category || '').toLowerCase() === 'candies' ? 'Candies' : 'Fruits'
+                        })).filter(f => f.category === 'Fruits'),
+                        candy: data.favorites.filter(f => true).map(f => ({
+                            ...f,
+                            category: String(f.category || '').toLowerCase() === 'candies' ? 'Candies' : 'Fruits'
+                        })).filter(f => f.category === 'Candies'),
                     };
                 } else if (data.favorites && typeof data.favorites === 'object') {
                     favoritesByPage = {
-                        fruits: Array.isArray(data.favorites.fruits) ? data.favorites.fruits : [],
-                        candy: Array.isArray(data.favorites.candy) ? data.favorites.candy : [],
+                        fruits: Array.isArray(data.favorites.fruits) ? data.favorites.fruits.map(f => ({ ...f, category: 'Fruits' })) : [],
+                        candy: Array.isArray(data.favorites.candy) ? data.favorites.candy.map(f => ({ ...f, category: 'Candies' })) : [],
                     };
                 } else {
                     favoritesByPage = { fruits: [], candy: [] };
@@ -2744,9 +2724,7 @@
 
         // ===== CUSTOMER FAVORITES =====
         function getCategoryType(category) {
-            if (fruitCategories.includes(category)) return 'fruits';
-            if (candyCategories.includes(category)) return 'candy';
-            return 'other';
+            return String(category || '').toLowerCase() === 'candies' ? 'candy' : 'fruits';
         }
 
         function renderFavorites() {
@@ -2829,7 +2807,7 @@
             list.push({
                 id: Date.now(),
                 name: document.getElementById('favoriteName').value,
-                category: document.getElementById('favoriteCategory').value,
+                category: page === 'candy' ? 'Candies' : 'Fruits',
                 price: parseInt(document.getElementById('favoritePrice').value),
                 rating: selectedRating ? parseInt(selectedRating.value) : 5,
                 reviewCount: parseInt(document.getElementById('favoriteReviewCount').value) || 0,
@@ -2867,7 +2845,7 @@
             const selectedRating = document.querySelector('input[name="editRating"]:checked');
             const newPage = (document.getElementById('editFavoritePage')?.value || (fromCandy ? 'candy' : 'fruits'));
             f.name = document.getElementById('editFavoriteName').value;
-            f.category = document.getElementById('editFavoriteCategory').value;
+            f.category = newPage === 'candy' ? 'Candies' : 'Fruits';
             f.price = parseInt(document.getElementById('editFavoritePrice').value);
             f.rating = selectedRating ? parseInt(selectedRating.value) : f.rating;
             f.reviewCount = parseInt(document.getElementById('editFavoriteReviewCount').value) || 0;
