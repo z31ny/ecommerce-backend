@@ -1021,8 +1021,7 @@
                 </div>
                 <!-- Category Filter -->
                 <div style="display: flex; gap: 0.5rem; margin-bottom: 1.5rem; flex-wrap: wrap;">
-                    <button class="btn btn-secondary active" onclick="filterFavorites('all', this)">All</button>
-                    <button class="btn btn-secondary" onclick="filterFavorites('fruits', this)">
+                    <button class="btn btn-secondary active" onclick="filterFavorites('fruits', this)">
                         <i class="fas fa-apple-alt"></i> Fruits
                     </button>
                     <button class="btn btn-secondary" onclick="filterFavorites('candy', this)">
@@ -1877,6 +1876,13 @@
             <form id="addFavoriteForm" onsubmit="addFavorite(event)">
                 <div class="modal-body">
                     <div class="form-group">
+                        <label class="form-label">Show On <span class="required">*</span></label>
+                        <select class="form-select" id="favoritePage" required>
+                            <option value="fruits">Fruits page</option>
+                            <option value="candy">Candy page</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
                         <label class="form-label">Product Name <span class="required">*</span></label>
                         <input type="text" class="form-input" id="favoriteName"
                             placeholder="e.g., Freeze Dried Strawberries" required>
@@ -1963,6 +1969,13 @@
             <form id="editFavoriteForm" onsubmit="updateFavorite(event)">
                 <input type="hidden" id="editFavoriteId">
                 <div class="modal-body">
+                    <div class="form-group">
+                        <label class="form-label">Show On <span class="required">*</span></label>
+                        <select class="form-select" id="editFavoritePage" required>
+                            <option value="fruits">Fruits page</option>
+                            <option value="candy">Candy page</option>
+                        </select>
+                    </div>
                     <div class="form-group">
                         <label class="form-label">Product Name <span class="required">*</span></label>
                         <input type="text" class="form-input" id="editFavoriteName" required>
@@ -2134,7 +2147,8 @@
         let faqs = [];
         let moods = [];
         let snacks = [];
-        let favorites = [];
+        // Favorites are split by page: fruits / candy
+        let favoritesByPage = { fruits: [], candy: [] };
 
         // Category type mapping
         const fruitCategories = ['Summer', 'Tropical', 'Winter', 'Fall', 'Mixed Packs', 'Veggies'];
@@ -2183,7 +2197,7 @@
         let currentEditMoodColor = 'pink';
         let currentAddBubbleColor = 'yellow';
         let currentEditBubbleColor = 'yellow';
-        let currentFavoriteFilter = 'all';
+        let currentFavoriteFilter = 'fruits'; // which page list is being edited
 
         // Content API helper
         async function contentAPI(method, body) {
@@ -2201,7 +2215,22 @@
                 faqs = data.faqs || [];
                 moods = data.moods || [];
                 snacks = data.snacks || [];
-                favorites = data.favorites || [];
+                // Backward compatible:
+                // - old format: favorites: Favorite[]
+                // - new format: favorites: { fruits: Favorite[], candy: Favorite[] }
+                if (data.favorites && Array.isArray(data.favorites)) {
+                    favoritesByPage = {
+                        fruits: data.favorites.filter(f => fruitCategories.includes(f.category)),
+                        candy: data.favorites.filter(f => candyCategories.includes(f.category)),
+                    };
+                } else if (data.favorites && typeof data.favorites === 'object') {
+                    favoritesByPage = {
+                        fruits: Array.isArray(data.favorites.fruits) ? data.favorites.fruits : [],
+                        candy: Array.isArray(data.favorites.candy) ? data.favorites.candy : [],
+                    };
+                } else {
+                    favoritesByPage = { fruits: [], candy: [] };
+                }
                 heroImages = data.heroes || [];
                 contactContent = data.contact || contactContent;
                 shippingSettings = data.shipping || shippingSettings;
@@ -2232,7 +2261,7 @@
             saveSection('faqs', faqs);
             saveSection('moods', moods);
             saveSection('snacks', snacks);
-            saveSection('favorites', favorites);
+            saveSection('favorites', favoritesByPage);
             saveSection('heroes', heroImages);
             saveSection('contact', contactContent);
         }
@@ -2243,7 +2272,8 @@
             document.getElementById('faqCount').textContent = faqs.length;
             document.getElementById('moodCount').textContent = moods.length;
             document.getElementById('snackCount').textContent = snacks.length;
-            document.getElementById('favoriteCount').textContent = favorites.length;
+            document.getElementById('favoriteCount').textContent =
+                (favoritesByPage.fruits?.length || 0) + (favoritesByPage.candy?.length || 0);
             document.getElementById('heroCount').textContent = heroImages.length;
         }
 
@@ -2721,20 +2751,11 @@
 
         function renderFavorites() {
             const container = document.getElementById('favoritesGrid');
-            let filtered;
-
-            if (currentFavoriteFilter === 'all') {
-                filtered = favorites;
-            } else if (currentFavoriteFilter === 'fruits') {
-                filtered = favorites.filter(f => fruitCategories.includes(f.category));
-            } else if (currentFavoriteFilter === 'candy') {
-                filtered = favorites.filter(f => candyCategories.includes(f.category));
-            } else {
-                filtered = favorites.filter(f => f.category === currentFavoriteFilter);
-            }
+            const filtered = (currentFavoriteFilter === 'candy' ? favoritesByPage.candy : favoritesByPage.fruits) || [];
 
             if (filtered.length === 0) {
-                container.innerHTML = '<div class="empty-state"><i class="fas fa-star"></i><h3>No favorites in this category</h3><p>Add customer favorite products to showcase on your pages.</p></div>';
+                const label = currentFavoriteFilter === 'candy' ? 'Candy page' : 'Fruits page';
+                container.innerHTML = '<div class="empty-state"><i class="fas fa-star"></i><h3>No favorites for ' + label + '</h3><p>Add customer favorite cards to show on that page.</p></div>';
                 return;
             }
 
@@ -2803,7 +2824,9 @@
         function addFavorite(event) {
             event.preventDefault();
             const selectedRating = document.querySelector('input[name="addRating"]:checked');
-            favorites.push({
+            const page = (document.getElementById('favoritePage')?.value || 'fruits');
+            const list = page === 'candy' ? favoritesByPage.candy : favoritesByPage.fruits;
+            list.push({
                 id: Date.now(),
                 name: document.getElementById('favoriteName').value,
                 category: document.getElementById('favoriteCategory').value,
@@ -2817,13 +2840,16 @@
         }
 
         function editFavorite(id) {
-            const f = favorites.find(x => x.id === id); if (!f) return;
+            const all = (favoritesByPage.fruits || []).concat(favoritesByPage.candy || []);
+            const f = all.find(x => x.id === id); if (!f) return;
+            const page = (favoritesByPage.candy || []).some(x => x.id === id) ? 'candy' : 'fruits';
             document.getElementById('editFavoriteId').value = f.id;
             document.getElementById('editFavoriteName').value = f.name;
             document.getElementById('editFavoriteCategory').value = f.category;
             document.getElementById('editFavoritePrice').value = f.price;
             document.getElementById('editFavoriteReviewCount').value = f.reviewCount;
             document.getElementById('editFavoriteStatus').value = f.status;
+            document.getElementById('editFavoritePage').value = page;
             document.getElementById('editFavoriteImagePreview').src = f.image || '/assets/icons/profile.svg';
             editFavoriteImageData = f.image;
             // Set rating
@@ -2834,8 +2860,12 @@
 
         function updateFavorite(event) {
             event.preventDefault();
-            const f = favorites.find(x => x.id === parseInt(document.getElementById('editFavoriteId').value)); if (!f) return;
+            const id = parseInt(document.getElementById('editFavoriteId').value);
+            const fromCandy = (favoritesByPage.candy || []).some(x => x.id === id);
+            const fromList = fromCandy ? favoritesByPage.candy : favoritesByPage.fruits;
+            const f = fromList.find(x => x.id === id); if (!f) return;
             const selectedRating = document.querySelector('input[name="editRating"]:checked');
+            const newPage = (document.getElementById('editFavoritePage')?.value || (fromCandy ? 'candy' : 'fruits'));
             f.name = document.getElementById('editFavoriteName').value;
             f.category = document.getElementById('editFavoriteCategory').value;
             f.price = parseInt(document.getElementById('editFavoritePrice').value);
@@ -2843,12 +2873,21 @@
             f.reviewCount = parseInt(document.getElementById('editFavoriteReviewCount').value) || 0;
             f.status = document.getElementById('editFavoriteStatus').value;
             if (editFavoriteImageData) f.image = editFavoriteImageData;
+            // If page changed, move item between lists
+            if ((fromCandy && newPage === 'fruits') || (!fromCandy && newPage === 'candy')) {
+                const moved = { ...f };
+                const idx = fromList.findIndex(x => x.id === id);
+                if (idx !== -1) fromList.splice(idx, 1);
+                (newPage === 'candy' ? favoritesByPage.candy : favoritesByPage.fruits).push(moved);
+            }
             saveAllData(); closeModal('editFavoriteModal'); renderFavorites(); showAlert('success', 'Customer favorite updated!');
         }
 
         function deleteFavorite(id) {
             if (!confirm('Delete this customer favorite?')) return;
-            favorites = favorites.filter(f => f.id !== id); saveAllData(); renderFavorites(); updateCounts(); showAlert('success', 'Customer favorite deleted!');
+            favoritesByPage.fruits = (favoritesByPage.fruits || []).filter(f => f.id !== id);
+            favoritesByPage.candy = (favoritesByPage.candy || []).filter(f => f.id !== id);
+            saveAllData(); renderFavorites(); updateCounts(); showAlert('success', 'Customer favorite deleted!');
         }
 
         // ===== HERO IMAGES =====

@@ -361,39 +361,27 @@
     }
 
     // Render favorites (top 4 products with highest ratings/first items)
-    function renderFavorites(products) {
+    function renderFavoritesFromContent(items) {
       const grid = document.getElementById('favoritesGrid');
-      if (!products || products.length === 0) {
-        grid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: #666;">Loading favorites...</p>';
+      const list = Array.isArray(items) ? items.filter(x => x && x.status !== 'inactive') : [];
+      if (!grid) return;
+      if (!list.length) {
+        grid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: #666;">No favorites yet.</p>';
         return;
       }
-
-      const favorites = products.slice(0, 4);
-      grid.innerHTML = favorites.map(product => {
-        const price = parseFloat(product.price) || 0;
-        const weight = product.attributes?.weight;
-        const images = (product.images && Array.isArray(product.images) && product.images.length)
-          ? product.images
-          : (product.image ? [product.image] : []);
-        const description = product.description || '';
-
+      const top = list.slice(0, 4);
+      grid.innerHTML = top.map(f => {
+        const img = f.image || '/assets/icons/profile.svg';
+        const price = parseFloat(f.price) || 0;
+        const sku = f.sku || '';
         return `
-          <article class="fav-card" data-sku="${product.sku}" data-price="${price}">
-            <div class="fav-media" data-swipe-gallery>
-              <div class="swipe-track">
-                ${(images.length ? images : ['/assets/icons/profile.svg']).map(src => `<div class="swipe-slide"><img src="${src}" alt="${product.name}" onerror="this.src='/assets/icons/profile.svg'"></div>`).join('')}
-              </div>
-              <div class="swipe-dots" aria-hidden="true"></div>
-            </div>
-            ${description ? `<p class="fav-desc">${description}</p>` : ''}
-            <div class="fav-meta">${weight ? `<span class="fav-weight">${weight}</span>` : ''}<span class="fav-price">${price} L.E</span></div>
-            <button class="fav-cart add-to-cart" data-sku="${product.sku}" aria-label="Add to cart"><img src="./assets/icons/cart.svg" alt="cart"></button>
+          <article class="fav-card" data-sku="${sku}" data-price="${price}">
+            <div class="fav-media"><img src="${img}" alt="${f.name || ''}" onerror="this.src='/assets/icons/profile.svg'"></div>
+            <p class="fav-desc">${f.name || ''}</p>
+            <div class="fav-meta"><span class="fav-price">${Math.round(price)} L.E</span></div>
           </article>
         `;
       }).join('');
-
-      bindAddToCartButtons();
-      if (typeof window.initSwipeGalleries === 'function') window.initSwipeGalleries(grid);
     }
 
     // Bind add to cart buttons (with optional size from .product-size-select)
@@ -457,7 +445,16 @@
           return candySet.includes(p.category.toLowerCase());
         });
 
-        renderFavorites(allProducts);
+        // Favorites come from Website Content now (favorites.candy)
+        try {
+          const s = await fetch('/api/settings', { cache: 'no-store' });
+          if (s.ok) {
+            const settings = await s.json();
+            const favs = settings.favorites;
+            const list = favs && typeof favs === 'object' ? (favs.candy || []) : [];
+            renderFavoritesFromContent(list);
+          }
+        } catch (e) {}
         renderProducts(allProducts);
 
       } catch (error) {

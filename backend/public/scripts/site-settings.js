@@ -460,10 +460,21 @@
             }
 
             // === Favorites (product cards) ===
+            // Backward compatible:
+            // - old: favorites: Favorite[]
+            // - new: favorites: { fruits: Favorite[], candy: Favorite[] }
+            var favList = null;
             if (data.favorites && Array.isArray(data.favorites)) {
+                favList = data.favorites;
+            } else if (data.favorites && typeof data.favorites === 'object') {
+                var f1 = Array.isArray(data.favorites.fruits) ? data.favorites.fruits : [];
+                var f2 = Array.isArray(data.favorites.candy) ? data.favorites.candy : [];
+                favList = f1.concat(f2);
+            }
+            if (favList && Array.isArray(favList)) {
                 var favGrid = document.getElementById('favorites-grid');
                 if (favGrid) {
-                    var activeFavs = data.favorites.filter(function (f) { return f.status === 'active'; });
+                    var activeFavs = favList.filter(function (f) { return f.status === 'active'; });
                     if (activeFavs.length === 0) {
                         favGrid.innerHTML = '';
                         var favSection = document.getElementById('favorites');
