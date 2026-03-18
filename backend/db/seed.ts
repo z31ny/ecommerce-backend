@@ -28,13 +28,8 @@ const employeesData = [
     { name: 'Youssef Mahmoud', email: 'youssef@freezybite.com', phone: '+20 100 555 6666', position: 'Delivery Driver', department: 'Logistics', status: 'active' },
 ];
 
-// Initial offers
-const offersData = [
-    { productSku: 'snickers-pack', name: 'Snickers Pack', image: 'assets/home-page-img/must-have/must have 3.png', originalPrice: '175.00', salePrice: '140.00', discount: 20, category: 'Candy' },
-    { productSku: 'mango-250', name: 'Mango 250g', image: 'assets/home-page-img/must-have/must have1.png', originalPrice: '140.00', salePrice: '120.00', discount: 15, category: 'Fruits' },
-    { productSku: 'banana-250', name: 'Banana 250g', image: 'assets/home-page-img/must-have/must have4.png', originalPrice: '120.00', salePrice: '110.00', discount: 10, category: 'Fruits' },
-    { productSku: 'marshmallow-pack', name: 'Marshmallow Pack', image: 'assets/home-page-img/must-have/must have2.png', originalPrice: '100.00', salePrice: '90.00', discount: 10, category: 'Candy' },
-];
+// NOTE: We do not seed "dummy" offers into production databases.
+// If you need demo offers for local development, add them behind an explicit env flag.
 
 // Products from Freezy Bites website
 
@@ -115,20 +110,12 @@ async function main() {
         if (result.length > 0) count++;
     }
 
-    // Offers (clear old rows first so re-seeding doesn't duplicate)
-    console.log('\nCreating offers...');
-    await db.delete(offers);
-    for (const offer of offersData) {
-        const result = await db.insert(offers).values({
-            ...offer,
-            isActive: true,
-        }).onConflictDoNothing().returning();
-        if (result.length > 0) console.log(`  ✅ ${offer.name} (-${offer.discount}%)`);
-    }
+    // Offers
+    // Intentionally not seeding offers by default.
 
     console.log('\n🎉 Seeding complete!');
     console.log(`   Products: ${count}`);
-    console.log(`   Offers: ${offersData.length}`);
+    console.log(`   Offers: 0`);
     console.log('\n📋 Dashboard Login:');
     console.log('   Super Admin: sarah@freezybite.com / admin123');
     console.log('   Admin: ahmed@freezybite.com / admin123');
