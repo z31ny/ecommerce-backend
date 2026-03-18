@@ -108,6 +108,7 @@
 
                     metaMap[sku] = {
                         price: p && p.price != null ? p.price : null,
+                        images: Array.isArray(p && p.images) ? p.images : (p && p.images ? [p.images] : []),
                         weight: p && p.attributes && p.attributes.weight ? p.attributes.weight : null,
                         sizePrices: normalizeSizePrices(p && p.attributes ? p.attributes.sizePrices : null)
                     };
@@ -258,6 +259,75 @@
             if (!res.ok) return;
             const data = await res.json();
 
+            // === Moods (flip cards) ===
+            // Render early so it still loads even if another section errors later.
+            if (data.moods && Array.isArray(data.moods)) {
+                try {
+                    var moodsGrid = document.getElementById('moods-grid');
+                    if (moodsGrid) {
+                        var activeMoods = data.moods.filter(function (m) { return m.status === 'active'; });
+                        if (activeMoods.length === 0) {
+                            moodsGrid.innerHTML = '';
+                            var moodsSection = document.getElementById('moods');
+                            if (moodsSection) moodsSection.style.display = 'none';
+                        } else {
+                            var moodColorMap = {
+                                pink: { bg: 'linear-gradient(135deg,#fce4ec,#f8bbd0)', text: '#880e4f' },
+                                blue: { bg: 'linear-gradient(135deg,#e3f2fd,#bbdefb)', text: '#0d47a1' },
+                                green: { bg: 'linear-gradient(135deg,#e8f5e9,#c8e6c9)', text: '#1b5e20' },
+                                yellow: { bg: 'linear-gradient(135deg,#fff8e1,#ffecb3)', text: '#f57f17' },
+                                purple: { bg: 'linear-gradient(135deg,#f3e5f5,#e1bee7)', text: '#4a148c' },
+                                orange: { bg: 'linear-gradient(135deg,#fff3e0,#ffe0b2)', text: '#e65100' }
+                            };
+                            moodsGrid.innerHTML = activeMoods.map(function (m) {
+                                var colors = moodColorMap[m.color] || moodColorMap.pink;
+                                var sizesHtml = '';
+                                if (m.sizes && m.sizes.length > 0) {
+                                    sizesHtml = '<label class="offer-size-label" style="color:' + colors.text + ';">Size</label>' +
+                                        '<select class="product-size-select form-select mood-size-select">' +
+                                        '<option value="">Choose size</option>' +
+                                        m.sizes.map(function (s) { return '<option value="' + s.replace(/"/g, '&quot;') + '">' + s + '</option>'; }).join('') +
+                                        '</select>';
+                                }
+                                return '<div class="mood-card fade-up" tabindex="0">' +
+                                    '<div class="mood-card-inner">' +
+                                    '  <div class="mood-card-front" style="background:' + colors.bg + ';color:' + colors.text + ';">' +
+                                    '    <h3>' + (m.title || '') + '</h3>' +
+                                    '    <p>' + (m.description || '') + '</p>' +
+                                    (m.buttonText ? '    <span class="mood-btn">' + m.buttonText + '</span>' : '') +
+                                    '  </div>' +
+                                    '  <div class="mood-card-back" style="' + (m.backImage ? 'background-image:url(' + m.backImage + ');background-size:cover;background-position:center;' : 'background:' + colors.bg + ';') + '">' +
+                                    (m.backDescription ? '    <p class="mood-back-text">' + m.backDescription + '</p>' : '') +
+                                    sizesHtml +
+                                    (m.buttonLink ? '    <a href="' + m.buttonLink + '" class="mood-btn mood-btn-link">Shop Now</a>' : '') +
+                                    '  </div>' +
+                                    '</div>' +
+                                    '</div>';
+                            }).join('');
+                            observeNewElements(moodsGrid);
+
+                            // Flip on click (not hover)
+                            Array.prototype.slice.call(moodsGrid.querySelectorAll('.mood-card')).forEach(function (card) {
+                                card.addEventListener('click', function (e) {
+                                    // Don't flip when interacting with controls/links inside
+                                    var ignore = e.target && e.target.closest && e.target.closest('a, button, select, option, input, textarea, label');
+                                    if (ignore) return;
+                                    card.classList.toggle('is-flipped');
+                                });
+                                card.addEventListener('keydown', function (e) {
+                                    if (e.key === 'Enter' || e.key === ' ') {
+                                        e.preventDefault();
+                                        card.classList.toggle('is-flipped');
+                                    }
+                                });
+                            });
+                        }
+                    }
+                } catch (e) {
+                    // Ignore moods rendering errors so other sections still load
+                }
+            }
+
             // === Branding: Logo + Store Name ===
             if (data.branding) {
                 // Update logo image
@@ -356,54 +426,6 @@
                                 '</details>';
                         }).join('');
                         observeNewElements(faqList);
-                    }
-                }
-            }
-
-            // === Moods (flip cards) ===
-            if (data.moods && Array.isArray(data.moods)) {
-                var moodsGrid = document.getElementById('moods-grid');
-                if (moodsGrid) {
-                    var activeMoods = data.moods.filter(function (m) { return m.status === 'active'; });
-                    if (activeMoods.length === 0) {
-                        moodsGrid.innerHTML = '';
-                        var moodsSection = document.getElementById('moods');
-                        if (moodsSection) moodsSection.style.display = 'none';
-                    } else {
-                        var moodColorMap = {
-                            pink: { bg: 'linear-gradient(135deg,#fce4ec,#f8bbd0)', text: '#880e4f' },
-                            blue: { bg: 'linear-gradient(135deg,#e3f2fd,#bbdefb)', text: '#0d47a1' },
-                            green: { bg: 'linear-gradient(135deg,#e8f5e9,#c8e6c9)', text: '#1b5e20' },
-                            yellow: { bg: 'linear-gradient(135deg,#fff8e1,#ffecb3)', text: '#f57f17' },
-                            purple: { bg: 'linear-gradient(135deg,#f3e5f5,#e1bee7)', text: '#4a148c' },
-                            orange: { bg: 'linear-gradient(135deg,#fff3e0,#ffe0b2)', text: '#e65100' }
-                        };
-                        moodsGrid.innerHTML = activeMoods.map(function (m) {
-                            var colors = moodColorMap[m.color] || moodColorMap.pink;
-                            var sizesHtml = '';
-                            if (m.sizes && m.sizes.length > 0) {
-                                sizesHtml = '<label class="offer-size-label" style="color:' + colors.text + ';">Size</label>' +
-                                    '<select class="product-size-select form-select mood-size-select">' +
-                                    '<option value="">Choose size</option>' +
-                                    m.sizes.map(function (s) { return '<option value="' + s.replace(/"/g, '&quot;') + '">' + s + '</option>'; }).join('') +
-                                    '</select>';
-                            }
-                            return '<div class="mood-card fade-up" tabindex="0">' +
-                                '<div class="mood-card-inner">' +
-                                '  <div class="mood-card-front" style="background:' + colors.bg + ';color:' + colors.text + ';">' +
-                                '    <h3>' + (m.title || '') + '</h3>' +
-                                '    <p>' + (m.description || '') + '</p>' +
-                                (m.buttonText ? '    <span class="mood-btn">' + m.buttonText + '</span>' : '') +
-                                '  </div>' +
-                                '  <div class="mood-card-back" style="' + (m.backImage ? 'background-image:url(' + m.backImage + ');background-size:cover;background-position:center;' : 'background:' + colors.bg + ';') + '">' +
-                                (m.backDescription ? '    <p class="mood-back-text">' + m.backDescription + '</p>' : '') +
-                                sizesHtml +
-                                (m.buttonLink ? '    <a href="' + m.buttonLink + '" class="mood-btn mood-btn-link">Shop Now</a>' : '') +
-                                '  </div>' +
-                                '</div>' +
-                                '</div>';
-                        }).join('');
-                        observeNewElements(moodsGrid);
                     }
                 }
             }

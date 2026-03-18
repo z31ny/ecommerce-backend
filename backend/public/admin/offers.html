@@ -602,17 +602,21 @@
             <form id="addOfferForm" onsubmit="addOffer(event)">
                 <div class="modal-body">
                     <div class="form-group" style="text-align: center; margin-bottom: 1.5rem;">
-                        <div style="width: 150px; height: 150px; margin: 0 auto; border-radius: var(--border-radius-lg); overflow: hidden; background: linear-gradient(135deg, #fce4ec, #f8bbd9); display: flex; align-items: center; justify-content: center; cursor: pointer; border: 2px dashed #a31545;"
-                            onclick="document.getElementById('addOfferImage').click()">
-                            <img id="addOfferImagePreview" src="" alt="Preview"
-                                style="display: none; width: 100%; height: 100%; object-fit: cover;">
-                            <div id="addOfferImagePlaceholder">
-                                <i class="fas fa-camera" style="font-size: 2rem; color: #a31545; opacity: 0.5;"></i>
-                                <p style="color: #a31545; font-size: 0.8rem; margin-top: 0.5rem;">Click to upload</p>
-                            </div>
+                        <div style="margin-bottom:0.75rem;">
+                            <button type="button" class="btn btn-secondary" onclick="document.getElementById('addOfferImages').click()">
+                                <i class="fas fa-cloud-upload-alt"></i> Upload Images
+                            </button>
+                            <input type="file" id="addOfferImages" accept="image/*" multiple style="display:none" onchange="handleOfferImageFiles('add', event)">
                         </div>
-                        <input type="file" id="addOfferImage" accept="image/*" style="display: none;"
-                            onchange="previewAddOfferImage(event)">
+                        <div style="display:flex; gap:10px; align-items:center; margin-bottom: 0.5rem; flex-wrap: wrap;">
+                            <input type="text" class="form-input" id="addOfferImageUrlInput" placeholder="Paste image URL and click Add..."
+                                style="flex: 1; min-width: 180px;">
+                            <button type="button" class="btn btn-secondary" onclick="addOfferImageByUrl('add')">
+                                <i class="fas fa-plus"></i> Add URL
+                            </button>
+                        </div>
+                        <div id="addOfferImagesList" class="product-images-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(72px, 1fr)); gap: 8px; margin-top: 0.5rem;"></div>
+                        <small class="form-hint" style="display:block; margin-top:6px; color:#6b7280;">Add up to 10 images. First image is the main one on some views.</small>
                     </div>
 
                     <div class="form-group">
@@ -622,10 +626,10 @@
                     </div>
 
                     <div class="form-group">
-                        <label class="form-label">Product SKU <span class="required">*</span></label>
+                        <label class="form-label">Product SKU (optional)</label>
                         <input type="text" class="form-input" id="addOfferSku" placeholder="e.g., snickers-pack"
-                            required>
-                        <small class="form-hint" style="display:block; margin-top:6px; color:#6b7280;">This SKU links the offer to the product and its sizes on the website.</small>
+                            >
+                        <small class="form-hint" style="display:block; margin-top:6px; color:#6b7280;">If set, the cart button can add that SKU. Leave empty for a standalone offer.</small>
                     </div>
 
                     <div class="form-row">
@@ -652,24 +656,8 @@
                     </div>
 
                     <div class="form-group">
-                        <label class="form-label">Product Link (optional)</label>
+                        <label class="form-label">Offer Link (optional)</label>
                         <input type="text" class="form-input" id="addOfferLink" placeholder="/products/snickers-pack">
-                    </div>
-
-                    <div class="form-group">
-                        <label class="form-label">Sizes / Grams (optional)</label>
-                        <div class="sizes-add-row" style="display:flex;gap:8px;margin-bottom:8px;">
-                            <input type="text" class="form-input" id="addOfferSizesInput" placeholder="e.g. 50g, 100g, 250g"
-                                style="flex:1;">
-                            <button type="button" class="btn btn-primary" onclick="addOfferSizeOption('add')"
-                                style="background:#a31545;">
-                                <i class="fas fa-plus"></i> Add option
-                            </button>
-                        </div>
-                        <div id="addOfferSizesList" class="sizes-options-list"
-                            style="display:flex;flex-wrap:wrap;gap:6px;min-height:24px;"></div>
-                        <input type="hidden" id="addOfferSizes" value="">
-                        <small class="form-hint" style="display:block; margin-top:6px; color:#6b7280;">Sizes are saved locally (used by the public offers page size selector).</small>
                     </div>
 
                     <div class="form-group">
@@ -705,15 +693,21 @@
                 <input type="hidden" id="editOfferId">
                 <div class="modal-body">
                     <div class="form-group" style="text-align: center; margin-bottom: 1.5rem;">
-                        <div style="width: 150px; height: 150px; margin: 0 auto; border-radius: var(--border-radius-lg); overflow: hidden; background: linear-gradient(135deg, #fce4ec, #f8bbd9); display: flex; align-items: center; justify-content: center; cursor: pointer; border: 2px dashed #a31545;"
-                            onclick="document.getElementById('editOfferImage').click()">
-                            <img id="editOfferImagePreview" src="" alt="Preview"
-                                style="width: 100%; height: 100%; object-fit: cover;">
+                        <div style="margin-bottom:0.75rem;">
+                            <button type="button" class="btn btn-secondary" onclick="document.getElementById('editOfferImages').click()">
+                                <i class="fas fa-cloud-upload-alt"></i> Upload Images
+                            </button>
+                            <input type="file" id="editOfferImages" accept="image/*" multiple style="display:none" onchange="handleOfferImageFiles('edit', event)">
                         </div>
-                        <input type="file" id="editOfferImage" accept="image/*" style="display: none;"
-                            onchange="previewEditOfferImage(event)">
-                        <p style="color: var(--text-muted); font-size: 0.8rem; margin-top: 0.5rem;">Click image to
-                            change</p>
+                        <div style="display:flex; gap:10px; align-items:center; margin-bottom: 0.5rem; flex-wrap: wrap;">
+                            <input type="text" class="form-input" id="editOfferImageUrlInput" placeholder="Paste image URL and click Add..."
+                                style="flex: 1; min-width: 180px;">
+                            <button type="button" class="btn btn-secondary" onclick="addOfferImageByUrl('edit')">
+                                <i class="fas fa-plus"></i> Add URL
+                            </button>
+                        </div>
+                        <div id="editOfferImagesList" class="product-images-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(72px, 1fr)); gap: 8px; margin-top: 0.5rem;"></div>
+                        <small class="form-hint" style="display:block; margin-top:6px; color:#6b7280;">Add up to 10 images. First image is the main one on some views.</small>
                     </div>
 
                     <div class="form-group">
@@ -722,8 +716,8 @@
                     </div>
 
                     <div class="form-group">
-                        <label class="form-label">Product SKU <span class="required">*</span></label>
-                        <input type="text" class="form-input" id="editOfferSku" required>
+                        <label class="form-label">Product SKU (optional)</label>
+                        <input type="text" class="form-input" id="editOfferSku">
                     </div>
 
                     <div class="form-row">
@@ -750,24 +744,8 @@
                     </div>
 
                     <div class="form-group">
-                        <label class="form-label">Product Link (optional)</label>
+                        <label class="form-label">Offer Link (optional)</label>
                         <input type="text" class="form-input" id="editOfferLink">
-                    </div>
-
-                    <div class="form-group">
-                        <label class="form-label">Sizes / Grams (optional)</label>
-                        <div class="sizes-add-row" style="display:flex;gap:8px;margin-bottom:8px;">
-                            <input type="text" class="form-input" id="editOfferSizesInput" placeholder="e.g. 50g, 100g, 250g"
-                                style="flex:1;">
-                            <button type="button" class="btn btn-primary" onclick="addOfferSizeOption('edit')"
-                                style="background:#a31545;">
-                                <i class="fas fa-plus"></i> Add option
-                            </button>
-                        </div>
-                        <div id="editOfferSizesList" class="sizes-options-list"
-                            style="display:flex;flex-wrap:wrap;gap:6px;min-height:24px;"></div>
-                        <input type="hidden" id="editOfferSizes" value="">
-                        <small class="form-hint" style="display:block; margin-top:6px; color:#6b7280;">Sizes are saved locally (used by the public offers page size selector).</small>
                     </div>
 
                     <div class="form-group">
@@ -854,34 +832,7 @@
         // Offers Data - now loaded from API
         let specialOffers = [];
 
-        // Sizes/grams storage (shared with public site via site-settings.js)
-        const STORAGE_PRODUCT_SIZES = 'fb_product_sizes';
-        let addOfferSizesList = [];
-        let editOfferSizesList = [];
-
-        function getProductSizesRaw() {
-            try { return JSON.parse(localStorage.getItem(STORAGE_PRODUCT_SIZES) || '{}'); } catch (e) { return {}; }
-        }
-        function setProductSizesRaw(obj) {
-            try { localStorage.setItem(STORAGE_PRODUCT_SIZES, JSON.stringify(obj || {})); } catch (e) { }
-        }
-        function saveSizesForSku(sku, sizesStr) {
-            const key = String(sku || '').trim().toLowerCase();
-            if (!key) return;
-            const s = (sizesStr || '').trim();
-            const obj = getProductSizesRaw();
-            if (s) obj[key] = s;
-            else delete obj[key];
-            setProductSizesRaw(obj);
-        }
-        function getSizesForSku(sku) {
-            const key = String(sku || '').trim().toLowerCase();
-            if (!key) return [];
-            const obj = getProductSizesRaw();
-            const s = obj[key];
-            if (!s || typeof s !== 'string') return [];
-            return s.split(',').map(x => x.trim()).filter(Boolean);
-        }
+        // Offers page no longer supports size selection; sizes belong to Products instead.
 
         function slugifySku(input) {
             return String(input || '')
@@ -901,57 +852,7 @@
             skuEl.value = slugifySku(nameEl.value);
         }
 
-        function updateOfferSizesHidden(hiddenId, list) {
-            const hidden = document.getElementById(hiddenId);
-            if (!hidden) return;
-            hidden.value = (list || []).join(', ');
-        }
-        function renderOfferSizesList(containerId, list, which) {
-            const container = document.getElementById(containerId);
-            if (!container) return;
-            container.innerHTML = (list || []).map((s, i) => {
-                const safe = String(s).replace(/</g, '&lt;').replace(/>/g, '&gt;');
-                return '<span class="sizes-chip" style="display:inline-flex;align-items:center;gap:4px;padding:4px 8px;background:var(--bg-secondary, #f1f5f9);border-radius:6px;font-size:0.875rem;">' +
-                    '<span>' + safe + '</span>' +
-                    '<button type="button" class="sizes-chip-remove" data-which="' + which + '" data-index="' + i + '" aria-label="Remove" style="background:none;border:none;cursor:pointer;padding:0 2px;color:var(--text-secondary);font-size:1.1rem;line-height:1;">&times;</button>' +
-                    '</span>';
-            }).join('');
-            container.querySelectorAll('.sizes-chip-remove').forEach(function (btn) {
-                btn.addEventListener('click', function () {
-                    const w = btn.getAttribute('data-which');
-                    const idx = parseInt(btn.getAttribute('data-index') || '0', 10);
-                    removeOfferSizeOption(w, idx);
-                });
-            });
-        }
-        function addOfferSizeOption(which) {
-            const inputId = which === 'add' ? 'addOfferSizesInput' : 'editOfferSizesInput';
-            const listId = which === 'add' ? 'addOfferSizesList' : 'editOfferSizesList';
-            const hiddenId = which === 'add' ? 'addOfferSizes' : 'editOfferSizes';
-            const list = which === 'add' ? addOfferSizesList : editOfferSizesList;
-            const input = document.getElementById(inputId);
-            if (!input) return;
-            const v = String(input.value || '').trim();
-            if (!v) return;
-            if (list.indexOf(v) !== -1) { input.value = ''; return; }
-            list.push(v);
-            input.value = '';
-            updateOfferSizesHidden(hiddenId, list);
-            renderOfferSizesList(listId, list, which);
-        }
-        function removeOfferSizeOption(which, index) {
-            const list = which === 'add' ? addOfferSizesList : editOfferSizesList;
-            const listId = which === 'add' ? 'addOfferSizesList' : 'editOfferSizesList';
-            const hiddenId = which === 'add' ? 'addOfferSizes' : 'editOfferSizes';
-            list.splice(index, 1);
-            updateOfferSizesHidden(hiddenId, list);
-            renderOfferSizesList(listId, list, which);
-        }
-        function clearAddOfferSizesList() {
-            addOfferSizesList = [];
-            updateOfferSizesHidden('addOfferSizes', addOfferSizesList);
-            renderOfferSizesList('addOfferSizesList', addOfferSizesList, 'add');
-        }
+        // (removed offer sizes UI helpers)
 
         let pageSettings = {
             title: 'Special Offers',
@@ -961,8 +862,9 @@
         let currentFilter = 'all';
         let currentSort = 'newest';
         let deleteOfferId = null;
-        let addOfferImageData = null;
-        let editOfferImageData = null;
+        const MAX_OFFER_IMAGES = 10;
+        let addOfferImagesList = [];
+        let editOfferImagesList = [];
 
         // API helpers
         function getToken() {
@@ -1040,7 +942,8 @@
                     originalPrice: parseFloat(o.originalPrice),
                     salePrice: parseFloat(o.salePrice),
                     image: o.image || '',
-                    link: `/products/${o.productSku}`,
+                    images: Array.isArray(o.images) ? o.images : (o.image ? [o.image] : []),
+                    link: o.link || (o.productSku ? `/products/${o.productSku}` : ''),
                     productSku: o.productSku,
                     status: o.isActive ? 'active' : 'inactive',
                     createdAt: o.createdAt ? new Date(o.createdAt).toISOString().split('T')[0] : ''
@@ -1254,41 +1157,65 @@
             document.getElementById(prefix + 'DiscountPreview').textContent = `-${discount}%`;
         }
 
-        // Preview image handlers
-        function previewAddOfferImage(event) {
-            const file = event.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function (e) {
-                    addOfferImageData = e.target.result;
-                    document.getElementById('addOfferImagePreview').src = e.target.result;
-                    document.getElementById('addOfferImagePreview').style.display = 'block';
-                    document.getElementById('addOfferImagePlaceholder').style.display = 'none';
-                };
-                reader.readAsDataURL(file);
-            }
+        function renderOfferImagesList(which) {
+            const list = which === 'edit' ? editOfferImagesList : addOfferImagesList;
+            const containerId = which === 'edit' ? 'editOfferImagesList' : 'addOfferImagesList';
+            const container = document.getElementById(containerId);
+            if (!container) return;
+            container.innerHTML = (list || []).slice(0, MAX_OFFER_IMAGES).map(function (url, i) {
+                var safe = (url || '').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+                return '<div class="product-image-thumb" style="position:relative;aspect-ratio:1;border-radius:8px;overflow:hidden;border:2px solid var(--bg-secondary,#e2e8f0);">' +
+                    '<img src="' + safe + '" alt="" style="width:100%;height:100%;object-fit:cover;" onerror="this.src=\'/assets/icons/profile.svg\'">' +
+                    '<button type="button" onclick="removeOfferImage(\'' + which + '\',' + i + ')" aria-label="Remove" style="position:absolute;top:2px;right:2px;width:22px;height:22px;border-radius:50%;background:rgba(0,0,0,0.6);color:#fff;border:none;cursor:pointer;font-size:14px;line-height:1;display:flex;align-items:center;justify-content:center;">&times;</button>' +
+                    '</div>';
+            }).join('');
         }
 
-        function previewEditOfferImage(event) {
-            const file = event.target.files[0];
-            if (file) {
+        function addOfferImageByUrl(which) {
+            which = which || 'add';
+            const inputId = which === 'edit' ? 'editOfferImageUrlInput' : 'addOfferImageUrlInput';
+            const input = document.getElementById(inputId);
+            const url = (input && input.value || '').trim();
+            if (!url) return;
+            const list = which === 'edit' ? editOfferImagesList : addOfferImagesList;
+            if (list.length >= MAX_OFFER_IMAGES) { showAlert('warning', 'Maximum ' + MAX_OFFER_IMAGES + ' images allowed.'); return; }
+            list.push(url);
+            if (input) input.value = '';
+            renderOfferImagesList(which);
+        }
+        window.addOfferImageByUrl = addOfferImageByUrl;
+
+        function removeOfferImage(which, index) {
+            const list = which === 'edit' ? editOfferImagesList : addOfferImagesList;
+            list.splice(index, 1);
+            renderOfferImagesList(which);
+        }
+        window.removeOfferImage = removeOfferImage;
+
+        function handleOfferImageFiles(which, event) {
+            const files = event && event.target && event.target.files ? Array.from(event.target.files) : [];
+            if (!files.length) return;
+            const list = which === 'edit' ? editOfferImagesList : addOfferImagesList;
+            const remaining = MAX_OFFER_IMAGES - list.length;
+            files.slice(0, Math.max(0, remaining)).forEach(function (file) {
                 const reader = new FileReader();
                 reader.onload = function (e) {
-                    editOfferImageData = e.target.result;
-                    document.getElementById('editOfferImagePreview').src = e.target.result;
+                    if (list.length >= MAX_OFFER_IMAGES) return;
+                    list.push(e.target.result);
+                    renderOfferImagesList(which);
                 };
                 reader.readAsDataURL(file);
-            }
+            });
+            try { event.target.value = ''; } catch (e) { }
         }
+        window.handleOfferImageFiles = handleOfferImageFiles;
 
         // Open add offer modal
         function openAddOfferModal() {
             document.getElementById('addOfferForm').reset();
-            document.getElementById('addOfferImagePreview').style.display = 'none';
-            document.getElementById('addOfferImagePlaceholder').style.display = 'block';
             document.getElementById('addDiscountPreview').textContent = '-0%';
-            addOfferImageData = null;
-            clearAddOfferSizesList();
+            addOfferImagesList = [];
+            renderOfferImagesList('add');
             openModal('addOfferModal');
         }
 
@@ -1302,30 +1229,21 @@
             const salePrice = parseInt(document.getElementById('addOfferSalePrice').value);
             const status = document.getElementById('addOfferStatus').value;
             const discount = Math.round((1 - salePrice / originalPrice) * 100);
-            const sizesStr = (document.getElementById('addOfferSizes')?.value || '').trim();
-
-            // Normalize SKU
+            // Normalize SKU (optional)
             const productSku = slugifySku(productSkuInput);
-            if (!productSku) {
-                showAlert('error', 'Product SKU is required');
-                return;
-            }
 
             try {
-                // Save sizes locally so public offers page can show them
-                saveSizesForSku(productSku, sizesStr);
-                // Also persist sizes to DB so all visitors get them (preferred by site-settings.js)
-                await persistSizesToProductBySku(productSku, sizesStr);
-
                 const newOffer = await apiCall('/offers', {
                     method: 'POST',
                     body: JSON.stringify({
-                        productSku,
+                        productSku: productSku || null,
                         name,
                         originalPrice,
                         salePrice,
                         discount,
-                        image: addOfferImageData || '',
+                        image: addOfferImagesList[0] || '',
+                        images: addOfferImagesList.slice(0, MAX_OFFER_IMAGES),
+                        link: document.getElementById('addOfferLink').value || '',
                         isActive: status === 'active'
                     })
                 });
@@ -1355,18 +1273,10 @@
             const discount = Math.round((1 - offer.salePrice / offer.originalPrice) * 100);
             document.getElementById('editDiscountPreview').textContent = `-${discount}%`;
 
-            if (offer.image) {
-                document.getElementById('editOfferImagePreview').src = offer.image;
-            } else {
-                document.getElementById('editOfferImagePreview').src = '/assets/icons/profile.svg';
-            }
-
-            editOfferImageData = offer.image;
-
-            // Load sizes from localStorage for this SKU
-            editOfferSizesList = getSizesForSku(offer.productSku || '');
-            updateOfferSizesHidden('editOfferSizes', editOfferSizesList);
-            renderOfferSizesList('editOfferSizesList', editOfferSizesList, 'edit');
+            editOfferImagesList = Array.isArray(offer.images) && offer.images.length
+                ? offer.images.slice(0, MAX_OFFER_IMAGES)
+                : (offer.image ? [offer.image] : []);
+            renderOfferImagesList('edit');
 
             openModal('editOfferModal');
         }
@@ -1385,27 +1295,20 @@
             const salePrice = parseInt(document.getElementById('editOfferSalePrice').value);
             const status = document.getElementById('editOfferStatus').value;
             const discount = Math.round((1 - salePrice / originalPrice) * 100);
-            const sizesStr = (document.getElementById('editOfferSizes')?.value || '').trim();
-
             const productSku = slugifySku(productSkuInput);
-            if (!productSku) {
-                showAlert('error', 'Product SKU is required');
-                return;
-            }
 
             try {
-                saveSizesForSku(productSku, sizesStr);
-                await persistSizesToProductBySku(productSku, sizesStr);
-
                 await apiCall(`/offers/${id}`, {
                     method: 'PUT',
                     body: JSON.stringify({
-                        productSku,
+                        productSku: productSku || null,
                         name,
                         originalPrice,
                         salePrice,
                         discount,
-                        image: editOfferImageData || '',
+                        image: editOfferImagesList[0] || '',
+                        images: editOfferImagesList.slice(0, MAX_OFFER_IMAGES),
+                        link: document.getElementById('editOfferLink').value || '',
                         isActive: status === 'active'
                     })
                 });

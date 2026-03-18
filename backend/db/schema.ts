@@ -46,9 +46,15 @@ export const messages = pgTable('messages', {
 // Offers Table (special offers/discounts)
 export const offers = pgTable('offers', {
     id: serial('id').primaryKey(),
-    productSku: text('product_sku').notNull().unique(),
+    // Offers are standalone; SKU is optional (only needed if you want add-to-cart behavior)
+    productSku: text('product_sku'),
     name: text('name').notNull(),
+    // Legacy single image (kept for backward compatibility)
     image: text('image'),
+    // Preferred: multiple images
+    images: text('images').array(),
+    // Optional link button/target
+    link: text('link'),
     originalPrice: decimal('original_price', { precision: 10, scale: 2 }).notNull(),
     salePrice: decimal('sale_price', { precision: 10, scale: 2 }).notNull(),
     discount: integer('discount').notNull(), // Percentage off

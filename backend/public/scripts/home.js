@@ -463,41 +463,53 @@
         }
 
         offersGrid.innerHTML = '';
-        var sizesHelper = typeof window.getProductSizesForSku === 'function' ? window.getProductSizesForSku : function () { return []; };
+        function renderMediaHtml(images, fallbackSrc, alt) {
+          var list = (images || []).filter(Boolean);
+          if (!list.length && fallbackSrc) list = [fallbackSrc];
+          if (list.length <= 1) {
+            var src = list[0] || '/assets/icons/profile.svg';
+            return '<div class="offer-media"><img src="' + src + '" alt="' + (alt || '') + '" onerror="this.src=\\\'/assets/icons/profile.svg\\\'"></div>';
+          }
+          return (
+            '<div class="offer-media" data-swipe-gallery>' +
+            '  <div class="swipe-track">' +
+            list.map(function (src) { return '<div class="swipe-slide"><img src="' + src + '" alt="' + (alt || '') + '" onerror="this.src=\\\'/assets/icons/profile.svg\\\'"></div>'; }).join('') +
+            '  </div>' +
+            '  <div class="swipe-dots" aria-hidden="true"></div>' +
+            '</div>'
+          );
+        }
         offers.forEach(function (offer) {
           var card = doc.createElement('article');
           card.className = 'offer-card fade-up';
           card.setAttribute('data-sku', offer.productSku);
-          var sizes = sizesHelper(offer.productSku);
-          var sizeSelectHtml =
-            '<label class="offer-size-label">Size</label>' +
-            '<select class="product-size-select form-select">' +
-            '<option value="">Choose size</option>' +
-            sizes.map(function (s) { return '<option value="' + s.replace(/"/g, '&quot;') + '">' + s + '</option>'; }).join('') +
-            '</select>';
           card.innerHTML =
             (offer.discount ? '<div class="offer-badge">-' + offer.discount + '%</div>' : '') +
-            '<div class="offer-media"><img src="' + (offer.image || '/assets/icons/profile.svg') + '" alt="' + offer.name + '"></div>' +
+            renderMediaHtml((offer.images || []), (offer.image || '/assets/icons/profile.svg'), offer.name) +
             '<h4 class="offer-title">' + offer.name + '</h4>' +
             '<div class="offer-prices">' +
             (offer.originalPrice ? '<span class="offer-old">' + Math.round(offer.originalPrice) + ' EGP</span>' : '') +
             '<span class="offer-new">' + Math.round(offer.salePrice) + ' EGP</span>' +
             '</div>' +
-            sizeSelectHtml +
-            '<button type="button" class="offer-cart add-to-cart" data-sku="' + offer.productSku + '" aria-label="Add to cart">' +
-            '<img src="./assets/icons/cart.svg" alt="">' +
-            '</button>';
+            (offer.productSku ? (
+              '<button type="button" class="offer-cart add-to-cart" data-sku="' + offer.productSku + '" aria-label="Add to cart">' +
+              '<img src="./assets/icons/cart.svg" alt="">' +
+              '</button>'
+            ) : (
+              (offer.link ? '<a class="btn btn-primary" style="margin-top:10px;align-self:center" href="' + offer.link + '">View</a>' : '')
+            ));
 
           offersGrid.appendChild(card);
           if (io) { io.observe(card); } else { card.classList.add('is-in'); }
         });
 
+        if (typeof window.initSwipeGalleries === 'function') window.initSwipeGalleries(offersGrid);
+
         Array.prototype.slice.call(offersGrid.querySelectorAll('.add-to-cart')).forEach(function (btn) {
           btn.addEventListener('click', function () {
             var card = btn.closest('[data-sku]');
             var sku = (card && card.getAttribute('data-sku')) || btn.dataset.sku || 'unknown';
-            var sizeSelect = card ? card.querySelector('.product-size-select') : null;
-            var size = sizeSelect && sizeSelect.value ? sizeSelect.value : null;
+            var size = null;
             addToCart(sku, 1, size, btn);
           });
         });

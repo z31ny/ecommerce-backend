@@ -79,8 +79,22 @@
             }
 
             grid.innerHTML = '';
-            var getSizes = typeof window.getProductSizesForSku === 'function' ? window.getProductSizesForSku : function () { return []; };
-            var getSizePrice = typeof window.getProductPriceForSkuSize === 'function' ? window.getProductPriceForSkuSize : null;
+            function renderMediaHtml(images, fallbackSrc, alt) {
+              var list = (images || []).filter(Boolean);
+              if (!list.length && fallbackSrc) list = [fallbackSrc];
+              if (list.length <= 1) {
+                var src = list[0] || '/assets/icons/profile.svg';
+                return '<div class="offer-media"><img src="' + src + '" alt="' + (alt || '') + '" onerror="this.src=\\\'/assets/icons/profile.svg\\\'"></div>';
+              }
+              return (
+                '<div class="offer-media" data-swipe-gallery>' +
+                '  <div class="swipe-track">' +
+                list.map(function (src) { return '<div class="swipe-slide"><img src="' + src + '" alt="' + (alt || '') + '" onerror="this.src=\\\'/assets/icons/profile.svg\\\'"></div>'; }).join('') +
+                '  </div>' +
+                '  <div class="swipe-dots" aria-hidden="true"></div>' +
+                '</div>'
+              );
+            }
 
             offers.forEach(function (offer) {
               var sku = offer.productSku || '';
@@ -88,13 +102,7 @@
               card.className = 'offer-card fade-up is-in';
               card.setAttribute('data-sku', sku);
 
-              var sizes = getSizes(sku);
-              var sizeSelectHtml =
-                '<label class="offer-size-label">Size</label>' +
-                '<select class="product-size-select form-select">' +
-                '<option value="">Choose size</option>' +
-                sizes.map(function (s) { return '<option value="' + s.replace(/"/g, '&quot;') + '">' + s + '</option>'; }).join('') +
-                '</select>';
+              var sizeSelectHtml = '';
 
               // Store baseline prices on the card for later size-based updates
               var originalPrice = offer.originalPrice ? parseFloat(offer.originalPrice) : null;
@@ -104,57 +112,34 @@
 
               card.innerHTML =
                 (offer.discount ? '<div class="offer-badge">-' + offer.discount + '%</div>' : '') +
-                '<div class="offer-media"><img src="' + (offer.image || '/assets/icons/profile.svg') + '" alt="' + offer.name + '" onerror="this.src=\'/assets/icons/profile.svg\'"></div>' +
+                renderMediaHtml((offer.images || []), (offer.image || '/assets/icons/profile.svg'), offer.name) +
                 '<h4 class="offer-title">' + offer.name + '</h4>' +
                 '<div class="offer-prices">' +
                 (offer.originalPrice ? '<span class="offer-old">' + Math.round(parseFloat(offer.originalPrice)) + ' EGP</span>' : '') +
                 '<span class="offer-new">' + Math.round(parseFloat(offer.salePrice)) + ' EGP</span>' +
                 '</div>' +
-                sizeSelectHtml +
-                '<button type="button" class="offer-cart add-to-cart" data-sku="' + sku + '" aria-label="Add to cart">' +
-                '<img src="./assets/icons/cart.svg" alt="">' +
-                '</button>';
+                (sku ? (
+                  '<button type="button" class="offer-cart add-to-cart" data-sku="' + sku + '" aria-label="Add to cart">' +
+                  '<img src="./assets/icons/cart.svg" alt="">' +
+                  '</button>'
+                ) : (
+                  (offer.link ? '<a class="btn btn-primary" style="margin-top:10px;align-self:center" href="' + offer.link + '">View</a>' : '')
+                ));
 
               grid.appendChild(card);
             });
 
-            // Update price when size changes (if product has sizePrices or weight-based pricing)
-            if (getSizePrice) {
-              Array.prototype.slice.call(grid.querySelectorAll('.product-size-select')).forEach(function (sel) {
-                sel.addEventListener('change', function () {
-                  var card = sel.closest('[data-sku]');
-                  if (!card) return;
-                  var sku = card.getAttribute('data-sku') || '';
-                  var size = sel.value || '';
-                  var baseOriginal = parseFloat(card.getAttribute('data-offer-original') || '0');
-                  var baseSale = parseFloat(card.getAttribute('data-offer-sale') || '0');
-                  if (!baseOriginal || !baseSale) return;
-
-                  var ratio = baseSale / baseOriginal;
-                  if (!isFinite(ratio) || ratio <= 0) ratio = 1;
-
-                  var sizeOriginal = getSizePrice(sku, size, baseOriginal);
-                  if (sizeOriginal == null || isNaN(sizeOriginal)) return;
-                  var sizeSale = sizeOriginal * ratio;
-
-                  var oldEl = card.querySelector('.offer-old');
-                  var newEl = card.querySelector('.offer-new');
-                  if (oldEl) oldEl.textContent = Math.round(sizeOriginal) + ' EGP';
-                  if (newEl) newEl.textContent = Math.round(sizeSale) + ' EGP';
-                });
-              });
-            }
+            if (typeof window.initSwipeGalleries === 'function') window.initSwipeGalleries(grid);
 
             Array.prototype.slice.call(grid.querySelectorAll('.add-to-cart')).forEach(function (btn) {
               btn.addEventListener('click', function () {
                 var card = btn.closest('[data-sku]');
                 var sku = (card && card.getAttribute('data-sku')) || btn.dataset.sku || '';
-                var sizeSelect = card ? card.querySelector('.product-size-select') : null;
-                var size = sizeSelect && sizeSelect.value ? sizeSelect.value : null;
+                var size = null;
                 if (typeof addToCart === 'function') {
                   addToCart(sku, 1, size, btn);
                 } else {
-                  var cartKey = size ? sku + '__' + size : sku;
+                  var cartKey = sku;
                   try {
                     var cart = JSON.parse(localStorage.getItem('fb_cart_v1') || '{}');
                     cart[cartKey] = (cart[cartKey] || 0) + 1;
@@ -302,6 +287,7 @@
   </footer>
 
   <script src="./scripts/home.js?v=3" defer></script>
+  <script src="./scripts/gallery-swipe.js" defer></script>
   <script src="./scripts/site-settings.js" defer></script>
   <script src="./scripts/sidebar.js" defer></script>
 </body>

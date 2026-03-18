@@ -27,21 +27,25 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
     try {
         const body = await request.json();
-        const { productSku, name, image, originalPrice, salePrice, discount, category, description, startDate, endDate, isActive } = body;
+        const { productSku, name, image, images, link, originalPrice, salePrice, discount, category, description, startDate, endDate, isActive } = body;
 
-        if (!productSku || !name || !originalPrice || !salePrice || discount === undefined) {
+        if (!name || !originalPrice || !salePrice || discount === undefined) {
             return NextResponse.json(
-                { error: 'Product SKU, name, original price, sale price, and discount are required' },
+                { error: 'Name, original price, sale price, and discount are required' },
                 { status: 400 }
             );
         }
 
+        const imagesArr = Array.isArray(images) ? images.filter(Boolean).map((x: any) => String(x)) : undefined;
+
         const [newOffer] = await db
             .insert(offers)
             .values({
-                productSku,
+                productSku: productSku ? String(productSku) : undefined,
                 name,
                 image,
+                images: imagesArr && imagesArr.length ? imagesArr : undefined,
+                link: link ? String(link) : undefined,
                 originalPrice: originalPrice.toString(),
                 salePrice: salePrice.toString(),
                 discount: parseInt(discount),
@@ -51,13 +55,12 @@ export async function POST(request: NextRequest) {
                 endDate: endDate ? new Date(endDate) : undefined,
                 isActive: isActive !== false,
             })
-            .onConflictDoNothing()
             .returning();
 
         if (!newOffer) {
             return NextResponse.json(
-                { error: 'An offer for this product SKU already exists' },
-                { status: 409 }
+                { error: 'Failed to create offer' },
+                { status: 500 }
             );
         }
 

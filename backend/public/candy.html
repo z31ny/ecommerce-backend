@@ -227,6 +227,7 @@
   </footer>
 
   <script src="./scripts/candy.js" defer></script>
+  <script src="./scripts/gallery-swipe.js" defer></script>
   <script>
     // ===== DYNAMIC PRODUCTS LOADING =====
     const candyCategories = ['Candy', 'Candies', 'Chocolate', 'Lollipop', 'Ice Cream', 'Marshmallow', 'Nuts'];
@@ -241,13 +242,30 @@
       const opts = sizes.map(s => `<option value="${s.replace(/"/g, '&quot;')}">${s}</option>`).join('');
       return `<label class="offer-size-label">Size</label><select class="product-size-select form-select"><option value="">Choose size</option>${opts}</select>`;
     }
+    function swipeMediaHtml(images, alt) {
+      const list = (Array.isArray(images) ? images : []).filter(Boolean);
+      if (list.length <= 1) {
+        const src = list[0] || '/assets/icons/profile.svg';
+        return `<div class="offer-media"><img src="${src}" alt="${alt || ''}" onerror="this.src='/assets/icons/profile.svg'"></div>`;
+      }
+      return `
+        <div class="offer-media" data-swipe-gallery>
+          <div class="swipe-track">
+            ${list.map(src => `<div class="swipe-slide"><img src="${src}" alt="${alt || ''}" onerror="this.src='/assets/icons/profile.svg'"></div>`).join('')}
+          </div>
+          <div class="swipe-dots" aria-hidden="true"></div>
+        </div>
+      `;
+    }
     function renderProductCard(product) {
       const price = parseFloat(product.price) || 0;
-      const image = product.images?.[0] || product.image || '/assets/icons/profile.svg';
+      const images = (product.images && Array.isArray(product.images) && product.images.length)
+        ? product.images
+        : (product.image ? [product.image] : []);
 
       return `
         <article class="offer-card fade-up is-in" data-sku="${product.sku}" data-price="${price}" data-cat="${product.category?.toLowerCase() || ''}">
-          <div class="offer-media"><img src="${image}" alt="${product.name}" onerror="this.src='/assets/icons/profile.svg'"></div>
+          ${swipeMediaHtml(images, product.name)}
           <h4 class="offer-title">${product.name}</h4>
           <div class="offer-prices">
             <span class="offer-new">${Math.round(price)} EGP</span>
@@ -339,6 +357,7 @@
       container.innerHTML = html;
       bindAddToCartButtons();
       bindSizePriceUpdates(container);
+      if (typeof window.initSwipeGalleries === 'function') window.initSwipeGalleries(container);
     }
 
     // Render favorites (top 4 products with highest ratings/first items)
@@ -353,12 +372,19 @@
       grid.innerHTML = favorites.map(product => {
         const price = parseFloat(product.price) || 0;
         const weight = product.attributes?.weight;
-        const image = product.images?.[0] || product.image || '/assets/icons/profile.svg';
+        const images = (product.images && Array.isArray(product.images) && product.images.length)
+          ? product.images
+          : (product.image ? [product.image] : []);
         const description = product.description || '';
 
         return `
           <article class="fav-card" data-sku="${product.sku}" data-price="${price}">
-            <div class="fav-media"><img src="${image}" alt="${product.name}" onerror="this.src='/assets/icons/profile.svg'"></div>
+            <div class="fav-media" data-swipe-gallery>
+              <div class="swipe-track">
+                ${(images.length ? images : ['/assets/icons/profile.svg']).map(src => `<div class="swipe-slide"><img src="${src}" alt="${product.name}" onerror="this.src='/assets/icons/profile.svg'"></div>`).join('')}
+              </div>
+              <div class="swipe-dots" aria-hidden="true"></div>
+            </div>
             ${description ? `<p class="fav-desc">${description}</p>` : ''}
             <div class="fav-meta">${weight ? `<span class="fav-weight">${weight}</span>` : ''}<span class="fav-price">${price} L.E</span></div>
             <button class="fav-cart add-to-cart" data-sku="${product.sku}" aria-label="Add to cart"><img src="./assets/icons/cart.svg" alt="cart"></button>
@@ -367,6 +393,7 @@
       }).join('');
 
       bindAddToCartButtons();
+      if (typeof window.initSwipeGalleries === 'function') window.initSwipeGalleries(grid);
     }
 
     // Bind add to cart buttons (with optional size from .product-size-select)

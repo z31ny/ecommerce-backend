@@ -37,12 +37,16 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
         const offerId = parseInt(id);
         const body = await request.json();
 
+        const imagesArr = Array.isArray(body.images) ? body.images.filter(Boolean).map((x: any) => String(x)) : undefined;
+
         const [updated] = await db
             .update(offers)
             .set({
-                productSku: body.productSku,
+                productSku: body.productSku ? String(body.productSku) : null,
                 name: body.name,
                 image: body.image,
+                images: imagesArr && imagesArr.length ? imagesArr : null,
+                link: body.link ? String(body.link) : null,
                 originalPrice: body.originalPrice?.toString(),
                 salePrice: body.salePrice?.toString(),
                 discount: body.discount !== undefined ? parseInt(body.discount) : undefined,
