@@ -47,7 +47,11 @@
 .fav-header{text-align:center;margin:6px 0 16px}
 .fav-title{margin:0 0 6px 0;color:var(--accent);font-family:'Cabiry Bubble Highlight Demo','Bubblegum Sans',cursive}
 .fav-sub{margin:0;color:#b24c63}
-.fav-grid{display:flex;flex-wrap:wrap;gap:24px;justify-content:center;max-width:1200px;margin:0 auto}
+.fav-grid{
+  display:grid;
+  grid-template-columns:repeat(4, minmax(0, 1fr));
+  gap:18px;
+}
 .fav-card{
   position:relative;
   background:var(--glass-bg);
@@ -55,16 +59,15 @@
   -webkit-backdrop-filter:blur(var(--glass-blur));
   border:1px solid var(--glass-border);
   border-radius:24px;
-  padding:14px;
+  padding:12px;
   box-shadow:var(--glass-shadow),var(--glow);
   display:flex;
   flex-direction:column;
   gap:10px;
   transition:transform .3s ease,box-shadow .3s ease;
   width:100%;
-  max-width:320px;
-  /* Keep all favorites cards the same height */
-  min-height: 420px;
+  /* Match other cards: avoid oversized fixed height */
+  min-height: 0;
 }
 .fav-card:hover{transform:translateY(-4px);box-shadow:var(--glass-shadow),var(--glow-strong)}
 .fav-media{border-radius:22px;overflow:hidden;aspect-ratio:4/3;background:#f9f3f3}
@@ -74,6 +77,7 @@
   color:#7a2f43;
   /* Clamp so text doesn't change card height */
   display:-webkit-box;
+  line-clamp:3;
   -webkit-line-clamp:3;
   -webkit-box-orient:vertical;
   overflow:hidden;
@@ -143,7 +147,7 @@
 .candies-name{margin:4px 0 0 0;color:#7a2f43;min-height:24px}
 .candies-desc{
   margin:0;color:#8a6a74;
-  display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;
+  display:-webkit-box;line-clamp:3;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;
   min-height:60px;
 }
 .candies-meta{display:flex;align-items:center;justify-content:space-between;color:#7a2f43;font-weight:700;padding-right:48px}
