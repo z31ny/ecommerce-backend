@@ -48,12 +48,39 @@
 .fav-title{margin:0 0 6px 0;color:var(--accent);font-family:'Cabiry Bubble Highlight Demo','Bubblegum Sans',cursive}
 .fav-sub{margin:0;color:#b24c63}
 .fav-grid{display:flex;flex-wrap:wrap;gap:24px;justify-content:center;max-width:1200px;margin:0 auto}
-.fav-card{position:relative;background:var(--glass-bg);backdrop-filter:blur(var(--glass-blur));-webkit-backdrop-filter:blur(var(--glass-blur));border:1px solid var(--glass-border);border-radius:24px;padding:14px;box-shadow:var(--glass-shadow),var(--glow);display:grid;gap:10px;transition:transform .3s ease,box-shadow .3s ease}
+.fav-card{
+  position:relative;
+  background:var(--glass-bg);
+  backdrop-filter:blur(var(--glass-blur));
+  -webkit-backdrop-filter:blur(var(--glass-blur));
+  border:1px solid var(--glass-border);
+  border-radius:24px;
+  padding:14px;
+  box-shadow:var(--glass-shadow),var(--glow);
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+  transition:transform .3s ease,box-shadow .3s ease;
+  width:100%;
+  max-width:320px;
+  /* Keep all favorites cards the same height */
+  min-height: 420px;
+}
 .fav-card:hover{transform:translateY(-4px);box-shadow:var(--glass-shadow),var(--glow-strong)}
 .fav-media{border-radius:22px;overflow:hidden;aspect-ratio:4/3;background:#f9f3f3}
 .fav-media img{width:100%;height:100%;object-fit:cover;display:block}
-.fav-desc{margin:0;color:#7a2f43}
-.fav-meta{display:flex;align-items:center;justify-content:space-between;color:#7a2f43;font-weight:700;padding-right:52px}
+.fav-desc{
+  margin:0;
+  color:#7a2f43;
+  /* Clamp so text doesn't change card height */
+  display:-webkit-box;
+  -webkit-line-clamp:3;
+  -webkit-box-orient:vertical;
+  overflow:hidden;
+  line-height:1.4;
+  min-height: calc(1.4em * 3);
+}
+.fav-meta{display:flex;align-items:center;justify-content:space-between;color:#7a2f43;font-weight:700;padding-right:52px;margin-top:auto}
 .fav-price{color:#b24c63}
 .fav-rating{color:#b24c63;font-weight:700}
 .fav-score{color:#8a6a74;font-weight:400}
