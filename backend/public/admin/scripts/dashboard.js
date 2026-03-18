@@ -4922,8 +4922,11 @@ async function initOverviewPage() {
         loadAnalyticsFromAPI('week'),
         loadOrdersFromAPI()
     ]);
-    createRevenueChart('revenueChart', 'week');
-    createCategoryChart('categoryChart', 'week');
+
+    // Initialize stats cards + charts for default period (week)
+    await updateDashboardData('week');
+
+    // Populate recent orders and top products sections
     renderRecentOrders('recentOrdersTable');
     renderTopProducts('topProductsList');
 }
