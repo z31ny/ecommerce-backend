@@ -322,7 +322,9 @@
       // Build items array for API (needs product IDs)
       var hasAllIds = true;
       var apiItems = items.map(function (sku) {
-        var product = skuToProduct[sku];
+        // Use base SKU (without size) to match product.sku from API
+        var baseSku = cartKeyBaseSku(sku);
+        var product = skuToProduct[baseSku];
         if (!product) {
           hasAllIds = false;
           return null;

@@ -355,6 +355,28 @@ async function loadStatsFromAPI(force = false) {
     dataLoadState.stats = true;
 }
 
+function updateOrderStatusSummaryUI() {
+    const container = document.querySelector('.order-stats');
+    if (!container) return;
+
+    const cards = container.querySelectorAll('.order-stat-card');
+    cards.forEach(card => {
+        const labelEl = card.querySelector('.order-stat-label');
+        const countEl = card.querySelector('.order-stat-count');
+        if (!labelEl || !countEl) return;
+
+        const label = labelEl.textContent.toLowerCase();
+        let value = 0;
+        if (label.includes('pending')) value = orderStats.pending || 0;
+        else if (label.includes('processing')) value = orderStats.processing || 0;
+        else if (label.includes('shipped')) value = orderStats.shipped || 0;
+        else if (label.includes('delivered')) value = orderStats.delivered || 0;
+        else if (label.includes('trash') || label.includes('cancelled')) value = orderStats.cancelled || 0;
+
+        countEl.textContent = value;
+    });
+}
+
 async function loadAnalyticsFromAPI(period = 'week') {
     if (analyticsCache[period]) return analyticsCache[period];
     const analytics = await DashboardAPI.getAnalytics(period);
@@ -4929,6 +4951,16 @@ async function initOverviewPage() {
     // Populate recent orders and top products sections
     renderRecentOrders('recentOrdersTable');
     renderTopProducts('topProductsList');
+}
+
+// Initialize Orders Page
+async function initOrdersPage() {
+    await Promise.all([
+        loadStatsFromAPI(),
+        loadOrdersFromAPI(true)
+    ]);
+    renderFilteredOrders();
+    updateOrderStatusSummaryUI();
 }
 
 // Initialize Products Page
