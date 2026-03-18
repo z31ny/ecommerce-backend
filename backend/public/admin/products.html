@@ -625,16 +625,25 @@
             return obj[String(sku).toLowerCase()] || '';
         }
 
-        // Size options UI: add one by one (no comma-separated typing)
+        // Size options UI: add one or multiple sizes (commas allowed)
         function addSizeOption(which) {
             const inputId = which === 'add' ? 'addProductSizesInput' : 'editProductSizesInput';
             const listId = which === 'add' ? 'addProductSizesList' : 'editProductSizesList';
             const hiddenId = which === 'add' ? 'addProductSizes' : 'editProductSizes';
             const list = which === 'add' ? addProductSizesList : editProductSizesList;
             const input = document.getElementById(inputId);
-            const val = (input && input.value || '').trim();
-            if (!val) return;
-            list.push(val);
+
+            // User may paste comma-separated sizes (ex: "50g, 100g, 250g")
+            const raw = (input && input.value || '').trim();
+            if (!raw) return;
+
+            const parts = raw.split(',')
+                .map(s => s.trim())
+                .filter(Boolean);
+
+            parts.forEach(p => {
+                if (list.indexOf(p) === -1) list.push(p);
+            });
             if (input) input.value = '';
             updateSizesHidden(hiddenId, list);
             renderSizesList(listId, list, which);
@@ -906,7 +915,7 @@
                     products[idx] = { ...products[idx], ...productData };
                     if (typeof renderProducts === 'function') renderProducts();
                 }
-                showAlert('warning', 'Saved locally (API unavailable)');
+                showAlert('warning', 'Saved locally (API unavailable). ' + (err && err.message ? err.message : ''));
                 closeModal('editProductModal');
             }
         });
