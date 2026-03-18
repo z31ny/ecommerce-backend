@@ -258,6 +258,30 @@
       `;
     }
 
+    function bindSizePriceUpdates(root) {
+      const container = root || document;
+      const helper = typeof window.getProductPriceForSkuSize === 'function'
+        ? window.getProductPriceForSkuSize
+        : null;
+      if (!helper) return;
+
+      container.querySelectorAll('.offer-card [data-sku] .product-size-select, .offer-card .product-size-select').forEach(select => {
+        select.addEventListener('change', function () {
+          const card = this.closest('[data-sku]');
+          if (!card) return;
+          const sku = card.getAttribute('data-sku');
+          const basePrice = parseFloat(card.getAttribute('data-price') || '0') || 0;
+          const size = this.value || '';
+          const newPrice = helper(sku, size, basePrice);
+          const priceEl = card.querySelector('.offer-new');
+          if (priceEl && newPrice != null && !isNaN(newPrice)) {
+            priceEl.textContent = Math.round(newPrice) + ' EGP';
+          }
+        });
+      });
+    }
+
+
     // Render products grouped by category
     function renderProducts(products) {
       const container = document.getElementById('productsContainer');
@@ -325,6 +349,7 @@
 
       container.innerHTML = html;
       bindAddToCartButtons();
+      bindSizePriceUpdates(container);
     }
 
     // Render favorites (top 4 products)

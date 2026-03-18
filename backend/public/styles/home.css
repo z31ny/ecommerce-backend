@@ -2452,7 +2452,8 @@ body {
   /* Keep favorites cards consistent like .fav-card */
   display: flex;
   flex-direction: column;
-  min-height: 330px;
+  /* Match other cards (offers): avoid oversized min-height */
+  min-height: 0;
 }
 .favorite-card:hover {
   transform: translateY(-4px);
@@ -2462,6 +2463,7 @@ body {
 .fav-img {
   width: 100%;
   aspect-ratio: 4 / 3;
+  min-height: 160px;
   overflow: hidden;
   background: #f9f3f3;
 }

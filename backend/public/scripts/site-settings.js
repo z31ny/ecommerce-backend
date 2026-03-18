@@ -33,6 +33,63 @@
     }
     window.getProductSizesForSku = getProductSizesForSku;
 
+    function parseFirstNumber(val) {
+        var m = String(val || '').match(/(\d+(\.\d+)?)/);
+        if (!m) return null;
+        var n = parseFloat(m[1]);
+        return isNaN(n) ? null : n;
+    }
+    function parseGrams(val) {
+        var s = String(val || '').toLowerCase();
+        var n = parseFirstNumber(s);
+        if (n === null) return null;
+        if (s.indexOf('kg') !== -1) return n * 1000;
+        if (s.indexOf('g') !== -1) return n;
+        // If unit missing but looks like grams, treat as grams.
+        return n;
+    }
+
+    function normalizeSizePrices(val) {
+        // Accept { "50g": 99, "100g": "149" } or array-like tuples etc (best-effort)
+        if (!val || typeof val !== 'object') return null;
+        var out = {};
+        try {
+            Object.keys(val).forEach(function (k) {
+                var key = String(k).trim();
+                if (!key) return;
+                var n = parseFloat(val[k]);
+                if (!isNaN(n)) out[key] = n;
+            });
+        } catch (e) { return null; }
+        return out;
+    }
+
+    function getProductPriceForSkuSize(sku, size, fallbackPrice) {
+        var key = String(sku || '').toLowerCase();
+        var sz = String(size || '').trim();
+        var base = (typeof fallbackPrice === 'number' && !isNaN(fallbackPrice)) ? fallbackPrice : null;
+
+        // Prefer explicit per-size pricing from DB: product.attributes.sizePrices
+        if (window.__productMetaBySku && window.__productMetaBySku[key]) {
+            var meta = window.__productMetaBySku[key];
+            if (meta && meta.sizePrices && sz && meta.sizePrices[sz] != null) {
+                var sp = parseFloat(meta.sizePrices[sz]);
+                if (!isNaN(sp)) return sp;
+            }
+
+            // Otherwise compute proportionally using grams if possible.
+            var gSelected = parseGrams(sz);
+            var gBase = parseGrams(meta && meta.weight ? meta.weight : '');
+            if (gSelected != null && gBase != null && gBase > 0) {
+                var pBase = base != null ? base : parseFloat(meta.price);
+                if (!isNaN(pBase)) return (pBase / gBase) * gSelected;
+            }
+        }
+
+        return base != null ? base : null;
+    }
+    window.getProductPriceForSkuSize = getProductPriceForSkuSize;
+
     // Start loading sizes ASAP (do not wait for DOMContentLoaded)
     // Other scripts can wait on window.__productSizesReady if needed.
     window.__productSizesReady = (async function () {
@@ -41,15 +98,23 @@
             if (!resProducts.ok) return false;
             var list = await resProducts.json();
             var map = {};
+            var metaMap = {};
             if (Array.isArray(list)) {
                 list.forEach(function (p) {
                     var sku = p && p.sku ? String(p.sku).toLowerCase() : '';
                     if (!sku) return;
                     var sizes = p.attributes && p.attributes.sizes ? p.attributes.sizes : null;
                     if (sizes) map[sku] = sizes;
+
+                    metaMap[sku] = {
+                        price: p && p.price != null ? p.price : null,
+                        weight: p && p.attributes && p.attributes.weight ? p.attributes.weight : null,
+                        sizePrices: normalizeSizePrices(p && p.attributes ? p.attributes.sizePrices : null)
+                    };
                 });
             }
             window.__productSizesBySku = map;
+            window.__productMetaBySku = metaMap;
             return true;
         } catch (e) {
             return false;

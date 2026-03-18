@@ -1559,6 +1559,12 @@ function editProduct(productId) {
         }
     }
     if (window.syncEditSizesFromInput) window.syncEditSizesFromInput();
+    if (window.setEditSizePrices) {
+        window.setEditSizePrices(product.attributes && product.attributes.sizePrices ? product.attributes.sizePrices : null);
+    }
+    if (window.setEditSizePrices) {
+        window.setEditSizePrices(product.attributes && product.attributes.sizePrices ? product.attributes.sizePrices : null);
+    }
 
     // Open the modal
     openModal('editProductModal');

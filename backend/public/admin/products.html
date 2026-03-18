@@ -323,7 +323,9 @@
                         </div>
                         <div id="addProductSizesList" class="sizes-options-list" style="display:flex;flex-wrap:wrap;gap:6px;min-height:24px;"></div>
                         <input type="hidden" name="productSizes" id="addProductSizes" value="">
-                        <small class="form-hint" style="display:block; margin-top:6px; color:#6b7280;">Add each size option one by one. Customers can choose on the website. Stored locally only.</small>
+                        <div id="addProductSizePrices" style="margin-top:10px;"></div>
+                        <input type="hidden" name="productSizePrices" id="addProductSizePricesJson" value="">
+                        <small class="form-hint" style="display:block; margin-top:6px; color:#6b7280;">Add sizes, then set a price for each size. This is saved to the database and used on the website.</small>
                     </div>
                     <div class="form-group">
                         <label class="form-label">Description</label>
@@ -449,7 +451,9 @@
                         </div>
                         <div id="editProductSizesList" class="sizes-options-list" style="display:flex;flex-wrap:wrap;gap:6px;min-height:24px;"></div>
                         <input type="hidden" name="productSizes" id="editProductSizes" value="">
-                        <small class="form-hint" style="display:block; margin-top:6px; color:#6b7280;">Add each size option one by one. Customers can choose on the website. Stored locally only.</small>
+                        <div id="editProductSizePrices" style="margin-top:10px;"></div>
+                        <input type="hidden" name="productSizePrices" id="editProductSizePricesJson" value="">
+                        <small class="form-hint" style="display:block; margin-top:6px; color:#6b7280;">Add sizes, then set a price for each size. This is saved to the database and used on the website.</small>
                     </div>
                     <div class="form-group">
                         <label class="form-label">Description</label>
@@ -597,6 +601,8 @@
         const STORAGE_PRODUCT_SIZES = 'fb_product_sizes';
         let addProductSizesList = [];
         let editProductSizesList = [];
+        let addProductSizePrices = {}; // { "50g": 99, ... }
+        let editProductSizePrices = {};
 
         function getProductSizes() {
             try {
@@ -632,14 +638,21 @@
             if (input) input.value = '';
             updateSizesHidden(hiddenId, list);
             renderSizesList(listId, list, which);
+            renderSizePrices(which);
         }
         function removeSizeOption(which, index) {
             const list = which === 'add' ? addProductSizesList : editProductSizesList;
             const listId = which === 'add' ? 'addProductSizesList' : 'editProductSizesList';
             const hiddenId = which === 'add' ? 'addProductSizes' : 'editProductSizes';
+            const removed = list[index];
             list.splice(index, 1);
             updateSizesHidden(hiddenId, list);
             renderSizesList(listId, list, which);
+            if (removed) {
+                const map = which === 'add' ? addProductSizePrices : editProductSizePrices;
+                delete map[String(removed).trim()];
+            }
+            renderSizePrices(which);
         }
         function updateSizesHidden(hiddenId, list) {
             const el = document.getElementById(hiddenId);
@@ -659,6 +672,69 @@
                 });
             });
         }
+
+        function safeParseJson(val) {
+            try { return JSON.parse(val); } catch (e) { return null; }
+        }
+        function serializeSizePrices(map, sizes) {
+            const out = {};
+            (sizes || []).forEach(function (s) {
+                const key = String(s).trim();
+                if (!key) return;
+                const v = map && map[key];
+                const n = parseFloat(v);
+                if (!isNaN(n)) out[key] = n;
+            });
+            return out;
+        }
+
+        function renderSizePrices(which) {
+            const list = which === 'add' ? addProductSizesList : editProductSizesList;
+            const map = which === 'add' ? addProductSizePrices : editProductSizePrices;
+            const containerId = which === 'add' ? 'addProductSizePrices' : 'editProductSizePrices';
+            const hiddenId = which === 'add' ? 'addProductSizePricesJson' : 'editProductSizePricesJson';
+            const container = document.getElementById(containerId);
+            const hidden = document.getElementById(hiddenId);
+            if (!container || !hidden) return;
+
+            if (!list || list.length === 0) {
+                container.innerHTML = '';
+                hidden.value = '';
+                return;
+            }
+
+            const rows = list.map(function (s) {
+                const key = String(s).trim();
+                const current = map[key];
+                const display = (current === 0 || current) ? String(current) : '';
+                return (
+                    '<div class="size-price-row" style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">' +
+                    '  <div style="min-width:90px;font-weight:600;color:var(--text-secondary,#374151);">' + key.replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</div>' +
+                    '  <input type="number" class="form-input size-price-input" data-size="' + key.replace(/"/g, '&quot;') + '" placeholder="EGP" step="0.01" min="0" style="max-width:180px;" value="' + display.replace(/"/g, '&quot;') + '">' +
+                    '</div>'
+                );
+            }).join('');
+
+            container.innerHTML =
+                '<div style="padding:10px;border:1px solid var(--border-color,#e5e7eb);border-radius:12px;background:var(--bg-secondary,#f8fafc);">' +
+                '  <div style="font-weight:700;margin-bottom:8px;color:var(--text-primary,#111827);">Price per size (optional)</div>' +
+                rows +
+                '</div>';
+
+            container.querySelectorAll('.size-price-input').forEach(function (inp) {
+                inp.addEventListener('input', function () {
+                    const sizeKey = String(inp.getAttribute('data-size') || '').trim();
+                    const n = parseFloat(inp.value);
+                    if (!sizeKey) return;
+                    if (isNaN(n)) delete map[sizeKey];
+                    else map[sizeKey] = n;
+                    hidden.value = JSON.stringify(serializeSizePrices(map, list));
+                });
+            });
+
+            // Initialize hidden value
+            hidden.value = JSON.stringify(serializeSizePrices(map, list));
+        }
         // When edit modal is opened, sync list from hidden input (set by dashboard.js)
         function syncEditSizesFromInput() {
             const hidden = document.getElementById('editProductSizes');
@@ -666,8 +742,22 @@
             editProductSizesList = str ? str.split(',').map(function (x) { return x.trim(); }).filter(Boolean) : [];
             updateSizesHidden('editProductSizes', editProductSizesList);
             renderSizesList('editProductSizesList', editProductSizesList, 'edit');
+            renderSizePrices('edit');
         }
         window.syncEditSizesFromInput = syncEditSizesFromInput;
+
+        function setEditSizePrices(map) {
+            editProductSizePrices = {};
+            if (map && typeof map === 'object') {
+                Object.keys(map).forEach(function (k) {
+                    const key = String(k).trim();
+                    const n = parseFloat(map[k]);
+                    if (key && !isNaN(n)) editProductSizePrices[key] = n;
+                });
+            }
+            renderSizePrices('edit');
+        }
+        window.setEditSizePrices = setEditSizePrices;
         // Clear add-modal sizes when opening add modal
         function clearAddSizesList() {
             addProductSizesList = [];
@@ -675,6 +765,8 @@
             renderSizesList('addProductSizesList', addProductSizesList, 'add');
             var inp = document.getElementById('addProductSizesInput');
             if (inp) inp.value = '';
+            addProductSizePrices = {};
+            renderSizePrices('add');
         }
         window.clearAddSizesList = clearAddSizesList;
         // Sample sizes so you can see the feature (only if empty)
@@ -742,6 +834,8 @@
             const sizes = sizesStr
                 ? sizesStr.split(',').map(s => s.trim()).filter(Boolean)
                 : [];
+            const sizePricesRaw = (document.getElementById('addProductSizePricesJson')?.value || '').trim();
+            const sizePrices = sizePricesRaw ? (safeParseJson(sizePricesRaw) || {}) : {};
 
             const productData = {
                 name: document.getElementById('addProductName').value,
@@ -753,7 +847,7 @@
                 status: document.getElementById('addProductStatus').value || 'active',
                 description: document.getElementById('addProductDescription').value || '',
                 images: addProductImagesList.length ? addProductImagesList.slice(0, MAX_PRODUCT_IMAGES) : [],
-                attributes: { sizes }
+                attributes: { sizes, sizePrices }
             };
 
             console.log('Creating product:', productData);
@@ -764,6 +858,7 @@
                 showAlert('success', 'Product added successfully!');
                 closeModal('addProductModal');
                 clearAddImagesList();
+                clearAddSizesList();
                 await loadProductsFromAPI();
                 this.reset();
             } catch (err) {
@@ -783,6 +878,8 @@
             const sizes = sizesStr
                 ? sizesStr.split(',').map(s => s.trim()).filter(Boolean)
                 : [];
+            const sizePricesRaw = (document.getElementById('editProductSizePricesJson')?.value || '').trim();
+            const sizePrices = sizePricesRaw ? (safeParseJson(sizePricesRaw) || {}) : {};
 
             const productData = {
                 name: document.getElementById('editProductName').value,
@@ -794,7 +891,7 @@
                 status: document.getElementById('editProductStatus').value,
                 description: document.getElementById('editProductDescription').value,
                 images: editProductImagesList.length ? editProductImagesList.slice(0, MAX_PRODUCT_IMAGES) : [],
-                attributes: { ...(existing?.attributes || {}), sizes }
+                attributes: { ...(existing?.attributes || {}), sizes, sizePrices }
             };
 
             try {
