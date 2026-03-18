@@ -326,6 +326,7 @@
         var baseSku = cartKeyBaseSku(sku);
         var product = skuToProduct[baseSku];
         if (!product) {
+          // Mark that not all items could be mapped, but still allow partial checkout
           hasAllIds = false;
           return null;
         }
@@ -352,8 +353,8 @@
         submitBtn.textContent = 'Processing...';
       }
 
-      // Try API checkout if we have product IDs
-      if (hasAllIds && apiItems.length > 0 && typeof FreezybiteAPI !== 'undefined') {
+      // Try API checkout if we have at least one mapped item
+      if (apiItems.length > 0 && typeof FreezybiteAPI !== 'undefined') {
         console.log('[Checkout] Attempting API checkout...');
         FreezybiteAPI.guestCheckout(apiItems, guestInfo)
           .then(function (result) {
