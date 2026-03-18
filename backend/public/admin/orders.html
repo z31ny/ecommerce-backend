@@ -381,30 +381,6 @@
             }
         }
 
-        // Override updateOrderStatus to use API
-        const originalUpdateOrderStatus = window.updateOrderStatus;
-        window.updateOrderStatus = async function (orderId, newStatus) {
-            // Extract numeric ID from order ID string
-            const numericId = typeof orderId === 'string' ?
-                parseInt(orderId.replace('ORD-', '')) : orderId;
-
-            // Find order locally
-            const order = orders.find(o => o.id === orderId || o.orderId === numericId);
-            if (!order) return;
-
-            try {
-                await DashboardAPI.updateOrder(order.orderId || numericId, { status: newStatus });
-                order.status = newStatus;
-                if (typeof renderOrderTable === 'function') renderOrderTable();
-                showAlert('success', `Order status updated to ${newStatus}`);
-            } catch (err) {
-                // Fallback to local
-                order.status = newStatus;
-                if (typeof renderOrderTable === 'function') renderOrderTable();
-                showAlert('warning', 'Updated locally (API unavailable)');
-            }
-        };
-
         // Override deleteOrder to use API
         const originalDeleteOrder = window.deleteOrder;
         window.deleteOrder = async function (orderId) {

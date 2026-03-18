@@ -1768,9 +1768,14 @@ function viewOrder(orderId) {
                             <span class="receipt-label">Method</span>
                             <span class="receipt-value"><span class="badge badge-shipped">Cash on Delivery</span></span>
                         </div>
-                        <div class="receipt-row">
+                        <div class="receipt-row" style="align-items:flex-start;">
                             <span class="receipt-label">InstaPay Deposit</span>
-                            <span class="receipt-value"><span class="badge ${depositBadgeClass}">${order.depositStatus === 'paid' ? formatCurrency(order.depositAmount) : order.depositStatus}</span></span>
+                            <span class="receipt-value" style="display:flex;flex-direction:column;align-items:flex-end;gap:8px;">
+                                <span class="badge ${depositBadgeClass}">${order.depositStatus === 'paid' ? formatCurrency(order.depositAmount) : order.depositStatus}</span>
+                                <button class="btn btn-sm btn-secondary" style="padding:6px 10px;" onclick="confirmDeposit('${order.id}')">
+                                    <i class="fas fa-money-bill-wave"></i> ${order.depositStatus === 'paid' ? 'Update' : 'Add'} deposit
+                                </button>
+                            </span>
                         </div>
                     </div>
                     
@@ -1835,7 +1840,12 @@ function viewOrder(orderId) {
 
 // Update Order Status
 async function updateOrderStatus(orderId, newStatus) {
-    const order = orders.find(o => o.id === orderId);
+    // Accept both "ORD-123" and numeric IDs
+    const numericId = typeof orderId === 'string'
+        ? parseInt(orderId.replace('ORD-', ''), 10)
+        : orderId;
+
+    const order = orders.find(o => o.id === orderId || o.orderId === numericId);
     if (!order) return;
 
     const oldStatus = order.status;
@@ -1846,7 +1856,9 @@ async function updateOrderStatus(orderId, newStatus) {
     // If cancelling, move to trash
     if (newStatus === 'cancelled') {
         try {
-            await DashboardAPI.updateOrder(parseInt(orderId, 10), { status: newStatus });
+            if (!isNaN(numericId)) {
+                await DashboardAPI.updateOrder(numericId, { status: newStatus });
+            }
         } catch (error) {
             showAlert('error', `Failed to update order status.\n\n${error.message}`);
             return;
@@ -1857,7 +1869,9 @@ async function updateOrderStatus(orderId, newStatus) {
 
     order.status = newStatus;
     try {
-        await DashboardAPI.updateOrder(parseInt(orderId, 10), { status: newStatus });
+        if (!isNaN(numericId)) {
+            await DashboardAPI.updateOrder(numericId, { status: newStatus });
+        }
     } catch (error) {
         order.status = oldStatus;
         showAlert('error', `Failed to update order status.\n\n${error.message}`);
@@ -2416,7 +2430,7 @@ function confirmDeposit(orderId) {
                 </div>
                 <div class="form-group">
                     <label class="form-label">Deposit Amount Received (EGP)</label>
-                    <input type="number" class="form-input" id="depositAmountInput" placeholder="Enter amount" value="20" min="1" step="0.01">
+                    <input type="number" class="form-input" id="depositAmountInput" placeholder="Enter amount" value="${(order.depositAmount && order.depositAmount > 0) ? order.depositAmount : 20}" min="1" step="0.01">
                 </div>
                 <p style="font-size: 0.8125rem; color: var(--text-secondary); text-align: center;">
                     <i class="fas fa-info-circle"></i> Received via InstaPay to 01093961545
@@ -2447,13 +2461,31 @@ function processDeposit(orderId) {
         return;
     }
 
-    order.depositStatus = 'paid';
-    order.depositAmount = depositAmount;
-    order.status = order.status === 'pending' ? 'processing' : order.status;
+    const nextStatus = order.status === 'pending' ? 'processing' : order.status;
+    const numericId = order.orderId || (typeof orderId === 'string' ? parseInt(orderId.replace('ORD-', ''), 10) : orderId);
 
-    closeModal('depositModal');
-    renderFilteredOrders();
-    showAlert('success', `Deposit Confirmed!\n\nAmount: ${formatCurrency(depositAmount)}\nOrder: #${orderId}\nStatus: ${order.status.charAt(0).toUpperCase() + order.status.slice(1)}\n\nRemaining on delivery: ${formatCurrency(order.amount - depositAmount)}`);
+    (async function () {
+        try {
+            if (!isNaN(numericId)) {
+                await DashboardAPI.updateOrder(numericId, {
+                    depositStatus: 'paid',
+                    depositAmount: depositAmount,
+                    status: nextStatus
+                });
+            }
+            order.depositStatus = 'paid';
+            order.depositAmount = depositAmount;
+            order.status = nextStatus;
+
+            closeModal('depositModal');
+            // Update receipt if open
+            try { viewOrder(orderId); } catch (e) { }
+            renderFilteredOrders();
+            showAlert('success', `Deposit Confirmed!\n\nAmount: ${formatCurrency(depositAmount)}\nOrder: #${orderId}\nStatus: ${order.status.charAt(0).toUpperCase() + order.status.slice(1)}\n\nRemaining on delivery: ${formatCurrency(order.amount - depositAmount)}`);
+        } catch (err) {
+            showAlert('error', 'Failed to save deposit to server');
+        }
+    })();
 }
 
 // View Customer
