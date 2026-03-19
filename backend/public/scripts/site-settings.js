@@ -371,16 +371,8 @@
                 }
             }
 
-            // === Contact Page: Address, Phone, Email ===
-            if (data.store) {
-                const card = document.querySelector('.contact-card');
-                if (card) {
-                    const ps = card.querySelectorAll('p');
-                    if (ps[0] && data.store.address) ps[0].innerHTML = '<strong>Visit Us</strong><br> ' + data.store.address;
-                    if (ps[1] && data.store.phone) ps[1].innerHTML = '<strong>Call or WhatsApp</strong><br> ' + data.store.phone;
-                    if (ps[2] && data.store.email) ps[2].innerHTML = '<strong>Email</strong><br> ' + data.store.email;
-                }
-            }
+            // NOTE: Do not overwrite contact page card from store settings.
+            // Contact page content is managed by `data.contact` section below.
 
             // === Testimonials ===
             if (data.testimonials && Array.isArray(data.testimonials)) {
@@ -531,9 +523,10 @@
                 var contactCard = document.querySelector('.contact-card');
                 if (contactCard) {
                     var html = '';
-                    if (cc.address) html += '<p><strong>' + (cc.visitLabel || 'Visit Us') + '</strong><br> ' + cc.address + '</p>';
-                    if (cc.phone) html += '<p><strong>' + (cc.phoneLabel || 'Call or WhatsApp') + '</strong><br> ' + cc.phone + '</p>';
-                    if (cc.email) html += '<p><strong>' + (cc.emailLabel || 'Email') + '</strong><br> ' + cc.email + '</p>';
+                    // Always render these rows so stale/demo values are not kept.
+                    html += '<p><strong>' + (cc.visitLabel || 'Visit Us') + '</strong><br> ' + (cc.address || '') + '</p>';
+                    html += '<p><strong>' + (cc.phoneLabel || 'Call or WhatsApp') + '</strong><br> ' + (cc.phone || '') + '</p>';
+                    html += '<p><strong>' + (cc.emailLabel || 'Email') + '</strong><br> ' + (cc.email || '') + '</p>';
                     var socialLinks = [];
                     if (cc.tiktok) socialLinks.push('<a href="' + cc.tiktok + '" target="_blank" rel="noopener noreferrer">TikTok</a>');
                     if (cc.instagram) socialLinks.push('<a href="' + cc.instagram + '" target="_blank" rel="noopener noreferrer">Instagram</a>');
@@ -543,7 +536,7 @@
                         html += '<p><strong>' + (cc.socialLabel || 'Follow Us') + '</strong><br>' + socialLinks.join(' · ') + '</p>';
                     }
                     if (cc.socialDescription) html += '<p style="opacity:.85">' + cc.socialDescription + '</p>';
-                    if (html) contactCard.innerHTML = html;
+                    contactCard.innerHTML = html;
                 }
                 // Also update footer social links if contact has social data
                 if (cc.tiktok || cc.instagram || cc.facebook) {
