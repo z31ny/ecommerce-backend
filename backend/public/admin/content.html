@@ -2249,8 +2249,7 @@
                 saveSection('moods', moods),
                 saveSection('snacks', snacks),
                 saveSection('favorites', favoritesByPage),
-                saveSection('heroes', heroImages),
-                saveSection('contact', contactContent)
+                saveSection('heroes', heroImages)
             ]);
             return results.every(Boolean);
         }
@@ -3043,8 +3042,18 @@
             contactContent.facebook = document.getElementById('contactFacebook').value;
             contactContent.whatsapp = document.getElementById('contactWhatsapp').value;
 
-            // Persist to API
+            // Persist contact section to API (separate from saveAllData to avoid accidental overwrite)
             const ok = await saveSection('contact', contactContent);
+
+            // Re-read latest saved value from API to keep local state in sync.
+            if (ok) {
+                try {
+                    const fresh = await contentAPI('GET');
+                    if (fresh && fresh.contact && typeof fresh.contact === 'object') {
+                        contactContent = fresh.contact;
+                    }
+                } catch (e) { }
+            }
 
             // Refresh preview
             refreshContactPreview();
