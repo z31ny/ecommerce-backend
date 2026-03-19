@@ -524,6 +524,10 @@
             // === Contact Page Content (dynamic) ===
             if (data.contact && typeof data.contact === 'object') {
                 var cc = data.contact;
+                var reachTitleEl = document.getElementById('contactReachTitle');
+                var mainDescEl = document.getElementById('contactMainDescription');
+                if (reachTitleEl && cc.reachTitle) reachTitleEl.textContent = cc.reachTitle;
+                if (mainDescEl) mainDescEl.textContent = cc.mainDescription || '';
                 var contactCard = document.querySelector('.contact-card');
                 if (contactCard) {
                     var html = '';

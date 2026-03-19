@@ -2177,7 +2177,11 @@
             const opts = { method, headers: { 'Content-Type': 'application/json' } };
             if (body) opts.body = JSON.stringify(body);
             const res = await fetch('/api/admin/content', opts);
-            return res.json();
+            const data = await res.json().catch(() => ({}));
+            if (!res.ok) {
+                throw new Error(data.error || 'Failed to save content');
+            }
+            return data;
         }
 
         // Load all content from API
@@ -2230,20 +2234,25 @@
         async function saveSection(sectionKey, content) {
             try {
                 await contentAPI('PUT', { sectionKey, content });
+                return true;
             } catch (error) {
                 console.error(`Failed to save ${sectionKey}:`, error);
+                return false;
             }
         }
 
         // Save all data to API (called after mutations)
-        function saveAllData() {
-            saveSection('testimonials', testimonials);
-            saveSection('faqs', faqs);
-            saveSection('moods', moods);
-            saveSection('snacks', snacks);
-            saveSection('favorites', favoritesByPage);
-            saveSection('heroes', heroImages);
-            saveSection('contact', contactContent);
+        async function saveAllData() {
+            const results = await Promise.all([
+                saveSection('testimonials', testimonials),
+                saveSection('faqs', faqs),
+                saveSection('moods', moods),
+                saveSection('snacks', snacks),
+                saveSection('favorites', favoritesByPage),
+                saveSection('heroes', heroImages),
+                saveSection('contact', contactContent)
+            ]);
+            return results.every(Boolean);
         }
 
         // Update counts
@@ -3016,7 +3025,7 @@
             refreshContactPreview();
         }
 
-        function saveContactContent() {
+        async function saveContactContent() {
             // Get values from form
             contactContent.mainTitle = document.getElementById('contactMainTitle').value;
             contactContent.mainDescription = document.getElementById('contactMainDescription').value;
@@ -3034,13 +3043,14 @@
             contactContent.facebook = document.getElementById('contactFacebook').value;
             contactContent.whatsapp = document.getElementById('contactWhatsapp').value;
 
-            // Save to localStorage
-            saveAllData();
+            // Persist to API
+            const ok = await saveSection('contact', contactContent);
 
             // Refresh preview
             refreshContactPreview();
 
-            showAlert('success', 'Contact page content saved successfully!');
+            if (ok) showAlert('success', 'Contact page content saved successfully!');
+            else showAlert('error', 'Failed to save contact content. Please try again.');
         }
 
         function loadShippingSettings() {
