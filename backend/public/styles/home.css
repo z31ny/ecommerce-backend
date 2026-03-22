@@ -2310,6 +2310,32 @@ body {
   text-decoration: none;
 }
 
+/* Front CTA = real button (flips to back); reset browser button chrome */
+.mood-front-cta {
+  font: inherit;
+  font-family: inherit;
+  cursor: pointer;
+  border: none;
+  width: auto;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.mood-back-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+  justify-content: center;
+  align-items: center;
+  margin-top: 0.75rem;
+  z-index: 2;
+  position: relative;
+}
+
+.mood-add-cart-btn {
+  color: inherit;
+}
+
 .mood-card-back {
   transform: rotateY(180deg);
   overflow: hidden;

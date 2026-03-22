@@ -254,6 +254,53 @@
             }
         }
 
+        /** Pick Your Mood: flip card on face click; front CTA flips to back; links / add-to-cart / size do not flip. */
+        function bindMoodsGridFlip(moodsGrid) {
+            if (!moodsGrid || moodsGrid.getAttribute('data-mood-flip-bound') === '1') return;
+            moodsGrid.setAttribute('data-mood-flip-bound', '1');
+
+            function shouldIgnoreFlip(target) {
+                if (!target || !target.closest) return true;
+                if (target.closest('.add-to-cart')) return true;
+                if (target.closest('a')) return true;
+                if (target.closest('select')) return true;
+                if (target.closest('option')) return true;
+                if (target.closest('label')) return true;
+                if (target.closest('input, textarea')) return true;
+                return false;
+            }
+
+            moodsGrid.addEventListener('click', function (e) {
+                var card = e.target.closest('.mood-card');
+                if (!card || !moodsGrid.contains(card)) return;
+                if (shouldIgnoreFlip(e.target)) return;
+                if (e.target.closest('.mood-front-cta')) {
+                    e.preventDefault();
+                    card.classList.add('is-flipped');
+                    return;
+                }
+                if (e.target.closest('.mood-card-front, .mood-card-back')) {
+                    card.classList.toggle('is-flipped');
+                }
+            });
+
+            moodsGrid.addEventListener('keydown', function (e) {
+                if (e.key !== 'Enter' && e.key !== ' ') return;
+                var card = e.target.closest('.mood-card');
+                if (!card || !moodsGrid.contains(card)) return;
+                if (shouldIgnoreFlip(e.target)) return;
+                if (e.target.closest('.mood-front-cta')) {
+                    e.preventDefault();
+                    card.classList.add('is-flipped');
+                    return;
+                }
+                if (e.target.closest('.mood-card-front, .mood-card-back')) {
+                    e.preventDefault();
+                    card.classList.toggle('is-flipped');
+                }
+            });
+        }
+
         try {
             const res = await fetch('/api/settings', { cache: 'no-store' });
             if (!res.ok) return;
@@ -279,48 +326,56 @@
                                 purple: { bg: 'linear-gradient(135deg,#f3e5f5,#e1bee7)', text: '#4a148c' },
                                 orange: { bg: 'linear-gradient(135deg,#fff3e0,#ffe0b2)', text: '#e65100' }
                             };
+                            function escHtml(str) {
+                                return String(str == null ? '' : str)
+                                    .replace(/&/g, '&amp;')
+                                    .replace(/</g, '&lt;')
+                                    .replace(/>/g, '&gt;')
+                                    .replace(/"/g, '&quot;');
+                            }
+                            function escAttr(str) {
+                                return String(str == null ? '' : str).replace(/&/g, '&amp;').replace(/"/g, '&quot;');
+                            }
                             moodsGrid.innerHTML = activeMoods.map(function (m) {
                                 var colors = moodColorMap[m.color] || moodColorMap.pink;
+                                var skuRaw = (m.productSku && String(m.productSku).trim()) ? String(m.productSku).trim() : '';
+                                var dataSkuAttr = skuRaw ? ' data-sku="' + escAttr(skuRaw) + '"' : '';
                                 var sizesHtml = '';
                                 if (m.sizes && m.sizes.length > 0) {
-                                    sizesHtml = '<label class="offer-size-label" style="color:' + colors.text + ';">Size</label>' +
+                                    sizesHtml = '<label class="offer-size-label" style="color:#fff;text-shadow:0 1px 2px rgba(0,0,0,0.5);">Size</label>' +
                                         '<select class="product-size-select form-select mood-size-select">' +
                                         '<option value="">Choose size</option>' +
-                                        m.sizes.map(function (s) { return '<option value="' + s.replace(/"/g, '&quot;') + '">' + s + '</option>'; }).join('') +
+                                        m.sizes.map(function (s) { return '<option value="' + escHtml(s) + '">' + escHtml(s) + '</option>'; }).join('') +
                                         '</select>';
                                 }
-                                return '<div class="mood-card fade-up" tabindex="0">' +
+                                var shopLabel = (m.shopButtonText && String(m.shopButtonText).trim()) ? String(m.shopButtonText).trim() : 'Buy now';
+                                var addCartBtn = skuRaw
+                                    ? '<button type="button" class="mood-btn mood-add-cart-btn add-to-cart" aria-label="Add to cart">Add to cart</button>'
+                                    : '';
+                                var shopLink = m.buttonLink
+                                    ? '<a href="' + escAttr(String(m.buttonLink).trim()) + '" class="mood-btn mood-btn-link mood-buy-link">' + escHtml(shopLabel) + '</a>'
+                                    : '';
+                                var backActions = (addCartBtn || shopLink)
+                                    ? '<div class="mood-back-actions">' + addCartBtn + shopLink + '</div>'
+                                    : '';
+                                return '<div class="mood-card fade-up" tabindex="0"' + dataSkuAttr + '>' +
                                     '<div class="mood-card-inner">' +
                                     '  <div class="mood-card-front" style="background:' + colors.bg + ';color:' + colors.text + ';">' +
-                                    '    <h3>' + (m.title || '') + '</h3>' +
-                                    '    <p>' + (m.description || '') + '</p>' +
-                                    (m.buttonText ? '    <span class="mood-btn">' + m.buttonText + '</span>' : '') +
+                                    '    <h3>' + escHtml(m.title || '') + '</h3>' +
+                                    '    <p>' + escHtml(m.description || '') + '</p>' +
+                                    (m.buttonText ? '    <button type="button" class="mood-btn mood-front-cta">' + escHtml(m.buttonText) + '</button>' : '') +
                                     '  </div>' +
                                     '  <div class="mood-card-back" style="' + (m.backImage ? 'background-image:url(' + m.backImage + ');background-size:cover;background-position:center;' : 'background:' + colors.bg + ';') + '">' +
-                                    (m.backDescription ? '    <p class="mood-back-text">' + m.backDescription + '</p>' : '') +
+                                    (m.backDescription ? '    <p class="mood-back-text">' + escHtml(m.backDescription) + '</p>' : '') +
                                     sizesHtml +
-                                    (m.buttonLink ? '    <a href="' + m.buttonLink + '" class="mood-btn mood-btn-link">Shop Now</a>' : '') +
+                                    backActions +
                                     '  </div>' +
                                     '</div>' +
                                     '</div>';
                             }).join('');
                             observeNewElements(moodsGrid);
 
-                            // Flip on click (not hover)
-                            Array.prototype.slice.call(moodsGrid.querySelectorAll('.mood-card')).forEach(function (card) {
-                                card.addEventListener('click', function (e) {
-                                    // Don't flip when interacting with controls/links inside
-                                    var ignore = e.target && e.target.closest && e.target.closest('a, button, select, option, input, textarea, label');
-                                    if (ignore) return;
-                                    card.classList.toggle('is-flipped');
-                                });
-                                card.addEventListener('keydown', function (e) {
-                                    if (e.key === 'Enter' || e.key === ' ') {
-                                        e.preventDefault();
-                                        card.classList.toggle('is-flipped');
-                                    }
-                                });
-                            });
+                            bindMoodsGridFlip(moodsGrid);
                         }
                     }
                 } catch (e) {

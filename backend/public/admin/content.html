@@ -1625,7 +1625,15 @@
                     </div>
                     <div class="form-group">
                         <label class="form-label">Product Link</label>
-                        <input type="text" class="form-input" id="moodButtonLink" placeholder="/products/strawberry">
+                        <input type="text" class="form-input" id="moodButtonLink" placeholder="/candy.html or /fruits.html">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Product SKU (for “Add to cart” on card back)</label>
+                        <input type="text" class="form-input" id="moodProductSku" placeholder="e.g. FRT-001 — must match a product SKU">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Back button label (Buy now link)</label>
+                        <input type="text" class="form-input" id="moodShopButtonText" placeholder="Buy now" value="Buy now">
                     </div>
                     <div class="form-group">
                         <label class="form-label">Sizes / Grams (optional)</label>
@@ -1709,6 +1717,14 @@
                     <div class="form-group">
                         <label class="form-label">Product Link</label>
                         <input type="text" class="form-input" id="editMoodButtonLink">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Product SKU (Add to cart)</label>
+                        <input type="text" class="form-input" id="editMoodProductSku" placeholder="e.g. FRT-001">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Back button label (Buy now)</label>
+                        <input type="text" class="form-input" id="editMoodShopButtonText" placeholder="Buy now">
                     </div>
                     <div class="form-group">
                         <label class="form-label">Sizes / Grams (optional)</label>
@@ -2563,6 +2579,8 @@
                 backImage: addMoodBackImageData || '',
                 backDescription: document.getElementById('moodBackDescription').value,
                 buttonLink: document.getElementById('moodButtonLink').value,
+                productSku: (document.getElementById('moodProductSku') && document.getElementById('moodProductSku').value.trim()) || '',
+                shopButtonText: (document.getElementById('moodShopButtonText') && document.getElementById('moodShopButtonText').value.trim()) || 'Buy now',
                 sizes: addMoodSizesList.slice(),
                 status: 'active'
             });
@@ -2578,6 +2596,8 @@
             document.getElementById('editMoodColor').value = m.color;
             document.getElementById('editMoodBackDescription').value = m.backDescription || '';
             document.getElementById('editMoodButtonLink').value = m.buttonLink || '';
+            document.getElementById('editMoodProductSku').value = m.productSku || '';
+            document.getElementById('editMoodShopButtonText').value = m.shopButtonText || 'Buy now';
             editMoodSizesList = (m.sizes || []).slice();
             renderMoodSizesList('editMoodSizesList', editMoodSizesList, 'edit');
             document.getElementById('editMoodStatus').value = m.status;
@@ -2598,6 +2618,8 @@
             m.color = currentEditMoodColor;
             m.backDescription = document.getElementById('editMoodBackDescription').value;
             m.buttonLink = document.getElementById('editMoodButtonLink').value;
+            m.productSku = (document.getElementById('editMoodProductSku') && document.getElementById('editMoodProductSku').value.trim()) || '';
+            m.shopButtonText = (document.getElementById('editMoodShopButtonText') && document.getElementById('editMoodShopButtonText').value.trim()) || 'Buy now';
             m.sizes = editMoodSizesList.slice();
             m.status = document.getElementById('editMoodStatus').value;
             if (editMoodBackImageData) m.backImage = editMoodBackImageData;
