@@ -3728,7 +3728,7 @@ function viewNotification(notifId) {
     detailModal.className = 'modal-overlay';
 
     // Format details with line breaks
-    const formattedDetails = notif.details.split('\n').map(line => {
+    const formattedDetails = (notif.details || '').split('\n').map(line => {
         if (line.includes(':')) {
             const [label, ...value] = line.split(':');
             return `<p style="margin: 0.3rem 0;"><span style="color: var(--text-secondary);">${label}:</span> <strong>${value.join(':').trim()}</strong></p>`;
@@ -3784,13 +3784,21 @@ function handleNotificationAction(action, data) {
     closeModal('notificationDetailModal');
 
     switch (action) {
-        case 'viewOrder':
-            // Navigate to orders page or show order details
-            if (typeof showOrderDetailsModal === 'function') {
-                showOrderDetailsModal(data);
+        case 'viewOrder': {
+            // actionData is often a string; orders array may use numeric ids
+            const idKey = data != null && String(data).trim() !== '' ? String(data).trim() : '';
+            const order = typeof orders !== 'undefined' && Array.isArray(orders)
+                ? orders.find(function (o) { return String(o.id) === idKey || o.id == data; })
+                : null;
+            if (order && typeof showOrderDetailsModal === 'function') {
+                showOrderDetailsModal(order.id);
             } else {
                 window.location.href = 'orders.html';
             }
+            break;
+        }
+        case 'viewMessages':
+            window.location.href = 'messages.html';
             break;
         case 'viewInventory':
             window.location.href = 'inventory.html';
@@ -3845,6 +3853,7 @@ function addNotification(type, title, message, details, action = null, actionDat
         stock: { icon: 'fa-exclamation-triangle', bg: 'var(--warning-light)', color: 'var(--warning)' },
         payment: { icon: 'fa-check-circle', bg: 'var(--success-light)', color: 'var(--success)' },
         customer: { icon: 'fa-user-plus', bg: '#ede9fe', color: 'var(--secondary)' },
+        message: { icon: 'fa-envelope', bg: 'var(--info-light)', color: 'var(--info)' },
         feedback: { icon: 'fa-star', bg: 'var(--info-light)', color: 'var(--info)' },
         error: { icon: 'fa-times-circle', bg: 'var(--danger-light)', color: 'var(--danger)' },
         info: { icon: 'fa-info-circle', bg: 'var(--info-light)', color: 'var(--info)' }
@@ -3872,6 +3881,192 @@ function addNotification(type, title, message, details, action = null, actionDat
     updateNotificationBadge();
 
     return newNotif;
+}
+
+// ----- Real-time style notifications (messages + orders) + sound -----
+const ADMIN_NOTIFY_SNAPSHOT_KEY = 'fb_admin_notify_snapshot_v1';
+const ADMIN_NOTIFY_POLL_MS = 25000;
+let __adminNotifyPollTimer = null;
+
+/** Short pleasant ding (Web Audio). May stay silent until user has interacted with the page (browser policy). */
+function playAdminNotifySound() {
+    try {
+        const AC = window.AudioContext || window.webkitAudioContext;
+        if (!AC) return;
+        const ctx = new AC();
+        if (ctx.state === 'suspended') {
+            ctx.resume().catch(function () { });
+        }
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(880, ctx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(660, ctx.currentTime + 0.12);
+        gain.gain.setValueAtTime(0.0001, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.12, ctx.currentTime + 0.02);
+        gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.2);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(ctx.currentTime);
+        osc.stop(ctx.currentTime + 0.22);
+        setTimeout(function () {
+            try {
+                ctx.close();
+            } catch (e) { }
+        }, 400);
+    } catch (e) {
+        /* ignore */
+    }
+}
+
+function adminOrderSignature(o) {
+    if (!o || o.id == null) return '';
+    return [
+        o.status || '',
+        o.paymentStatus || '',
+        o.depositStatus || '',
+        o.paymentMethod || ''
+    ].join('|');
+}
+
+/**
+ * Poll inbox messages + orders; on new message or order status change, add bell notification + sound.
+ * Uses localStorage snapshot so refreshes don't replay old events.
+ */
+async function pollAdminRealtimeNotifications() {
+    const token = localStorage.getItem('freezyBiteAdminToken');
+    if (!token) return;
+
+    DashboardAPI.token = token;
+
+    try {
+        const [inbox, ordersList] = await Promise.all([
+            DashboardAPI.getMessages('inbox'),
+            DashboardAPI.getOrders()
+        ]);
+
+        const messageIds = inbox.map(function (m) { return m.id; });
+        const orderSigs = {};
+        (ordersList || []).forEach(function (o) {
+            orderSigs[String(o.id)] = adminOrderSignature(o);
+        });
+
+        let prev = null;
+        try {
+            const raw = localStorage.getItem(ADMIN_NOTIFY_SNAPSHOT_KEY);
+            if (raw) prev = JSON.parse(raw);
+        } catch (e) {
+            prev = null;
+        }
+
+        if (!prev || typeof prev !== 'object') {
+            localStorage.setItem(ADMIN_NOTIFY_SNAPSHOT_KEY, JSON.stringify({
+                messageIds: messageIds.slice(),
+                orderSigs: orderSigs
+            }));
+            return;
+        }
+
+        const prevMsgSet = new Set(prev.messageIds || []);
+        const prevOrderSigs = prev.orderSigs || {};
+
+        let playedSound = false;
+        function ding() {
+            if (!playedSound) {
+                playAdminNotifySound();
+                playedSound = true;
+            }
+        }
+
+        for (let i = 0; i < inbox.length; i++) {
+            const msg = inbox[i];
+            if (msg.id == null) continue;
+            if (!prevMsgSet.has(msg.id)) {
+                const sender = msg.senderName || msg.sender || 'Customer';
+                const email = msg.senderEmail || msg.email || '';
+                const subject = msg.subject || 'No subject';
+                const body = (msg.message || '').slice(0, 200);
+                addNotification(
+                    'message',
+                    'New contact message',
+                    'New message from ' + sender + ': ' + subject,
+                    'Name: ' + sender + '\nEmail: ' + email + '\nSubject: ' + subject + '\n\n' + body,
+                    'viewMessages',
+                    String(msg.id)
+                );
+                ding();
+            }
+        }
+
+        for (let j = 0; j < (ordersList || []).length; j++) {
+            const o = ordersList[j];
+            const oid = String(o.id);
+            const sig = adminOrderSignature(o);
+            const oldSig = prevOrderSigs[oid];
+            const customerName = (o.customer && o.customer.name) ? o.customer.name : 'Customer';
+            const total = o.totalAmount != null ? String(o.totalAmount) : '';
+
+            if (oldSig === undefined) {
+                addNotification(
+                    'order',
+                    'New order',
+                    'Order #' + oid + ' from ' + customerName,
+                    'Order ID: ' + oid + '\nCustomer: ' + customerName + '\nStatus: ' + (o.status || '') + '\nPayment: ' + (o.paymentStatus || '') + (total ? '\nTotal: ' + total + ' EGP' : ''),
+                    'viewOrder',
+                    oid
+                );
+                ding();
+            } else if (oldSig !== sig) {
+                addNotification(
+                    'order',
+                    'Order updated',
+                    'Order #' + oid + ' is now ' + (o.status || 'updated'),
+                    'Order ID: ' + oid + '\nCustomer: ' + customerName + '\nStatus: ' + (o.status || '') + '\nPayment: ' + (o.paymentStatus || '') + '\nDeposit: ' + (o.depositStatus || '') + (total ? '\nTotal: ' + total + ' EGP' : ''),
+                    'viewOrder',
+                    oid
+                );
+                ding();
+            }
+        }
+
+        localStorage.setItem(ADMIN_NOTIFY_SNAPSHOT_KEY, JSON.stringify({
+            messageIds: messageIds.slice(),
+            orderSigs: orderSigs
+        }));
+    } catch (err) {
+        console.warn('Realtime admin notifications poll failed:', err);
+    }
+}
+
+function startAdminRealtimeNotifications() {
+    if (__adminNotifyPollTimer) {
+        clearInterval(__adminNotifyPollTimer);
+        __adminNotifyPollTimer = null;
+    }
+    if (!localStorage.getItem('freezyBiteAdminToken')) return;
+
+    // Unlock audio after first click/keypress (browser autoplay policies)
+    if (!window.__fbAdminAudioUnlockBound) {
+        window.__fbAdminAudioUnlockBound = true;
+        var unlock = function () {
+            try {
+                var AC = window.AudioContext || window.webkitAudioContext;
+                if (!AC) return;
+                var ctx = new AC();
+                ctx.resume().then(function () { try { ctx.close(); } catch (e) { } });
+            } catch (e) { }
+        };
+        document.addEventListener('click', unlock, { once: true });
+        document.addEventListener('keydown', unlock, { once: true });
+    }
+
+    setTimeout(function () {
+        pollAdminRealtimeNotifications();
+    }, 2000);
+
+    __adminNotifyPollTimer = setInterval(function () {
+        pollAdminRealtimeNotifications();
+    }, ADMIN_NOTIFY_POLL_MS);
 }
 
 // Show Messages
@@ -4898,6 +5093,9 @@ async function initDashboard() {
 
     // Initialize stats animation after a short delay
     setTimeout(initStatsAnimation, 500);
+
+    // Background poll: new inbox messages + order updates → notification bell + sound
+    startAdminRealtimeNotifications();
 
     // Page-specific initialization
     const currentPage = window.location.pathname.split('/').pop() || 'index.html';
