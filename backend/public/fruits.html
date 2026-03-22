@@ -234,6 +234,38 @@
     let allProducts = [];
     let currentFilter = 'all';
 
+    /**
+     * Dashboard "Products" saves fruit categories as Summer / Tropical / Winter / Mixed Packs.
+     * This page expects Summer Fruits / Tropical Fruits / Winter Fruits / Mixed.
+     * Map all aliases so every fruit product from the admin shows here.
+     */
+    function canonicalFruitCategory(raw) {
+      if (raw == null || String(raw).trim() === '') return 'Other';
+      var c = String(raw).trim().toLowerCase();
+      var candyOnly = ['candies', 'chocolate', 'nuts', 'marshmallow', 'ice cream', 'lollipop'];
+      if (candyOnly.indexOf(c) !== -1) return null;
+      var aliases = {
+        'summer': 'Summer Fruits',
+        'summer fruits': 'Summer Fruits',
+        'tropical': 'Tropical Fruits',
+        'tropical fruits': 'Tropical Fruits',
+        'winter': 'Winter Fruits',
+        'winter fruits': 'Winter Fruits',
+        'fall': 'Fall',
+        'mixed': 'Mixed',
+        'mixed packs': 'Mixed',
+        'mixed fruit packs': 'Mixed',
+        'veggies': 'Veggies',
+        'vegetables': 'Veggies',
+        'fruits': 'Fruits'
+      };
+      if (aliases[c]) return aliases[c];
+      for (var i = 0; i < fruitCategories.length; i++) {
+        if (fruitCategories[i].toLowerCase() === c) return fruitCategories[i];
+      }
+      return 'Other';
+    }
+
     function getSizes(sku) {
       return typeof window.getProductSizesForSku === 'function' ? window.getProductSizesForSku(sku) : [];
     }
@@ -311,15 +343,16 @@
       // Filter products based on current filter
       let filteredProducts = products;
       if (currentFilter !== 'all') {
-        filteredProducts = products.filter(p =>
-          (p.category || '').toLowerCase() === currentFilter.toLowerCase()
-        );
+        filteredProducts = products.filter(function (p) {
+          return canonicalFruitCategory(p.category) === currentFilter;
+        });
       }
 
-      // Group by matching category key from fruitCategories
+      // Group by canonical category (matches dashboard + page labels)
       const grouped = {};
-      filteredProducts.forEach(p => {
-        const matched = fruitCategories.find(c => c.toLowerCase() === (p.category || '').toLowerCase()) || 'Other';
+      filteredProducts.forEach(function (p) {
+        var matched = canonicalFruitCategory(p.category);
+        if (matched === null) return;
         if (!grouped[matched]) grouped[matched] = [];
         grouped[matched].push(p);
       });
@@ -463,15 +496,13 @@
       try {
         console.log('Fetching products from API...');
         // Fetch all fruit products (limit 100)
-        const response = await fetch('/api/products?limit=100');
+        const response = await fetch('/api/products?limit=500');
         const products = await response.json();
         console.log('API returned products:', products);
 
-        // Filter for fruit-related categories (case-insensitive exact match)
-        var fruitSet = fruitCategories.map(c => c.toLowerCase());
-        allProducts = products.filter(p => {
-          if (!p.category) return false;
-          return fruitSet.includes(p.category.toLowerCase());
+        // Keep products that belong on the fruits page (fruit categories + Other), exclude candy-only categories
+        allProducts = products.filter(function (p) {
+          return canonicalFruitCategory(p.category) !== null;
         });
 
         // Favorites come from Website Content now (favorites.fruits)
