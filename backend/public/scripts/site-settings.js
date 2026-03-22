@@ -393,20 +393,23 @@
                                 var sizesHtmlFront = (hasCartTarget && hasSizes) ? sizesBlock('color:' + colors.text + ';') : '';
                                 var sizesHtmlBack = (hasSizes && !hasCartTarget) ? sizesBlock('color:#fff;text-shadow:0 1px 2px rgba(0,0,0,0.5);') : '';
                                 var shopLabel = (m.shopButtonText && String(m.shopButtonText).trim()) ? String(m.shopButtonText).trim() : 'Buy now';
-                                // Always show Add to cart on Pick Your Mood so it’s never missing; click resolves SKU or prompts admin
-                                var addCartBtn = '<button type="button" class="mood-btn mood-add-cart-btn add-to-cart" aria-label="Add to cart">Add to cart</button>';
+                                var cartIconBtn = '<button type="button" class="mood-cart-icon add-to-cart" aria-label="Add to cart">' +
+                                    '<img src="./assets/icons/cart.svg" alt="">' +
+                                    '</button>';
+                                // Always show small cart icon; resolves SKU from data-sku / data-product-id (home.js)
+                                var addCartBtn = '<button type="button" class="mood-cart-icon mood-cart-icon--back add-to-cart" aria-label="Add to cart">' +
+                                    '<img src="./assets/icons/cart.svg" alt="">' +
+                                    '</button>';
                                 var shopLink = m.buttonLink
                                     ? '<a href="' + escAttr(String(m.buttonLink).trim()) + '" class="mood-btn mood-btn-link mood-buy-link">' + escHtml(shopLabel) + '</a>'
                                     : '';
                                 var backActions = (addCartBtn || shopLink)
                                     ? '<div class="mood-back-actions">' + addCartBtn + shopLink + '</div>'
                                     : '';
+                                var frontSizesWrap = sizesHtmlFront ? '<div class="mood-front-cart-sizes">' + sizesHtmlFront + '</div>' : '';
                                 var frontCartRow = '<div class="mood-front-cart-row">' +
-                                    sizesHtmlFront +
-                                    '<button type="button" class="mood-cart-fab add-to-cart" aria-label="Add to cart">' +
-                                    '<img src="./assets/icons/cart.svg" alt="" width="22" height="22">' +
-                                    '<span>Add to cart</span>' +
-                                    '</button>' +
+                                    frontSizesWrap +
+                                    cartIconBtn +
                                     '</div>';
                                 return '<div class="mood-card fade-up" tabindex="0"' + dataSkuAttr + dataProductAttr + '>' +
                                     '<div class="mood-card-inner">' +

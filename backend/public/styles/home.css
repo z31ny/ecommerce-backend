@@ -2321,68 +2321,89 @@ body {
   appearance: none;
 }
 
-/* Pick Your Mood — cart on front (needs Product SKU in admin) */
+/* Pick Your Mood — small cart icon (same language as .offer-cart) */
 .mood-front-cart-row {
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.5rem;
-  margin-top: 0.75rem;
+  flex-direction: row;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 0.65rem;
+  margin-top: 0.65rem;
   width: 100%;
-  max-width: 220px;
+  max-width: 280px;
+  flex-wrap: wrap;
+}
+
+.mood-front-cart-sizes {
+  flex: 1 1 140px;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
 }
 
 .mood-front-cart-row .mood-size-label {
-  align-self: flex-start;
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   font-weight: 600;
 }
 
 .mood-front-cart-row .mood-size-select,
 .mood-front-cart-row .product-size-select {
   width: 100%;
-  max-width: 220px;
-  padding: 0.35rem 0.5rem;
-  border-radius: 0.5rem;
+  padding: 0.3rem 0.45rem;
+  border-radius: 0.45rem;
   border: 1px solid rgba(0, 0, 0, 0.12);
-  background: rgba(255, 255, 255, 0.85);
+  background: rgba(255, 255, 255, 0.9);
   color: #1a1a1a;
-  font-size: 0.875rem;
+  font-size: 0.8125rem;
 }
 
-.mood-cart-fab {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  margin-top: 0.25rem;
-  padding: 0.55rem 1.15rem;
-  border-radius: 2rem;
+/* Icon-only cart — compact circle */
+.mood-cart-icon {
+  flex-shrink: 0;
+  width: 38px;
+  height: 38px;
+  border-radius: 999px;
   border: none;
   cursor: pointer;
-  font: inherit;
-  font-weight: 700;
-  font-size: 0.9rem;
-  color: #fff;
-  background: linear-gradient(135deg, #b24c63 0%, #8b3a52 100%);
-  box-shadow: 0 4px 14px rgba(178, 76, 99, 0.35);
-  transition: transform 0.2s, box-shadow 0.2s;
+  padding: 0;
+  display: grid;
+  place-items: center;
+  background: var(--glass-bg, rgba(255, 255, 255, 0.55));
+  backdrop-filter: blur(var(--glass-blur, 10px));
+  -webkit-backdrop-filter: blur(var(--glass-blur, 10px));
+  border: 1px solid var(--glass-border, rgba(255, 255, 255, 0.65));
+  box-shadow: var(--glass-shadow, 0 2px 12px rgba(0, 0, 0, 0.08));
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
   -webkit-appearance: none;
   appearance: none;
 }
 
-.mood-cart-fab img {
-  filter: brightness(0) invert(1);
-  flex-shrink: 0;
+.mood-cart-icon img {
+  width: 18px;
+  height: 18px;
+  display: block;
+  opacity: 0.92;
 }
 
-.mood-cart-fab:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 6px 18px rgba(178, 76, 99, 0.45);
+.mood-cart-icon:hover {
+  transform: scale(1.08);
+  box-shadow: var(--glow, 0 4px 16px rgba(178, 76, 99, 0.25));
 }
 
-.mood-cart-fab:active {
-  transform: translateY(0);
+.mood-cart-icon:active {
+  transform: scale(0.98);
+}
+
+/* Back face: readable on photos / dark */
+.mood-cart-icon--back {
+  background: rgba(255, 255, 255, 0.92);
+  border-color: rgba(255, 255, 255, 0.95);
+  box-shadow: 0 2px 14px rgba(0, 0, 0, 0.2);
+}
+
+.mood-cart-icon--back img {
+  opacity: 1;
 }
 
 .mood-back-actions {
@@ -2394,10 +2415,6 @@ body {
   margin-top: 0.75rem;
   z-index: 2;
   position: relative;
-}
-
-.mood-add-cart-btn {
-  color: inherit;
 }
 
 .mood-card-back {
