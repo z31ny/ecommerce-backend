@@ -106,12 +106,37 @@
     toastTimer = setTimeout(function () { toast.classList.remove('is-show'); }, 1800);
   }
 
+  function resolveCartSkuFromCard(card) {
+    if (!card) return null;
+    var ds = card.getAttribute('data-sku');
+    if (ds && String(ds).trim()) return String(ds).trim();
+    var pid = card.getAttribute('data-product-id');
+    if (pid != null && String(pid).trim() !== '' && typeof window.__productSkuById === 'object' && window.__productSkuById) {
+      var map = window.__productSkuById;
+      var p = String(pid).trim();
+      var n = Number(p);
+      var s = map[p] || (!isNaN(n) ? map[n] : null) || map[String(n)];
+      if (s) return String(s).trim();
+    }
+    return null;
+  }
+
   // Add to cart (delegated — works for Pick Your Mood cards injected after load)
   doc.addEventListener('click', function (e) {
     var btn = e.target.closest && e.target.closest('.add-to-cart');
     if (!btn || !doc.body.contains(btn)) return;
-    var card = btn.closest('[data-sku]');
-    var sku = (card && card.getAttribute('data-sku')) || btn.getAttribute('data-sku') || btn.dataset.sku || 'unknown';
+    var card = btn.closest('.mood-card') || btn.closest('[data-sku]') || btn.closest('[data-product-id]');
+    var sku = resolveCartSkuFromCard(card);
+    if (!sku) {
+      sku = (card && card.getAttribute('data-sku')) || btn.getAttribute('data-sku') || (btn.dataset && btn.dataset.sku) || '';
+      sku = sku ? String(sku).trim() : '';
+    }
+    if (!sku) {
+      e.preventDefault();
+      if (typeof e.stopPropagation === 'function') e.stopPropagation();
+      showToast('Link a product in Admin → Website Content → Pick Your Mood');
+      return;
+    }
     var sizeSelect = card ? card.querySelector('.product-size-select') : null;
     var hasSizeOptions = !!(sizeSelect && sizeSelect.options && sizeSelect.options.length > 1);
     var size = sizeSelect && sizeSelect.value ? sizeSelect.value : null;

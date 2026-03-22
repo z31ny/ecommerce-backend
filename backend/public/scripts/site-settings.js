@@ -92,10 +92,15 @@
 
     // Start loading sizes ASAP (do not wait for DOMContentLoaded)
     // Other scripts can wait on window.__productSizesReady if needed.
+    window.__productSkuById = window.__productSkuById || {};
+
     window.__productSizesReady = (async function () {
         try {
             var resProducts = await fetch('/api/products?limit=500', { cache: 'no-store' });
-            if (!resProducts.ok) return false;
+            if (!resProducts.ok) {
+                window.__productSkuById = window.__productSkuById || {};
+                return false;
+            }
             var list = await resProducts.json();
             var map = {};
             var metaMap = {};
@@ -125,6 +130,7 @@
             window.__productSkuById = skuById;
             return true;
         } catch (e) {
+            window.__productSkuById = window.__productSkuById || {};
             return false;
         }
     })();
@@ -344,13 +350,19 @@
                             function escAttr(str) {
                                 return String(str == null ? '' : str).replace(/&/g, '&amp;').replace(/"/g, '&quot;');
                             }
+                            function moodLinkedProductIdRaw(m) {
+                                if (m.linkedProductId == null || m.linkedProductId === '') return '';
+                                var s = String(m.linkedProductId).trim();
+                                return s;
+                            }
                             function moodResolveCartSku(m) {
                                 var byId = window.__productSkuById || {};
-                                var lid = m.linkedProductId != null && m.linkedProductId !== ''
-                                    ? Number(m.linkedProductId)
-                                    : NaN;
-                                if (!isNaN(lid)) {
-                                    var skuFromProduct = byId[lid] || byId[String(lid)];
+                                var raw = moodLinkedProductIdRaw(m);
+                                if (raw !== '') {
+                                    var lid = Number(raw);
+                                    var skuFromProduct = !isNaN(lid)
+                                        ? (byId[lid] || byId[String(lid)] || byId[raw])
+                                        : (byId[raw]);
                                     if (skuFromProduct) return String(skuFromProduct).trim();
                                 }
                                 if (m.productSku && String(m.productSku).trim()) {
@@ -360,8 +372,10 @@
                             }
                             moodsGrid.innerHTML = activeMoods.map(function (m) {
                                 var colors = moodColorMap[m.color] || moodColorMap.pink;
+                                var linkedIdRaw = moodLinkedProductIdRaw(m);
                                 var skuRaw = moodResolveCartSku(m);
                                 var dataSkuAttr = skuRaw ? ' data-sku="' + escAttr(skuRaw) + '"' : '';
+                                var dataProductAttr = linkedIdRaw ? ' data-product-id="' + escAttr(linkedIdRaw) + '"' : '';
                                 var hasSizes = m.sizes && m.sizes.length > 0;
                                 var sizeOptionsHtml = hasSizes
                                     ? '<option value="">Choose size</option>' +
@@ -374,29 +388,27 @@
                                         sizeOptionsHtml +
                                         '</select>';
                                 }
-                                // Size on front when SKU is set (so "Add to cart" works without flipping); otherwise only on back
-                                var sizesHtmlFront = (skuRaw && hasSizes) ? sizesBlock('color:' + colors.text + ';') : '';
-                                var sizesHtmlBack = (hasSizes && !skuRaw) ? sizesBlock('color:#fff;text-shadow:0 1px 2px rgba(0,0,0,0.5);') : '';
+                                var hasCartTarget = !!(linkedIdRaw || skuRaw || (m.productSku && String(m.productSku).trim()));
+                                // Sizes on front when this mood can add to cart (linked product or legacy SKU)
+                                var sizesHtmlFront = (hasCartTarget && hasSizes) ? sizesBlock('color:' + colors.text + ';') : '';
+                                var sizesHtmlBack = (hasSizes && !hasCartTarget) ? sizesBlock('color:#fff;text-shadow:0 1px 2px rgba(0,0,0,0.5);') : '';
                                 var shopLabel = (m.shopButtonText && String(m.shopButtonText).trim()) ? String(m.shopButtonText).trim() : 'Buy now';
-                                var addCartBtn = skuRaw
-                                    ? '<button type="button" class="mood-btn mood-add-cart-btn add-to-cart" aria-label="Add to cart">Add to cart</button>'
-                                    : '';
+                                // Always show Add to cart on Pick Your Mood so it’s never missing; click resolves SKU or prompts admin
+                                var addCartBtn = '<button type="button" class="mood-btn mood-add-cart-btn add-to-cart" aria-label="Add to cart">Add to cart</button>';
                                 var shopLink = m.buttonLink
                                     ? '<a href="' + escAttr(String(m.buttonLink).trim()) + '" class="mood-btn mood-btn-link mood-buy-link">' + escHtml(shopLabel) + '</a>'
                                     : '';
                                 var backActions = (addCartBtn || shopLink)
                                     ? '<div class="mood-back-actions">' + addCartBtn + shopLink + '</div>'
                                     : '';
-                                var frontCartRow = skuRaw
-                                    ? '<div class="mood-front-cart-row">' +
-                                        sizesHtmlFront +
-                                        '<button type="button" class="mood-cart-fab add-to-cart" aria-label="Add to cart">' +
-                                        '<img src="./assets/icons/cart.svg" alt="" width="22" height="22">' +
-                                        '<span>Add to cart</span>' +
-                                        '</button>' +
-                                        '</div>'
-                                    : '';
-                                return '<div class="mood-card fade-up" tabindex="0"' + dataSkuAttr + '>' +
+                                var frontCartRow = '<div class="mood-front-cart-row">' +
+                                    sizesHtmlFront +
+                                    '<button type="button" class="mood-cart-fab add-to-cart" aria-label="Add to cart">' +
+                                    '<img src="./assets/icons/cart.svg" alt="" width="22" height="22">' +
+                                    '<span>Add to cart</span>' +
+                                    '</button>' +
+                                    '</div>';
+                                return '<div class="mood-card fade-up" tabindex="0"' + dataSkuAttr + dataProductAttr + '>' +
                                     '<div class="mood-card-inner">' +
                                     '  <div class="mood-card-front" style="background:' + colors.bg + ';color:' + colors.text + ';">' +
                                     '    <h3>' + escHtml(m.title || '') + '</h3>' +
