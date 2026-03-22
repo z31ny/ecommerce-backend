@@ -2321,6 +2321,70 @@ body {
   appearance: none;
 }
 
+/* Pick Your Mood — cart on front (needs Product SKU in admin) */
+.mood-front-cart-row {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+  width: 100%;
+  max-width: 220px;
+}
+
+.mood-front-cart-row .mood-size-label {
+  align-self: flex-start;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.mood-front-cart-row .mood-size-select,
+.mood-front-cart-row .product-size-select {
+  width: 100%;
+  max-width: 220px;
+  padding: 0.35rem 0.5rem;
+  border-radius: 0.5rem;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  background: rgba(255, 255, 255, 0.85);
+  color: #1a1a1a;
+  font-size: 0.875rem;
+}
+
+.mood-cart-fab {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: 0.25rem;
+  padding: 0.55rem 1.15rem;
+  border-radius: 2rem;
+  border: none;
+  cursor: pointer;
+  font: inherit;
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: #fff;
+  background: linear-gradient(135deg, #b24c63 0%, #8b3a52 100%);
+  box-shadow: 0 4px 14px rgba(178, 76, 99, 0.35);
+  transition: transform 0.2s, box-shadow 0.2s;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.mood-cart-fab img {
+  filter: brightness(0) invert(1);
+  flex-shrink: 0;
+}
+
+.mood-cart-fab:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(178, 76, 99, 0.45);
+}
+
+.mood-cart-fab:active {
+  transform: translateY(0);
+}
+
 .mood-back-actions {
   display: flex;
   flex-wrap: wrap;

@@ -99,8 +99,14 @@
             var list = await resProducts.json();
             var map = {};
             var metaMap = {};
+            var skuById = {};
             if (Array.isArray(list)) {
                 list.forEach(function (p) {
+                    if (p && p.id != null && p.sku) {
+                        var sid = String(p.sku);
+                        skuById[p.id] = sid;
+                        skuById[String(p.id)] = sid;
+                    }
                     var sku = p && p.sku ? String(p.sku).toLowerCase() : '';
                     if (!sku) return;
                     var sizes = p.attributes && p.attributes.sizes ? p.attributes.sizes : null;
@@ -116,6 +122,7 @@
             }
             window.__productSizesBySku = map;
             window.__productMetaBySku = metaMap;
+            window.__productSkuById = skuById;
             return true;
         } catch (e) {
             return false;
@@ -310,6 +317,7 @@
             // Render early so it still loads even if another section errors later.
             if (data.moods && Array.isArray(data.moods)) {
                 try {
+                    await window.__productSizesReady;
                     var moodsGrid = document.getElementById('moods-grid');
                     if (moodsGrid) {
                         var activeMoods = data.moods.filter(function (m) { return m.status === 'active'; });
@@ -336,18 +344,39 @@
                             function escAttr(str) {
                                 return String(str == null ? '' : str).replace(/&/g, '&amp;').replace(/"/g, '&quot;');
                             }
+                            function moodResolveCartSku(m) {
+                                var byId = window.__productSkuById || {};
+                                var lid = m.linkedProductId != null && m.linkedProductId !== ''
+                                    ? Number(m.linkedProductId)
+                                    : NaN;
+                                if (!isNaN(lid)) {
+                                    var skuFromProduct = byId[lid] || byId[String(lid)];
+                                    if (skuFromProduct) return String(skuFromProduct).trim();
+                                }
+                                if (m.productSku && String(m.productSku).trim()) {
+                                    return String(m.productSku).trim();
+                                }
+                                return '';
+                            }
                             moodsGrid.innerHTML = activeMoods.map(function (m) {
                                 var colors = moodColorMap[m.color] || moodColorMap.pink;
-                                var skuRaw = (m.productSku && String(m.productSku).trim()) ? String(m.productSku).trim() : '';
+                                var skuRaw = moodResolveCartSku(m);
                                 var dataSkuAttr = skuRaw ? ' data-sku="' + escAttr(skuRaw) + '"' : '';
-                                var sizesHtml = '';
-                                if (m.sizes && m.sizes.length > 0) {
-                                    sizesHtml = '<label class="offer-size-label" style="color:#fff;text-shadow:0 1px 2px rgba(0,0,0,0.5);">Size</label>' +
+                                var hasSizes = m.sizes && m.sizes.length > 0;
+                                var sizeOptionsHtml = hasSizes
+                                    ? '<option value="">Choose size</option>' +
+                                        m.sizes.map(function (s) { return '<option value="' + escHtml(s) + '">' + escHtml(s) + '</option>'; }).join('')
+                                    : '';
+                                function sizesBlock(labelStyle) {
+                                    if (!hasSizes) return '';
+                                    return '<label class="offer-size-label mood-size-label" style="' + labelStyle + '">Size</label>' +
                                         '<select class="product-size-select form-select mood-size-select">' +
-                                        '<option value="">Choose size</option>' +
-                                        m.sizes.map(function (s) { return '<option value="' + escHtml(s) + '">' + escHtml(s) + '</option>'; }).join('') +
+                                        sizeOptionsHtml +
                                         '</select>';
                                 }
+                                // Size on front when SKU is set (so "Add to cart" works without flipping); otherwise only on back
+                                var sizesHtmlFront = (skuRaw && hasSizes) ? sizesBlock('color:' + colors.text + ';') : '';
+                                var sizesHtmlBack = (hasSizes && !skuRaw) ? sizesBlock('color:#fff;text-shadow:0 1px 2px rgba(0,0,0,0.5);') : '';
                                 var shopLabel = (m.shopButtonText && String(m.shopButtonText).trim()) ? String(m.shopButtonText).trim() : 'Buy now';
                                 var addCartBtn = skuRaw
                                     ? '<button type="button" class="mood-btn mood-add-cart-btn add-to-cart" aria-label="Add to cart">Add to cart</button>'
@@ -358,16 +387,26 @@
                                 var backActions = (addCartBtn || shopLink)
                                     ? '<div class="mood-back-actions">' + addCartBtn + shopLink + '</div>'
                                     : '';
+                                var frontCartRow = skuRaw
+                                    ? '<div class="mood-front-cart-row">' +
+                                        sizesHtmlFront +
+                                        '<button type="button" class="mood-cart-fab add-to-cart" aria-label="Add to cart">' +
+                                        '<img src="./assets/icons/cart.svg" alt="" width="22" height="22">' +
+                                        '<span>Add to cart</span>' +
+                                        '</button>' +
+                                        '</div>'
+                                    : '';
                                 return '<div class="mood-card fade-up" tabindex="0"' + dataSkuAttr + '>' +
                                     '<div class="mood-card-inner">' +
                                     '  <div class="mood-card-front" style="background:' + colors.bg + ';color:' + colors.text + ';">' +
                                     '    <h3>' + escHtml(m.title || '') + '</h3>' +
                                     '    <p>' + escHtml(m.description || '') + '</p>' +
+                                    frontCartRow +
                                     (m.buttonText ? '    <button type="button" class="mood-btn mood-front-cta">' + escHtml(m.buttonText) + '</button>' : '') +
                                     '  </div>' +
                                     '  <div class="mood-card-back" style="' + (m.backImage ? 'background-image:url(' + m.backImage + ');background-size:cover;background-position:center;' : 'background:' + colors.bg + ';') + '">' +
                                     (m.backDescription ? '    <p class="mood-back-text">' + escHtml(m.backDescription) + '</p>' : '') +
-                                    sizesHtml +
+                                    sizesHtmlBack +
                                     backActions +
                                     '  </div>' +
                                     '</div>' +

@@ -1628,8 +1628,11 @@
                         <input type="text" class="form-input" id="moodButtonLink" placeholder="/candy.html or /fruits.html">
                     </div>
                     <div class="form-group">
-                        <label class="form-label">Product SKU (for “Add to cart” on card back)</label>
-                        <input type="text" class="form-input" id="moodProductSku" placeholder="e.g. FRT-001 — must match a product SKU">
+                        <label class="form-label">Product for “Add to cart”</label>
+                        <select class="form-select" id="moodLinkedProductId">
+                            <option value="">— None —</option>
+                        </select>
+                        <small class="form-hint" style="display:block;margin-top:6px;color:var(--text-secondary);">Choose a catalog product by name (no SKU needed).</small>
                     </div>
                     <div class="form-group">
                         <label class="form-label">Back button label (Buy now link)</label>
@@ -1719,8 +1722,10 @@
                         <input type="text" class="form-input" id="editMoodButtonLink">
                     </div>
                     <div class="form-group">
-                        <label class="form-label">Product SKU (Add to cart)</label>
-                        <input type="text" class="form-input" id="editMoodProductSku" placeholder="e.g. FRT-001">
+                        <label class="form-label">Product for “Add to cart”</label>
+                        <select class="form-select" id="editMoodLinkedProductId">
+                            <option value="">— None —</option>
+                        </select>
                     </div>
                     <div class="form-group">
                         <label class="form-label">Back button label (Buy now)</label>
@@ -2242,9 +2247,40 @@
         // Initialize
         document.addEventListener('DOMContentLoaded', async function () {
             await loadAllContentFromAPI();
+            await populateMoodProductSelects();
             renderAllContent();
             updateCounts();
         });
+
+        async function populateMoodProductSelects() {
+            const addSel = document.getElementById('moodLinkedProductId');
+            const editSel = document.getElementById('editMoodLinkedProductId');
+            if (!addSel && !editSel) return;
+            let products = [];
+            try {
+                if (typeof DashboardAPI !== 'undefined' && DashboardAPI.getProducts) {
+                    DashboardAPI.token = localStorage.getItem('freezyBiteAdminToken');
+                    products = await DashboardAPI.getProducts();
+                }
+            } catch (e) {
+                console.warn('Could not load products for mood cards:', e);
+            }
+            const rows = (Array.isArray(products) ? products : [])
+                .filter(p => p && p.status !== 'inactive' && p.status !== 'deleted')
+                .sort((a, b) => String(a.name || '').localeCompare(String(b.name || ''), undefined, { sensitivity: 'base' }));
+            const esc = (s) => String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;');
+            const opts = '<option value="">— None —</option>' + rows.map(p => {
+                const id = p.id != null ? String(p.id) : '';
+                if (!id) return '';
+                return `<option value="${esc(id)}">${esc(p.name || 'Product')} — ${esc(p.category || '—')}</option>`;
+            }).join('');
+            [addSel, editSel].forEach(sel => {
+                if (!sel) return;
+                const prev = sel.value;
+                sel.innerHTML = opts;
+                if (prev && [...sel.options].some(o => o.value === prev)) sel.value = prev;
+            });
+        }
 
         // Save a single section to API
         async function saveSection(sectionKey, content) {
@@ -2492,6 +2528,7 @@
                             <button class="action-btn delete" onclick="deleteMood(${m.id})" title="Delete"><i class="fas fa-trash"></i></button>
                         </div>
                         <div class="flip-indicator"><i class="fas fa-sync-alt"></i> Click to flip</div>
+                        ${m.linkedProductId ? `<div style="font-size:0.75rem;color:var(--text-secondary);margin-top:0.35rem;text-align:center;">Add to cart → product #${m.linkedProductId}</div>` : ''}
                     </div>
                 </div>
             `).join('');
@@ -2555,8 +2592,11 @@
             });
         }
 
-        function openAddMoodModal() {
+        async function openAddMoodModal() {
+            await populateMoodProductSelects();
             document.getElementById('addMoodForm').reset();
+            const lp = document.getElementById('moodLinkedProductId');
+            if (lp) lp.value = '';
             document.querySelectorAll('#addMoodModal .color-option').forEach(c => c.classList.remove('selected'));
             document.querySelector('#addMoodModal .color-option[data-color="pink"]').classList.add('selected');
             currentAddMoodColor = 'pink';
@@ -2579,7 +2619,11 @@
                 backImage: addMoodBackImageData || '',
                 backDescription: document.getElementById('moodBackDescription').value,
                 buttonLink: document.getElementById('moodButtonLink').value,
-                productSku: (document.getElementById('moodProductSku') && document.getElementById('moodProductSku').value.trim()) || '',
+                linkedProductId: (function () {
+                    var v = document.getElementById('moodLinkedProductId') && document.getElementById('moodLinkedProductId').value;
+                    var n = v ? parseInt(v, 10) : NaN;
+                    return (v && !isNaN(n)) ? n : null;
+                })(),
                 shopButtonText: (document.getElementById('moodShopButtonText') && document.getElementById('moodShopButtonText').value.trim()) || 'Buy now',
                 sizes: addMoodSizesList.slice(),
                 status: 'active'
@@ -2587,8 +2631,9 @@
             saveAllData(); closeModal('addMoodModal'); renderMoods(); updateCounts(); showAlert('success', 'Mood card added!');
         }
 
-        function editMood(id) {
+        async function editMood(id) {
             const m = moods.find(x => x.id === id); if (!m) return;
+            await populateMoodProductSelects();
             document.getElementById('editMoodId').value = m.id;
             document.getElementById('editMoodTitle').value = m.title;
             document.getElementById('editMoodDescription').value = m.description;
@@ -2596,7 +2641,10 @@
             document.getElementById('editMoodColor').value = m.color;
             document.getElementById('editMoodBackDescription').value = m.backDescription || '';
             document.getElementById('editMoodButtonLink').value = m.buttonLink || '';
-            document.getElementById('editMoodProductSku').value = m.productSku || '';
+            const lp = document.getElementById('editMoodLinkedProductId');
+            if (lp) {
+                lp.value = m.linkedProductId != null && m.linkedProductId !== '' ? String(m.linkedProductId) : '';
+            }
             document.getElementById('editMoodShopButtonText').value = m.shopButtonText || 'Buy now';
             editMoodSizesList = (m.sizes || []).slice();
             renderMoodSizesList('editMoodSizesList', editMoodSizesList, 'edit');
@@ -2618,7 +2666,9 @@
             m.color = currentEditMoodColor;
             m.backDescription = document.getElementById('editMoodBackDescription').value;
             m.buttonLink = document.getElementById('editMoodButtonLink').value;
-            m.productSku = (document.getElementById('editMoodProductSku') && document.getElementById('editMoodProductSku').value.trim()) || '';
+            var ev = document.getElementById('editMoodLinkedProductId') && document.getElementById('editMoodLinkedProductId').value;
+            var en = ev ? parseInt(ev, 10) : NaN;
+            m.linkedProductId = (ev && !isNaN(en)) ? en : null;
             m.shopButtonText = (document.getElementById('editMoodShopButtonText') && document.getElementById('editMoodShopButtonText').value.trim()) || 'Buy now';
             m.sizes = editMoodSizesList.slice();
             m.status = document.getElementById('editMoodStatus').value;
