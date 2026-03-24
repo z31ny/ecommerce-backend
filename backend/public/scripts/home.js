@@ -26,6 +26,7 @@
     try { return JSON.parse(localStorage.getItem(STORAGE_CART) || '{}'); } catch (e) { return {}; }
   }
   function writeCart(cart) { localStorage.setItem(STORAGE_CART, JSON.stringify(cart)); }
+  var __lastCartAdd = { key: '', at: 0 };
 
   // Update all cart badges
   function updateCartBadges() {
@@ -76,6 +77,12 @@
     if (typeof sizeOrTrigger === 'string') size = sizeOrTrigger;
     else if (sizeOrTrigger && sizeOrTrigger.nodeType) triggerElement = sizeOrTrigger;
     var cartKey = size ? sku + '__' + size : sku;
+    // Guard against duplicate click handlers firing for same interaction
+    var now = Date.now();
+    if (__lastCartAdd.key === cartKey && (now - __lastCartAdd.at) < 350) return;
+    __lastCartAdd.key = cartKey;
+    __lastCartAdd.at = now;
+
     var cart = readCart();
     cart[cartKey] = (cart[cartKey] || 0) + (qty || 1);
     writeCart(cart);
@@ -543,15 +550,6 @@
         });
 
         if (typeof window.initSwipeGalleries === 'function') window.initSwipeGalleries(offersGrid);
-
-        Array.prototype.slice.call(offersGrid.querySelectorAll('.add-to-cart')).forEach(function (btn) {
-          btn.addEventListener('click', function () {
-            var card = btn.closest('[data-sku]');
-            var sku = (card && card.getAttribute('data-sku')) || btn.dataset.sku || 'unknown';
-            var size = null;
-            addToCart(sku, 1, size, btn);
-          });
-        });
       })
       .catch(function (err) {
         console.error('Failed to load offers:', err);
