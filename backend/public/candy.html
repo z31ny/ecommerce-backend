@@ -450,6 +450,17 @@
 
     // Bind add to cart buttons (with optional size from .product-size-select)
     function bindAddToCartButtons() {
+      function getChosenSize(selectEl) {
+        if (!selectEl) return null;
+        const raw = String(selectEl.value || '').trim();
+        if (raw) return raw;
+        const opt = selectEl.options && selectEl.selectedIndex >= 0 ? selectEl.options[selectEl.selectedIndex] : null;
+        const txt = opt ? String(opt.textContent || '').trim() : '';
+        if (!txt) return null;
+        const low = txt.toLowerCase();
+        if (low === 'choose size' || low === 'select size' || low === 'pick size') return null;
+        return txt;
+      }
       document.querySelectorAll('.add-to-cart').forEach(btn => {
         if (btn.dataset.cartBound === '1') return;
         btn.dataset.cartBound = '1';
@@ -464,7 +475,7 @@
           const sizes = getSizes(sku);
           const hasSizeOptions = !!(sizeSelect && sizeSelect.options && sizeSelect.options.length > 1);
           const requiresSize = metaHasSizePrices || (Array.isArray(sizes) && sizes.length > 0) || hasSizeOptions;
-          const size = sizeSelect && sizeSelect.value ? String(sizeSelect.value).trim() : null;
+          const size = getChosenSize(sizeSelect);
 
           // If this product has sizes, user must pick one
           if (requiresSize && !size) {
