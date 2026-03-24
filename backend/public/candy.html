@@ -432,6 +432,20 @@
             });
             cart[cartKey] = (Number(cart[cartKey]) || 0) + 1;
             localStorage.setItem('fb_cart_v1', JSON.stringify(cart));
+            // Save exact cart line metadata (name/size/price/image) for correct cart rendering
+            const titleEl = card ? card.querySelector('.offer-title') : null;
+            const imgEl = card ? card.querySelector('.offer-media img, img') : null;
+            const priceEl = card ? card.querySelector('.offer-new') : null;
+            const unitPrice = priceEl ? parseFloat((priceEl.textContent || '').replace(/[^\d.]/g, '')) : null;
+            if (typeof window.__fbSetCartMeta === 'function') {
+              window.__fbSetCartMeta(cartKey, {
+                sku,
+                size: size || '',
+                name: titleEl ? titleEl.textContent.trim() : sku,
+                image: imgEl ? imgEl.getAttribute('src') : '',
+                unitPrice: (unitPrice != null && !isNaN(unitPrice)) ? unitPrice : null
+              });
+            }
           } catch (e) { }
         });
       });
@@ -499,7 +513,7 @@
       loadProducts();
     });
   </script>
-  <script src="./scripts/home.js?v=8" defer></script>
+  <script src="./scripts/home.js?v=9" defer></script>
   <script src="./scripts/site-settings.js?v=2.3" defer></script>
   <script src="./scripts/sidebar.js" defer></script>
 </body>

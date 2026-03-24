@@ -1,9 +1,11 @@
 /* Render checkout items from the same localStorage cart as the site. */
 (function () {
   var STORAGE_CART = 'fb_cart_v1';
+  var STORAGE_CART_META = 'fb_cart_meta_v1';
   var productsCache = null;
 
   function readCart() { try { return JSON.parse(localStorage.getItem(STORAGE_CART) || '{}'); } catch (e) { return {}; } }
+  function readCartMeta() { try { var m = JSON.parse(localStorage.getItem(STORAGE_CART_META) || '{}'); return (m && typeof m === 'object') ? m : {}; } catch (e) { return {}; } }
   function writeCart(c) { localStorage.setItem(STORAGE_CART, JSON.stringify(c)); }
   function clearCart() { localStorage.removeItem(STORAGE_CART); }
 
@@ -252,6 +254,10 @@
     return skuToProduct[skuKey(sku)] || null;
   }
   function cartItemDisplayName(cartKey) {
+    var metaEntry = readCartMeta()[cartKey];
+    if (metaEntry && metaEntry.name) {
+      return metaEntry.size ? (metaEntry.name + ' (' + metaEntry.size + ')') : metaEntry.name;
+    }
     var product = getProductByCartKey(cartKey);
     var size = cartKeySize(cartKey);
     var baseName = product ? product.name : cartKeyBaseSku(cartKey).replace(/-/g, ' ');
@@ -296,8 +302,24 @@
       var qty = cart[cartKey]; totalItems += qty; subtotal += getPrice(cartKey) * qty;
       var display = cartKeyDisplay(cartKey);
       var safeKey = cartKey.replace(/"/g, '&quot;');
+      var entry = readCartMeta()[cartKey] || null;
+      var p = getProductByCartKey(cartKey);
+      var imgSrc = (entry && entry.image) || '';
+      if (!imgSrc && p && p.images && p.images[0]) imgSrc = p.images[0];
+      if (!imgSrc) imgSrc = '/assets/icons/profile.svg';
+      var unit = (entry && entry.unitPrice != null && !isNaN(Number(entry.unitPrice)))
+        ? Number(entry.unitPrice)
+        : getPrice(cartKey);
+      var lineTotal = unit * qty;
       var li = document.createElement('li');
-      li.innerHTML = '<strong>' + display + '</strong>' +
+      li.innerHTML =
+        '<div style="display:flex;align-items:center;gap:10px;min-width:0;flex:1;">' +
+          '<img src="' + imgSrc + '" alt="" style="width:44px;height:44px;object-fit:cover;border-radius:8px;flex-shrink:0;" onerror="this.src=\'/assets/icons/profile.svg\'">' +
+          '<div style="min-width:0;flex:1;">' +
+            '<strong style="display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + display + '</strong>' +
+            '<small style="color:#666;">' + money(unit) + ' x ' + qty + ' = ' + money(lineTotal) + '</small>' +
+          '</div>' +
+        '</div>' +
         '<div class="co-qty">' +
         '<button data-dec="' + safeKey + '">-</button><span>' + qty + '</span><button data-inc="' + safeKey + '">+</button>' +
         '</div>' +

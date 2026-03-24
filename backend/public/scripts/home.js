@@ -22,6 +22,7 @@
 
   // Simple store using localStorage for cart
   var STORAGE_CART = 'fb_cart_v1';
+  var STORAGE_CART_META = 'fb_cart_meta_v1';
   function readCart() {
     try {
       var c = JSON.parse(localStorage.getItem(STORAGE_CART) || '{}');
@@ -36,6 +37,30 @@
     } catch (e) { return {}; }
   }
   function writeCart(cart) { localStorage.setItem(STORAGE_CART, JSON.stringify(cart)); }
+  function readCartMeta() {
+    try {
+      var m = JSON.parse(localStorage.getItem(STORAGE_CART_META) || '{}');
+      return (m && typeof m === 'object') ? m : {};
+    } catch (e) { return {}; }
+  }
+  function writeCartMeta(meta) { localStorage.setItem(STORAGE_CART_META, JSON.stringify(meta || {})); }
+  function setCartMeta(cartKey, meta) {
+    if (!cartKey) return;
+    var all = readCartMeta();
+    all[cartKey] = {
+      name: meta && meta.name ? String(meta.name) : '',
+      size: meta && meta.size ? String(meta.size) : '',
+      image: meta && meta.image ? String(meta.image) : '',
+      unitPrice: meta && meta.unitPrice != null ? Number(meta.unitPrice) : null,
+      sku: meta && meta.sku ? String(meta.sku) : cartKeyBaseSku(cartKey)
+    };
+    writeCartMeta(all);
+  }
+  function getCartMetaEntry(cartKey) {
+    var all = readCartMeta();
+    return all[cartKey] || null;
+  }
+  window.__fbSetCartMeta = setCartMeta;
   var __lastCartAdd = { key: '', at: 0 };
 
   // Update all cart badges
@@ -99,11 +124,30 @@
     var cart = readCart();
     cart[cartKey] = (cart[cartKey] || 0) + (qty || 1);
     writeCart(cart);
+    try {
+      var baseSku = cartKeyBaseSku(cartKey);
+      var meta = getCartMeta(baseSku);
+      var card = triggerElement && triggerElement.closest ? triggerElement.closest('[data-sku], .mood-card, article') : null;
+      var cardNameEl = card ? (card.querySelector('.offer-title, h3, h4, .fav-desc')) : null;
+      var cardImgEl = card ? card.querySelector('img') : null;
+      var entry = {
+        sku: baseSku,
+        size: size || '',
+        name: (meta && meta.name) || (cardNameEl ? cardNameEl.textContent.trim() : baseSku.replace(/-/g, ' ')),
+        image: (meta && meta.images && meta.images[0]) || (cardImgEl ? cardImgEl.getAttribute('src') : ''),
+        unitPrice: getCartUnitPrice(cartKey)
+      };
+      setCartMeta(cartKey, entry);
+    } catch (e) { }
     updateCartBadges();
     if (triggerElement) flyToCart(triggerElement);
     showToast('Added to cart');
   }
   function cartKeyToDisplay(key) {
+    var entry = getCartMetaEntry(key);
+    if (entry && entry.name) {
+      return entry.size ? (entry.name + ' (' + entry.size + ')') : entry.name;
+    }
     var base = key.indexOf('__') === -1 ? key : key.split('__')[0];
     var size = key.indexOf('__') === -1 ? '' : key.split('__').slice(1).join('__');
     var pretty = base.replace(/-/g, ' ');
@@ -126,6 +170,10 @@
       : null;
   }
   function getCartUnitPrice(cartKey) {
+    var entry = getCartMetaEntry(cartKey);
+    if (entry && entry.unitPrice != null && !isNaN(Number(entry.unitPrice))) {
+      return Number(entry.unitPrice);
+    }
     var baseSku = cartKeyBaseSku(cartKey);
     var selectedSize = cartKeySize(cartKey);
     var meta = getCartMeta(baseSku);
@@ -454,10 +502,11 @@
       var qty = cart[cartKey]; total += qty;
       var display = cartKeyToDisplay(cartKey);
       var baseSku = cartKeyBaseSku(cartKey);
+      var entry = getCartMetaEntry(cartKey);
       var meta = getCartMeta(baseSku);
       var unitPrice = getCartUnitPrice(cartKey);
       var lineTotal = unitPrice * qty;
-      var imgSrc = (meta && meta.images && meta.images[0]) ? meta.images[0] : '/assets/icons/profile.svg';
+      var imgSrc = (entry && entry.image) || ((meta && meta.images && meta.images[0]) ? meta.images[0] : '/assets/icons/profile.svg');
       var li = doc.createElement('li');
       li.innerHTML =
         '<div style="display:flex;align-items:center;gap:10px;min-width:0;">' +
