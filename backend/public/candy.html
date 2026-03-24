@@ -471,6 +471,10 @@
             const selectedOpt = sizeSelect ? sizeSelect.options[sizeSelect.selectedIndex] : null;
             const selectedOptPrice = selectedOpt ? parseFloat(selectedOpt.getAttribute('data-price') || '') : NaN;
             if (!isNaN(selectedOptPrice)) unitPrice = selectedOptPrice;
+            if ((unitPrice == null || isNaN(unitPrice) || unitPrice <= 0) && size) {
+              const sizePrice = getSizePriceForSkuSize(sku, size);
+              if (sizePrice != null && !isNaN(sizePrice) && sizePrice > 0) unitPrice = sizePrice;
+            }
             // Use helper to enforce exact selected-size price when available
             if (typeof window.getProductPriceForSkuSize === 'function') {
               const helperPrice = window.getProductPriceForSkuSize(sku, size || '', basePrice);
@@ -549,7 +553,12 @@
     // Initialize
     document.addEventListener('DOMContentLoaded', function () {
       setupFilters();
-      loadProducts();
+      const ready = window.__productSizesReady;
+      if (ready && typeof ready.then === 'function') {
+        ready.finally(loadProducts);
+      } else {
+        loadProducts();
+      }
     });
   </script>
   <script src="./scripts/home.js?v=9" defer></script>
