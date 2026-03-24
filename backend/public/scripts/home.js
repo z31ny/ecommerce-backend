@@ -31,7 +31,10 @@
   // Update all cart badges
   function updateCartBadges() {
     var cart = readCart();
-    var total = Object.keys(cart).reduce(function (sum, sku) { return sum + cart[sku]; }, 0);
+    var total = Object.keys(cart).reduce(function (sum, sku) {
+      var qty = Number(cart[sku]);
+      return sum + (isNaN(qty) || qty < 0 ? 0 : qty);
+    }, 0);
     var badges = doc.querySelectorAll('.cart-badge');
     badges.forEach(function (badge) {
       badge.textContent = total;
@@ -131,37 +134,42 @@
     return null;
   }
 
-  // Add to cart (delegated — works for Pick Your Mood cards injected after load)
-  doc.addEventListener('click', function (e) {
-    var btn = e.target.closest && e.target.closest('.add-to-cart');
-    if (!btn || !doc.body.contains(btn)) return;
-    var card = btn.closest('.mood-card') || btn.closest('[data-sku]') || btn.closest('[data-product-id]');
-    var sku = resolveCartSkuFromCard(card);
-    if (!sku) {
-      sku = (card && card.getAttribute('data-sku')) || btn.getAttribute('data-sku') || (btn.dataset && btn.dataset.sku) || '';
-      sku = sku ? String(sku).trim() : '';
-    }
-    if (!sku) {
+  // Add to cart (delegated) only on home page.
+  // Other pages (candy/fruits/offers) already have their own handlers.
+  var currentPage = (window.location.pathname.split('/').pop() || 'home.html').toLowerCase();
+  var isHomePage = (currentPage === '' || currentPage === 'home.html' || currentPage === 'index.html');
+  if (isHomePage) {
+    doc.addEventListener('click', function (e) {
+      var btn = e.target.closest && e.target.closest('.add-to-cart');
+      if (!btn || !doc.body.contains(btn)) return;
+      var card = btn.closest('.mood-card') || btn.closest('[data-sku]') || btn.closest('[data-product-id]');
+      var sku = resolveCartSkuFromCard(card);
+      if (!sku) {
+        sku = (card && card.getAttribute('data-sku')) || btn.getAttribute('data-sku') || (btn.dataset && btn.dataset.sku) || '';
+        sku = sku ? String(sku).trim() : '';
+      }
+      if (!sku) {
+        e.preventDefault();
+        if (typeof e.stopPropagation === 'function') e.stopPropagation();
+        showToast('Link a product in Admin → Website Content → Pick Your Mood');
+        return;
+      }
+      var sizeSelect = card ? card.querySelector('.product-size-select') : null;
+      var hasSizeOptions = !!(sizeSelect && sizeSelect.options && sizeSelect.options.length > 1);
+      var size = sizeSelect && sizeSelect.value ? sizeSelect.value : null;
+
+      if (hasSizeOptions && !size) {
+        e.preventDefault();
+        if (typeof e.stopPropagation === 'function') e.stopPropagation();
+        showToast('Please choose a size first');
+        return;
+      }
+
       e.preventDefault();
       if (typeof e.stopPropagation === 'function') e.stopPropagation();
-      showToast('Link a product in Admin → Website Content → Pick Your Mood');
-      return;
-    }
-    var sizeSelect = card ? card.querySelector('.product-size-select') : null;
-    var hasSizeOptions = !!(sizeSelect && sizeSelect.options && sizeSelect.options.length > 1);
-    var size = sizeSelect && sizeSelect.value ? sizeSelect.value : null;
-
-    if (hasSizeOptions && !size) {
-      e.preventDefault();
-      if (typeof e.stopPropagation === 'function') e.stopPropagation();
-      showToast('Please choose a size first');
-      return;
-    }
-
-    e.preventDefault();
-    if (typeof e.stopPropagation === 'function') e.stopPropagation();
-    addToCart(sku, 1, size, btn);
-  });
+      addToCart(sku, 1, size, btn);
+    });
+  }
 
   // Auth modal
   var modal = doc.getElementById('auth-modal');
@@ -387,7 +395,7 @@
   function renderCart() {
     if (!CART.list) return;
     var cart = readCart();
-    var items = Object.keys(cart);
+    var items = Object.keys(cart).filter(function (k) { return (Number(cart[k]) || 0) > 0; });
     CART.list.innerHTML = '';
     if (items.length === 0) {
       CART.empty.hidden = false; CART.count.textContent = '0';
