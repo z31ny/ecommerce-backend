@@ -234,14 +234,36 @@
     let allProducts = [];
     let currentFilter = 'all';
 
-    function getSizes(sku) {
+    function getSizes(sku, product) {
+      const direct = product && product.attributes && Array.isArray(product.attributes.sizes)
+        ? product.attributes.sizes.map(s => String(s || '').trim()).filter(Boolean)
+        : [];
+      if (direct.length) return direct;
       return typeof window.getProductSizesForSku === 'function' ? window.getProductSizesForSku(sku) : [];
     }
     function normalizeSizeKey(s) {
       return String(s == null ? '' : s).trim().toLowerCase().replace(/\s+/g, '');
     }
-    function getSizePriceForSkuSize(sku, size) {
+    function getSizePriceForSkuSize(sku, size, product) {
       if (!sku || !size) return null;
+      const attrs = product && product.attributes && typeof product.attributes === 'object' ? product.attributes : null;
+      const directPrices = attrs && attrs.sizePrices && typeof attrs.sizePrices === 'object' ? attrs.sizePrices : null;
+      if (directPrices) {
+        if (directPrices[size] != null) {
+          const exactP = parseFloat(directPrices[size]);
+          if (!isNaN(exactP)) return exactP;
+        }
+        const wantedP = normalizeSizeKey(size);
+        let foundP = null;
+        Object.keys(directPrices).some(k => {
+          if (normalizeSizeKey(k) === wantedP) {
+            foundP = parseFloat(directPrices[k]);
+            return true;
+          }
+          return false;
+        });
+        if (foundP != null && !isNaN(foundP)) return foundP;
+      }
       const key = String(sku).toLowerCase();
       const meta = window.__productMetaBySku && window.__productMetaBySku[key];
       if (!meta || !meta.sizePrices) return null;
@@ -260,10 +282,11 @@
       });
       return (found != null && !isNaN(found)) ? found : null;
     }
-    function sizeSelectHtml(sku) {
-      const sizes = getSizes(sku);
+    function sizeSelectHtml(product) {
+      const sku = product && product.sku ? product.sku : '';
+      const sizes = getSizes(sku, product);
       const opts = sizes.map(s => {
-        const p = getSizePriceForSkuSize(sku, s);
+        const p = getSizePriceForSkuSize(sku, s, product);
         const data = (p != null && !isNaN(p)) ? ` data-price="${p}"` : '';
         return `<option value="${s.replace(/"/g, '&quot;')}"${data}>${s}</option>`;
       }).join('');
@@ -302,7 +325,7 @@
           <div class="offer-prices">
             <span class="offer-new">${Math.round(price)} EGP</span>
           </div>
-          ${sizeSelectHtml(product.sku)}
+          ${sizeSelectHtml(product)}
           <button type="button" class="offer-cart add-to-cart" data-sku="${product.sku}" aria-label="Add to cart"><img src="./assets/icons/cart.svg" alt=""></button>
         </article>
       `;
