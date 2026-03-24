@@ -23,7 +23,17 @@
   // Simple store using localStorage for cart
   var STORAGE_CART = 'fb_cart_v1';
   function readCart() {
-    try { return JSON.parse(localStorage.getItem(STORAGE_CART) || '{}'); } catch (e) { return {}; }
+    try {
+      var c = JSON.parse(localStorage.getItem(STORAGE_CART) || '{}');
+      if (!c || typeof c !== 'object') return {};
+      // Normalize bad stale entries once read
+      Object.keys(c).forEach(function (k) {
+        var q = Number(c[k]);
+        if (!k || k === 'unknown' || !isFinite(q) || q <= 0) delete c[k];
+        else c[k] = q;
+      });
+      return c;
+    } catch (e) { return {}; }
   }
   function writeCart(cart) { localStorage.setItem(STORAGE_CART, JSON.stringify(cart)); }
   var __lastCartAdd = { key: '', at: 0 };

@@ -387,9 +387,12 @@
     // Bind add to cart buttons (with optional size from .product-size-select)
     function bindAddToCartButtons() {
       document.querySelectorAll('.add-to-cart').forEach(btn => {
+        if (btn.dataset.cartBound === '1') return;
+        btn.dataset.cartBound = '1';
         btn.addEventListener('click', function (e) {
           const card = this.closest('[data-sku]');
           const sku = (card && card.getAttribute('data-sku')) || this.dataset.sku;
+          if (!sku || sku === 'unknown') return;
           const sizeSelect = card ? card.querySelector('.product-size-select') : null;
           const hasSizeOptions = !!(sizeSelect && sizeSelect.options && sizeSelect.options.length > 1);
           const size = sizeSelect && sizeSelect.value ? sizeSelect.value : null;
@@ -409,6 +412,11 @@
           }
 
           const cartKey = size ? sku + '__' + size : sku;
+          // Prevent accidental duplicate handler/event firing
+          window.__fbLastCartAdd = window.__fbLastCartAdd || { key: '', at: 0 };
+          const now = Date.now();
+          if (window.__fbLastCartAdd.key === cartKey && (now - window.__fbLastCartAdd.at) < 350) return;
+          window.__fbLastCartAdd = { key: cartKey, at: now };
           const toast = document.querySelector('.toast');
           if (toast) {
             toast.textContent = 'Added to cart!';
@@ -417,7 +425,12 @@
           }
           try {
             const cart = JSON.parse(localStorage.getItem('fb_cart_v1') || '{}');
-            cart[cartKey] = (cart[cartKey] || 0) + 1;
+            // Cleanup stale invalid keys that can make badges look non-empty
+            Object.keys(cart).forEach(k => {
+              const q = Number(cart[k]);
+              if (!k || k === 'unknown' || !isFinite(q) || q <= 0) delete cart[k];
+            });
+            cart[cartKey] = (Number(cart[cartKey]) || 0) + 1;
             localStorage.setItem('fb_cart_v1', JSON.stringify(cart));
           } catch (e) { }
         });
