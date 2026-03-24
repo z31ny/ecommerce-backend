@@ -509,7 +509,7 @@
         if (btn.dataset.cartBound === '1') return;
         btn.dataset.cartBound = '1';
         btn.addEventListener('click', function (e) {
-          const card = this.closest('[data-sku]');
+          const card = this.closest('.offer-card[data-sku], article[data-sku], .mood-card[data-sku]');
           const sku = (card && card.getAttribute('data-sku')) || this.dataset.sku;
           if (!sku || sku === 'unknown') return;
           const sizeSelect = card ? card.querySelector('.product-size-select') : null;
