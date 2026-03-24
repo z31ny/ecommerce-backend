@@ -114,7 +114,7 @@
     var size = null;
     if (typeof sizeOrTrigger === 'string') size = sizeOrTrigger;
     else if (sizeOrTrigger && sizeOrTrigger.nodeType) triggerElement = sizeOrTrigger;
-    var cartKey = size ? sku + '__' + size : sku;
+    var cartKey = makeCartKey(sku, size);
     // Guard against duplicate click handlers firing for same interaction
     var now = Date.now();
     if (__lastCartAdd.key === cartKey && (now - __lastCartAdd.at) < 350) return;
@@ -161,6 +161,12 @@
   function cartKeySize(key) {
     return key.indexOf('__') === -1 ? '' : key.split('__').slice(1).join('__');
   }
+  function makeCartKey(sku, size) {
+    var base = String(sku || '').trim();
+    var sz = String(size == null ? '' : size).trim();
+    return sz ? (base + '__' + sz) : base;
+  }
+  window.__fbMakeCartKey = makeCartKey;
   function normalizeSizeKey(size) {
     return String(size == null ? '' : size).trim().toLowerCase().replace(/\s+/g, '');
   }

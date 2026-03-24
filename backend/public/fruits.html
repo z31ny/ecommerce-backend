@@ -474,7 +474,7 @@
           if (!sku || sku === 'unknown') return;
           const sizeSelect = card ? card.querySelector('.product-size-select') : null;
           const hasSizeOptions = !!(sizeSelect && sizeSelect.options && sizeSelect.options.length > 1);
-          const size = sizeSelect && sizeSelect.value ? sizeSelect.value : null;
+          const size = sizeSelect && sizeSelect.value ? String(sizeSelect.value).trim() : null;
 
           // If this product has sizes, user must pick one
           if (hasSizeOptions && !size) {
@@ -490,7 +490,9 @@
             return;
           }
 
-          const cartKey = size ? sku + '__' + size : sku;
+          const cartKey = (typeof window.__fbMakeCartKey === 'function')
+            ? window.__fbMakeCartKey(sku, size)
+            : (size ? sku + '__' + size : sku);
           // Prevent accidental duplicate handler/event firing
           window.__fbLastCartAdd = window.__fbLastCartAdd || { key: '', at: 0 };
           const now = Date.now();
