@@ -7,14 +7,22 @@
   function readCart() { try { return JSON.parse(localStorage.getItem(STORAGE_CART) || '{}'); } catch (e) { return {}; } }
   function readCartMeta() { try { var m = JSON.parse(localStorage.getItem(STORAGE_CART_META) || '{}'); return (m && typeof m === 'object') ? m : {}; } catch (e) { return {}; } }
   function writeCart(c) { localStorage.setItem(STORAGE_CART, JSON.stringify(c)); }
-  function clearCart() { localStorage.removeItem(STORAGE_CART); }
+  function writeCartMeta(m) { localStorage.setItem(STORAGE_CART_META, JSON.stringify(m || {})); }
+  function clearCart() { localStorage.removeItem(STORAGE_CART); localStorage.removeItem(STORAGE_CART_META); }
+  function removeCartMetaKey(cartKey) {
+    var m = readCartMeta();
+    if (m[cartKey]) {
+      delete m[cartKey];
+      writeCartMeta(m);
+    }
+  }
 
   // Send confirmation email via API
   function sendConfirmationEmail(orderId, customerName, customerEmail, itemSkus, cart, gov, city, address) {
     var subtotal = 0;
     var delivery = getDeliveryFee();
     var itemsData = itemSkus.map(function (cartKey) {
-      var price = getPrice(cartKey);
+      var price = getUnitPrice(cartKey);
       var qty = cart[cartKey] || 1;
       subtotal += price * qty;
       return {
@@ -282,11 +290,18 @@
     }
     return PRICE_EGP[baseSku] || 0;
   }
+  function getUnitPrice(cartKey) {
+    var entry = readCartMeta()[cartKey];
+    if (entry && entry.unitPrice != null && !isNaN(Number(entry.unitPrice))) {
+      return Number(entry.unitPrice);
+    }
+    return getPrice(cartKey);
+  }
 
   function render() {
     if (!list) return;
     var cart = readCart();
-    var items = Object.keys(cart);
+    var items = Object.keys(cart).filter(function (k) { return (Number(cart[k]) || 0) > 0; });
     list.innerHTML = '';
     if (items.length === 0) {
       empty.hidden = false; count.textContent = '0';
@@ -299,7 +314,10 @@
     var totalItems = 0;
     var subtotal = 0;
     items.forEach(function (cartKey) {
-      var qty = cart[cartKey]; totalItems += qty; subtotal += getPrice(cartKey) * qty;
+      var qty = Number(cart[cartKey]) || 0;
+      var unit = getUnitPrice(cartKey);
+      totalItems += qty;
+      subtotal += unit * qty;
       var display = cartKeyDisplay(cartKey);
       var safeKey = cartKey.replace(/"/g, '&quot;');
       var entry = readCartMeta()[cartKey] || null;
@@ -307,9 +325,6 @@
       var imgSrc = (entry && entry.image) || '';
       if (!imgSrc && p && p.images && p.images[0]) imgSrc = p.images[0];
       if (!imgSrc) imgSrc = '/assets/icons/profile.svg';
-      var unit = (entry && entry.unitPrice != null && !isNaN(Number(entry.unitPrice)))
-        ? Number(entry.unitPrice)
-        : getPrice(cartKey);
       var lineTotal = unit * qty;
       var li = document.createElement('li');
       li.innerHTML =
@@ -336,10 +351,24 @@
       b.addEventListener('click', function () { var s = b.getAttribute('data-inc'); var c = readCart(); c[s] = (c[s] || 0) + 1; writeCart(c); render(); });
     });
     Array.prototype.slice.call(list.querySelectorAll('[data-dec]')).forEach(function (b) {
-      b.addEventListener('click', function () { var s = b.getAttribute('data-dec'); var c = readCart(); c[s] = Math.max(0, (c[s] || 0) - 1); if (c[s] === 0) delete c[s]; writeCart(c); render(); });
+      b.addEventListener('click', function () {
+        var s = b.getAttribute('data-dec');
+        var c = readCart();
+        c[s] = Math.max(0, (c[s] || 0) - 1);
+        if (c[s] === 0) { delete c[s]; removeCartMetaKey(s); }
+        writeCart(c);
+        render();
+      });
     });
     Array.prototype.slice.call(list.querySelectorAll('[data-del]')).forEach(function (b) {
-      b.addEventListener('click', function () { var s = b.getAttribute('data-del'); var c = readCart(); delete c[s]; writeCart(c); render(); });
+      b.addEventListener('click', function () {
+        var s = b.getAttribute('data-del');
+        var c = readCart();
+        delete c[s];
+        removeCartMetaKey(s);
+        writeCart(c);
+        render();
+      });
     });
   }
 
