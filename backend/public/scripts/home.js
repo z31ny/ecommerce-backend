@@ -114,6 +114,43 @@
   function cartKeyBaseSku(key) {
     return key.indexOf('__') === -1 ? key : key.split('__')[0];
   }
+  function cartKeySize(key) {
+    return key.indexOf('__') === -1 ? '' : key.split('__').slice(1).join('__');
+  }
+  function normalizeSizeKey(size) {
+    return String(size == null ? '' : size).trim().toLowerCase().replace(/\s+/g, '');
+  }
+  function getCartMeta(baseSku) {
+    return window.__productMetaBySku && window.__productMetaBySku[String(baseSku).toLowerCase()]
+      ? window.__productMetaBySku[String(baseSku).toLowerCase()]
+      : null;
+  }
+  function getCartUnitPrice(cartKey) {
+    var baseSku = cartKeyBaseSku(cartKey);
+    var selectedSize = cartKeySize(cartKey);
+    var meta = getCartMeta(baseSku);
+    if (meta && meta.sizePrices && selectedSize) {
+      if (meta.sizePrices[selectedSize] != null) {
+        var exact = parseFloat(meta.sizePrices[selectedSize]);
+        if (!isNaN(exact)) return exact;
+      }
+      var wanted = normalizeSizeKey(selectedSize);
+      var found = null;
+      Object.keys(meta.sizePrices).some(function (k) {
+        if (normalizeSizeKey(k) === wanted) { found = meta.sizePrices[k]; return true; }
+        return false;
+      });
+      if (found != null) {
+        var norm = parseFloat(found);
+        if (!isNaN(norm)) return norm;
+      }
+    }
+    var base = meta && meta.price != null ? parseFloat(meta.price) : NaN;
+    return isNaN(base) ? 0 : base;
+  }
+  function money(n) {
+    return (Number(n) || 0).toFixed(0) + ' EGP';
+  }
 
   // Initial badge update
   updateCartBadges();
@@ -416,8 +453,21 @@
     items.forEach(function (cartKey) {
       var qty = cart[cartKey]; total += qty;
       var display = cartKeyToDisplay(cartKey);
+      var baseSku = cartKeyBaseSku(cartKey);
+      var meta = getCartMeta(baseSku);
+      var unitPrice = getCartUnitPrice(cartKey);
+      var lineTotal = unitPrice * qty;
+      var imgSrc = (meta && meta.images && meta.images[0]) ? meta.images[0] : '/assets/icons/profile.svg';
       var li = doc.createElement('li');
-      li.innerHTML = '<span>' + display + '</span><div><button class="btn" data-dec="' + cartKey.replace(/"/g, '&quot;') + '">-</button> <span>' + qty + '</span> <button class="btn" data-inc="' + cartKey.replace(/"/g, '&quot;') + '">+</button></div>';
+      li.innerHTML =
+        '<div style="display:flex;align-items:center;gap:10px;min-width:0;">' +
+          '<img src="' + imgSrc + '" alt="" style="width:44px;height:44px;object-fit:cover;border-radius:8px;flex-shrink:0;" onerror="this.src=\'/assets/icons/profile.svg\'">' +
+          '<div style="min-width:0;flex:1;">' +
+            '<div style="font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + display + '</div>' +
+            '<div style="font-size:12px;color:#666;">' + money(unitPrice) + ' x ' + qty + ' = ' + money(lineTotal) + '</div>' +
+          '</div>' +
+        '</div>' +
+        '<div><button class="btn" data-dec="' + cartKey.replace(/"/g, '&quot;') + '">-</button> <span>' + qty + '</span> <button class="btn" data-inc="' + cartKey.replace(/"/g, '&quot;') + '">+</button></div>';
       CART.list.appendChild(li);
     });
     CART.count.textContent = String(total);
