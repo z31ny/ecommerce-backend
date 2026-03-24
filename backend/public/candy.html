@@ -237,9 +237,36 @@
     function getSizes(sku) {
       return typeof window.getProductSizesForSku === 'function' ? window.getProductSizesForSku(sku) : [];
     }
+    function normalizeSizeKey(s) {
+      return String(s == null ? '' : s).trim().toLowerCase().replace(/\s+/g, '');
+    }
+    function getSizePriceForSkuSize(sku, size) {
+      if (!sku || !size) return null;
+      const key = String(sku).toLowerCase();
+      const meta = window.__productMetaBySku && window.__productMetaBySku[key];
+      if (!meta || !meta.sizePrices) return null;
+      if (meta.sizePrices[size] != null) {
+        const exact = parseFloat(meta.sizePrices[size]);
+        if (!isNaN(exact)) return exact;
+      }
+      const wanted = normalizeSizeKey(size);
+      let found = null;
+      Object.keys(meta.sizePrices).some(k => {
+        if (normalizeSizeKey(k) === wanted) {
+          found = parseFloat(meta.sizePrices[k]);
+          return true;
+        }
+        return false;
+      });
+      return (found != null && !isNaN(found)) ? found : null;
+    }
     function sizeSelectHtml(sku) {
       const sizes = getSizes(sku);
-      const opts = sizes.map(s => `<option value="${s.replace(/"/g, '&quot;')}">${s}</option>`).join('');
+      const opts = sizes.map(s => {
+        const p = getSizePriceForSkuSize(sku, s);
+        const data = (p != null && !isNaN(p)) ? ` data-price="${p}"` : '';
+        return `<option value="${s.replace(/"/g, '&quot;')}"${data}>${s}</option>`;
+      }).join('');
       return `<label class="offer-size-label">Size</label><select class="product-size-select form-select"><option value="">Choose size</option>${opts}</select>`;
     }
     function swipeMediaHtml(images, alt) {
@@ -291,9 +318,12 @@
           const basePrice = parseFloat(card.getAttribute('data-price') || '0') || 0;
           const size = this.value || '';
           const newPrice = helper(sku, size, basePrice);
+          const selected = this.options[this.selectedIndex];
+          const optionPrice = selected ? parseFloat(selected.getAttribute('data-price') || '') : NaN;
           const priceEl = card.querySelector('.offer-new');
-          if (priceEl && newPrice != null && !isNaN(newPrice)) {
-            priceEl.textContent = Math.round(newPrice) + ' EGP';
+          if (priceEl) {
+            if (!isNaN(optionPrice)) priceEl.textContent = Math.round(optionPrice) + ' EGP';
+            else if (newPrice != null && !isNaN(newPrice)) priceEl.textContent = Math.round(newPrice) + ' EGP';
           }
         });
       });
@@ -438,10 +468,13 @@
             const priceEl = card ? card.querySelector('.offer-new') : null;
             const basePrice = card ? (parseFloat(card.getAttribute('data-price') || '0') || 0) : 0;
             let unitPrice = priceEl ? parseFloat((priceEl.textContent || '').replace(/[^\d.]/g, '')) : null;
+            const selectedOpt = sizeSelect ? sizeSelect.options[sizeSelect.selectedIndex] : null;
+            const selectedOptPrice = selectedOpt ? parseFloat(selectedOpt.getAttribute('data-price') || '') : NaN;
+            if (!isNaN(selectedOptPrice)) unitPrice = selectedOptPrice;
             // Use helper to enforce exact selected-size price when available
             if (typeof window.getProductPriceForSkuSize === 'function') {
               const helperPrice = window.getProductPriceForSkuSize(sku, size || '', basePrice);
-              if (helperPrice != null && !isNaN(helperPrice)) unitPrice = helperPrice;
+              if ((unitPrice == null || isNaN(unitPrice)) && helperPrice != null && !isNaN(helperPrice)) unitPrice = helperPrice;
             }
             if (typeof window.__fbSetCartMeta === 'function') {
               window.__fbSetCartMeta(cartKey, {
