@@ -473,11 +473,16 @@
           const sku = (card && card.getAttribute('data-sku')) || this.dataset.sku;
           if (!sku || sku === 'unknown') return;
           const sizeSelect = card ? card.querySelector('.product-size-select') : null;
+          const skuKey = String(sku).toLowerCase();
+          const meta = window.__productMetaBySku && window.__productMetaBySku[skuKey];
+          const metaHasSizePrices = !!(meta && meta.sizePrices && Object.keys(meta.sizePrices).length > 0);
+          const sizes = getSizes(sku);
           const hasSizeOptions = !!(sizeSelect && sizeSelect.options && sizeSelect.options.length > 1);
+          const requiresSize = metaHasSizePrices || (Array.isArray(sizes) && sizes.length > 0) || hasSizeOptions;
           const size = sizeSelect && sizeSelect.value ? String(sizeSelect.value).trim() : null;
 
           // If this product has sizes, user must pick one
-          if (hasSizeOptions && !size) {
+          if (requiresSize && !size) {
             if (typeof e?.preventDefault === 'function') e.preventDefault();
             if (typeof e?.stopImmediatePropagation === 'function') e.stopImmediatePropagation();
             else if (typeof e?.stopPropagation === 'function') e.stopPropagation();

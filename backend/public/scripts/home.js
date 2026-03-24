@@ -284,10 +284,13 @@
         return;
       }
       var sizeSelect = card ? card.querySelector('.product-size-select') : null;
+      var skuMeta = window.__productMetaBySku && window.__productMetaBySku[String(sku).toLowerCase()];
+      var metaHasSizePrices = !!(skuMeta && skuMeta.sizePrices && Object.keys(skuMeta.sizePrices).length > 0);
       var hasSizeOptions = !!(sizeSelect && sizeSelect.options && sizeSelect.options.length > 1);
+      var requiresSize = metaHasSizePrices || hasSizeOptions;
       var size = sizeSelect && sizeSelect.value ? sizeSelect.value : null;
 
-      if (hasSizeOptions && !size) {
+      if (requiresSize && !size) {
         e.preventDefault();
         if (typeof e.stopPropagation === 'function') e.stopPropagation();
         showToast('Please choose a size first');
