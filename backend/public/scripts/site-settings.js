@@ -118,6 +118,7 @@
                     if (sizes) map[sku] = sizes;
 
                     metaMap[sku] = {
+                        name: p && p.name ? p.name : null,
                         price: p && p.price != null ? p.price : null,
                         images: Array.isArray(p && p.images) ? p.images : (p && p.images ? [p.images] : []),
                         weight: p && p.attributes && p.attributes.weight ? p.attributes.weight : null,

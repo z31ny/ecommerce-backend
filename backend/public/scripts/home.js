@@ -84,9 +84,12 @@
     showToast('Added to cart');
   }
   function cartKeyToDisplay(key) {
-    if (key.indexOf('__') === -1) return key.replace(/-/g, ' ');
-    var parts = key.split('__');
-    return parts[0].replace(/-/g, ' ') + ' (' + parts.slice(1).join(' ') + ')';
+    var base = key.indexOf('__') === -1 ? key : key.split('__')[0];
+    var size = key.indexOf('__') === -1 ? '' : key.split('__').slice(1).join('__');
+    var pretty = base.replace(/-/g, ' ');
+    var meta = window.__productMetaBySku && window.__productMetaBySku[String(base).toLowerCase()];
+    var name = (meta && meta.name) ? meta.name : pretty;
+    return size ? (name + ' (' + size + ')') : name;
   }
   function cartKeyBaseSku(key) {
     return key.indexOf('__') === -1 ? key : key.split('__')[0];

@@ -11,20 +11,13 @@
   function sendConfirmationEmail(orderId, customerName, customerEmail, itemSkus, cart, gov, city, address) {
     var subtotal = 0;
     var delivery = getDeliveryFee();
-    var cartKeyDisplayFn = (function () {
-      return function (key) {
-        if (key.indexOf('__') === -1) return key.replace(/-/g, ' ');
-        var parts = key.split('__');
-        return parts[0].replace(/-/g, ' ') + ' (' + parts.slice(1).join(' ') + ')';
-      };
-    })();
     var itemsData = itemSkus.map(function (cartKey) {
       var price = getPrice(cartKey);
       var qty = cart[cartKey] || 1;
       subtotal += price * qty;
       return {
         sku: cartKey,
-        name: cartKeyDisplayFn(cartKey),
+        name: cartItemDisplayName(cartKey),
         quantity: qty,
         price: price * qty
       };
@@ -124,14 +117,29 @@
     'vanilla-pecan-shell': 400
   };
 
-  // SKU to product ID mapping (populated from API)
+  // SKU -> product data (populated from API)
   var skuToProduct = {};
+  function skuKey(sku) { return String(sku || '').trim().toLowerCase(); }
 
   function buildSkuMap(productList) {
     if (!productList) return;
     productList.forEach(function (p) {
       if (p.sku) {
-        skuToProduct[p.sku] = { id: p.id, price: parseFloat(p.price), name: p.name };
+        var k = skuKey(p.sku);
+        var sizePrices = {};
+        if (p.attributes && p.attributes.sizePrices && typeof p.attributes.sizePrices === 'object') {
+          Object.keys(p.attributes.sizePrices).forEach(function (size) {
+            var n = parseFloat(p.attributes.sizePrices[size]);
+            if (!isNaN(n)) sizePrices[String(size)] = n;
+          });
+        }
+        skuToProduct[k] = {
+          id: p.id,
+          sku: p.sku,
+          price: parseFloat(p.price) || 0,
+          name: p.name || p.sku,
+          sizePrices: sizePrices
+        };
       }
     });
   }
@@ -228,15 +236,34 @@
   function cartKeyBaseSku(key) {
     return key.indexOf('__') === -1 ? key : key.split('__')[0];
   }
+  function cartKeySize(key) {
+    if (key.indexOf('__') === -1) return '';
+    return key.split('__').slice(1).join('__');
+  }
+  function getProductByCartKey(cartKey) {
+    var sku = cartKeyBaseSku(cartKey);
+    return skuToProduct[skuKey(sku)] || null;
+  }
+  function cartItemDisplayName(cartKey) {
+    var product = getProductByCartKey(cartKey);
+    var size = cartKeySize(cartKey);
+    var baseName = product ? product.name : cartKeyBaseSku(cartKey).replace(/-/g, ' ');
+    return size ? (baseName + ' (' + size + ')') : baseName;
+  }
   function cartKeyDisplay(key) {
-    if (key.indexOf('__') === -1) return key.replace(/-/g, ' ');
-    var parts = key.split('__');
-    return parts[0].replace(/-/g, ' ') + ' (' + parts.slice(1).join(' ') + ')';
+    return cartItemDisplayName(key);
   }
   function getPrice(cartKey) {
-    var sku = cartKeyBaseSku(cartKey);
-    if (skuToProduct[sku]) return skuToProduct[sku].price;
-    return PRICE_EGP[sku] || 0;
+    var baseSku = cartKeyBaseSku(cartKey);
+    var size = cartKeySize(cartKey);
+    var product = getProductByCartKey(cartKey);
+    if (product) {
+      if (size && product.sizePrices && product.sizePrices[size] != null) {
+        return parseFloat(product.sizePrices[size]) || 0;
+      }
+      return parseFloat(product.price) || 0;
+    }
+    return PRICE_EGP[baseSku] || 0;
   }
 
   function render() {
@@ -323,8 +350,7 @@
       var hasAllIds = true;
       var apiItems = items.map(function (sku) {
         // Use base SKU (without size) to match product.sku from API
-        var baseSku = cartKeyBaseSku(sku);
-        var product = skuToProduct[baseSku];
+        var product = getProductByCartKey(sku);
         if (!product) {
           // Mark that not all items could be mapped, but still allow partial checkout
           hasAllIds = false;
