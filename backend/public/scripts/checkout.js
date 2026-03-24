@@ -418,7 +418,11 @@
           hasAllIds = false;
           return null;
         }
-        return { productId: product.id, quantity: cart[sku] };
+        return {
+          productId: product.id,
+          quantity: cart[sku],
+          unitPrice: getUnitPrice(sku)
+        };
       }).filter(Boolean);
 
       var guestInfo = {

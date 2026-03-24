@@ -6,6 +6,7 @@ import { eq, inArray } from 'drizzle-orm';
 interface CartItem {
     productId: number;
     quantity: number;
+    unitPrice?: number;
 }
 
 interface GuestInfo {
@@ -59,10 +60,15 @@ export async function POST(request: NextRequest) {
                     if (!product) {
                         throw new Error(`Product with ID ${item.productId} not found`);
                     }
+                    const requestedUnitPrice = Number(item.unitPrice);
+                    const effectivePrice =
+                        Number.isFinite(requestedUnitPrice) && requestedUnitPrice > 0
+                            ? requestedUnitPrice
+                            : Number(product.price);
                     return {
                         productId: item.productId,
                         quantity: item.quantity,
-                        price: product.price,
+                        price: effectivePrice.toString(),
                         stock: product.stock,
                         productName: product.name,
                     };
