@@ -407,9 +407,13 @@
                                 var frontCartRow = '<div class="mood-front-cart-row">' +
                                     cartIconBtn +
                                     '</div>';
+                                var frontThumb = m.backImage
+                                    ? '<img class="mood-front-thumb" src="' + escAttr(m.backImage) + '" alt="' + escHtml(m.title || 'Mood image') + '" loading="lazy" decoding="async">'
+                                    : '';
                                 return '<div class="mood-card fade-up" tabindex="0"' + dataSkuAttr + dataProductAttr + '>' +
                                     '<div class="mood-card-inner">' +
                                     '  <div class="mood-card-front" style="background:' + colors.bg + ';color:' + colors.text + ';">' +
+                                    frontThumb +
                                     '    <h3>' + escHtml(m.title || '') + '</h3>' +
                                     '    <p>' + escHtml(m.description || '') + '</p>' +
                                     frontCartRow +
