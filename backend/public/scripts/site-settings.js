@@ -63,6 +63,9 @@
         } catch (e) { return null; }
         return out;
     }
+    function normalizeSizeKey(val) {
+        return String(val == null ? '' : val).trim().toLowerCase().replace(/\s+/g, '');
+    }
 
     function getProductPriceForSkuSize(sku, size, fallbackPrice) {
         var key = String(sku || '').toLowerCase();
@@ -72,9 +75,26 @@
         // Prefer explicit per-size pricing from DB: product.attributes.sizePrices
         if (window.__productMetaBySku && window.__productMetaBySku[key]) {
             var meta = window.__productMetaBySku[key];
-            if (meta && meta.sizePrices && sz && meta.sizePrices[sz] != null) {
-                var sp = parseFloat(meta.sizePrices[sz]);
-                if (!isNaN(sp)) return sp;
+            if (meta && meta.sizePrices && sz) {
+                // 1) direct key
+                if (meta.sizePrices[sz] != null) {
+                    var sp0 = parseFloat(meta.sizePrices[sz]);
+                    if (!isNaN(sp0)) return sp0;
+                }
+                // 2) normalized key fallback (handles 100g vs 100 g, case, extra spaces)
+                var wanted = normalizeSizeKey(sz);
+                var matchedVal = null;
+                Object.keys(meta.sizePrices).some(function (k) {
+                    if (normalizeSizeKey(k) === wanted) {
+                        matchedVal = meta.sizePrices[k];
+                        return true;
+                    }
+                    return false;
+                });
+                if (matchedVal != null) {
+                    var sp = parseFloat(matchedVal);
+                    if (!isNaN(sp)) return sp;
+                }
             }
 
             // Otherwise compute proportionally using grams if possible.

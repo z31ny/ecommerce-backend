@@ -120,6 +120,7 @@
   // SKU -> product data (populated from API)
   var skuToProduct = {};
   function skuKey(sku) { return String(sku || '').trim().toLowerCase(); }
+  function sizeKey(size) { return String(size == null ? '' : size).trim().toLowerCase().replace(/\s+/g, ''); }
 
   function buildSkuMap(productList) {
     if (!productList) return;
@@ -127,10 +128,15 @@
       if (p.sku) {
         var k = skuKey(p.sku);
         var sizePrices = {};
+        var sizePricesNorm = {};
         if (p.attributes && p.attributes.sizePrices && typeof p.attributes.sizePrices === 'object') {
           Object.keys(p.attributes.sizePrices).forEach(function (size) {
             var n = parseFloat(p.attributes.sizePrices[size]);
-            if (!isNaN(n)) sizePrices[String(size)] = n;
+            if (!isNaN(n)) {
+              var raw = String(size);
+              sizePrices[raw] = n;
+              sizePricesNorm[sizeKey(raw)] = n;
+            }
           });
         }
         skuToProduct[k] = {
@@ -138,7 +144,8 @@
           sku: p.sku,
           price: parseFloat(p.price) || 0,
           name: p.name || p.sku,
-          sizePrices: sizePrices
+          sizePrices: sizePrices,
+          sizePricesNorm: sizePricesNorm
         };
       }
     });
@@ -260,6 +267,10 @@
     if (product) {
       if (size && product.sizePrices && product.sizePrices[size] != null) {
         return parseFloat(product.sizePrices[size]) || 0;
+      }
+      if (size && product.sizePricesNorm) {
+        var nkey = sizeKey(size);
+        if (product.sizePricesNorm[nkey] != null) return parseFloat(product.sizePricesNorm[nkey]) || 0;
       }
       return parseFloat(product.price) || 0;
     }
