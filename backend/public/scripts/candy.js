@@ -20,13 +20,18 @@
   if (!t){ t = document.createElement('div'); t.className = 'toast'; document.body.appendChild(t); }
   function toast(msg){ t.textContent = msg; t.classList.add('is-show'); setTimeout(function(){ t.classList.remove('is-show'); }, 1600); }
 
-  Array.prototype.slice.call(document.querySelectorAll('.add-to-cart')).forEach(function(btn){
-    btn.addEventListener('click', function(){
-      var holder = btn.closest('[data-sku]');
-      var sku = (holder && holder.getAttribute('data-sku')) || btn.getAttribute('data-sku') || 'candy';
-      addToCart(sku, 1);
+  // IMPORTANT:
+  // Dynamic candy page (candy.html) has its own grams-aware add-to-cart logic in inline script.
+  // Do not attach this legacy base-SKU handler there, or it will override selected grams.
+  if (!document.getElementById('productsContainer')) {
+    Array.prototype.slice.call(document.querySelectorAll('.add-to-cart')).forEach(function(btn){
+      btn.addEventListener('click', function(){
+        var holder = btn.closest('[data-sku]');
+        var sku = (holder && holder.getAttribute('data-sku')) || btn.getAttribute('data-sku') || 'candy';
+        addToCart(sku, 1);
+      });
     });
-  });
+  }
 
   // Burger menu handled by home.js (shared across all pages)
 
