@@ -235,10 +235,16 @@
     let currentFilter = 'all';
 
     function getSizes(sku, product) {
-      const direct = product && product.attributes && Array.isArray(product.attributes.sizes)
-        ? product.attributes.sizes.map(s => String(s || '').trim()).filter(Boolean)
+      const attrs = product && product.attributes && typeof product.attributes === 'object' ? product.attributes : null;
+      const direct = attrs && Array.isArray(attrs.sizes)
+        ? attrs.sizes.map(s => String(s || '').trim()).filter(Boolean)
         : [];
       if (direct.length) return direct;
+      // If sizes list is missing, derive options from sizePrices keys.
+      const fromPriceKeys = attrs && attrs.sizePrices && typeof attrs.sizePrices === 'object'
+        ? Object.keys(attrs.sizePrices).map(s => String(s || '').trim()).filter(Boolean)
+        : [];
+      if (fromPriceKeys.length) return fromPriceKeys;
       return typeof window.getProductSizesForSku === 'function' ? window.getProductSizesForSku(sku) : [];
     }
     function normalizeSizeKey(s) {
