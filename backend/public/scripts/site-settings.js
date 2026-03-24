@@ -292,7 +292,7 @@
                     card.classList.add('is-flipped');
                     return;
                 }
-                if (e.target.closest('.mood-card-front, .mood-card-back')) {
+                if (e.target.closest('.mood-card-back')) {
                     card.classList.toggle('is-flipped');
                 }
             });
@@ -307,7 +307,7 @@
                     card.classList.add('is-flipped');
                     return;
                 }
-                if (e.target.closest('.mood-card-front, .mood-card-back')) {
+                if (e.target.closest('.mood-card-back')) {
                     e.preventDefault();
                     card.classList.toggle('is-flipped');
                 }
@@ -389,11 +389,9 @@
                                         '</select>';
                                 }
                                 var hasCartTarget = !!(linkedIdRaw || skuRaw || (m.productSku && String(m.productSku).trim()));
-                                // Sizes on front when this mood can add to cart (linked product or legacy SKU)
-                                var sizesHtmlFront = (hasCartTarget && hasSizes) ? sizesBlock('color:' + colors.text + ';') : '';
                                 var sizesHtmlBack = (hasSizes && !hasCartTarget) ? sizesBlock('color:#fff;text-shadow:0 1px 2px rgba(0,0,0,0.5);') : '';
                                 var shopLabel = (m.shopButtonText && String(m.shopButtonText).trim()) ? String(m.shopButtonText).trim() : 'Buy now';
-                                var cartIconBtn = '<button type="button" class="mood-cart-icon add-to-cart" aria-label="Add to cart">' +
+                                var cartIconBtn = '<button type="button" class="mood-cart-icon mood-cart-icon--front add-to-cart" aria-label="Add to cart">' +
                                     '<img src="./assets/icons/cart.svg" alt="">' +
                                     '</button>';
                                 // Always show small cart icon; resolves SKU from data-sku / data-product-id (home.js)
@@ -406,9 +404,7 @@
                                 var backActions = (addCartBtn || shopLink)
                                     ? '<div class="mood-back-actions">' + addCartBtn + shopLink + '</div>'
                                     : '';
-                                var frontSizesWrap = sizesHtmlFront ? '<div class="mood-front-cart-sizes">' + sizesHtmlFront + '</div>' : '';
                                 var frontCartRow = '<div class="mood-front-cart-row">' +
-                                    frontSizesWrap +
                                     cartIconBtn +
                                     '</div>';
                                 return '<div class="mood-card fade-up" tabindex="0"' + dataSkuAttr + dataProductAttr + '>' +
