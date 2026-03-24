@@ -461,6 +461,23 @@
         if (low === 'choose size' || low === 'select size' || low === 'pick size') return null;
         return txt;
       }
+      function getSizeFromCard(card, sku) {
+        if (!card) return { size: null, selectEl: null };
+        // Prefer the select inside this exact product card
+        let selectEl = card.querySelector('.product-size-select');
+        let size = getChosenSize(selectEl);
+        if (size) return { size, selectEl };
+
+        // Fallback: find another select in the same section for this SKU
+        const section = card.closest('.offers, .offers-grid, section') || document;
+        const sameSkuCard = section.querySelector(`.offer-card[data-sku="${String(sku).replace(/"/g, '\\"')}"]`);
+        if (sameSkuCard && sameSkuCard !== card) {
+          selectEl = sameSkuCard.querySelector('.product-size-select');
+          size = getChosenSize(selectEl);
+          if (size) return { size, selectEl };
+        }
+        return { size: null, selectEl };
+      }
       document.querySelectorAll('.add-to-cart').forEach(btn => {
         if (btn.dataset.cartBound === '1') return;
         btn.dataset.cartBound = '1';
@@ -468,14 +485,15 @@
           const card = this.closest('.offer-card[data-sku], article[data-sku], .mood-card[data-sku]');
           const sku = (card && card.getAttribute('data-sku')) || this.dataset.sku;
           if (!sku || sku === 'unknown') return;
-          const sizeSelect = card ? card.querySelector('.product-size-select') : null;
+          const picked = getSizeFromCard(card, sku);
+          const sizeSelect = picked.selectEl;
           const skuKey = String(sku).toLowerCase();
           const meta = window.__productMetaBySku && window.__productMetaBySku[skuKey];
           const metaHasSizePrices = !!(meta && meta.sizePrices && Object.keys(meta.sizePrices).length > 0);
           const sizes = getSizes(sku);
           const hasSizeOptions = !!(sizeSelect && sizeSelect.options && sizeSelect.options.length > 1);
           const requiresSize = metaHasSizePrices || (Array.isArray(sizes) && sizes.length > 0) || hasSizeOptions;
-          const size = getChosenSize(sizeSelect);
+          const size = picked.size;
 
           // If this product has sizes, user must pick one
           if (requiresSize && !size) {
