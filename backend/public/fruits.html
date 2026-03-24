@@ -480,7 +480,13 @@
             const titleEl = card ? card.querySelector('.offer-title') : null;
             const imgEl = card ? card.querySelector('.offer-media img, img') : null;
             const priceEl = card ? card.querySelector('.offer-new') : null;
-            const unitPrice = priceEl ? parseFloat((priceEl.textContent || '').replace(/[^\d.]/g, '')) : null;
+            const basePrice = card ? (parseFloat(card.getAttribute('data-price') || '0') || 0) : 0;
+            let unitPrice = priceEl ? parseFloat((priceEl.textContent || '').replace(/[^\d.]/g, '')) : null;
+            // Use helper to enforce exact selected-size price when available
+            if (typeof window.getProductPriceForSkuSize === 'function') {
+              const helperPrice = window.getProductPriceForSkuSize(sku, size || '', basePrice);
+              if (helperPrice != null && !isNaN(helperPrice)) unitPrice = helperPrice;
+            }
             if (typeof window.__fbSetCartMeta === 'function') {
               window.__fbSetCartMeta(cartKey, {
                 sku,
