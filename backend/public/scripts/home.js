@@ -171,7 +171,7 @@
   }
   function getCartUnitPrice(cartKey) {
     var entry = getCartMetaEntry(cartKey);
-    if (entry && entry.unitPrice != null && !isNaN(Number(entry.unitPrice))) {
+    if (entry && entry.unitPrice != null && !isNaN(Number(entry.unitPrice)) && Number(entry.unitPrice) > 0) {
       return Number(entry.unitPrice);
     }
     var baseSku = cartKeyBaseSku(cartKey);
@@ -196,12 +196,40 @@
     var base = meta && meta.price != null ? parseFloat(meta.price) : NaN;
     return isNaN(base) ? 0 : base;
   }
+  function healCartMetaZeroPrices() {
+    var cart = readCart();
+    var keys = Object.keys(cart || {}).filter(function (k) { return (Number(cart[k]) || 0) > 0; });
+    if (!keys.length) return;
+    var allMeta = readCartMeta();
+    var changed = false;
+    keys.forEach(function (cartKey) {
+      var entry = allMeta[cartKey] || {};
+      var current = Number(entry.unitPrice);
+      if (isFinite(current) && current > 0) return;
+      var fixed = getCartUnitPrice(cartKey);
+      if (isFinite(fixed) && fixed > 0) {
+        entry.unitPrice = fixed;
+        if (!entry.sku) entry.sku = cartKeyBaseSku(cartKey);
+        if (!entry.size) entry.size = cartKeySize(cartKey);
+        allMeta[cartKey] = entry;
+        changed = true;
+      }
+    });
+    if (changed) writeCartMeta(allMeta);
+  }
   function money(n) {
     return (Number(n) || 0).toFixed(0) + ' EGP';
   }
 
   // Initial badge update
   updateCartBadges();
+  healCartMetaZeroPrices();
+  if (window.__productSizesReady && typeof window.__productSizesReady.then === 'function') {
+    window.__productSizesReady.finally(function () {
+      healCartMetaZeroPrices();
+      try { renderCart(); } catch (e) { }
+    });
+  }
 
   // Toast
   var toast = doc.querySelector('.toast');

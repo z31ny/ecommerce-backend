@@ -292,10 +292,28 @@
   }
   function getUnitPrice(cartKey) {
     var entry = readCartMeta()[cartKey];
-    if (entry && entry.unitPrice != null && !isNaN(Number(entry.unitPrice))) {
+    if (entry && entry.unitPrice != null && !isNaN(Number(entry.unitPrice)) && Number(entry.unitPrice) > 0) {
       return Number(entry.unitPrice);
     }
     return getPrice(cartKey);
+  }
+  function healCheckoutMetaZeroPrices() {
+    var cart = readCart();
+    var meta = readCartMeta();
+    var changed = false;
+    Object.keys(cart || {}).forEach(function (cartKey) {
+      if ((Number(cart[cartKey]) || 0) <= 0) return;
+      var row = meta[cartKey] || {};
+      var p = Number(row.unitPrice);
+      if (isFinite(p) && p > 0) return;
+      var fixed = getPrice(cartKey);
+      if (isFinite(fixed) && fixed > 0) {
+        row.unitPrice = fixed;
+        meta[cartKey] = row;
+        changed = true;
+      }
+    });
+    if (changed) writeCartMeta(meta);
   }
 
   function render() {
@@ -378,6 +396,7 @@
     buildSkuMap(productList);
     console.log('[Checkout] Built SKU map:', skuToProduct);
     console.log('[Checkout] SKU map keys:', Object.keys(skuToProduct));
+    healCheckoutMetaZeroPrices();
     render();
   });
 
