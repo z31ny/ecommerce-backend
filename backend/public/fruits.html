@@ -317,7 +317,12 @@
       `;
     }
     function renderProductCard(product) {
-      const price = parseFloat(product.price) || 0;
+      const basePrice = parseFloat(product.price) || 0;
+      let price = basePrice;
+      if (typeof window.getProductPriceForSkuSize === 'function') {
+        const helperDefault = window.getProductPriceForSkuSize(product.sku, '', basePrice);
+        if (helperDefault != null && !isNaN(helperDefault) && helperDefault > 0) price = helperDefault;
+      }
       const images = (product.images && Array.isArray(product.images) && product.images.length)
         ? product.images
         : (product.image ? [product.image] : []);
@@ -522,7 +527,7 @@
             // Use helper to enforce exact selected-size price when available
             if (typeof window.getProductPriceForSkuSize === 'function') {
               const helperPrice = window.getProductPriceForSkuSize(sku, size || '', basePrice);
-              if ((unitPrice == null || isNaN(unitPrice)) && helperPrice != null && !isNaN(helperPrice)) unitPrice = helperPrice;
+              if ((unitPrice == null || isNaN(unitPrice) || unitPrice <= 0) && helperPrice != null && !isNaN(helperPrice) && helperPrice > 0) unitPrice = helperPrice;
             }
             if (typeof window.__fbSetCartMeta === 'function') {
               window.__fbSetCartMeta(cartKey, {
@@ -605,8 +610,8 @@
       }
     });
   </script>
-  <script src="./scripts/home.js?v=9" defer></script>
-  <script src="./scripts/site-settings.js?v=2.3" defer></script>
+  <script src="./scripts/home.js?v=10" defer></script>
+  <script src="./scripts/site-settings.js?v=2.4" defer></script>
   <script src="./scripts/sidebar.js" defer></script>
 </body>
 

@@ -96,6 +96,16 @@
                     if (!isNaN(sp)) return sp;
                 }
             }
+            // If no size selected, use first valid size price as product default display/cart price.
+            if (meta && meta.sizePrices && !sz) {
+                var first = null;
+                Object.keys(meta.sizePrices).some(function (k) {
+                    var n = parseFloat(meta.sizePrices[k]);
+                    if (!isNaN(n) && n > 0) { first = n; return true; }
+                    return false;
+                });
+                if (first != null) return first;
+            }
 
             // Otherwise compute proportionally using grams if possible.
             var gSelected = parseGrams(sz);
