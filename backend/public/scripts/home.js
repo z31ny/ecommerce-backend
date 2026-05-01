@@ -299,6 +299,26 @@
 
       e.preventDefault();
       if (typeof e.stopPropagation === 'function') e.stopPropagation();
+
+      // If this button is inside an offer card, seed cart meta with the offer's
+      // sale price BEFORE addToCart runs so the discounted price is used.
+      var offerCard = btn.closest('article.offer-card') || btn.closest('[data-offer-sale]');
+      if (offerCard) {
+        var offerSalePrice = parseFloat(offerCard.getAttribute('data-offer-sale'));
+        var cartKey = makeCartKey(sku, size);
+        if (!isNaN(offerSalePrice) && offerSalePrice > 0 && cartKey) {
+          var titleEl = offerCard.querySelector('.offer-title');
+          var imgEl = offerCard.querySelector('.offer-media img');
+          setCartMeta(cartKey, {
+            sku: sku,
+            size: size || '',
+            name: titleEl ? titleEl.textContent.trim() : sku,
+            image: imgEl ? imgEl.getAttribute('src') : '',
+            unitPrice: offerSalePrice
+          });
+        }
+      }
+
       addToCart(sku, 1, size, btn);
     });
   }
@@ -682,7 +702,13 @@
         offers.forEach(function (offer) {
           var card = doc.createElement('article');
           card.className = 'offer-card fade-up';
-          card.setAttribute('data-sku', offer.productSku);
+          card.setAttribute('data-sku', offer.productSku || '');
+          // Store the offer's discounted price on the card so the click handler
+          // can seed cart meta with it instead of the regular catalogue price.
+          var offerSalePrice = offer.salePrice ? parseFloat(offer.salePrice) : null;
+          var offerOriginalPrice = offer.originalPrice ? parseFloat(offer.originalPrice) : null;
+          if (offerSalePrice != null && !isNaN(offerSalePrice)) card.setAttribute('data-offer-sale', String(offerSalePrice));
+          if (offerOriginalPrice != null && !isNaN(offerOriginalPrice)) card.setAttribute('data-offer-original', String(offerOriginalPrice));
           card.innerHTML =
             (offer.discount ? '<div class="offer-badge">-' + offer.discount + '%</div>' : '') +
             renderMediaHtml((offer.images || []), (offer.image || '/assets/icons/profile.svg'), offer.name) +

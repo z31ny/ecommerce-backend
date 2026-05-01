@@ -133,13 +133,31 @@
 
             Array.prototype.slice.call(grid.querySelectorAll('.add-to-cart')).forEach(function (btn) {
               btn.addEventListener('click', function () {
-                var card = btn.closest('[data-sku]');
-                var sku = (card && card.getAttribute('data-sku')) || btn.dataset.sku || '';
+                // Use the article card (not the button) to read offer-level data attributes.
+                var offerCard = btn.closest('article') || btn.closest('.offer-card');
+                var sku = (offerCard && offerCard.getAttribute('data-sku')) || btn.dataset.sku || '';
                 var size = null;
+                var cartKey = (typeof window.__fbMakeCartKey === 'function') ? window.__fbMakeCartKey(sku, size) : sku;
+
+                // Seed cart meta with the offer's sale price, name, and image BEFORE
+                // addToCart runs so getCartUnitPrice() picks up the discounted price
+                // instead of the regular catalogue price.
+                var salePrice = offerCard ? parseFloat(offerCard.getAttribute('data-offer-sale')) : NaN;
+                var titleEl = offerCard ? offerCard.querySelector('.offer-title') : null;
+                var imgEl = offerCard ? offerCard.querySelector('.offer-media img') : null;
+                if (typeof window.__fbSetCartMeta === 'function' && cartKey) {
+                  window.__fbSetCartMeta(cartKey, {
+                    sku: sku,
+                    size: size || '',
+                    name: titleEl ? titleEl.textContent.trim() : sku,
+                    image: imgEl ? imgEl.getAttribute('src') : '',
+                    unitPrice: !isNaN(salePrice) && salePrice > 0 ? salePrice : null
+                  });
+                }
+
                 if (typeof addToCart === 'function') {
                   addToCart(sku, 1, size, btn);
                 } else {
-                  var cartKey = sku;
                   try {
                     var cart = JSON.parse(localStorage.getItem('fb_cart_v1') || '{}');
                     cart[cartKey] = (cart[cartKey] || 0) + 1;
