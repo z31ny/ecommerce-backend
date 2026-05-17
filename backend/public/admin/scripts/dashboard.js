@@ -2097,6 +2097,17 @@ async function moveOrderToTrash(orderId) {
 
     const order = orders[orderIndex];
     const oldStatus = order.status;
+    const numericId = typeof orderId === 'string' ? parseInt(orderId.replace('ORD-', ''), 10) : orderId;
+
+    // Persist cancellation to the database FIRST — abort if it fails
+    try {
+        if (!isNaN(numericId)) {
+            await DashboardAPI.updateOrder(numericId, { status: 'cancelled' });
+        }
+    } catch (e) {
+        showAlert('error', 'Failed to delete order. Please try again.\n\n' + (e.message || ''));
+        return;
+    }
 
     // Restore stock if order was not already cancelled
     if (oldStatus !== 'cancelled') {
@@ -2107,33 +2118,18 @@ async function moveOrderToTrash(orderId) {
         }
     }
 
-    // Persist cancellation to the database
-    try {
-        const numericId = typeof orderId === 'string' ? parseInt(orderId.replace('ORD-', ''), 10) : orderId;
-        if (!isNaN(numericId)) await DashboardAPI.updateOrder(numericId, { status: 'cancelled' });
-    } catch (e) {
-        console.warn('Could not update order status in DB:', e);
-    }
-
-    // Add deletion date and move to trash
+    // Update local state to match DB
     order.status = 'cancelled';
     order.deletedAt = new Date().toISOString();
-    order.stockDeducted = false; // Reset flag
-
+    order.stockDeducted = false;
     orderTrash.push(order);
     orders.splice(orderIndex, 1);
 
-    // Close the receipt modal if open
     closeModal('orderReceiptModal');
-
-    // Update the orders table
     renderFilteredOrders();
     updateTrashCount();
 
-    // Show success message with stock info
-    const product = findProductByName(order.product);
-    const stockInfo = product ? `\nStock restored: ${product.name} (${product.stock} units)` : '';
-    showAlert('info', `Order Moved to Trash\n\nOrder: #${orderId}\nStatus: Cancelled${stockInfo}\n\nYou can restore it from the trash or delete it permanently.`);
+    showAlert('info', `Order #${orderId} moved to trash. You can restore it or permanently delete it from the trash.`);
 }
 
 // Restore Order from Trash
@@ -2208,13 +2204,16 @@ async function confirmPermanentDelete(orderId) {
     const trashIndex = orderTrash.findIndex(o => o.id === orderId);
     if (trashIndex !== -1) {
         const order = orderTrash[trashIndex];
-        // Delete from database
+        const numericId = typeof order.id === 'string' ? parseInt(order.id.replace('ORD-', ''), 10) : order.id;
+
+        // Delete from database FIRST — abort if it fails
         try {
-            const numericId = typeof order.id === 'string' ? parseInt(order.id.replace('ORD-', ''), 10) : order.id;
             if (!isNaN(numericId)) await DashboardAPI.deleteOrder(numericId);
         } catch (e) {
-            console.warn('Could not delete order from DB:', e);
+            showAlert('error', 'Failed to permanently delete order. Please try again.\n\n' + (e.message || ''));
+            return;
         }
+
         orderTrash.splice(trashIndex, 1);
         closeModal('confirmDeleteOrderModal');
         renderTrashTable();
