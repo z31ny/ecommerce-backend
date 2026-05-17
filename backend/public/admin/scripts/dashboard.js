@@ -319,7 +319,17 @@ async function loadOrdersFromAPI(force = false) {
     if (dataLoadState.orders && !force) return;
     const apiOrders = await DashboardAPI.getOrders();
     orders.length = 0;
-    apiOrders.forEach(order => orders.push(normalizeOrder(order)));
+    orderTrash.length = 0;
+    apiOrders.forEach(order => {
+        const normalized = normalizeOrder(order);
+        if (normalized.status === 'cancelled') {
+            // Cancelled orders are treated as trashed — persist across reloads
+            if (!normalized.deletedAt) normalized.deletedAt = normalized.date || new Date().toISOString();
+            orderTrash.push(normalized);
+        } else {
+            orders.push(normalized);
+        }
+    });
     dataLoadState.orders = true;
 }
 
@@ -2099,7 +2109,8 @@ async function moveOrderToTrash(orderId) {
 
     // Persist cancellation to the database
     try {
-        await DashboardAPI.updateOrder(order.numericId || orderId, { status: 'cancelled' });
+        const numericId = typeof orderId === 'string' ? parseInt(orderId.replace('ORD-', ''), 10) : orderId;
+        if (!isNaN(numericId)) await DashboardAPI.updateOrder(numericId, { status: 'cancelled' });
     } catch (e) {
         console.warn('Could not update order status in DB:', e);
     }
@@ -2199,7 +2210,8 @@ async function confirmPermanentDelete(orderId) {
         const order = orderTrash[trashIndex];
         // Delete from database
         try {
-            await DashboardAPI.deleteOrder(order.numericId || orderId);
+            const numericId = typeof order.id === 'string' ? parseInt(order.id.replace('ORD-', ''), 10) : order.id;
+            if (!isNaN(numericId)) await DashboardAPI.deleteOrder(numericId);
         } catch (e) {
             console.warn('Could not delete order from DB:', e);
         }
