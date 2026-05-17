@@ -1409,17 +1409,11 @@
 
             container.innerHTML = allPages.map(page => {
                 const hasAccess = userAccess.includes(page.key);
-                return `
-            < div class="permission-item ${hasAccess ? 'active' : ''}" onclick = "togglePermission('${page.key}', this)" >
-                        <div class="permission-icon">
-                            <i class="${page.icon}"></i>
-                        </div>
-                        <span class="permission-label">${page.label}</span>
-                        <div class="permission-check">
-                            <i class="fas fa-check"></i>
-                        </div>
-                    </div >
-            `;
+                return `<div class="permission-item ${hasAccess ? 'active' : ''}" onclick="togglePermission('${page.key}', this)">
+                    <div class="permission-icon"><i class="${page.icon}"></i></div>
+                    <span class="permission-label">${page.label}</span>
+                    <div class="permission-check"><i class="fas fa-check"></i></div>
+                </div>`;
             }).join('');
         }
 
@@ -1480,7 +1474,7 @@
             });
 
             try {
-                const res = await fetch(`/ api / admin / users / ${userId} `, {
+                const res = await fetch(`/api/admin/users/${userId}`, {
                     method: 'PUT',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ access: selectedPermissions })

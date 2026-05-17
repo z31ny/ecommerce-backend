@@ -1688,14 +1688,18 @@ function deleteProduct(productId) {
 }
 
 // Confirm Delete Product
-function confirmDeleteProduct(productId) {
+async function confirmDeleteProduct(productId) {
     const index = products.findIndex(p => p.id === productId);
-    if (index !== -1) {
-        const productName = products[index].name;
+    if (index === -1) return;
+    const productName = products[index].name;
+    try {
+        await DashboardAPI.deleteProduct(productId);
         products.splice(index, 1);
         closeModal('confirmModal');
         renderProductsGrid('productsGrid');
         showAlert('success', `Product "${productName}" has been deleted successfully.`);
+    } catch (error) {
+        showAlert('error', `Failed to delete product: ${error.message}`);
     }
 }
 
@@ -2077,7 +2081,7 @@ function confirmMoveToTrash(orderId) {
 }
 
 // Move Order to Trash
-function moveOrderToTrash(orderId) {
+async function moveOrderToTrash(orderId) {
     const orderIndex = orders.findIndex(o => o.id === orderId);
     if (orderIndex === -1) return;
 
@@ -2091,6 +2095,13 @@ function moveOrderToTrash(orderId) {
             const quantity = order.items || 1;
             restoreStock(product, quantity, orderId);
         }
+    }
+
+    // Persist cancellation to the database
+    try {
+        await DashboardAPI.updateOrder(order.numericId || orderId, { status: 'cancelled' });
+    } catch (e) {
+        console.warn('Could not update order status in DB:', e);
     }
 
     // Add deletion date and move to trash
@@ -2182,9 +2193,16 @@ function permanentlyDeleteOrder(orderId) {
 }
 
 // Confirm Permanent Delete
-function confirmPermanentDelete(orderId) {
+async function confirmPermanentDelete(orderId) {
     const trashIndex = orderTrash.findIndex(o => o.id === orderId);
     if (trashIndex !== -1) {
+        const order = orderTrash[trashIndex];
+        // Delete from database
+        try {
+            await DashboardAPI.deleteOrder(order.numericId || orderId);
+        } catch (e) {
+            console.warn('Could not delete order from DB:', e);
+        }
         orderTrash.splice(trashIndex, 1);
         closeModal('confirmDeleteOrderModal');
         renderTrashTable();

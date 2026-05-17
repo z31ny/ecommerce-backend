@@ -1372,7 +1372,7 @@
             }
 
             try {
-                const res = await fetch(`/ api / admin / employees / ${emp.id} `, { method: 'DELETE' });
+                const res = await fetch(`/api/admin/employees/${emp.id}`, { method: 'DELETE' });
                 if (!res.ok) {
                     const data = await res.json();
                     showAlert('error', data.error || 'Failed to delete employee');
@@ -1400,7 +1400,7 @@
             // Populate employee filter
             const filterSelect = document.getElementById('activityFilterEmployee');
             filterSelect.innerHTML = '<option value="">All Employees</option>' +
-                employees.map(e => `< option value = "${e.id}" > ${e.name}</option > `).join('');
+                employees.map(e => `<option value="${e.id}">${e.name}</option>`).join('');
 
             renderActivityLog();
             openModal('activityLogModal');
