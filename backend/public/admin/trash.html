@@ -876,11 +876,19 @@
         }
         
         // Restore item from trash
-        function restoreItem(type, id) {
+        async function restoreItem(type, id) {
             if (type === 'order') {
                 const index = orderTrash.findIndex(o => o.id === id);
                 if (index !== -1) {
                     const order = orderTrash[index];
+                    const numericId = typeof order.id === 'string' ? parseInt(order.id.replace('ORD-', ''), 10) : order.id;
+                    const dbId = order.orderId || numericId;
+                    try {
+                        await DashboardAPI.updateOrder(dbId, { status: 'pending' });
+                    } catch (e) {
+                        showAlert('error', 'Failed to restore order. Please try again.');
+                        return;
+                    }
                     order.status = 'pending';
                     delete order.deletedDate;
                     orders.push(order);
@@ -891,59 +899,108 @@
                 const index = messageTrash.findIndex(m => m.id == id);
                 if (index !== -1) {
                     const msg = messageTrash[index];
+                    try {
+                        await DashboardAPI.updateMessage(msg.id, { isDeleted: false, isArchived: false });
+                    } catch (e) {
+                        showAlert('error', 'Failed to restore message. Please try again.');
+                        return;
+                    }
                     delete msg.deletedDate;
                     messages.push(msg);
                     messageTrash.splice(index, 1);
                     showAlert('success', `Message "${msg.subject}" restored successfully!`);
                 }
             }
-            
+
             renderTrashPage();
             updateTrashCounts();
         }
-        
+
         // Permanently delete item
-        function permanentlyDelete(type, id) {
+        async function permanentlyDelete(type, id) {
             if (!confirm('Are you sure you want to permanently delete this item? This action cannot be undone.')) {
                 return;
             }
-            
+
             if (type === 'order') {
                 const index = orderTrash.findIndex(o => o.id === id);
                 if (index !== -1) {
+                    const order = orderTrash[index];
+                    const numericId = typeof order.id === 'string' ? parseInt(order.id.replace('ORD-', ''), 10) : order.id;
+                    const dbId = order.orderId || numericId;
+                    try {
+                        await DashboardAPI.deleteOrder(dbId);
+                    } catch (e) {
+                        showAlert('error', 'Failed to delete order. Please try again.');
+                        return;
+                    }
                     orderTrash.splice(index, 1);
                     showAlert('success', `Order ${id} permanently deleted.`);
                 }
             } else if (type === 'message') {
                 const index = messageTrash.findIndex(m => m.id == id);
                 if (index !== -1) {
+                    const msg = messageTrash[index];
+                    try {
+                        await DashboardAPI.deleteMessage(msg.id);
+                    } catch (e) {
+                        showAlert('error', 'Failed to delete message. Please try again.');
+                        return;
+                    }
                     messageTrash.splice(index, 1);
                     showAlert('success', 'Message permanently deleted.');
                 }
             }
-            
+
             renderTrashPage();
             updateTrashCounts();
         }
-        
+
         // Empty all trash
-        function emptyAllTrash() {
+        async function emptyAllTrash() {
             const totalItems = orderTrash.length + messageTrash.length;
             if (totalItems === 0) {
                 showAlert('info', 'Trash is already empty.');
                 return;
             }
-            
+
             if (!confirm(`Are you sure you want to permanently delete all ${totalItems} items? This action cannot be undone.`)) {
                 return;
             }
-            
-            orderTrash = [];
-            messageTrash = [];
-            
+
+            // Delete all orders from DB
+            const failedOrders = [];
+            for (const order of [...orderTrash]) {
+                const numericId = typeof order.id === 'string' ? parseInt(order.id.replace('ORD-', ''), 10) : order.id;
+                const dbId = order.orderId || numericId;
+                try {
+                    await DashboardAPI.deleteOrder(dbId);
+                } catch (e) {
+                    failedOrders.push(order.id);
+                }
+            }
+
+            // Delete all messages from DB
+            const failedMsgs = [];
+            for (const msg of [...messageTrash]) {
+                try {
+                    await DashboardAPI.deleteMessage(msg.id);
+                } catch (e) {
+                    failedMsgs.push(msg.id);
+                }
+            }
+
+            if (failedOrders.length === 0) orderTrash = [];
+            if (failedMsgs.length === 0) messageTrash = [];
+
             renderTrashPage();
             updateTrashCounts();
-            showAlert('success', 'Trash emptied successfully!');
+
+            if (failedOrders.length > 0 || failedMsgs.length > 0) {
+                showAlert('error', `Some items could not be deleted. Please try again.`);
+            } else {
+                showAlert('success', 'Trash emptied successfully!');
+            }
         }
     </script>
 </body>
