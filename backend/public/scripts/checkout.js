@@ -464,6 +464,11 @@
         submitBtn.textContent = 'Processing...';
       }
 
+      // Calculate order total for Pixel Purchase event
+      var orderSubtotal = 0;
+      items.forEach(function (sku) { orderSubtotal += getUnitPrice(sku) * (Number(cart[sku]) || 0); });
+      var orderTotal = orderSubtotal + getDeliveryFee();
+
       // Try API checkout if we have at least one mapped item
       if (apiItems.length > 0 && typeof FreezybiteAPI !== 'undefined') {
         console.log('[Checkout] Attempting API checkout...');
@@ -473,12 +478,12 @@
             // Send confirmation email
             sendConfirmationEmail(result.orderId, name, email, items, cart, gov, city, address);
             clearCart();
-            showSuccess(result.orderId, name, email);
+            showSuccess(result.orderId, name, email, orderTotal);
           })
           .catch(function (err) {
             console.error('[Checkout] API checkout FAILED:', err);
             // Fallback to email
-            fallbackToEmail(name, email, phone, gov, city, address, cart, items);
+            fallbackToEmail(name, email, phone, gov, city, address, cart, items, orderTotal);
           })
           .finally(function () {
             if (submitBtn) {
@@ -490,7 +495,7 @@
         console.log('[Checkout] Falling back to email-only (no product IDs or API unavailable)');
         console.log('[Checkout] Reason: hasAllIds=' + hasAllIds + ', apiItems.length=' + apiItems.length);
         // Fallback: email receipt
-        fallbackToEmail(name, email, phone, gov, city, address, cart, items);
+        fallbackToEmail(name, email, phone, gov, city, address, cart, items, orderTotal);
         if (submitBtn) {
           submitBtn.disabled = false;
           submitBtn.textContent = 'Place order';
@@ -499,17 +504,18 @@
     });
   }
 
-  function showSuccess(orderId, name, email) {
+  function showSuccess(orderId, name, email, total) {
     // Redirect to success page with order details
     var params = new URLSearchParams({
       orderId: orderId,
       name: name,
-      email: email
+      email: email,
+      total: total || 0
     });
     window.location.href = './order-success.html?' + params.toString();
   }
 
-  function fallbackToEmail(name, email, phone, gov, city, address, cart, items) {
+  function fallbackToEmail(name, email, phone, gov, city, address, cart, items, total) {
     // Generate a local order ID (timestamp-based)
     var localOrderId = 'FB' + Date.now().toString(36).toUpperCase();
 
@@ -519,7 +525,7 @@
     clearCart();
 
     // Redirect to success page
-    showSuccess(localOrderId, name, email);
+    showSuccess(localOrderId, name, email, total);
   }
 
   // Newsletter mimic (footer)

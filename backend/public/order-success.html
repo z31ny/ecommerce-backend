@@ -201,16 +201,40 @@
         </div>
     </main>
 
+    <!-- Meta Pixel Code -->
+    <script>
+        !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+        n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
+        n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
+        t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,
+        document,'script','https://connect.facebook.net/en_US/fbevents.js');
+        fbq('init', '315453925506226');
+        fbq('track', 'PageView');
+    </script>
+    <noscript><img height="1" width="1" style="display:none"
+        src="https://www.facebook.com/tr?id=315453925506226&ev=PageView&noscript=1"/></noscript>
+    <!-- End Meta Pixel Code -->
+
     <script>
         // Parse URL params
         var params = new URLSearchParams(window.location.search);
         var orderId = params.get('orderId') || '0000';
         var name = params.get('name') || 'Customer';
         var email = params.get('email') || '';
+        var orderTotal = parseFloat(params.get('total') || '0');
 
         document.getElementById('customer-name').textContent = name.split(' ')[0];
         document.getElementById('order-number').textContent = '#' + orderId;
         document.getElementById('customer-email').textContent = email;
+
+        // Fire Meta Pixel Purchase event
+        if (typeof fbq === 'function' && orderId !== '0000') {
+            fbq('track', 'Purchase', {
+                value: orderTotal,
+                currency: 'EGP',
+                order_id: orderId
+            });
+        }
 
         // Confetti effect
         var colors = ['#f4c2ca', '#ec9fa9', '#c45360', '#6c2b47', '#ffe49e', '#8cd24a'];
