@@ -25,14 +25,6 @@
                 <p>Enter your credentials to access the dashboard</p>
             </div>
 
-            <!-- Temporary: enter dashboard without logging in (frontend only, no backend change) -->
-            <div class="temp-bypass-box" style="margin-bottom:1rem;padding:0.75rem 1rem;background:rgba(99,102,241,0.12);border:1px solid rgba(99,102,241,0.3);border-radius:8px;">
-                <p style="margin:0 0 0.5rem 0;font-size:0.9rem;color:var(--text-secondary, #64748b);">Login temporarily bypassed</p>
-                <button type="button" class="demo-btn" style="width:100%;margin:0;" onclick="enterWithoutLogin()">
-                    <i class="fas fa-door-open"></i> Enter dashboard without logging in
-                </button>
-            </div>
-
             <div class="error-message" id="errorMessage">
                 <i class="fas fa-exclamation-circle"></i>
                 <span>Invalid email or password. Please try again.</span>
@@ -78,14 +70,6 @@
                 </button>
             </form>
 
-            <div class="divider">
-                <span>or continue with</span>
-            </div>
-
-            <button class="demo-btn" onclick="openDemoModal()">
-                <i class="fas fa-users"></i>
-                Try Demo Accounts
-            </button>
         </div>
     </div>
 
@@ -119,97 +103,6 @@
         </div>
     </div>
 
-    <!-- Demo Accounts Modal -->
-    <div class="login-modal-overlay" id="demoModal">
-        <div class="demo-modal">
-            <div class="demo-modal-header">
-                <h2><i class="fas fa-users"></i> Select Demo Account</h2>
-                <button class="close-modal" onclick="closeDemoModal()">&times;</button>
-            </div>
-            <div class="demo-modal-body">
-                <div class="demo-cards">
-                    <!-- Jojo Gaber (your account) -->
-                    <div class="demo-card super-admin" onclick="selectDemo('jojo')">
-                        <div class="avatar">
-                            <i class="fas fa-user"></i>
-                        </div>
-                        <h3>Jojo Gaber</h3>
-                        <span class="role-badge">Super Admin</span>
-                        <ul class="access-list">
-                            <li><i class="fas fa-check"></i> Full Dashboard Access</li>
-                            <li><i class="fas fa-check"></i> jojogaber123@gmail.com</li>
-                        </ul>
-                    </div>
-                    <!-- Super Admin (Owner) -->
-                    <div class="demo-card super-admin" onclick="selectDemo('super-admin')">
-                        <div class="avatar">
-                            <i class="fas fa-crown"></i>
-                        </div>
-                        <h3>Sarah Johnson</h3>
-                        <span class="role-badge">Super Admin (Owner)</span>
-                        <ul class="access-list">
-                            <li><i class="fas fa-check"></i> Full Dashboard Access</li>
-                            <li><i class="fas fa-check"></i> Add/Remove Users</li>
-                            <li><i class="fas fa-check"></i> Delete Dashboard Data</li>
-                            <li><i class="fas fa-check"></i> All Settings & Controls</li>
-                        </ul>
-                    </div>
-
-                    <!-- Admin -->
-                    <div class="demo-card admin" onclick="selectDemo('admin')">
-                        <div class="avatar">
-                            <i class="fas fa-user-shield"></i>
-                        </div>
-                        <h3>Ahmed Hassan</h3>
-                        <span class="role-badge">Admin</span>
-                        <ul class="access-list">
-                            <li><i class="fas fa-check"></i> Full Dashboard Access</li>
-                            <li><i class="fas fa-check"></i> User & Employee Mgmt</li>
-                            <li><i class="fas fa-check"></i> All Settings</li>
-                            <li><i class="fas fa-times"></i> Cannot delete dashboard</li>
-                        </ul>
-                    </div>
-
-                    <!-- Manager -->
-                    <div class="demo-card manager" onclick="selectDemo('manager')">
-                        <div class="avatar">
-                            <i class="fas fa-user-tie"></i>
-                        </div>
-                        <h3>Mohamed Ali</h3>
-                        <span class="role-badge">Manager</span>
-                        <ul class="access-list">
-                            <li><i class="fas fa-check"></i> Products & Orders</li>
-                            <li><i class="fas fa-check"></i> Customers & Inventory</li>
-                            <li><i class="fas fa-check"></i> Messages & Analytics</li>
-                            <li><i class="fas fa-times"></i> No Users/Employees/Settings</li>
-                        </ul>
-                    </div>
-
-                    <!-- Staff -->
-                    <div class="demo-card staff" onclick="selectDemo('staff')">
-                        <div class="avatar">
-                            <i class="fas fa-user"></i>
-                        </div>
-                        <h3>Fatima Ibrahim</h3>
-                        <span class="role-badge">Staff</span>
-                        <ul class="access-list">
-                            <li><i class="fas fa-check"></i> Products & Orders</li>
-                            <li><i class="fas fa-check"></i> Customers & Inventory</li>
-                            <li><i class="fas fa-check"></i> Messages</li>
-                            <li><i class="fas fa-times"></i> No Analytics/Settings</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-            <div class="demo-modal-footer">
-                <button class="btn btn-secondary" onclick="closeDemoModal()">Cancel</button>
-                <button class="btn btn-primary" id="loginDemoBtn" onclick="loginDemo()" disabled>
-                    <i class="fas fa-sign-in-alt"></i> Login as Demo User
-                </button>
-            </div>
-        </div>
-    </div>
-
     <!-- Forgot Password Modal -->
     <div class="login-modal-overlay" id="forgotModal">
         <div class="demo-modal" style="max-width: 450px;">
@@ -239,32 +132,6 @@
     </div>
 
     <script>
-        // Demo / quick-login accounts (uses real backend auth)
-        const demoUsers = {
-            'jojo': { email: 'jojogaber123@gmail.com', password: 'temporary', role: 'Super Admin' },
-            'super-admin': { email: 'sarah@freezybite.com', password: 'admin123', role: 'Super Admin' },
-            'admin': { email: 'ahmed@freezybite.com', password: 'admin123', role: 'Admin' },
-            'manager': { email: 'mohamed@freezybite.com', password: 'manager123', role: 'Manager' },
-            'staff': { email: 'fatima@freezybite.com', password: 'staff123', role: 'Staff' }
-        };
-
-        let selectedDemo = null;
-
-        // Temporary: enter dashboard without login (no backend call)
-        function enterWithoutLogin() {
-            localStorage.setItem('freezyBiteAuthBypass', 'true');
-            localStorage.setItem('freezyBiteAdminToken', 'temp-bypass');
-            localStorage.setItem('freezyBiteCurrentUser', JSON.stringify({
-                role: 'Super Admin',
-                access: ['all'],
-                isOwner: true,
-                name: 'Guest',
-                email: 'guest@temp'
-            }));
-            localStorage.setItem('freezyBiteLoggedIn', 'true');
-            window.location.href = 'index.html';
-        }
-
         // Safely parse JSON from response (avoids "Unexpected end of JSON input" when server is unreachable)
         async function parseResponseJson(response) {
             const text = await response.text();
@@ -364,71 +231,6 @@
                 // Reset button
                 loginBtn.disabled = false;
                 loginBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Sign In';
-            }
-        }
-
-
-        // Demo Modal Functions
-        function openDemoModal() {
-            document.getElementById('demoModal').classList.add('active');
-        }
-
-        function closeDemoModal() {
-            document.getElementById('demoModal').classList.remove('active');
-            selectedDemo = null;
-            document.querySelectorAll('.demo-card').forEach(card => card.classList.remove('selected'));
-            document.getElementById('loginDemoBtn').disabled = true;
-            document.getElementById('loginDemoBtn').innerHTML = '<i class="fas fa-sign-in-alt"></i> Login as Demo User';
-        }
-
-        function selectDemo(demo) {
-            if (!demoUsers[demo]) {
-                alert('Demo accounts are disabled. Please sign in with a real admin account.');
-                return;
-            }
-            selectedDemo = demo;
-
-            // Update UI
-            document.querySelectorAll('.demo-card').forEach(card => card.classList.remove('selected'));
-            document.querySelector(`.demo-card.${demo}`).classList.add('selected');
-
-            // Enable login button
-            const btn = document.getElementById('loginDemoBtn');
-            btn.disabled = false;
-            btn.innerHTML = `<i class="fas fa-sign-in-alt"></i> Login as ${demoUsers[demo].role}`;
-        }
-
-        async function loginDemo() {
-            if (!selectedDemo) return;
-
-            const demo = demoUsers[selectedDemo];
-            if (!demo) {
-                alert('Demo accounts are disabled. Please sign in with a real admin account.');
-                return;
-            }
-            const loginBtn = document.getElementById('loginDemoBtn');
-
-            loginBtn.disabled = true;
-            loginBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Logging in...';
-
-            try {
-                const response = await fetch('/api/admin/auth/login', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email: demo.email, password: demo.password }),
-                });
-
-                const data = await parseResponseJson(response);
-                if (!response.ok) throw new Error(data.error || 'Login failed');
-
-                localStorage.setItem('freezyBiteAdminToken', data.token);
-                localStorage.setItem('freezyBiteCurrentUser', JSON.stringify(data.user));
-                localStorage.setItem('freezyBiteLoggedIn', 'true');
-                window.location.href = 'index.html';
-            } catch (error) {
-                alert('Demo login failed: ' + error.message + '\n\nPlease sign in with a real admin account.');
-                loginBtn.disabled = false;
-                loginBtn.innerHTML = `<i class="fas fa-sign-in-alt"></i> Login as ${demo.role}`;
             }
         }
 
