@@ -18,9 +18,18 @@ export async function POST(request: NextRequest) {
             );
         }
 
-        // Find admin user by email
+        // Find admin user by email — explicitly select all columns including passwordHash
         const [admin] = await db
-            .select()
+            .select({
+                id: adminUsers.id,
+                email: adminUsers.email,
+                passwordHash: adminUsers.passwordHash,
+                name: adminUsers.name,
+                role: adminUsers.role,
+                avatar: adminUsers.avatar,
+                access: adminUsers.access,
+                isActive: adminUsers.isActive,
+            })
             .from(adminUsers)
             .where(eq(adminUsers.email, email.toLowerCase()))
             .limit(1);
@@ -40,6 +49,13 @@ export async function POST(request: NextRequest) {
         }
 
         // Verify password
+        if (!admin.passwordHash) {
+            return NextResponse.json(
+                { error: 'Account has no password set. Contact your administrator.' },
+                { status: 401 }
+            );
+        }
+
         const isValidPassword = await bcrypt.compare(password, admin.passwordHash);
         if (!isValidPassword) {
             return NextResponse.json(

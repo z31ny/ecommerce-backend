@@ -47,14 +47,24 @@ export async function POST(request: NextRequest) {
         // Hash password
         const passwordHash = await bcrypt.hash(password, 10);
 
+        // Default access based on role if not explicitly provided
+        const defaultAccessByRole: Record<string, string[]> = {
+            'Super Admin': ['all'],
+            'Admin': ['overview', 'content', 'products', 'orders', 'customers', 'messages', 'analytics', 'inventory', 'offers', 'employees', 'users', 'trash', 'settings'],
+            'Manager': ['overview', 'content', 'products', 'orders', 'customers', 'messages', 'analytics', 'inventory', 'offers', 'trash'],
+            'Staff': ['products', 'orders', 'customers', 'inventory', 'messages', 'trash'],
+        };
+        const resolvedRole = role || 'Staff';
+        const resolvedAccess = access || defaultAccessByRole[resolvedRole] || ['overview'];
+
         const [newUser] = await db
             .insert(adminUsers)
             .values({
                 email: email.toLowerCase(),
                 passwordHash,
                 name,
-                role: role || 'Staff',
-                access: access || ['overview'],
+                role: resolvedRole,
+                access: resolvedAccess,
                 avatar,
                 isActive: true,
             })
