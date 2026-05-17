@@ -2290,13 +2290,29 @@ function emptyAllTrash() {
 }
 
 // Confirm Empty Trash
-function confirmEmptyTrash() {
+async function confirmEmptyTrash() {
     const count = orderTrash.length;
-    orderTrash = [];
     closeModal('confirmEmptyTrashModal');
-    renderTrashTable();
-    updateTrashCount();
-    showAlert('success', `Trash emptied!\n\n${count} order${count !== 1 ? 's' : ''} permanently deleted.`);
+
+    const failed = [];
+    for (const order of [...orderTrash]) {
+        const numericId = typeof order.id === 'string' ? parseInt(order.id.replace('ORD-', ''), 10) : order.id;
+        const dbId = order.orderId || numericId;
+        try {
+            await DashboardAPI.deleteOrder(dbId);
+        } catch (e) {
+            failed.push(order.id);
+        }
+    }
+
+    if (failed.length > 0) {
+        showAlert('error', `Could not delete ${failed.length} order(s): ${failed.join(', ')}. Please try again.`);
+    } else {
+        orderTrash = [];
+        renderTrashTable();
+        updateTrashCount();
+        showAlert('success', `Trash emptied! ${count} order${count !== 1 ? 's' : ''} permanently deleted.`);
+    }
 }
 
 // Calculate days since deleted
@@ -4575,13 +4591,22 @@ function restoreOrderFromHeader(orderId) {
 }
 
 // Permanently delete order from header trash modal
-function permanentlyDeleteFromHeader(orderId) {
+async function permanentlyDeleteFromHeader(orderId) {
     if (confirm('Are you sure you want to permanently delete this order? This action cannot be undone.')) {
         const orderIndex = orderTrash.findIndex(o => o.id === orderId);
         if (orderIndex !== -1) {
+            const order = orderTrash[orderIndex];
+            const numericId = typeof order.id === 'string' ? parseInt(order.id.replace('ORD-', ''), 10) : order.id;
+            const dbId = order.orderId || numericId;
+            try {
+                await DashboardAPI.deleteOrder(dbId);
+            } catch (e) {
+                showAlert('error', 'Failed to delete order. Please try again.');
+                return;
+            }
             orderTrash.splice(orderIndex, 1);
             updateHeaderTrashBadge();
-            showTrashModal(); // Refresh the modal
+            showTrashModal();
             showAlert('success', `Order ${orderId} permanently deleted.`);
         }
     }
@@ -4648,18 +4673,47 @@ async function moveMessageToTrash(msgId) {
 }
 
 // Empty all trash from header modal (orders + messages)
-function emptyAllTrashFromHeader() {
+async function emptyAllTrashFromHeader() {
     const totalItems = orderTrash.length + messageTrash.length;
     if (totalItems === 0) {
         showAlert('info', 'Trash is already empty.');
         return;
     }
 
-    if (confirm(`Are you sure you want to permanently delete all ${totalItems} items? This action cannot be undone.`)) {
-        orderTrash = [];
-        messageTrash = [];
-        updateHeaderTrashBadge();
-        closeModal('headerTrashModal');
+    if (!confirm(`Are you sure you want to permanently delete all ${totalItems} items? This action cannot be undone.`)) return;
+
+    closeModal('headerTrashModal');
+
+    // Delete orders from DB
+    const failedOrders = [];
+    for (const order of [...orderTrash]) {
+        const numericId = typeof order.id === 'string' ? parseInt(order.id.replace('ORD-', ''), 10) : order.id;
+        const dbId = order.orderId || numericId;
+        try {
+            await DashboardAPI.deleteOrder(dbId);
+        } catch (e) {
+            failedOrders.push(order.id);
+        }
+    }
+
+    // Delete messages from DB
+    const failedMsgs = [];
+    for (const msg of [...messageTrash]) {
+        try {
+            await DashboardAPI.deleteMessage(msg.id);
+        } catch (e) {
+            failedMsgs.push(msg.id);
+        }
+    }
+
+    if (failedOrders.length === 0) orderTrash = [];
+    if (failedMsgs.length === 0) messageTrash = [];
+
+    updateHeaderTrashBadge();
+
+    if (failedOrders.length > 0 || failedMsgs.length > 0) {
+        showAlert('error', `Some items could not be deleted. Please try again.`);
+    } else {
         showAlert('success', 'Trash emptied successfully!');
     }
 }
