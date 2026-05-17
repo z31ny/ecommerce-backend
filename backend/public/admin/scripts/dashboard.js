@@ -2043,6 +2043,30 @@ function restoreStock(product, quantity, orderId) {
 }
 
 // Confirm Move to Trash
+// Delete order permanently directly from the orders list
+async function deleteOrderDirectly(orderId) {
+    const order = orders.find(o => o.id === orderId);
+    if (!order) return;
+
+    if (!confirm(`Delete order #${orderId} from ${order.customer?.name || 'Guest'}?\n\nThis cannot be undone.`)) return;
+
+    const numericId = typeof orderId === 'string' ? parseInt(orderId.replace('ORD-', ''), 10) : orderId;
+    const dbId = order.orderId || numericId;
+
+    try {
+        await DashboardAPI.deleteOrder(dbId);
+        // Remove from local array and re-render
+        const idx = orders.findIndex(o => o.id === orderId);
+        if (idx !== -1) orders.splice(idx, 1);
+        closeModal('orderReceiptModal');
+        renderFilteredOrders();
+        updateTrashCount();
+        showAlert('success', `Order #${orderId} permanently deleted.`);
+    } catch (err) {
+        showAlert('error', 'Failed to delete order: ' + (err.message || 'Please try again.'));
+    }
+}
+
 function confirmMoveToTrash(orderId) {
     const order = orders.find(o => o.id === orderId);
     if (!order) return;
@@ -5037,7 +5061,7 @@ function renderFilteredOrders() {
                             <i class="fas fa-check"></i>
                         </button>
                         ` : ''}
-                        <button class="action-btn delete" onclick="confirmMoveToTrash('${order.id}')" title="Move to Trash">
+                        <button class="action-btn delete" onclick="deleteOrderDirectly('${order.id}')" title="Delete Order">
                             <i class="fas fa-trash"></i>
                         </button>
                     </td>
