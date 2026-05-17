@@ -352,55 +352,45 @@
     <script>
         // Orders page - API connected handlers
 
-        // Load orders from API
+        // Load orders from API — cancelled orders go to trash, not main list
         async function loadOrdersFromAPI() {
             try {
                 const apiOrders = await DashboardAPI.getOrders();
-                if (apiOrders && apiOrders.length > 0) {
-                    orders.length = 0;
-                    apiOrders.forEach(o => {
-                        orders.push({
-                            id: `ORD-${o.id}`,
-                            orderId: o.id,
-                            customer: o.customer || { name: 'Guest', email: '', phone: '' },
-                            date: o.date || new Date(o.createdAt).toISOString().split('T')[0],
-                            items: o.items?.length || 1,
-                            product: o.items?.[0]?.productName || 'Order Items',
-                            quantity: o.items?.reduce((sum, i) => sum + i.quantity, 0) || 1,
-                            amount: parseFloat(o.totalAmount) || 0,
-                            status: o.status || 'pending',
-                            paymentMethod: o.paymentMethod || 'COD',
-                            depositStatus: o.depositStatus || 'pending',
-                            depositAmount: parseFloat(o.depositAmount) || 0
-                        });
-                    });
-                }
-                if (typeof renderOrderTable === 'function') renderOrderTable();
+                orders.length = 0;
+                orderTrash.length = 0;
+                (apiOrders || []).forEach(o => {
+                    const normalized = {
+                        id: `ORD-${o.id}`,
+                        orderId: o.id,
+                        customer: o.customer || { name: 'Guest', email: '', phone: '' },
+                        date: o.date || new Date(o.createdAt).toISOString().split('T')[0],
+                        items: o.items?.length || 1,
+                        lineItems: o.items || [],
+                        product: o.items?.[0]?.productName || 'Order Items',
+                        quantity: o.items?.reduce((sum, i) => sum + i.quantity, 0) || 1,
+                        amount: parseFloat(o.totalAmount) || 0,
+                        status: o.status || 'pending',
+                        paymentMethod: o.paymentMethod || 'COD',
+                        paymentStatus: o.paymentStatus || 'unpaid',
+                        depositStatus: o.depositStatus || 'pending',
+                        depositAmount: parseFloat(o.depositAmount) || 0
+                    };
+                    if (normalized.status === 'cancelled') {
+                        // Cancelled = trashed — keep in trash across reloads
+                        normalized.deletedAt = normalized.date || new Date().toISOString();
+                        orderTrash.push(normalized);
+                    } else {
+                        orders.push(normalized);
+                    }
+                });
+                if (typeof renderFilteredOrders === 'function') renderFilteredOrders();
+                if (typeof renderTrashTable === 'function') renderTrashTable();
+                if (typeof updateTrashCount === 'function') updateTrashCount();
+                if (typeof updateOrderStatusSummaryUI === 'function') updateOrderStatusSummaryUI();
             } catch (err) {
-                console.log('Using mock orders data');
+                console.error('Failed to load orders:', err);
             }
         }
-
-        // Override deleteOrder to use API
-        const originalDeleteOrder = window.deleteOrder;
-        window.deleteOrder = async function (orderId) {
-            const numericId = typeof orderId === 'string' ?
-                parseInt(orderId.replace('ORD-', '')) : orderId;
-            const order = orders.find(o => o.id === orderId || o.orderId === numericId);
-
-            if (confirm('Are you sure you want to delete this order?')) {
-                try {
-                    await DashboardAPI.deleteOrder(order?.orderId || numericId);
-                    await loadOrdersFromAPI();
-                    showAlert('success', 'Order deleted');
-                } catch (err) {
-                    const idx = orders.findIndex(o => o.id === orderId);
-                    if (idx !== -1) orders.splice(idx, 1);
-                    if (typeof renderOrderTable === 'function') renderOrderTable();
-                    showAlert('warning', 'Deleted locally');
-                }
-            }
-        };
 
         // Load from API on page load
         document.addEventListener('DOMContentLoaded', loadOrdersFromAPI);
