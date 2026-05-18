@@ -340,6 +340,7 @@
       return `
         <article class="offer-card fade-up is-in" data-sku="${product.sku}" data-price="${price}" data-cat="${product.category?.toLowerCase() || ''}">
           ${swipeMediaHtml(images, product.name)}
+          <button type="button" class="product-share-btn" onclick="shareProduct('${product.sku}','${product.name.replace(/'/g,"\\'")}')" title="Share this product"><i class="fas fa-share-alt"></i></button>
           <h4 class="offer-title">${product.name}</h4>
           <div class="offer-prices">
             <span class="offer-new">${Math.round(price)} EGP</span>
@@ -645,6 +646,37 @@
         card.style.boxShadow = '0 0 0 4px #f472b6, 0 8px 32px rgba(0,0,0,0.18)';
         setTimeout(function () { card.style.boxShadow = ''; }, 2500);
       }, 400);
+    }
+
+    function shareProduct(sku, name) {
+      var url = window.location.origin + window.location.pathname + '?sku=' + encodeURIComponent(sku);
+      if (navigator.share) {
+        navigator.share({ title: name, url: url }).catch(function(){});
+      } else {
+        navigator.clipboard.writeText(url).then(function () {
+          showShareToast('Link copied! Share it with anyone 🔗');
+        }).catch(function () {
+          prompt('Copy this link:', url);
+        });
+      }
+    }
+
+    function showShareToast(msg) {
+      var t = document.getElementById('__shareToast');
+      if (!t) {
+        t = document.createElement('div');
+        t.id = '__shareToast';
+        t.style.cssText = 'position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%) translateY(20px);background:#1e1e2e;color:#fff;padding:0.65rem 1.4rem;border-radius:2rem;font-size:0.9rem;font-weight:600;box-shadow:0 4px 20px rgba(0,0,0,0.25);z-index:9999;opacity:0;transition:all 0.3s;pointer-events:none;white-space:nowrap;';
+        document.body.appendChild(t);
+      }
+      t.textContent = msg;
+      t.style.opacity = '1';
+      t.style.transform = 'translateX(-50%) translateY(0)';
+      clearTimeout(t._timer);
+      t._timer = setTimeout(function () {
+        t.style.opacity = '0';
+        t.style.transform = 'translateX(-50%) translateY(20px)';
+      }, 2500);
     }
 
     // Initialize
