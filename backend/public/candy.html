@@ -340,7 +340,7 @@
       return `
         <article class="offer-card fade-up is-in" data-sku="${product.sku}" data-price="${price}" data-cat="${product.category?.toLowerCase() || ''}">
           ${swipeMediaHtml(images, product.name)}
-          <button type="button" class="product-share-btn" onclick="shareProduct('${product.sku}','${product.name.replace(/'/g,"\\'")}')" title="Share this product"><i class="fas fa-share-alt"></i></button>
+          <button type="button" class="product-share-btn" onclick="shareProduct('${product.sku}','${product.name.replace(/'/g,"\\'")}')" title="Share this product"><svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg></button>
           <h4 class="offer-title">${product.name}</h4>
           <div class="offer-prices">
             <span class="offer-new">${Math.round(price)} EGP</span>
