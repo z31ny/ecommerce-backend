@@ -1769,6 +1769,15 @@ body {
   color: #7a2f43
 }
 
+.offer-description {
+  text-align: center;
+  margin: 0 12px 8px;
+  padding: 0 4px;
+  font-size: 0.875rem;
+  line-height: 1.45;
+  color: #6b4a55;
+}
+
 .offer-prices {
   display: flex;
   gap: 10px;

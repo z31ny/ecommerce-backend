@@ -165,7 +165,17 @@
             font-size: 1.1rem;
             color: var(--text-primary);
             margin-bottom: 0.75rem;
-            font-weight: 600;
+        }
+
+        .offer-card-desc {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            line-height: 1.45;
+            margin: -0.35rem 0 0.75rem;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
         }
 
         .price-row {
@@ -632,6 +642,11 @@
                         <small class="form-hint" style="display:block; margin-top:6px; color:#6b7280;">If set, the cart button can add that SKU. Leave empty for a standalone offer.</small>
                     </div>
 
+                    <div class="form-group">
+                        <label class="form-label">Description</label>
+                        <textarea class="form-input" id="addOfferDescription" rows="3" placeholder="Short description shown on the offers page (e.g., ingredients, pack size, deal details)"></textarea>
+                    </div>
+
                     <div class="form-row">
                         <div class="form-group">
                             <label class="form-label">Original Price (EGP) <span class="required">*</span></label>
@@ -718,6 +733,11 @@
                     <div class="form-group">
                         <label class="form-label">Product SKU (optional)</label>
                         <input type="text" class="form-input" id="editOfferSku">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Description</label>
+                        <textarea class="form-input" id="editOfferDescription" rows="3" placeholder="Short description shown on the offers page"></textarea>
                     </div>
 
                     <div class="form-row">
@@ -939,6 +959,7 @@
                 specialOffers = data.map(o => ({
                     id: o.id,
                     name: o.name,
+                    description: o.description || '',
                     originalPrice: parseFloat(o.originalPrice),
                     salePrice: parseFloat(o.salePrice),
                     image: o.image || '',
@@ -1046,6 +1067,7 @@
                         </div>
                         <div class="offer-card-body">
                             <h3>${offer.name}</h3>
+                            ${offer.description ? `<p class="offer-card-desc">${offer.description.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</p>` : ''}
                             <div class="price-row">
                                 <span class="original-price">${offer.originalPrice} EGP</span>
                                 <span class="sale-price">${offer.salePrice} EGP</span>
@@ -1244,6 +1266,7 @@
                         image: addOfferImagesList[0] || '',
                         images: addOfferImagesList.slice(0, MAX_OFFER_IMAGES),
                         link: document.getElementById('addOfferLink').value || '',
+                        description: (document.getElementById('addOfferDescription').value || '').trim() || null,
                         isActive: status === 'active'
                     })
                 });
@@ -1268,6 +1291,7 @@
             document.getElementById('editOfferOriginalPrice').value = offer.originalPrice;
             document.getElementById('editOfferSalePrice').value = offer.salePrice;
             document.getElementById('editOfferLink').value = offer.link || '';
+            document.getElementById('editOfferDescription').value = offer.description || '';
             document.getElementById('editOfferStatus').value = offer.status;
 
             const discount = Math.round((1 - offer.salePrice / offer.originalPrice) * 100);
@@ -1309,6 +1333,7 @@
                         image: editOfferImagesList[0] || '',
                         images: editOfferImagesList.slice(0, MAX_OFFER_IMAGES),
                         link: document.getElementById('editOfferLink').value || '',
+                        description: (document.getElementById('editOfferDescription').value || '').trim() || null,
                         isActive: status === 'active'
                     })
                 });

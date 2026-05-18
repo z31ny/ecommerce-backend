@@ -88,6 +88,13 @@
             }
 
             grid.innerHTML = '';
+            function escHtml(str) {
+              return String(str == null ? '' : str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;');
+            }
             function renderMediaHtml(images, fallbackSrc, alt) {
               var list = (images || []).filter(Boolean);
               if (!list.length && fallbackSrc) list = [fallbackSrc];
@@ -122,7 +129,8 @@
               card.innerHTML =
                 (offer.discount ? '<div class="offer-badge">-' + offer.discount + '%</div>' : '') +
                 renderMediaHtml((offer.images || []), (offer.image || '/assets/icons/profile.svg'), offer.name) +
-                '<h4 class="offer-title">' + offer.name + '</h4>' +
+                '<h4 class="offer-title">' + escHtml(offer.name) + '</h4>' +
+                (offer.description ? '<p class="offer-description">' + escHtml(offer.description) + '</p>' : '') +
                 '<div class="offer-prices">' +
                 (offer.originalPrice ? '<span class="offer-old">' + Math.round(parseFloat(offer.originalPrice)) + ' EGP</span>' : '') +
                 '<span class="offer-new">' + Math.round(parseFloat(offer.salePrice)) + ' EGP</span>' +
