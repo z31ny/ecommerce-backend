@@ -47,6 +47,7 @@ export async function GET(request: NextRequest) {
                         quantity: orderItems.quantity,
                         priceAtPurchase: orderItems.priceAtPurchase,
                         productName: products.name,
+                        selectedSize: orderItems.selectedSize,
                     })
                     .from(orderItems)
                     .leftJoin(products, eq(orderItems.productId, products.id))

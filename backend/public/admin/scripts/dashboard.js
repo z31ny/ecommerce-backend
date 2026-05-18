@@ -141,6 +141,10 @@ function parseNumber(value, fallback = 0) {
     return Number.isFinite(parsed) ? parsed : fallback;
 }
 
+function escapeHtml(str) {
+    return String(str ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
 function formatRelativeTime(dateValue) {
     if (!dateValue) return '';
     const date = new Date(dateValue);
@@ -203,15 +207,22 @@ function renderOrderItemsHTML(order) {
         `;
     }
 
-    return items.map(item => `
+    return items.map(item => {
+        const size = item.selectedSize || item.size || '';
+        const sizeTag = size
+            ? `<span class="receipt-item-size"><i class="fas fa-weight-hanging" style="font-size:0.7rem;opacity:0.7;"></i> ${escapeHtml(size)}</span>`
+            : '';
+        return `
         <div class="receipt-item">
             <div class="receipt-item-info">
-                <span class="receipt-item-name">${item.productName || 'Item'}</span>
+                <span class="receipt-item-name">${escapeHtml(item.productName || 'Item')}</span>
+                ${sizeTag}
                 <span class="receipt-item-qty">× ${item.quantity || 0}</span>
             </div>
             <span class="receipt-item-price">${formatCurrency(parseNumber(item.priceAtPurchase, 0))}</span>
         </div>
-    `).join('');
+    `;
+    }).join('');
 }
 
 function normalizeCustomer(customer) {

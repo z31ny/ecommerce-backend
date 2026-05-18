@@ -7,6 +7,7 @@ interface CartItem {
     productId: number;
     quantity: number;
     unitPrice?: number;
+    selectedSize?: string;
 }
 
 interface GuestInfo {
@@ -41,7 +42,7 @@ export async function POST(request: NextRequest) {
         }
 
         const result = await db.transaction(async (tx) => {
-            let checkoutItems: { productId: number; quantity: number; price: string; stock: number; productName: string }[];
+            let checkoutItems: { productId: number; quantity: number; price: string; stock: number; productName: string; selectedSize?: string }[];
 
             if (useDirectItems) {
                 // Guest checkout: validate items directly
@@ -71,6 +72,7 @@ export async function POST(request: NextRequest) {
                         price: effectivePrice.toString(),
                         stock: product.stock,
                         productName: product.name,
+                        selectedSize: item.selectedSize || null,
                     };
                 });
             } else {
@@ -172,7 +174,8 @@ export async function POST(request: NextRequest) {
                 orderId: newOrder.id,
                 productId: item.productId,
                 quantity: item.quantity,
-                priceAtPurchase: item.price
+                priceAtPurchase: item.price,
+                selectedSize: item.selectedSize || null,
             }));
 
             await tx.insert(orderItems).values(itemsToInsert);

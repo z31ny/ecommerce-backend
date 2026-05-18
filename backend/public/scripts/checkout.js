@@ -437,10 +437,12 @@
           hasAllIds = false;
           return null;
         }
+        var size = cartKeySize(sku);
         return {
           productId: product.id,
           quantity: cart[sku],
-          unitPrice: getUnitPrice(sku)
+          unitPrice: getUnitPrice(sku),
+          selectedSize: size || null
         };
       }).filter(Boolean);
 

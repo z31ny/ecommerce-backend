@@ -128,6 +128,7 @@ export const orderItems = pgTable('order_items', {
     productId: integer('product_id').references(() => products.id).notNull(),
     quantity: integer('quantity').notNull().default(1),
     priceAtPurchase: decimal('price_at_purchase', { precision: 10, scale: 2 }).notNull(),
+    selectedSize: text('selected_size'),
 });
 
 // 5. Cart Items Table
