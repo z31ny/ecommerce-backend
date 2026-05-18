@@ -319,15 +319,21 @@
             var s = document.createElement('style');
             s.id = '__mood-size-picker-styles';
             s.textContent = [
-                '.mood-size-picker { width:100%; margin-bottom:0.75rem; }',
-                '.mood-size-picker-label { font-size:0.72rem; font-weight:700; letter-spacing:0.06em; text-transform:uppercase; margin-bottom:0.45rem; opacity:0.85; }',
-                '.mood-size-pills { display:flex; flex-wrap:wrap; gap:0.4rem; justify-content:center; }',
-                '.mood-size-pill { display:flex; flex-direction:column; align-items:center; justify-content:center; min-width:56px; padding:0.35rem 0.6rem; border-radius:10px; border:2px solid rgba(255,255,255,0.45); background:rgba(255,255,255,0.15); color:inherit; cursor:pointer; transition:all 0.18s; font-family:inherit; gap:0.1rem; }',
-                '.mood-size-pill:hover { background:rgba(255,255,255,0.3); border-color:rgba(255,255,255,0.8); transform:translateY(-1px); }',
-                '.mood-size-pill.active { background:rgba(255,255,255,0.9); color:#1a1a2e; border-color:#fff; box-shadow:0 2px 10px rgba(0,0,0,0.18); }',
-                '.mood-size-pill-name { font-size:0.8rem; font-weight:700; line-height:1.2; }',
-                '.mood-size-pill-price { font-size:0.68rem; font-weight:600; opacity:0.85; line-height:1.2; white-space:nowrap; }',
-                '.mood-size-pill.active .mood-size-pill-price { opacity:1; color:#e11d48; }',
+                '.mood-size-picker { width:100%; margin-bottom:0.6rem; }',
+                '.mood-size-picker-card { background:rgba(255,255,255,0.92); border-radius:14px; overflow:hidden; box-shadow:0 2px 12px rgba(0,0,0,0.13); }',
+                '.mood-size-picker-header { padding:0.55rem 0.9rem 0.45rem; border-bottom:1px solid rgba(0,0,0,0.07); }',
+                '.mood-size-picker-label { font-size:0.78rem; font-weight:800; color:#1e1e2e; letter-spacing:0.01em; }',
+                '.mood-size-pills { display:flex; flex-direction:column; }',
+                '.mood-size-pill { display:flex; align-items:center; justify-content:space-between; width:100%; padding:0.5rem 0.9rem; border:none; background:transparent; cursor:pointer; transition:background 0.15s; font-family:inherit; border-bottom:1px solid rgba(0,0,0,0.05); }',
+                '.mood-size-pill:last-child { border-bottom:none; }',
+                '.mood-size-pill:hover { background:rgba(99,102,241,0.07); }',
+                '.mood-size-pill.active { background:rgba(99,102,241,0.12); }',
+                '.mood-size-pill-name { font-size:0.82rem; font-weight:700; color:#4f46e5; }',
+                '.mood-size-pill-price { font-size:0.82rem; font-weight:700; color:#1e1e2e; }',
+                '.mood-size-pill.active .mood-size-pill-name { color:#4f46e5; }',
+                '.mood-size-pill.active .mood-size-pill-price { color:#e11d48; }',
+                '.mood-size-pill-check { width:16px; height:16px; border-radius:50%; border:2px solid #d1d5db; margin-left:0.5rem; flex-shrink:0; transition:all 0.15s; }',
+                '.mood-size-pill.active .mood-size-pill-check { background:#4f46e5; border-color:#4f46e5; }',
             ].join('');
             document.head.appendChild(s);
         })();
@@ -468,7 +474,6 @@
                                     }
                                     var pillsHtml = m.sizes.map(function (sz) {
                                         var priceVal = priceLookup[sz];
-                                        // try case-insensitive fallback
                                         if (priceVal == null) {
                                             var szLow = sz.toLowerCase();
                                             Object.keys(priceLookup).forEach(function (k) { if (k.toLowerCase() === szLow) priceVal = priceLookup[k]; });
@@ -479,16 +484,18 @@
                                         return '<button type="button" class="mood-size-pill" data-size="' + escAttr(sz) + '">' +
                                             '<span class="mood-size-pill-name">' + escHtml(sz) + '</span>' +
                                             priceHtml +
+                                            '<span class="mood-size-pill-check"></span>' +
                                             '</button>';
                                     }).join('');
-                                    // Hidden select keeps add-to-cart compatibility
                                     var hiddenSelect = '<select class="product-size-select mood-size-select" style="display:none">' +
                                         '<option value="">Choose size</option>' +
                                         m.sizes.map(function (sz) { return '<option value="' + escHtml(sz) + '">' + escHtml(sz) + '</option>'; }).join('') +
                                         '</select>';
                                     return '<div class="mood-size-picker">' +
-                                        '<div class="mood-size-picker-label" style="' + labelStyle + '">Choose Size</div>' +
+                                        '<div class="mood-size-picker-card">' +
+                                        '<div class="mood-size-picker-header"><span class="mood-size-picker-label">Choose Size</span></div>' +
                                         '<div class="mood-size-pills">' + pillsHtml + '</div>' +
+                                        '</div>' +
                                         hiddenSelect +
                                         '</div>';
                                 }
