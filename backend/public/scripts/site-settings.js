@@ -462,53 +462,7 @@
                                 var skuRaw = moodResolveCartSku(m);
                                 var dataSkuAttr = skuRaw ? ' data-sku="' + escAttr(skuRaw) + '"' : '';
                                 var dataProductAttr = linkedIdRaw ? ' data-product-id="' + escAttr(linkedIdRaw) + '"' : '';
-                                // Use sizes and prices directly from the linked product
-                                var productSizes = [];
-                                var priceLookup = {};
-                                if (skuRaw && window.__productMetaBySku) {
-                                    var _meta = window.__productMetaBySku[skuRaw.toLowerCase()];
-                                    if (_meta && _meta.sizePrices) priceLookup = _meta.sizePrices;
-                                }
-                                if (skuRaw && window.__productSizesBySku) {
-                                    var _sizes = window.__productSizesBySku[skuRaw.toLowerCase()];
-                                    if (Array.isArray(_sizes) && _sizes.length) productSizes = _sizes;
-                                    else if (_sizes && typeof _sizes === 'object') productSizes = Object.keys(_sizes);
-                                }
-                                // Fall back to priceLookup keys if sizes array is empty
-                                if (!productSizes.length && Object.keys(priceLookup).length) {
-                                    productSizes = Object.keys(priceLookup);
-                                }
-                                var hasSizes = productSizes.length > 0;
-                                function sizesBlock(labelStyle) {
-                                    if (!hasSizes) return '';
-                                    var pillsHtml = productSizes.map(function (sz) {
-                                        var priceVal = priceLookup[sz];
-                                        if (priceVal == null) {
-                                            var szLow = sz.toLowerCase();
-                                            Object.keys(priceLookup).forEach(function (k) { if (k.toLowerCase() === szLow) priceVal = priceLookup[k]; });
-                                        }
-                                        var priceHtml = (priceVal != null && !isNaN(parseFloat(priceVal)))
-                                            ? '<span class="mood-size-pill-price">EGP ' + parseFloat(priceVal).toLocaleString() + '</span>'
-                                            : '';
-                                        return '<button type="button" class="mood-size-pill" data-size="' + escAttr(sz) + '">' +
-                                            '<span class="mood-size-pill-name">' + escHtml(sz) + '</span>' +
-                                            priceHtml +
-                                            '<span class="mood-size-pill-check"></span>' +
-                                            '</button>';
-                                    }).join('');
-                                    var hiddenSelect = '<select class="product-size-select mood-size-select" style="display:none">' +
-                                        '<option value="">Choose size</option>' +
-                                        productSizes.map(function (sz) { return '<option value="' + escHtml(sz) + '">' + escHtml(sz) + '</option>'; }).join('') +
-                                        '</select>';
-                                    return '<div class="mood-size-picker">' +
-                                        '<div class="mood-size-picker-card">' +
-                                        '<div class="mood-size-picker-header"><span class="mood-size-picker-label">Choose Size</span></div>' +
-                                        '<div class="mood-size-pills">' + pillsHtml + '</div>' +
-                                        '</div>' +
-                                        hiddenSelect +
-                                        '</div>';
-                                }
-                                var sizesHtmlBack = hasSizes ? sizesBlock('color:#fff;text-shadow:0 1px 2px rgba(0,0,0,0.5);') : '';
+                                var sizesHtmlBack = '';
                                 var cartIconBtn = '<button type="button" class="mood-cart-icon mood-cart-icon--front add-to-cart" aria-label="Add to cart">' +
                                     '<img src="./assets/icons/cart.svg" alt="">' +
                                     '</button>';
