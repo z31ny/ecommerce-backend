@@ -312,6 +312,51 @@
             }
         }
 
+        /** Full-screen image viewer for mood / snack card photos */
+        function ensureImageLightbox() {
+            var id = 'fb-image-lightbox';
+            var existing = document.getElementById(id);
+            if (existing) return existing;
+            var lb = document.createElement('div');
+            lb.id = id;
+            lb.className = 'fb-image-lightbox';
+            lb.hidden = true;
+            lb.innerHTML =
+                '<div class="fb-image-lightbox-backdrop" aria-hidden="true"></div>' +
+                '<div class="fb-image-lightbox-panel" role="dialog" aria-modal="true" aria-label="Full size image">' +
+                '  <button type="button" class="fb-image-lightbox-close" aria-label="Close">&times;</button>' +
+                '  <img class="fb-image-lightbox-img" src="" alt="">' +
+                '</div>';
+            document.body.appendChild(lb);
+            lb.querySelector('.fb-image-lightbox-backdrop').addEventListener('click', closeImageLightbox);
+            lb.querySelector('.fb-image-lightbox-close').addEventListener('click', closeImageLightbox);
+            if (!window.__fbLightboxEscBound) {
+                window.__fbLightboxEscBound = true;
+                document.addEventListener('keydown', function (e) {
+                    if (e.key === 'Escape') closeImageLightbox();
+                });
+            }
+            return lb;
+        }
+        function openImageLightbox(src, alt) {
+            if (!src) return;
+            var lb = ensureImageLightbox();
+            var img = lb.querySelector('.fb-image-lightbox-img');
+            img.src = src;
+            img.alt = alt || 'Full size image';
+            lb.hidden = false;
+            document.body.classList.add('fb-lightbox-open');
+        }
+        function closeImageLightbox() {
+            var lb = document.getElementById('fb-image-lightbox');
+            if (!lb) return;
+            lb.hidden = true;
+            var img = lb.querySelector('.fb-image-lightbox-img');
+            if (img) img.src = '';
+            document.body.classList.remove('fb-lightbox-open');
+        }
+        window.__fbOpenImageLightbox = openImageLightbox;
+
         /** Pick Your Mood: flip card on face click; front CTA flips to back; links / add-to-cart / size do not flip. */
         // Inject mood size picker styles once
         (function () {
@@ -361,6 +406,9 @@
                 if (!target || !target.closest) return true;
                 if (target.closest('.add-to-cart')) return true;
                 if (target.closest('.mood-size-pill')) return true;
+                if (target.closest('.mood-back-photo')) return true;
+                if (target.closest('.mood-image-expand')) return true;
+                if (target.closest('.mood-flip-back-btn')) return true;
                 if (target.closest('a')) return true;
                 if (target.closest('select')) return true;
                 if (target.closest('option')) return true;
@@ -368,6 +416,25 @@
                 if (target.closest('input, textarea')) return true;
                 return false;
             }
+
+            // Tap mood photo → full-screen image
+            moodsGrid.addEventListener('click', function (e) {
+                var photo = e.target.closest('.mood-back-photo');
+                if (!photo || !moodsGrid.contains(photo)) return;
+                e.preventDefault();
+                e.stopPropagation();
+                openImageLightbox(photo.currentSrc || photo.src, photo.alt);
+            }, true);
+
+            moodsGrid.addEventListener('click', function (e) {
+                var expandBtn = e.target.closest('.mood-image-expand');
+                if (!expandBtn || !moodsGrid.contains(expandBtn)) return;
+                e.preventDefault();
+                e.stopPropagation();
+                var back = expandBtn.closest('.mood-card-back');
+                var photo = back && back.querySelector('.mood-back-photo');
+                if (photo) openImageLightbox(photo.currentSrc || photo.src, photo.alt);
+            }, true);
 
             moodsGrid.addEventListener('click', function (e) {
                 var card = e.target.closest('.mood-card');
@@ -378,7 +445,14 @@
                     card.classList.add('is-flipped');
                     return;
                 }
+                if (e.target.closest('.mood-flip-back-btn')) {
+                    e.preventDefault();
+                    card.classList.remove('is-flipped');
+                    return;
+                }
                 if (e.target.closest('.mood-card-back')) {
+                    var backEl = e.target.closest('.mood-card-back');
+                    if (backEl && backEl.classList.contains('mood-card-back--has-image')) return;
                     card.classList.toggle('is-flipped');
                 }
             });
@@ -393,11 +467,30 @@
                     card.classList.add('is-flipped');
                     return;
                 }
+                if (e.target.closest('.mood-flip-back-btn')) {
+                    e.preventDefault();
+                    card.classList.remove('is-flipped');
+                    return;
+                }
                 if (e.target.closest('.mood-card-back')) {
+                    var backEl = e.target.closest('.mood-card-back');
+                    if (backEl && backEl.classList.contains('mood-card-back--has-image')) return;
                     e.preventDefault();
                     card.classList.toggle('is-flipped');
                 }
             });
+        }
+
+        function bindSnackImageLightbox(track) {
+            if (!track || track.getAttribute('data-snack-lightbox-bound') === '1') return;
+            track.setAttribute('data-snack-lightbox-bound', '1');
+            track.addEventListener('click', function (e) {
+                var img = e.target.closest('.snack-card img');
+                if (!img || !track.contains(img) || !img.src) return;
+                e.preventDefault();
+                e.stopPropagation();
+                openImageLightbox(img.currentSrc || img.src, img.alt);
+            }, true);
         }
 
         try {
@@ -472,6 +565,16 @@
                                 var frontCartRow = '<div class="mood-front-cart-row">' +
                                     cartIconBtn +
                                     '</div>';
+                                var hasBackImage = !!(m.backImage && String(m.backImage).trim());
+                                var backPhotoHtml = hasBackImage
+                                    ? '<img class="mood-back-photo" src="' + escAttr(m.backImage) + '" alt="' + escHtml(m.title || 'Mood') + '" loading="lazy">' +
+                                      '<button type="button" class="mood-image-expand" aria-label="View full image" title="View full image">' +
+                                      '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>' +
+                                      '</button>'
+                                    : '';
+                                var flipBackBtn = hasBackImage
+                                    ? '<button type="button" class="mood-flip-back-btn" aria-label="Show front" title="Back to card">&lsaquo;</button>'
+                                    : '';
                                 return '<div class="mood-card fade-up" tabindex="0"' + dataSkuAttr + dataProductAttr + '>' +
                                     '<div class="mood-card-inner">' +
                                     '  <div class="mood-card-front" style="background:' + colors.bg + ';color:' + colors.text + ';">' +
@@ -480,7 +583,9 @@
                                     frontCartRow +
                                     (m.buttonText ? '    <button type="button" class="mood-btn mood-front-cta">' + escHtml(m.buttonText) + '</button>' : '') +
                                     '  </div>' +
-                                    '  <div class="mood-card-back" style="' + (m.backImage ? 'background-image:url(' + m.backImage + ');background-size:cover;background-position:center;' : 'background:' + colors.bg + ';') + '">' +
+                                    '  <div class="mood-card-back' + (hasBackImage ? ' mood-card-back--has-image' : '') + '" style="' + (hasBackImage ? '' : 'background:' + colors.bg + ';') + '">' +
+                                    backPhotoHtml +
+                                    flipBackBtn +
                                     addCartBtn +
                                     (m.backDescription ? '    <p class="mood-back-text">' + escHtml(m.backDescription) + '</p>' : '') +
                                     sizesHtmlBack +
@@ -617,6 +722,7 @@
                                 '</div>';
                         }).join('');
                         observeNewElements(insideTrack);
+                        bindSnackImageLightbox(insideTrack);
                     }
                 }
             }

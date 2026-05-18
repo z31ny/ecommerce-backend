@@ -2394,6 +2394,152 @@ body {
   justify-content: flex-end;
   padding: 0.75rem;
   gap: 0;
+  position: relative;
+}
+
+.mood-back-photo {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: inherit;
+  z-index: 0;
+  cursor: zoom-in;
+}
+
+.mood-card-back--has-image::before {
+  z-index: 1;
+}
+
+.mood-card-back--has-image > *:not(.mood-back-photo) {
+  z-index: 2;
+}
+
+.mood-flip-back-btn {
+  position: absolute;
+  top: 0.75rem;
+  left: 0.75rem;
+  z-index: 3;
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.92);
+  color: #1f2937;
+  font-size: 1.35rem;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.mood-flip-back-btn:hover {
+  background: #fff;
+}
+
+.mood-image-expand {
+  position: absolute;
+  bottom: 0.75rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 3;
+  width: 40px;
+  height: 40px;
+  border: none;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.92);
+  color: var(--accent, #e91e8c);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.25);
+}
+
+.mood-image-expand:hover {
+  background: #fff;
+  transform: translateX(-50%) scale(1.05);
+}
+
+/* Full-screen image lightbox (mood + snack cards) */
+.fb-image-lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.fb-image-lightbox[hidden] {
+  display: none !important;
+}
+
+body.fb-lightbox-open {
+  overflow: hidden;
+}
+
+.fb-image-lightbox-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.88);
+  cursor: pointer;
+}
+
+.fb-image-lightbox-panel {
+  position: relative;
+  z-index: 1;
+  max-width: min(96vw, 1100px);
+  max-height: 92vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.fb-image-lightbox-img {
+  display: block;
+  max-width: 100%;
+  max-height: 92vh;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  border-radius: 12px;
+  box-shadow: 0 12px 48px rgba(0, 0, 0, 0.45);
+}
+
+.fb-image-lightbox-close {
+  position: absolute;
+  top: -2.5rem;
+  right: 0;
+  width: 40px;
+  height: 40px;
+  border: none;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.95);
+  color: #111;
+  font-size: 1.75rem;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@media (max-width: 640px) {
+  .fb-image-lightbox-close {
+    top: auto;
+    bottom: -3rem;
+    right: 50%;
+    transform: translateX(50%);
+  }
+}
+
+.snack-card img {
+  cursor: zoom-in;
 }
 
 /* Dark gradient at bottom for readability when card has a photo */
