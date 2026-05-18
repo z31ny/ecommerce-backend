@@ -145,6 +145,59 @@ function escapeHtml(str) {
     return String(str ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 }
 
+function resolveOrderItemSizeClient(item) {
+    if (!item) return '';
+    const fromApi = String(item.displaySize || item.selectedSize || item.size || '').trim();
+    if (fromApi) return fromApi;
+
+    let attrs = item.productAttributes;
+    if (typeof attrs === 'string') {
+        try { attrs = JSON.parse(attrs); } catch (e) { attrs = null; }
+    }
+    if (attrs && typeof attrs === 'object') {
+        const paid = parseNumber(item.priceAtPurchase, -1);
+        const sizePrices = attrs.sizePrices;
+        if (sizePrices && typeof sizePrices === 'object') {
+            const entries = Object.entries(sizePrices);
+            if (entries.length === 1) return String(entries[0][0]);
+            const exact = entries.find(([, price]) => Math.abs(parseNumber(price, -1) - paid) < 0.51);
+            if (exact) return String(exact[0]);
+            const rounded = entries.find(([, price]) => Math.round(parseNumber(price, -1)) === Math.round(paid));
+            if (rounded) return String(rounded[0]);
+        }
+        if (Array.isArray(attrs.sizes) && attrs.sizes.length === 1) {
+            return String(attrs.sizes[0] || '').trim();
+        }
+    }
+
+    if (item.productId && Array.isArray(products) && products.length) {
+        const product = products.find(p => p.id === item.productId);
+        if (product) {
+            const attrs2 = product.attributes;
+            if (attrs2 && typeof attrs2 === 'object') {
+                const paid = parseNumber(item.priceAtPurchase, -1);
+                const sizePrices = attrs2.sizePrices;
+                if (sizePrices && typeof sizePrices === 'object') {
+                    const entries = Object.entries(sizePrices);
+                    if (entries.length === 1) return String(entries[0][0]);
+                    const match = entries.find(([, price]) => Math.abs(parseNumber(price, -1) - paid) < 0.51);
+                    if (match) return String(match[0]);
+                }
+                if (Array.isArray(attrs2.sizes) && attrs2.sizes.length === 1) {
+                    return String(attrs2.sizes[0] || '').trim();
+                }
+            }
+            const desc = product.description || '';
+            const m = desc.match(/(\d+)\s*(?:g|gm|grams?)\b/i);
+            if (m) return `${m[1]}g`;
+        }
+    }
+
+    const desc2 = item.productDescription || '';
+    const m2 = desc2.match(/(\d+)\s*(?:g|gm|grams?)\b/i);
+    return m2 ? `${m2[1]}g` : '';
+}
+
 function formatRelativeTime(dateValue) {
     if (!dateValue) return '';
     const date = new Date(dateValue);
@@ -208,35 +261,18 @@ function renderOrderItemsHTML(order) {
     }
 
     return items.map(item => {
-        // Resolve the size: use stored value first, then infer from price vs sizePrices
-        let size = item.selectedSize || item.size || '';
-        if (!size && item.productAttributes) {
-            const attrs = typeof item.productAttributes === 'string'
-                ? JSON.parse(item.productAttributes)
-                : item.productAttributes;
-            const sizePrices = attrs && attrs.sizePrices;
-            if (sizePrices && typeof sizePrices === 'object') {
-                const paid = parseNumber(item.priceAtPurchase, 0);
-                const entries = Object.entries(sizePrices);
-                if (entries.length === 1) {
-                    // Only one size option — use it directly
-                    size = entries[0][0];
-                } else {
-                    // Match by price
-                    const match = entries.find(([, price]) => Math.abs(parseNumber(price, -1) - paid) < 0.01);
-                    if (match) size = match[0];
-                }
-            }
-        }
-        const sizeTag = size
-            ? `<span class="receipt-item-size"><i class="fas fa-weight-hanging" style="font-size:0.7rem;opacity:0.7;"></i> ${escapeHtml(size)}</span>`
+        const size = resolveOrderItemSizeClient(item);
+        const gramsHtml = size
+            ? `<span class="receipt-item-grams">${escapeHtml(size)}</span>`
             : '';
         return `
         <div class="receipt-item">
             <div class="receipt-item-info">
-                <span class="receipt-item-name">${escapeHtml(item.productName || 'Item')}</span>
-                ${sizeTag}
-                <span class="receipt-item-qty">× ${item.quantity || 0}</span>
+                <div class="receipt-item-title-row">
+                    <span class="receipt-item-name">${escapeHtml(item.productName || 'Item')}</span>
+                    ${gramsHtml}
+                    <span class="receipt-item-qty">× ${item.quantity || 0}</span>
+                </div>
             </div>
             <span class="receipt-item-price">${formatCurrency(parseNumber(item.priceAtPurchase, 0))}</span>
         </div>

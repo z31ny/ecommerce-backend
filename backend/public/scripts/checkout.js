@@ -438,6 +438,8 @@
           return null;
         }
         var size = cartKeySize(sku);
+        var metaEntry = readCartMeta()[sku];
+        if (!size && metaEntry && metaEntry.size) size = String(metaEntry.size).trim();
         return {
           productId: product.id,
           quantity: cart[sku],

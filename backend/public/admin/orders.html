@@ -352,37 +352,32 @@
     <script>
         // Orders page - API connected handlers
 
-        // Load orders from API — cancelled orders go to trash, not main list
+        // Load orders from API — use shared normalizeOrder from dashboard.js
         async function loadOrdersFromAPI() {
             try {
-                const apiOrders = await DashboardAPI.getOrders();
-                orders.length = 0;
-                orderTrash.length = 0;
-                (apiOrders || []).forEach(o => {
-                    const normalized = {
-                        id: `ORD-${o.id}`,
-                        orderId: o.id,
-                        customer: o.customer || { name: 'Guest', email: '', phone: '' },
-                        date: o.date || new Date(o.createdAt).toISOString().split('T')[0],
-                        items: o.items?.length || 1,
-                        lineItems: o.items || [],
-                        product: o.items?.[0]?.productName || 'Order Items',
-                        quantity: o.items?.reduce((sum, i) => sum + i.quantity, 0) || 1,
-                        amount: parseFloat(o.totalAmount) || 0,
-                        status: o.status || 'pending',
-                        paymentMethod: o.paymentMethod || 'COD',
-                        paymentStatus: o.paymentStatus || 'unpaid',
-                        depositStatus: o.depositStatus || 'pending',
-                        depositAmount: parseFloat(o.depositAmount) || 0
-                    };
-                    if (normalized.status === 'cancelled') {
-                        // Cancelled = trashed — keep in trash across reloads
-                        normalized.deletedAt = normalized.date || new Date().toISOString();
-                        orderTrash.push(normalized);
-                    } else {
-                        orders.push(normalized);
-                    }
-                });
+                await Promise.all([
+                    typeof loadProductsFromAPI === 'function' ? loadProductsFromAPI(true) : Promise.resolve(),
+                    (async () => {
+                        const apiOrders = await DashboardAPI.getOrders();
+                        orders.length = 0;
+                        orderTrash.length = 0;
+                        (apiOrders || []).forEach(o => {
+                            const normalized = normalizeOrder({
+                                ...o,
+                                id: o.id,
+                                items: o.items || []
+                            });
+                            normalized.id = `ORD-${o.id}`;
+                            normalized.orderId = o.id;
+                            if (normalized.status === 'cancelled') {
+                                normalized.deletedAt = normalized.date || new Date().toISOString();
+                                orderTrash.push(normalized);
+                            } else {
+                                orders.push(normalized);
+                            }
+                        });
+                    })()
+                ]);
                 if (typeof renderFilteredOrders === 'function') renderFilteredOrders();
                 if (typeof renderTrashTable === 'function') renderTrashTable();
                 if (typeof updateTrashCount === 'function') updateTrashCount();

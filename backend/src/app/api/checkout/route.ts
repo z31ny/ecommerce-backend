@@ -42,7 +42,7 @@ export async function POST(request: NextRequest) {
         }
 
         const result = await db.transaction(async (tx) => {
-            let checkoutItems: { productId: number; quantity: number; price: string; stock: number; productName: string; selectedSize?: string }[];
+            let checkoutItems: { productId: number; quantity: number; price: string; stock: number; productName: string; selectedSize?: string | null }[];
 
             if (useDirectItems) {
                 // Guest checkout: validate items directly

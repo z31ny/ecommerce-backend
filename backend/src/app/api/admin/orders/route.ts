@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/db';
 import { orders, orderItems, products, users } from '@/db/schema';
 import { desc, eq } from 'drizzle-orm';
+import { resolveOrderItemSize } from '@/lib/order-item-size';
 
 // GET /api/admin/orders - List all orders with details
 export async function GET(request: NextRequest) {
@@ -41,7 +42,7 @@ export async function GET(request: NextRequest) {
                 }
 
                 // Get order items
-                const items = await db
+                const rawItems = await db
                     .select({
                         productId: orderItems.productId,
                         quantity: orderItems.quantity,
@@ -49,10 +50,16 @@ export async function GET(request: NextRequest) {
                         productName: products.name,
                         selectedSize: orderItems.selectedSize,
                         productAttributes: products.attributes,
+                        productDescription: products.description,
                     })
                     .from(orderItems)
                     .leftJoin(products, eq(orderItems.productId, products.id))
                     .where(eq(orderItems.orderId, order.id));
+
+                const items = rawItems.map((item) => {
+                    const displaySize = resolveOrderItemSize(item);
+                    return { ...item, displaySize };
+                });
 
                 return {
                     ...order,
