@@ -208,7 +208,26 @@ function renderOrderItemsHTML(order) {
     }
 
     return items.map(item => {
-        const size = item.selectedSize || item.size || '';
+        // Resolve the size: use stored value first, then infer from price vs sizePrices
+        let size = item.selectedSize || item.size || '';
+        if (!size && item.productAttributes) {
+            const attrs = typeof item.productAttributes === 'string'
+                ? JSON.parse(item.productAttributes)
+                : item.productAttributes;
+            const sizePrices = attrs && attrs.sizePrices;
+            if (sizePrices && typeof sizePrices === 'object') {
+                const paid = parseNumber(item.priceAtPurchase, 0);
+                const entries = Object.entries(sizePrices);
+                if (entries.length === 1) {
+                    // Only one size option — use it directly
+                    size = entries[0][0];
+                } else {
+                    // Match by price
+                    const match = entries.find(([, price]) => Math.abs(parseNumber(price, -1) - paid) < 0.01);
+                    if (match) size = match[0];
+                }
+            }
+        }
         const sizeTag = size
             ? `<span class="receipt-item-size"><i class="fas fa-weight-hanging" style="font-size:0.7rem;opacity:0.7;"></i> ${escapeHtml(size)}</span>`
             : '';
