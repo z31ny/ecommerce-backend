@@ -2803,6 +2803,7 @@ body.fb-lightbox-open {
 }
 
 .favorite-card {
+  position: relative;
   background: var(--glass-bg);
   backdrop-filter: blur(var(--glass-blur));
   -webkit-backdrop-filter: blur(var(--glass-blur));
@@ -2816,6 +2817,13 @@ body.fb-lightbox-open {
   flex-direction: column;
   /* Match other cards (offers): avoid oversized min-height */
   min-height: 0;
+}
+
+.favorite-card .fav-cart {
+  position: absolute;
+  right: 16px;
+  bottom: 16px;
+  top: auto;
 }
 .favorite-card:hover {
   transform: translateY(-4px);

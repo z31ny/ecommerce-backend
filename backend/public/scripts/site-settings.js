@@ -703,6 +703,21 @@
             if (favList && Array.isArray(favList)) {
                 var favGrid = document.getElementById('favorites-grid');
                 if (favGrid) {
+                    try { await window.__productSizesReady; } catch (e) { /* ignore */ }
+                    function skuForFavoriteName(name) {
+                        var n = String(name || '').trim().toLowerCase();
+                        if (!n || !window.__productMetaBySku) return '';
+                        var found = '';
+                        Object.keys(window.__productMetaBySku).some(function (sku) {
+                            var meta = window.__productMetaBySku[sku];
+                            if (meta && meta.name && String(meta.name).trim().toLowerCase() === n) {
+                                found = sku;
+                                return true;
+                            }
+                            return false;
+                        });
+                        return found;
+                    }
                     var activeFavs = favList.filter(function (f) { return f.status === 'active'; });
                     if (activeFavs.length === 0) {
                         favGrid.innerHTML = '';
@@ -717,15 +732,23 @@
                             var cat = String(f.category || '');
                             if (cat.toLowerCase() === 'candies' || cat.toLowerCase() === 'candy') cat = 'Candies';
                             else cat = 'Fruits';
-                            return '<div class="favorite-card fade-up">' +
+                            var sku = f.sku ? String(f.sku).trim() : skuForFavoriteName(f.name);
+                            var safeSku = sku ? sku.replace(/"/g, '&quot;') : '';
+                            var skuAttr = safeSku ? ' data-sku="' + safeSku + '"' : '';
+                            var price = f.price != null ? f.price : 0;
+                            var cartBtn = safeSku
+                                ? '<button type="button" class="fav-cart add-to-cart" data-sku="' + safeSku + '" aria-label="Add to cart"><img src="./assets/icons/cart.svg" alt=""></button>'
+                                : '';
+                            return '<article class="favorite-card fade-up"' + skuAttr + ' data-price="' + price + '">' +
                                 (f.image ? '<div class="fav-img"><img src="' + f.image + '" alt="' + (f.name || '') + '"></div>' : '') +
                                 '<div class="fav-info">' +
                                 '  <h3 class="fav-name">' + (f.name || '') + '</h3>' +
                                 '  <div class="fav-rating">' + stars + '<span class="fav-count">(' + (f.reviewCount || 0) + ')</span></div>' +
-                                '  <p class="fav-price">' + (f.price || 0) + ' EGP</p>' +
+                                '  <p class="fav-price">' + price + ' EGP</p>' +
                                 '  <span class="fav-category">' + cat + '</span>' +
                                 '</div>' +
-                                '</div>';
+                                cartBtn +
+                                '</article>';
                         }).join('');
                         observeNewElements(favGrid);
                     }

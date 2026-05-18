@@ -271,7 +271,7 @@
     doc.addEventListener('click', function (e) {
       var btn = e.target.closest && e.target.closest('.add-to-cart');
       if (!btn || !doc.body.contains(btn)) return;
-      var card = btn.closest('.mood-card') || btn.closest('[data-sku]') || btn.closest('[data-product-id]');
+      var card = btn.closest('.mood-card') || btn.closest('.favorite-card') || btn.closest('.fav-card') || btn.closest('[data-sku]') || btn.closest('[data-product-id]');
       var sku = resolveCartSkuFromCard(card);
       if (!sku) {
         sku = (card && card.getAttribute('data-sku')) || btn.getAttribute('data-sku') || (btn.dataset && btn.dataset.sku) || '';
@@ -303,6 +303,22 @@
       // If this button is inside an offer card, seed cart meta with the offer's
       // sale price BEFORE addToCart runs so the discounted price is used.
       var offerCard = btn.closest('article.offer-card') || btn.closest('[data-offer-sale]');
+      var favCard = btn.closest('.favorite-card') || btn.closest('.fav-card');
+      if (favCard && !offerCard) {
+        var favPrice = parseFloat(favCard.getAttribute('data-price'));
+        var favCartKey = makeCartKey(sku, size);
+        if (!isNaN(favPrice) && favPrice > 0 && favCartKey) {
+          var favTitle = favCard.querySelector('.fav-name, .fav-desc');
+          var favImg = favCard.querySelector('.fav-img img, .fav-media img');
+          setCartMeta(favCartKey, {
+            sku: sku,
+            size: size || '',
+            name: favTitle ? favTitle.textContent.trim() : sku,
+            image: favImg ? favImg.getAttribute('src') : '',
+            unitPrice: favPrice
+          });
+        }
+      }
       if (offerCard) {
         var offerSalePrice = parseFloat(offerCard.getAttribute('data-offer-sale'));
         var cartKey = makeCartKey(sku, size);

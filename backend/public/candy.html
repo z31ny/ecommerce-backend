@@ -438,6 +438,14 @@
       if (typeof window.initSwipeGalleries === 'function') window.initSwipeGalleries(container);
     }
 
+    function resolveFavoriteSku(f) {
+      if (f && f.sku) return String(f.sku).trim();
+      const name = (f && f.name ? String(f.name) : '').trim().toLowerCase();
+      if (!name || !Array.isArray(allProducts) || !allProducts.length) return '';
+      const match = allProducts.find(p => (p.name || '').trim().toLowerCase() === name);
+      return match && match.sku ? String(match.sku).trim() : '';
+    }
+
     // Render favorites (top 4 products with highest ratings/first items)
     function renderFavoritesFromContent(items) {
       const grid = document.getElementById('favoritesGrid');
@@ -451,15 +459,21 @@
       grid.innerHTML = top.map(f => {
         const img = f.image || '/assets/icons/profile.svg';
         const price = parseFloat(f.price) || 0;
-        const sku = f.sku || '';
+        const sku = resolveFavoriteSku(f);
+        const safeSku = sku.replace(/"/g, '&quot;');
+        const cartBtn = sku
+          ? `<button type="button" class="fav-cart add-to-cart" data-sku="${safeSku}" aria-label="Add to cart"><img src="./assets/icons/cart.svg" alt=""></button>`
+          : '';
         return `
-          <article class="fav-card" data-sku="${sku}" data-price="${price}">
+          <article class="fav-card" data-sku="${safeSku}" data-price="${price}">
             <div class="fav-media"><img src="${img}" alt="${f.name || ''}" onerror="this.src='/assets/icons/profile.svg'"></div>
             <p class="fav-desc">${f.name || ''}</p>
             <div class="fav-meta"><span class="fav-price">${Math.round(price)} L.E</span></div>
+            ${cartBtn}
           </article>
         `;
       }).join('');
+      bindAddToCartButtons();
     }
 
     // Bind add to cart buttons (with optional size from .product-size-select)
@@ -496,7 +510,7 @@
         if (btn.dataset.cartBound === '1') return;
         btn.dataset.cartBound = '1';
         btn.addEventListener('click', function (e) {
-          const card = this.closest('.offer-card[data-sku], article[data-sku], .mood-card[data-sku]');
+          const card = this.closest('.offer-card[data-sku], .fav-card[data-sku], article[data-sku], .mood-card[data-sku]');
           const sku = (card && card.getAttribute('data-sku')) || this.dataset.sku;
           if (!sku || sku === 'unknown') return;
           const picked = getSizeFromCard(card, sku);
@@ -547,9 +561,9 @@
             cart[cartKey] = (Number(cart[cartKey]) || 0) + 1;
             localStorage.setItem('fb_cart_v1', JSON.stringify(cart));
             // Save exact cart line metadata (name/size/price/image) for correct cart rendering
-            const titleEl = card ? card.querySelector('.offer-title') : null;
-            const imgEl = card ? card.querySelector('.offer-media img, img') : null;
-            const priceEl = card ? card.querySelector('.offer-new') : null;
+            const titleEl = card ? card.querySelector('.offer-title, .fav-desc') : null;
+            const imgEl = card ? card.querySelector('.offer-media img, .fav-media img') : null;
+            const priceEl = card ? card.querySelector('.offer-new, .fav-price') : null;
             const basePrice = card ? (parseFloat(card.getAttribute('data-price') || '0') || 0) : 0;
             let unitPrice = priceEl ? parseFloat((priceEl.textContent || '').replace(/[^\d.]/g, '')) : null;
             const selectedOpt = sizeSelect ? sizeSelect.options[sizeSelect.selectedIndex] : null;

@@ -67,7 +67,7 @@
   function isZoomableProductImage(img) {
     if (!img || img.tagName !== 'IMG') return false;
     if (isIconOrUiImage(img)) return false;
-    if (img.closest('.offer-media, .swipe-slide, .fav-img, .mood-back-photo, .snack-card')) {
+    if (img.closest('.offer-media, .swipe-slide, .fav-img, .fav-media, .mood-back-photo, .snack-card')) {
       return true;
     }
     return false;
