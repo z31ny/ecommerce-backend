@@ -313,13 +313,49 @@
         }
 
         /** Pick Your Mood: flip card on face click; front CTA flips to back; links / add-to-cart / size do not flip. */
+        // Inject mood size picker styles once
+        (function () {
+            if (document.getElementById('__mood-size-picker-styles')) return;
+            var s = document.createElement('style');
+            s.id = '__mood-size-picker-styles';
+            s.textContent = [
+                '.mood-size-picker { width:100%; margin-bottom:0.75rem; }',
+                '.mood-size-picker-label { font-size:0.72rem; font-weight:700; letter-spacing:0.06em; text-transform:uppercase; margin-bottom:0.45rem; opacity:0.85; }',
+                '.mood-size-pills { display:flex; flex-wrap:wrap; gap:0.4rem; justify-content:center; }',
+                '.mood-size-pill { display:flex; flex-direction:column; align-items:center; justify-content:center; min-width:56px; padding:0.35rem 0.6rem; border-radius:10px; border:2px solid rgba(255,255,255,0.45); background:rgba(255,255,255,0.15); color:inherit; cursor:pointer; transition:all 0.18s; font-family:inherit; gap:0.1rem; }',
+                '.mood-size-pill:hover { background:rgba(255,255,255,0.3); border-color:rgba(255,255,255,0.8); transform:translateY(-1px); }',
+                '.mood-size-pill.active { background:rgba(255,255,255,0.9); color:#1a1a2e; border-color:#fff; box-shadow:0 2px 10px rgba(0,0,0,0.18); }',
+                '.mood-size-pill-name { font-size:0.8rem; font-weight:700; line-height:1.2; }',
+                '.mood-size-pill-price { font-size:0.68rem; font-weight:600; opacity:0.85; line-height:1.2; white-space:nowrap; }',
+                '.mood-size-pill.active .mood-size-pill-price { opacity:1; color:#e11d48; }',
+            ].join('');
+            document.head.appendChild(s);
+        })();
+
         function bindMoodsGridFlip(moodsGrid) {
             if (!moodsGrid || moodsGrid.getAttribute('data-mood-flip-bound') === '1') return;
             moodsGrid.setAttribute('data-mood-flip-bound', '1');
 
+            // Handle size pill selection
+            moodsGrid.addEventListener('click', function (e) {
+                var pill = e.target.closest('.mood-size-pill');
+                if (!pill) return;
+                e.stopPropagation();
+                var pills = pill.closest('.mood-size-pills');
+                if (pills) pills.querySelectorAll('.mood-size-pill').forEach(function (p) { p.classList.remove('active'); });
+                pill.classList.add('active');
+                // Sync hidden select
+                var picker = pill.closest('.mood-size-picker');
+                if (picker) {
+                    var sel = picker.querySelector('.mood-size-select');
+                    if (sel) { sel.value = pill.dataset.size; sel.dispatchEvent(new Event('change', { bubbles: true })); }
+                }
+            }, true);
+
             function shouldIgnoreFlip(target) {
                 if (!target || !target.closest) return true;
                 if (target.closest('.add-to-cart')) return true;
+                if (target.closest('.mood-size-pill')) return true;
                 if (target.closest('a')) return true;
                 if (target.closest('select')) return true;
                 if (target.closest('option')) return true;
@@ -422,16 +458,39 @@
                                 var dataSkuAttr = skuRaw ? ' data-sku="' + escAttr(skuRaw) + '"' : '';
                                 var dataProductAttr = linkedIdRaw ? ' data-product-id="' + escAttr(linkedIdRaw) + '"' : '';
                                 var hasSizes = m.sizes && m.sizes.length > 0;
-                                var sizeOptionsHtml = hasSizes
-                                    ? '<option value="">Choose size</option>' +
-                                        m.sizes.map(function (s) { return '<option value="' + escHtml(s) + '">' + escHtml(s) + '</option>'; }).join('')
-                                    : '';
                                 function sizesBlock(labelStyle) {
                                     if (!hasSizes) return '';
-                                    return '<label class="offer-size-label mood-size-label" style="' + labelStyle + '">Size</label>' +
-                                        '<select class="product-size-select form-select mood-size-select">' +
-                                        sizeOptionsHtml +
+                                    // Look up per-size prices from product meta
+                                    var priceLookup = {};
+                                    if (skuRaw && window.__productMetaBySku) {
+                                        var _meta = window.__productMetaBySku[skuRaw.toLowerCase()];
+                                        if (_meta && _meta.sizePrices) priceLookup = _meta.sizePrices;
+                                    }
+                                    var pillsHtml = m.sizes.map(function (sz) {
+                                        var priceVal = priceLookup[sz];
+                                        // try case-insensitive fallback
+                                        if (priceVal == null) {
+                                            var szLow = sz.toLowerCase();
+                                            Object.keys(priceLookup).forEach(function (k) { if (k.toLowerCase() === szLow) priceVal = priceLookup[k]; });
+                                        }
+                                        var priceHtml = (priceVal != null && !isNaN(parseFloat(priceVal)))
+                                            ? '<span class="mood-size-pill-price">EGP ' + parseFloat(priceVal).toLocaleString() + '</span>'
+                                            : '';
+                                        return '<button type="button" class="mood-size-pill" data-size="' + escAttr(sz) + '">' +
+                                            '<span class="mood-size-pill-name">' + escHtml(sz) + '</span>' +
+                                            priceHtml +
+                                            '</button>';
+                                    }).join('');
+                                    // Hidden select keeps add-to-cart compatibility
+                                    var hiddenSelect = '<select class="product-size-select mood-size-select" style="display:none">' +
+                                        '<option value="">Choose size</option>' +
+                                        m.sizes.map(function (sz) { return '<option value="' + escHtml(sz) + '">' + escHtml(sz) + '</option>'; }).join('') +
                                         '</select>';
+                                    return '<div class="mood-size-picker">' +
+                                        '<div class="mood-size-picker-label" style="' + labelStyle + '">Choose Size</div>' +
+                                        '<div class="mood-size-pills">' + pillsHtml + '</div>' +
+                                        hiddenSelect +
+                                        '</div>';
                                 }
                                 var sizesHtmlBack = hasSizes ? sizesBlock('color:#fff;text-shadow:0 1px 2px rgba(0,0,0,0.5);') : '';
                                 var cartIconBtn = '<button type="button" class="mood-cart-icon mood-cart-icon--front add-to-cart" aria-label="Add to cart">' +
