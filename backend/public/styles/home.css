@@ -1686,6 +1686,12 @@ body {
   transition: transform .3s ease
 }
 
+.offer-media img,
+.swipe-slide img,
+.fav-img img {
+  cursor: zoom-in;
+}
+
 .offer-card:hover .offer-media img {
   transform: scale(1.04)
 }

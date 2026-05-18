@@ -312,50 +312,11 @@
             }
         }
 
-        /** Full-screen image viewer for mood / snack card photos */
-        function ensureImageLightbox() {
-            var id = 'fb-image-lightbox';
-            var existing = document.getElementById(id);
-            if (existing) return existing;
-            var lb = document.createElement('div');
-            lb.id = id;
-            lb.className = 'fb-image-lightbox';
-            lb.hidden = true;
-            lb.innerHTML =
-                '<div class="fb-image-lightbox-backdrop" aria-hidden="true"></div>' +
-                '<div class="fb-image-lightbox-panel" role="dialog" aria-modal="true" aria-label="Full size image">' +
-                '  <button type="button" class="fb-image-lightbox-close" aria-label="Close">&times;</button>' +
-                '  <img class="fb-image-lightbox-img" src="" alt="">' +
-                '</div>';
-            document.body.appendChild(lb);
-            lb.querySelector('.fb-image-lightbox-backdrop').addEventListener('click', closeImageLightbox);
-            lb.querySelector('.fb-image-lightbox-close').addEventListener('click', closeImageLightbox);
-            if (!window.__fbLightboxEscBound) {
-                window.__fbLightboxEscBound = true;
-                document.addEventListener('keydown', function (e) {
-                    if (e.key === 'Escape') closeImageLightbox();
-                });
-            }
-            return lb;
-        }
         function openImageLightbox(src, alt) {
-            if (!src) return;
-            var lb = ensureImageLightbox();
-            var img = lb.querySelector('.fb-image-lightbox-img');
-            img.src = src;
-            img.alt = alt || 'Full size image';
-            lb.hidden = false;
-            document.body.classList.add('fb-lightbox-open');
+            if (typeof window.__fbOpenImageLightbox === 'function') {
+                window.__fbOpenImageLightbox(src, alt);
+            }
         }
-        function closeImageLightbox() {
-            var lb = document.getElementById('fb-image-lightbox');
-            if (!lb) return;
-            lb.hidden = true;
-            var img = lb.querySelector('.fb-image-lightbox-img');
-            if (img) img.src = '';
-            document.body.classList.remove('fb-lightbox-open');
-        }
-        window.__fbOpenImageLightbox = openImageLightbox;
 
         /** Pick Your Mood: flip card on face click; front CTA flips to back; links / add-to-cart / size do not flip. */
         // Inject mood size picker styles once
