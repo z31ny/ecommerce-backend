@@ -124,6 +124,19 @@
     // Other scripts can wait on window.__productSizesReady if needed.
     window.__productSkuById = window.__productSkuById || {};
 
+    var _candyPageCategories = ['candy', 'candies', 'chocolate', 'lollipop', 'ice cream', 'marshmallow', 'nuts'];
+    window.__navigateToProduct = async function (sku) {
+        if (!sku) return;
+        var skuKey = String(sku).toLowerCase();
+        if (window.__productSizesReady && typeof window.__productSizesReady.then === 'function') {
+            await window.__productSizesReady;
+        }
+        var meta = window.__productMetaBySku && window.__productMetaBySku[skuKey];
+        var cat = meta && meta.category ? String(meta.category).toLowerCase() : '';
+        var page = _candyPageCategories.indexOf(cat) !== -1 ? './candy.html' : './fruits.html';
+        window.location.href = page + '?sku=' + encodeURIComponent(sku);
+    };
+
     window.__productSizesReady = (async function () {
         try {
             var resProducts = await fetch('/api/products?limit=500', { cache: 'no-store' });
@@ -152,7 +165,8 @@
                         price: p && p.price != null ? p.price : null,
                         images: Array.isArray(p && p.images) ? p.images : (p && p.images ? [p.images] : []),
                         weight: p && p.attributes && p.attributes.weight ? p.attributes.weight : null,
-                        sizePrices: normalizeSizePrices(p && p.attributes ? p.attributes.sizePrices : null)
+                        sizePrices: normalizeSizePrices(p && p.attributes ? p.attributes.sizePrices : null),
+                        category: p && p.category ? p.category : null
                     };
                 });
             }
@@ -431,9 +445,11 @@
                                     '</button>';
                                 var rawLink = m.buttonLink ? String(m.buttonLink).trim() : '';
                                 var safeLink = (rawLink && !/admin/i.test(rawLink)) ? rawLink : '';
-                                var shopLink = safeLink
-                                    ? '<a href="' + escAttr(safeLink) + '" class="mood-btn mood-btn-link mood-buy-link">' + escHtml(shopLabel) + '</a>'
-                                    : '';
+                                var shopLink = skuRaw
+                                    ? '<button type="button" class="mood-btn mood-buy-now-btn" onclick="window.__navigateToProduct(' + JSON.stringify(skuRaw) + ')">' + escHtml(shopLabel) + '</button>'
+                                    : safeLink
+                                        ? '<a href="' + escAttr(safeLink) + '" class="mood-btn mood-btn-link mood-buy-link">' + escHtml(shopLabel) + '</a>'
+                                        : '';
                                 var backActions = (addCartBtn || shopLink)
                                     ? '<div class="mood-back-actions">' + addCartBtn + shopLink + '</div>'
                                     : '';
