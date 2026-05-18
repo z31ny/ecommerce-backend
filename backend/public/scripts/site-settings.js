@@ -319,21 +319,20 @@
             var s = document.createElement('style');
             s.id = '__mood-size-picker-styles';
             s.textContent = [
-                '.mood-size-picker { width:100%; margin-bottom:0.6rem; }',
-                '.mood-size-picker-card { background:rgba(255,255,255,0.92); border-radius:14px; overflow:hidden; box-shadow:0 2px 12px rgba(0,0,0,0.13); }',
-                '.mood-size-picker-header { padding:0.55rem 0.9rem 0.45rem; border-bottom:1px solid rgba(0,0,0,0.07); }',
-                '.mood-size-picker-label { font-size:0.78rem; font-weight:800; color:#1e1e2e; letter-spacing:0.01em; }',
+                '.mood-size-picker { width:100%; margin:0 0 0.5rem; }',
+                '.mood-size-picker-card { background:rgba(255,255,255,0.18); backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px); border-radius:14px; overflow:hidden; border:1px solid rgba(255,255,255,0.35); box-shadow:0 4px 20px rgba(0,0,0,0.18); }',
+                '.mood-size-picker-header { padding:0.4rem 0.75rem 0.35rem; border-bottom:1px solid rgba(255,255,255,0.2); }',
+                '.mood-size-picker-label { font-size:0.7rem; font-weight:800; color:#fff; letter-spacing:0.07em; text-transform:uppercase; text-shadow:0 1px 3px rgba(0,0,0,0.4); }',
                 '.mood-size-pills { display:flex; flex-direction:column; }',
-                '.mood-size-pill { display:flex; align-items:center; justify-content:space-between; width:100%; padding:0.5rem 0.9rem; border:none; background:transparent; cursor:pointer; transition:background 0.15s; font-family:inherit; border-bottom:1px solid rgba(0,0,0,0.05); }',
+                '.mood-size-pill { display:flex; align-items:center; justify-content:space-between; width:100%; padding:0.38rem 0.75rem; border:none; background:transparent; cursor:pointer; transition:background 0.15s; font-family:inherit; border-bottom:1px solid rgba(255,255,255,0.12); }',
                 '.mood-size-pill:last-child { border-bottom:none; }',
-                '.mood-size-pill:hover { background:rgba(99,102,241,0.07); }',
-                '.mood-size-pill.active { background:rgba(99,102,241,0.12); }',
-                '.mood-size-pill-name { font-size:0.82rem; font-weight:700; color:#4f46e5; }',
-                '.mood-size-pill-price { font-size:0.82rem; font-weight:700; color:#1e1e2e; }',
-                '.mood-size-pill.active .mood-size-pill-name { color:#4f46e5; }',
-                '.mood-size-pill.active .mood-size-pill-price { color:#e11d48; }',
-                '.mood-size-pill-check { width:16px; height:16px; border-radius:50%; border:2px solid #d1d5db; margin-left:0.5rem; flex-shrink:0; transition:all 0.15s; }',
-                '.mood-size-pill.active .mood-size-pill-check { background:#4f46e5; border-color:#4f46e5; }',
+                '.mood-size-pill:hover { background:rgba(255,255,255,0.15); }',
+                '.mood-size-pill.active { background:rgba(255,255,255,0.28); }',
+                '.mood-size-pill-name { font-size:0.78rem; font-weight:700; color:#fff; text-shadow:0 1px 2px rgba(0,0,0,0.35); }',
+                '.mood-size-pill-price { font-size:0.78rem; font-weight:700; color:#fff; text-shadow:0 1px 2px rgba(0,0,0,0.35); }',
+                '.mood-size-pill.active .mood-size-pill-price { color:#fde047; }',
+                '.mood-size-pill-check { width:14px; height:14px; border-radius:50%; border:2px solid rgba(255,255,255,0.55); margin-left:0.45rem; flex-shrink:0; transition:all 0.15s; }',
+                '.mood-size-pill.active .mood-size-pill-check { background:#fff; border-color:#fff; }',
             ].join('');
             document.head.appendChild(s);
         })();
@@ -510,7 +509,6 @@
                                 var addCartBtn = '<button type="button" class="mood-cart-icon mood-cart-icon--back add-to-cart" aria-label="Add to cart">' +
                                     '<img src="./assets/icons/cart.svg" alt="">' +
                                     '</button>';
-                                var backActions = '<div class="mood-back-actions">' + addCartBtn + '</div>';
                                 var frontCartRow = '<div class="mood-front-cart-row">' +
                                     cartIconBtn +
                                     '</div>';
@@ -523,9 +521,9 @@
                                     (m.buttonText ? '    <button type="button" class="mood-btn mood-front-cta">' + escHtml(m.buttonText) + '</button>' : '') +
                                     '  </div>' +
                                     '  <div class="mood-card-back" style="' + (m.backImage ? 'background-image:url(' + m.backImage + ');background-size:cover;background-position:center;' : 'background:' + colors.bg + ';') + '">' +
+                                    addCartBtn +
                                     (m.backDescription ? '    <p class="mood-back-text">' + escHtml(m.backDescription) + '</p>' : '') +
                                     sizesHtmlBack +
-                                    backActions +
                                     '  </div>' +
                                     '</div>' +
                                     '</div>';

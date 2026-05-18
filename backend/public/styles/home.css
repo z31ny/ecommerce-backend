@@ -2388,20 +2388,38 @@ body {
   opacity: 1;
 }
 
-.mood-back-actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.65rem;
-  justify-content: center;
-  align-items: center;
-  margin-top: 0.75rem;
-  z-index: 2;
-  position: relative;
-}
-
 .mood-card-back {
   transform: rotateY(180deg);
   overflow: hidden;
+  justify-content: flex-end;
+  padding: 0.75rem;
+  gap: 0;
+}
+
+/* Dark gradient at bottom for readability when card has a photo */
+.mood-card-back::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 1.25rem;
+  background: linear-gradient(to bottom, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0.55) 100%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.mood-card-back > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* Cart button pinned to top-right on back */
+.mood-cart-icon--back {
+  position: absolute !important;
+  top: 0.75rem;
+  right: 0.75rem;
+  z-index: 2;
+  width: 36px;
+  height: 36px;
 }
 
 /* Keep flip-card styles isolated from older legacy .mood-card rules */
@@ -2426,11 +2444,22 @@ body {
 
 .mood-back-text {
   color: #fff;
-  font-size: 1rem;
-  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
-  background: rgba(0, 0, 0, 0.25);
-  padding: 1rem;
-  border-radius: 0.75rem;
+  font-size: 0.78rem;
+  line-height: 1.4;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.55);
+  padding: 0 0.25rem 0.5rem;
+  margin: 0;
+  width: 100%;
+  text-align: center;
+}
+
+.mood-back-actions {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 0.5rem;
+  z-index: 2;
+  position: relative;
 }
 
 /* ===== Snack Flip Cards (Inside Track) ===== */
