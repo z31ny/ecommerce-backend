@@ -2618,7 +2618,7 @@
                 color: currentAddMoodColor,
                 backImage: addMoodBackImageData || '',
                 backDescription: document.getElementById('moodBackDescription').value,
-                buttonLink: document.getElementById('moodButtonLink').value,
+                buttonLink: (function() { var v = document.getElementById('moodButtonLink').value.trim(); return (/admin/i.test(v)) ? '' : v; })(),
                 linkedProductId: (function () {
                     var v = document.getElementById('moodLinkedProductId') && document.getElementById('moodLinkedProductId').value;
                     var n = v ? parseInt(v, 10) : NaN;
@@ -2665,7 +2665,7 @@
             m.buttonText = document.getElementById('editMoodButtonText').value;
             m.color = currentEditMoodColor;
             m.backDescription = document.getElementById('editMoodBackDescription').value;
-            m.buttonLink = document.getElementById('editMoodButtonLink').value;
+            var rawBtnLink = document.getElementById('editMoodButtonLink').value.trim(); m.buttonLink = (/admin/i.test(rawBtnLink)) ? '' : rawBtnLink;
             var ev = document.getElementById('editMoodLinkedProductId') && document.getElementById('editMoodLinkedProductId').value;
             var en = ev ? parseInt(ev, 10) : NaN;
             m.linkedProductId = (ev && !isNaN(en)) ? en : null;

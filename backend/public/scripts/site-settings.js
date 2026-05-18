@@ -429,8 +429,10 @@
                                 var addCartBtn = '<button type="button" class="mood-cart-icon mood-cart-icon--back add-to-cart" aria-label="Add to cart">' +
                                     '<img src="./assets/icons/cart.svg" alt="">' +
                                     '</button>';
-                                var shopLink = m.buttonLink
-                                    ? '<a href="' + escAttr(String(m.buttonLink).trim()) + '" class="mood-btn mood-btn-link mood-buy-link">' + escHtml(shopLabel) + '</a>'
+                                var rawLink = m.buttonLink ? String(m.buttonLink).trim() : '';
+                                var safeLink = (rawLink && !/admin/i.test(rawLink)) ? rawLink : '';
+                                var shopLink = safeLink
+                                    ? '<a href="' + escAttr(safeLink) + '" class="mood-btn mood-btn-link mood-buy-link">' + escHtml(shopLabel) + '</a>'
                                     : '';
                                 var backActions = (addCartBtn || shopLink)
                                     ? '<div class="mood-back-actions">' + addCartBtn + shopLink + '</div>'
