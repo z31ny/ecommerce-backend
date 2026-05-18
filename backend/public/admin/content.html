@@ -1638,21 +1638,6 @@
                         <label class="form-label">Back button label (Buy now link)</label>
                         <input type="text" class="form-input" id="moodShopButtonText" placeholder="Buy now" value="Buy now">
                     </div>
-                    <div class="form-group">
-                        <label class="form-label">Sizes / Grams (optional)</label>
-                        <div class="sizes-add-row" style="display:flex;gap:8px;margin-bottom:8px;">
-                            <input type="text" class="form-input" id="moodSizesInput" placeholder="e.g. 50g, 100g, 250g" style="flex:1;">
-                            <button type="button" class="btn btn-primary" onclick="addMoodSizeOption('add')">
-                                <i class="fas fa-plus"></i> Add option
-                            </button>
-                        </div>
-                        <div id="addMoodSizesList" class="sizes-options-list" style="display:flex;flex-wrap:wrap;gap:6px;min-height:24px;"></div>
-                    </div>
-                    <div class="form-group" id="addMoodSizePricesSection" style="display:none;">
-                        <label class="form-label" style="font-weight:700;">Price per size (optional)</label>
-                        <div id="addMoodSizePricesContainer" style="background:var(--bg-secondary,#f1f5f9);border-radius:10px;padding:0.6rem 0.8rem;"></div>
-                        <p style="font-size:0.75rem;color:var(--text-secondary);margin-top:0.4rem;">Add sizes above, then set a price for each size. Saved to the database and shown on the website.</p>
-                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" onclick="closeModal('addMoodModal')">Cancel</button>
@@ -1735,21 +1720,6 @@
                     <div class="form-group">
                         <label class="form-label">Back button label (Buy now)</label>
                         <input type="text" class="form-input" id="editMoodShopButtonText" placeholder="Buy now">
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Sizes / Grams (optional)</label>
-                        <div class="sizes-add-row" style="display:flex;gap:8px;margin-bottom:8px;">
-                            <input type="text" class="form-input" id="editMoodSizesInput" placeholder="e.g. 50g, 100g, 250g" style="flex:1;">
-                            <button type="button" class="btn btn-primary" onclick="addMoodSizeOption('edit')">
-                                <i class="fas fa-plus"></i> Add option
-                            </button>
-                        </div>
-                        <div id="editMoodSizesList" class="sizes-options-list" style="display:flex;flex-wrap:wrap;gap:6px;min-height:24px;"></div>
-                    </div>
-                    <div class="form-group" id="editMoodSizePricesSection" style="display:none;">
-                        <label class="form-label" style="font-weight:700;">Price per size (optional)</label>
-                        <div id="editMoodSizePricesContainer" style="background:var(--bg-secondary,#f1f5f9);border-radius:10px;padding:0.6rem 0.8rem;"></div>
-                        <p style="font-size:0.75rem;color:var(--text-secondary);margin-top:0.4rem;">Add sizes above, then set a price for each size. Saved to the database and shown on the website.</p>
                     </div>
                     <div class="form-group">
                         <label class="form-label">Status</label>
@@ -2569,71 +2539,6 @@
             reader.readAsDataURL(file);
         }
 
-        var addMoodSizesList = [];
-        var editMoodSizesList = [];
-        var addMoodSizePrices = {};
-        var editMoodSizePrices = {};
-
-        function addMoodSizeOption(which) {
-            var inputId = which === 'add' ? 'moodSizesInput' : 'editMoodSizesInput';
-            var listId = which === 'add' ? 'addMoodSizesList' : 'editMoodSizesList';
-            var list = which === 'add' ? addMoodSizesList : editMoodSizesList;
-            var input = document.getElementById(inputId);
-            var val = (input && input.value || '').trim();
-            if (!val) return;
-            list.push(val);
-            if (input) input.value = '';
-            renderMoodSizesList(listId, list, which);
-            renderMoodSizePrices(which);
-        }
-        function removeMoodSizeOption(which, index) {
-            var list = which === 'add' ? addMoodSizesList : editMoodSizesList;
-            var listId = which === 'add' ? 'addMoodSizesList' : 'editMoodSizesList';
-            var prices = which === 'add' ? addMoodSizePrices : editMoodSizePrices;
-            delete prices[list[index]];
-            list.splice(index, 1);
-            renderMoodSizesList(listId, list, which);
-            renderMoodSizePrices(which);
-        }
-        function renderMoodSizesList(containerId, list, which) {
-            var container = document.getElementById(containerId);
-            if (!container) return;
-            container.innerHTML = list.map(function (s, i) {
-                return '<span class="sizes-chip" style="display:inline-flex;align-items:center;gap:4px;padding:4px 8px;background:var(--bg-secondary, #f1f5f9);border-radius:6px;font-size:0.875rem;"><span>' + String(s).replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</span><button type="button" class="sizes-chip-remove" data-which="' + which + '" data-index="' + i + '" aria-label="Remove" style="background:none;border:none;cursor:pointer;padding:0 2px;color:var(--text-secondary);font-size:1.1rem;line-height:1;">&times;</button></span>';
-            }).join('');
-            container.querySelectorAll('.sizes-chip-remove').forEach(function (btn) {
-                btn.addEventListener('click', function () {
-                    removeMoodSizeOption(this.getAttribute('data-which'), parseInt(this.getAttribute('data-index'), 10));
-                });
-            });
-        }
-        function renderMoodSizePrices(which) {
-            var list = which === 'add' ? addMoodSizesList : editMoodSizesList;
-            var prices = which === 'add' ? addMoodSizePrices : editMoodSizePrices;
-            var sectionId = which === 'add' ? 'addMoodSizePricesSection' : 'editMoodSizePricesSection';
-            var containerId = which === 'add' ? 'addMoodSizePricesContainer' : 'editMoodSizePricesContainer';
-            var section = document.getElementById(sectionId);
-            var container = document.getElementById(containerId);
-            if (!section || !container) return;
-            if (list.length === 0) { section.style.display = 'none'; return; }
-            section.style.display = '';
-            container.innerHTML = list.map(function (sz) {
-                var val = prices[sz] != null ? prices[sz] : '';
-                return '<div style="display:flex;align-items:center;gap:10px;padding:0.45rem 0;border-bottom:1px solid var(--border-color);">' +
-                    '<span style="font-weight:700;color:var(--primary);min-width:70px;font-size:0.875rem;">' + String(sz).replace(/</g,'&lt;') + '</span>' +
-                    '<input type="number" min="0" step="0.01" class="form-input mood-size-price-input" data-size="' + String(sz).replace(/"/g,'&quot;') + '" data-which="' + which + '" value="' + val + '" placeholder="Price (EGP)" style="flex:1;padding:0.35rem 0.6rem;font-size:0.875rem;">' +
-                    '<span style="font-size:0.8rem;color:var(--text-secondary);">EGP</span>' +
-                    '</div>';
-            }).join('');
-            container.querySelectorAll('.mood-size-price-input').forEach(function (inp) {
-                inp.addEventListener('input', function () {
-                    var p = which === 'add' ? addMoodSizePrices : editMoodSizePrices;
-                    var n = parseFloat(this.value);
-                    if (!isNaN(n)) p[this.dataset.size] = n;
-                    else delete p[this.dataset.size];
-                });
-            });
-        }
 
         async function openAddMoodModal() {
             await populateMoodProductSelects();
@@ -2644,10 +2549,6 @@
             document.querySelector('#addMoodModal .color-option[data-color="pink"]').classList.add('selected');
             currentAddMoodColor = 'pink';
             addMoodBackImageData = null;
-            addMoodSizesList = [];
-            addMoodSizePrices = {};
-            renderMoodSizesList('addMoodSizesList', addMoodSizesList, 'add');
-            renderMoodSizePrices('add');
             document.getElementById('moodBackImagePreview').style.display = 'none';
             document.getElementById('moodBackImagePlaceholder').style.display = 'block';
             openModal('addMoodModal');
@@ -2670,8 +2571,6 @@
                     return (v && !isNaN(n)) ? n : null;
                 })(),
                 shopButtonText: (document.getElementById('moodShopButtonText') && document.getElementById('moodShopButtonText').value.trim()) || 'Buy now',
-                sizes: addMoodSizesList.slice(),
-                sizePrices: Object.assign({}, addMoodSizePrices),
                 status: 'active'
             });
             saveAllData(); closeModal('addMoodModal'); renderMoods(); updateCounts(); showAlert('success', 'Mood card added!');
@@ -2692,10 +2591,6 @@
                 lp.value = m.linkedProductId != null && m.linkedProductId !== '' ? String(m.linkedProductId) : '';
             }
             document.getElementById('editMoodShopButtonText').value = m.shopButtonText || 'Buy now';
-            editMoodSizesList = (m.sizes || []).slice();
-            editMoodSizePrices = Object.assign({}, m.sizePrices || {});
-            renderMoodSizesList('editMoodSizesList', editMoodSizesList, 'edit');
-            renderMoodSizePrices('edit');
             document.getElementById('editMoodStatus').value = m.status;
             document.getElementById('editMoodBackImagePreview').src = m.backImage || '/assets/icons/profile.svg';
             editMoodBackImageData = m.backImage;
@@ -2718,8 +2613,6 @@
             var en = ev ? parseInt(ev, 10) : NaN;
             m.linkedProductId = (ev && !isNaN(en)) ? en : null;
             m.shopButtonText = (document.getElementById('editMoodShopButtonText') && document.getElementById('editMoodShopButtonText').value.trim()) || 'Buy now';
-            m.sizes = editMoodSizesList.slice();
-            m.sizePrices = Object.assign({}, editMoodSizePrices);
             m.status = document.getElementById('editMoodStatus').value;
             if (editMoodBackImageData) m.backImage = editMoodBackImageData;
             saveAllData(); closeModal('editMoodModal'); renderMoods(); showAlert('success', 'Mood card updated!');
@@ -2729,13 +2622,6 @@
             if (!confirm('Delete this mood card?')) return;
             moods = moods.filter(m => m.id !== id); saveAllData(); renderMoods(); updateCounts(); showAlert('success', 'Mood card deleted!');
         }
-
-        document.getElementById('moodSizesInput')?.addEventListener('keydown', function (e) {
-            if (e.key === 'Enter') { e.preventDefault(); addMoodSizeOption('add'); }
-        });
-        document.getElementById('editMoodSizesInput')?.addEventListener('keydown', function (e) {
-            if (e.key === 'Enter') { e.preventDefault(); addMoodSizeOption('edit'); }
-        });
 
         // ===== SNACKS =====
         function renderSnacks() {

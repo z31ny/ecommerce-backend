@@ -462,20 +462,26 @@
                                 var skuRaw = moodResolveCartSku(m);
                                 var dataSkuAttr = skuRaw ? ' data-sku="' + escAttr(skuRaw) + '"' : '';
                                 var dataProductAttr = linkedIdRaw ? ' data-product-id="' + escAttr(linkedIdRaw) + '"' : '';
-                                var hasSizes = m.sizes && m.sizes.length > 0;
+                                // Use sizes and prices directly from the linked product
+                                var productSizes = [];
+                                var priceLookup = {};
+                                if (skuRaw && window.__productMetaBySku) {
+                                    var _meta = window.__productMetaBySku[skuRaw.toLowerCase()];
+                                    if (_meta && _meta.sizePrices) priceLookup = _meta.sizePrices;
+                                }
+                                if (skuRaw && window.__productSizesBySku) {
+                                    var _sizes = window.__productSizesBySku[skuRaw.toLowerCase()];
+                                    if (Array.isArray(_sizes) && _sizes.length) productSizes = _sizes;
+                                    else if (_sizes && typeof _sizes === 'object') productSizes = Object.keys(_sizes);
+                                }
+                                // Fall back to priceLookup keys if sizes array is empty
+                                if (!productSizes.length && Object.keys(priceLookup).length) {
+                                    productSizes = Object.keys(priceLookup);
+                                }
+                                var hasSizes = productSizes.length > 0;
                                 function sizesBlock(labelStyle) {
                                     if (!hasSizes) return '';
-                                    // Build price lookup: mood's own sizePrices first, then linked product as fallback
-                                    var priceLookup = {};
-                                    if (skuRaw && window.__productMetaBySku) {
-                                        var _meta = window.__productMetaBySku[skuRaw.toLowerCase()];
-                                        if (_meta && _meta.sizePrices) Object.assign(priceLookup, _meta.sizePrices);
-                                    }
-                                    // Mood-specific prices override product prices
-                                    if (m.sizePrices && typeof m.sizePrices === 'object') {
-                                        Object.assign(priceLookup, m.sizePrices);
-                                    }
-                                    var pillsHtml = m.sizes.map(function (sz) {
+                                    var pillsHtml = productSizes.map(function (sz) {
                                         var priceVal = priceLookup[sz];
                                         if (priceVal == null) {
                                             var szLow = sz.toLowerCase();
@@ -492,7 +498,7 @@
                                     }).join('');
                                     var hiddenSelect = '<select class="product-size-select mood-size-select" style="display:none">' +
                                         '<option value="">Choose size</option>' +
-                                        m.sizes.map(function (sz) { return '<option value="' + escHtml(sz) + '">' + escHtml(sz) + '</option>'; }).join('') +
+                                        productSizes.map(function (sz) { return '<option value="' + escHtml(sz) + '">' + escHtml(sz) + '</option>'; }).join('') +
                                         '</select>';
                                     return '<div class="mood-size-picker">' +
                                         '<div class="mood-size-picker-card">' +
