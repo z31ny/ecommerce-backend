@@ -466,11 +466,15 @@
                                 var hasSizes = m.sizes && m.sizes.length > 0;
                                 function sizesBlock(labelStyle) {
                                     if (!hasSizes) return '';
-                                    // Look up per-size prices from product meta
+                                    // Build price lookup: mood's own sizePrices first, then linked product as fallback
                                     var priceLookup = {};
                                     if (skuRaw && window.__productMetaBySku) {
                                         var _meta = window.__productMetaBySku[skuRaw.toLowerCase()];
-                                        if (_meta && _meta.sizePrices) priceLookup = _meta.sizePrices;
+                                        if (_meta && _meta.sizePrices) Object.assign(priceLookup, _meta.sizePrices);
+                                    }
+                                    // Mood-specific prices override product prices
+                                    if (m.sizePrices && typeof m.sizePrices === 'object') {
+                                        Object.assign(priceLookup, m.sizePrices);
                                     }
                                     var pillsHtml = m.sizes.map(function (sz) {
                                         var priceVal = priceLookup[sz];
