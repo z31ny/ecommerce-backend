@@ -277,10 +277,21 @@
         sku = (card && card.getAttribute('data-sku')) || btn.getAttribute('data-sku') || (btn.dataset && btn.dataset.sku) || '';
         sku = sku ? String(sku).trim() : '';
       }
+      if (!sku && (card && (card.classList.contains('favorite-card') || card.classList.contains('fav-card')))) {
+        var favNameEl = card.querySelector('.fav-name, .fav-desc');
+        var favName = favNameEl ? favNameEl.textContent.trim() : '';
+        if (favName && typeof window.resolveFavoriteSkuFromName === 'function') {
+          sku = window.resolveFavoriteSkuFromName(favName);
+          if (sku && card) card.setAttribute('data-sku', sku);
+        }
+      }
       if (!sku) {
         e.preventDefault();
         if (typeof e.stopPropagation === 'function') e.stopPropagation();
-        showToast('Link a product in Admin → Website Content → Pick Your Mood');
+        var favOnly = card && (card.classList.contains('favorite-card') || card.classList.contains('fav-card'));
+        showToast(favOnly
+          ? 'Use the same name as in Products for this favorite'
+          : 'Link a product in Admin → Website Content → Pick Your Mood');
         return;
       }
       var sizeSelect = card ? card.querySelector('.product-size-select') : null;

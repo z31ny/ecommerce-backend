@@ -145,6 +145,7 @@
                 return false;
             }
             var list = await resProducts.json();
+            window.__catalogProductsForFavorites = Array.isArray(list) ? list : [];
             var map = {};
             var metaMap = {};
             var skuById = {};
@@ -705,18 +706,10 @@
                 if (favGrid) {
                     try { await window.__productSizesReady; } catch (e) { /* ignore */ }
                     function skuForFavoriteName(name) {
-                        var n = String(name || '').trim().toLowerCase();
-                        if (!n || !window.__productMetaBySku) return '';
-                        var found = '';
-                        Object.keys(window.__productMetaBySku).some(function (sku) {
-                            var meta = window.__productMetaBySku[sku];
-                            if (meta && meta.name && String(meta.name).trim().toLowerCase() === n) {
-                                found = sku;
-                                return true;
-                            }
-                            return false;
-                        });
-                        return found;
+                        if (typeof window.resolveFavoriteSkuFromName === 'function') {
+                            return window.resolveFavoriteSkuFromName(name);
+                        }
+                        return '';
                     }
                     var activeFavs = favList.filter(function (f) { return f.status === 'active'; });
                     if (activeFavs.length === 0) {
@@ -736,9 +729,9 @@
                             var safeSku = sku ? sku.replace(/"/g, '&quot;') : '';
                             var skuAttr = safeSku ? ' data-sku="' + safeSku + '"' : '';
                             var price = f.price != null ? f.price : 0;
-                            var cartBtn = safeSku
-                                ? '<button type="button" class="fav-cart add-to-cart" data-sku="' + safeSku + '" aria-label="Add to cart"><img src="./assets/icons/cart.svg" alt=""></button>'
-                                : '';
+                            var cartBtn = typeof window.favoriteCartButtonHtml === 'function'
+                                ? window.favoriteCartButtonHtml(sku)
+                                : '<button type="button" class="fav-cart add-to-cart" data-sku="' + safeSku + '" aria-label="Add to cart"><img src="./assets/icons/cart.svg" alt=""></button>';
                             return '<article class="favorite-card fade-up"' + skuAttr + ' data-price="' + price + '">' +
                                 (f.image ? '<div class="fav-img"><img src="' + f.image + '" alt="' + (f.name || '') + '"></div>' : '') +
                                 '<div class="fav-info">' +

@@ -8,6 +8,19 @@
   <link rel="stylesheet" href="./styles/home.css">
   <link rel="stylesheet" href="./styles/candy.css">
   <link rel="stylesheet" href="./styles/sidebar.css">
+  <!-- Meta Pixel Code -->
+  <script>
+    !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+    n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
+    n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
+    t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,
+    document,'script','https://connect.facebook.net/en_US/fbevents.js');
+    fbq('init', '1514836936849671');
+    fbq('track', 'PageView');
+  </script>
+  <noscript><img height="1" width="1" style="display:none"
+    src="https://www.facebook.com/tr?id=1514836936849671&ev=PageView&noscript=1"/></noscript>
+  <!-- End Meta Pixel Code -->
 </head>
 
 <body>
@@ -226,6 +239,7 @@
     </div>
   </footer>
 
+  <script src="./scripts/favorite-cart.js?v=1" defer></script>
   <script src="./scripts/candy.js" defer></script>
   <script src="./scripts/gallery-swipe.js" defer></script>
   <script>
@@ -470,11 +484,11 @@
     }
 
     function resolveFavoriteSku(f) {
+      if (typeof window.resolveFavoriteSkuFromFavorite === 'function') {
+        return window.resolveFavoriteSkuFromFavorite(f);
+      }
       if (f && f.sku) return String(f.sku).trim();
-      const name = (f && f.name ? String(f.name) : '').trim().toLowerCase();
-      if (!name || !Array.isArray(allProducts) || !allProducts.length) return '';
-      const match = allProducts.find(p => (p.name || '').trim().toLowerCase() === name);
-      return match && match.sku ? String(match.sku).trim() : '';
+      return '';
     }
 
     // Render favorites (top 4 products)
@@ -492,9 +506,9 @@
         const price = parseFloat(f.price) || 0;
         const sku = resolveFavoriteSku(f);
         const safeSku = sku.replace(/"/g, '&quot;');
-        const cartBtn = sku
-          ? `<button type="button" class="fav-cart add-to-cart" data-sku="${safeSku}" aria-label="Add to cart"><img src="./assets/icons/cart.svg" alt=""></button>`
-          : '';
+        const cartBtn = typeof window.favoriteCartButtonHtml === 'function'
+          ? window.favoriteCartButtonHtml(sku)
+          : `<button type="button" class="fav-cart add-to-cart" data-sku="${safeSku}" aria-label="Add to cart"><img src="./assets/icons/cart.svg" alt=""></button>`;
         return `
           <article class="fav-card" data-sku="${safeSku}" data-price="${price}">
             <div class="fav-media"><img src="${img}" alt="${f.name || ''}" onerror="this.src='/assets/icons/profile.svg'"></div>
@@ -541,9 +555,29 @@
         if (btn.dataset.cartBound === '1') return;
         btn.dataset.cartBound = '1';
         btn.addEventListener('click', function (e) {
-          const card = this.closest('.offer-card[data-sku], .fav-card[data-sku], article[data-sku], .mood-card[data-sku]');
-          const sku = (card && card.getAttribute('data-sku')) || this.dataset.sku;
-          if (!sku || sku === 'unknown') return;
+          const card = this.closest('.offer-card[data-sku], .fav-card, .favorite-card, article[data-sku], .mood-card[data-sku]');
+          let sku = (card && card.getAttribute('data-sku')) || this.dataset.sku || '';
+          sku = sku ? String(sku).trim() : '';
+          if ((!sku || sku === 'unknown') && card && card.classList.contains('fav-card')) {
+            const nameEl = card.querySelector('.fav-desc');
+            const resolved = typeof window.resolveFavoriteSkuFromName === 'function' && nameEl
+              ? window.resolveFavoriteSkuFromName(nameEl.textContent.trim())
+              : '';
+            if (resolved) {
+              sku = resolved;
+              card.setAttribute('data-sku', sku);
+              this.dataset.sku = sku;
+            }
+          }
+          if (!sku || sku === 'unknown') {
+            const toast = document.querySelector('.toast');
+            if (toast) {
+              toast.textContent = 'Use the same name as in Products, or add a SKU in admin';
+              toast.classList.add('is-show');
+              setTimeout(() => toast.classList.remove('is-show'), 2200);
+            }
+            return;
+          }
           const picked = getSizeFromCard(card, sku);
           const sizeSelect = picked.selectEl;
           const skuKey = String(sku).toLowerCase();
@@ -654,6 +688,7 @@
         const response = await fetch('/api/products?limit=500');
         const products = await response.json();
         console.log('API returned products:', products);
+        window.__catalogProductsForFavorites = Array.isArray(products) ? products : [];
 
         // Keep products that belong on the fruits page (fruit categories + Other), exclude candy-only categories
         allProducts = products.filter(function (p) {
