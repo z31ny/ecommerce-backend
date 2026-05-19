@@ -230,6 +230,43 @@
                         <i class="fas fa-box"></i>
                     </div>
                 </div>
+
+                <div class="stat-card teal animate-fade-in stagger-5" id="trafficStatCard">
+                    <div class="stat-info">
+                        <h3>Visitors Online</h3>
+                        <div class="stat-value" id="trafficActiveCount">0</div>
+                        <div class="stat-change" id="trafficActiveStatus">
+                            <span class="traffic-status-dot offline"></span>
+                            <span>No one on the site right now</span>
+                        </div>
+                    </div>
+                    <div class="stat-icon teal">
+                        <i class="fas fa-globe"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="data-card traffic-panel animate-fade-in" id="trafficPanel">
+                <div class="data-card-header">
+                    <h3 class="data-card-title">
+                        <span class="traffic-live-pill" id="trafficLivePill">Live</span>
+                        Website Traffic
+                    </h3>
+                    <span class="traffic-meta" id="trafficMeta">Updating…</span>
+                </div>
+                <div class="traffic-summary">
+                    <div class="traffic-summary-item">
+                        <span class="traffic-summary-label">Online now</span>
+                        <strong id="trafficSummaryOnline">0</strong>
+                    </div>
+                    <div class="traffic-summary-item">
+                        <span class="traffic-summary-label">Page views today</span>
+                        <strong id="trafficSummaryViews">0</strong>
+                    </div>
+                </div>
+                <div class="table-wrapper" id="trafficVisitorsTable">
+                    <p class="traffic-empty">No active visitors. Traffic updates when someone opens your store pages.</p>
+                </div>
             </div>
 
             <!-- Charts Section -->

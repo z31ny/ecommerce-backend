@@ -40,6 +40,7 @@ const DashboardAPI = {
 
     // Analytics & Stats
     async getStats() { return this.request('/api/admin/stats'); },
+    async getTraffic() { return this.request('/api/admin/traffic'); },
     async getAnalytics(period = 'week') { return this.request(`/api/admin/analytics?period=${encodeURIComponent(period)}`); },
 
     // Inventory
@@ -5318,6 +5319,106 @@ async function initDashboard() {
     }
 }
 
+let trafficPollTimer = null;
+
+async function loadTrafficFromAPI() {
+    try {
+        return await DashboardAPI.getTraffic();
+    } catch (e) {
+        console.warn('Traffic API unavailable:', e);
+        return {
+            activeNow: 0,
+            pageViewsToday: 0,
+            hasVisitors: false,
+            visitors: [],
+            updatedAt: null,
+        };
+    }
+}
+
+function renderTrafficUI(traffic) {
+    const active = Number(traffic?.activeNow) || 0;
+    const views = Number(traffic?.pageViewsToday) || 0;
+    const hasVisitors = active > 0;
+
+    const countEl = document.getElementById('trafficActiveCount');
+    const statusEl = document.getElementById('trafficActiveStatus');
+    const summaryOnline = document.getElementById('trafficSummaryOnline');
+    const summaryViews = document.getElementById('trafficSummaryViews');
+    const metaEl = document.getElementById('trafficMeta');
+    const tableEl = document.getElementById('trafficVisitorsTable');
+    const statCard = document.getElementById('trafficStatCard');
+    const livePill = document.getElementById('trafficLivePill');
+
+    if (countEl) countEl.textContent = String(active);
+    if (summaryOnline) summaryOnline.textContent = String(active);
+    if (summaryViews) summaryViews.textContent = String(views);
+    if (statCard) statCard.classList.toggle('traffic-has-visitors', hasVisitors);
+    if (livePill) livePill.classList.toggle('is-active', hasVisitors);
+
+    if (statusEl) {
+        const dot = statusEl.querySelector('.traffic-status-dot');
+        const label = statusEl.querySelector('span:last-child');
+        if (dot) {
+            dot.classList.toggle('offline', !hasVisitors);
+            dot.classList.toggle('online', hasVisitors);
+        }
+        if (label) {
+            label.textContent = hasVisitors
+                ? (active === 1 ? '1 customer is browsing now' : active + ' customers are browsing now')
+                : 'No one on the site right now';
+        }
+    }
+
+    if (metaEl) {
+        metaEl.textContent = traffic?.updatedAt
+            ? 'Updated ' + new Date(traffic.updatedAt).toLocaleTimeString()
+            : 'Waiting for data…';
+    }
+
+    if (!tableEl) return;
+
+    const visitors = Array.isArray(traffic?.visitors) ? traffic.visitors : [];
+    if (!visitors.length) {
+        tableEl.innerHTML = '<p class="traffic-empty">No active visitors. Traffic updates when someone opens your store pages.</p>';
+        return;
+    }
+
+    let html = '<table class="data-table traffic-table"><thead><tr>';
+    html += '<th>Page</th><th>On site</th><th>Last active</th></tr></thead><tbody>';
+    visitors.forEach(function (v) {
+        const ago = Number(v.secondsAgo) || 0;
+        const agoLabel = ago <= 5 ? 'Just now' : ago + 's ago';
+        html += '<tr>';
+        html += '<td><strong>' + escapeHtml(v.pageLabel || v.page || 'Page') + '</strong></td>';
+        html += '<td>' + (Number(v.onSiteMinutes) || 1) + ' min</td>';
+        html += '<td>' + agoLabel + '</td>';
+        html += '</tr>';
+    });
+    html += '</tbody></table>';
+    tableEl.innerHTML = html;
+}
+
+async function refreshTrafficPanel() {
+    const traffic = await loadTrafficFromAPI();
+    renderTrafficUI(traffic);
+    return traffic;
+}
+
+function startTrafficPolling() {
+    if (!document.getElementById('trafficPanel')) return;
+    if (trafficPollTimer) clearInterval(trafficPollTimer);
+    refreshTrafficPanel();
+    trafficPollTimer = setInterval(refreshTrafficPanel, 15000);
+}
+
+function stopTrafficPolling() {
+    if (trafficPollTimer) {
+        clearInterval(trafficPollTimer);
+        trafficPollTimer = null;
+    }
+}
+
 // Initialize Overview Page
 async function initOverviewPage() {
     await Promise.all([
@@ -5332,7 +5433,11 @@ async function initOverviewPage() {
     // Populate recent orders and top products sections
     renderRecentOrders('recentOrdersTable');
     renderTopProducts('topProductsList');
+
+    startTrafficPolling();
 }
+
+window.loadDashboardStats = initOverviewPage;
 
 // Initialize Orders Page
 async function initOrdersPage() {
